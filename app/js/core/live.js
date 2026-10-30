@@ -1,9 +1,14 @@
 // Interactive exercises that listen to the real flute: a long-tone meter, a phrase check, an
 // echo game (the app plays, you play it back) and a beat-tapping game. Plain DOM, styled by the
 // lv- classes in bench.css, so the app and the standalone Practice Bench share them.
-import { codeOf, nameOf, westOf, hzOf, WEST } from "./theory.js";
+import { codeOf, nameOf, westOf, hzOf, WEST, devaOf } from "./theory.js";
 import { ac, master, makeVoice, playNote, tanpura, click } from "./audio.js";
-import { setSettings } from "./settings.js";
+import { setSettings, getSettings } from "./settings.js";
+
+// A note's label for the widgets: S R G, with Devanagari underneath when the learner chose it.
+function lvNote(semi) {
+  return getSettings().deva ? [codeOf(semi), lvEl("small", { class: "lv-deva" }, devaOf(semi))] : codeOf(semi);
+}
 import { listenMic, muteListening, holdTracker, noteSequencer, phraseMatcher, tapStats, pitchAdvice, tapLatency, tapCalibrated, emitLive } from "./listen.js";
 
 function lvEl(tag, attrs, ...kids) {
@@ -93,7 +98,7 @@ export function holdMeter(opts) {
   const needle = lvEl("i", { class: "lv-needle" });
   const centsTxt = lvEl("span", { class: "lv-cents" }, "");
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play a long, steady note.");
-  const chips = targets[0] === null ? null : lvEl("div", { class: "lv-chips" }, targets.map((s, i) => lvEl("span", { class: "lv-chip", "data-i": String(i) }, codeOf(s))));
+  const chips = targets[0] === null ? null : lvEl("div", { class: "lv-chips" }, targets.map((s, i) => lvEl("span", { class: "lv-chip", "data-i": String(i) }, lvNote(s))));
   const startBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start");
   const hearBtn = targets[0] === null ? null : lvEl("button", { type: "button", class: "lv-btn" }, "Hear the note");
   const drone = lvDrone("Drone");
@@ -119,7 +124,7 @@ export function holdMeter(opts) {
     secs.textContent = s.held.toFixed(1) + " s" + (s.best > s.held + 0.5 ? " (best " + s.best.toFixed(1) + ")" : "");
     if (r.semi !== null && r.semi > -7.5) {
       lastSound = r.t;
-      noteBig.textContent = codeOf(r.near);
+      noteBig.replaceChildren(...[].concat(lvNote(r.near)));
       const ok = Math.abs(r.cents) <= o.cents;
       needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
       needle.className = "lv-needle " + (Math.abs(r.cents) <= 10 ? "lv-good" : ok ? "lv-warn" : "lv-bad");
@@ -186,7 +191,7 @@ export function phraseCheck(opts) {
     lvEl("p", { class: "lv-goal" }, "Play: ", lvEl("b", { class: "lv-mono" }, exp.map(codeOf).join(" ")), exp.some((x, i) => i && x === exp[i - 1]) ? " (tongue each repeated note)" : ""),
     slots, lvEl("div", { class: "lv-row" }, count), msg, lvEl("div", { class: "lv-row" }, startBtn, hearBtn));
   function drawSlots(st) {
-    slots.replaceChildren(...exp.map((s, i) => lvEl("span", { class: "lv-slot" + (st && st.marks[i] ? " lv-" + st.marks[i] : i === (st ? st.pos : 0) ? " lv-next" : "") }, codeOf(s))));
+    slots.replaceChildren(...exp.map((s, i) => lvEl("span", { class: "lv-slot" + (st && st.marks[i] ? " lv-" + st.marks[i] : i === (st ? st.pos : 0) ? " lv-next" : "") }, lvNote(s))));
   }
   function fresh() { matcher = phraseMatcher(exp); drawSlots(matcher.state()); }
   function onReading(r) {
@@ -263,15 +268,17 @@ export function echoPhrase(set, n, rnd) {
   return out;
 }
 
-// opts: { level, notes: [semi] and notesLabel (a custom set, such as a raga's notes), onResult }
+// opts: { level, notes: [semi] and notesLabel (a custom set, such as a raga's notes), onResult,
+//   test: { rounds, pass, len } for a scored test (fixed length, a set number of phrases), onPass }
 export function echoGame(opts) {
-  const o = Object.assign({ level: "srg", onResult: null }, opts || {});
+  const o = Object.assign({ level: "srg", onResult: null, test: null, onPass: null }, opts || {});
+  let testRounds = 0, testRight = 0;
   const saved = lvStore("echo") || {};
   // A custom set (a raga's notes) gets its own id, so each raga's results are kept apart.
   const customId = o.levelId || "custom";
   const levels = o.notes && o.notes.length ? [[customId, o.notesLabel || "These notes", o.notes]].concat(ECHO_LEVELS) : ECHO_LEVELS;
   let level = o.notes && o.notes.length ? levels[0] : (levels.find(l => l[0] === (saved.level || o.level)) || ECHO_LEVELS[1]);
-  let len = (saved.len && saved.len[level[0]]) || 2, streak = 0, misses = 0, phrase = [], matcher = null, seq = null, unsub = null, quietTimer = 0, playTimer = 0, playing = false;
+  let len = o.test ? o.test.len : (saved.len && saved.len[level[0]]) || 2, streak = 0, misses = 0, phrase = [], matcher = null, seq = null, unsub = null, quietTimer = 0, playTimer = 0, playing = false;
   const life = { gen: 0, dead: false };
   const sel = lvEl("select", { class: "lv-select", "aria-label": "Notes to use" }, levels.map(l => lvEl("option", { value: l[0] }, l[1])));
   sel.value = level[0];
@@ -286,11 +293,11 @@ export function echoGame(opts) {
     lvEl("div", { class: "lv-row" }, lvEl("label", { class: "lv-field" }, "Notes", sel), lenTxt, lvEl("label", { class: "lv-check" }, showBox, "Show the notes"), lvEl("label", { class: "lv-check", title: "Sing it back instead of playing: any octave counts" }, singBox, "I will sing"), drone.el),
     slots, msg, lvEl("div", { class: "lv-row" }, goBtn, againBtn));
   const save = () => { if (level[0] === customId && o.notes) return; const s = lvStore("echo") || {}; s.level = level[0]; s.len = Object.assign({}, s.len, { [level[0]]: len }); lvStore("echo", s); };
-  const showLen = () => { lenTxt.textContent = `Phrase length ${len}`; };
+  const showLen = () => { lenTxt.textContent = o.test ? `${testRight} right of ${testRounds} (test: ${o.test.pass} of ${o.test.rounds} to pass)` : `Phrase length ${len}`; };
   function drawSlots(st) {
     slots.replaceChildren(...phrase.map((s, i) => {
       const m = st && st.marks[i];
-      return lvEl("span", { class: "lv-slot" + (m ? " lv-" + m : st && i === st.pos ? " lv-next" : "") }, m || showBox.checked || (st && st.done) ? codeOf(s) : "?");
+      return lvEl("span", { class: "lv-slot" + (m ? " lv-" + m : st && i === st.pos ? " lv-next" : "") }, m || showBox.checked || (st && st.done) ? lvNote(s) : "?");
     }));
   }
   let opening = null;
@@ -314,6 +321,16 @@ export function echoGame(opts) {
     if (!st.done && !timedOut) return;
     const clean = st.done && st.clean;
     matcher = null; drawSlots(Object.assign({}, st, { done: true }));
+    if (o.test) {
+      testRounds++; if (clean) { testRight++; lvChime(); }
+      if (testRounds >= o.test.rounds) {
+        const passed = testRight >= o.test.pass;
+        msg.textContent = `${testRight} of ${o.test.rounds} phrases right. ` + (passed ? "Passed." : `${o.test.pass} needed: practise with Play back and try again.`);
+        if (passed) { el.classList.add("lv-passed"); if (o.onPass) { try { o.onPass({ right: testRight }); } catch (e) { /* ignore */ } } }
+        testRounds = 0; testRight = 0;
+      } else msg.textContent = (clean ? "Correct. " : "Not quite. ") + `Phrase ${testRounds + 1} of ${o.test.rounds}: press Play me a phrase.`;
+      showLen(); return;
+    }
     if (clean) {
       streak++; misses = 0; lvChime();
       if (streak >= 2 && len < 8) { len++; streak = 0; msg.textContent = `Correct. Next phrases have ${len} notes.`; }
@@ -519,4 +536,104 @@ export function fluteFinder(opts) {
     if (o.onApply) { try { o.onApply(found); } catch (e) { /* ignore */ } }
   });
   return { el, stop, destroy() { life.dead = true; stop(); } };
+}
+
+// ---------- Name the note (ear test) ----------
+// Sa, then a note: the learner names it. opts: { notes: [semi], count, pass, drone, onPass(score) }.
+// Used for milestone items such as "identify 20 single notes from S R G P, 18/20".
+export function noteQuiz(opts) {
+  const o = Object.assign({ notes: [0, 2, 4, 7], count: 20, pass: 18, onPass: null }, opts || {});
+  let n = 0, right = 0, target = null, answered = true, voices = [];
+  const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, `You hear Sa, then a note. Name the note. ${o.count} questions; ${o.pass} right to pass.`);
+  const score = lvEl("span", { class: "lv-count" }, `0 of ${o.count}`);
+  const opts2 = lvEl("div", { class: "lv-row lv-answers" });
+  const goBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start");
+  const againBtn = lvEl("button", { type: "button", class: "lv-btn", disabled: true }, "Hear again");
+  const drone = lvDrone("Drone");
+  const el = lvEl("div", { class: "lv lv-quiz" }, lvEl("div", { class: "lv-row" }, score, drone.el), opts2, msg, lvEl("div", { class: "lv-row" }, goBtn, againBtn));
+  const hush = () => { voices.forEach(v => v.stop()); voices = []; };
+  function play() {
+    hush();
+    const c = ac(), t = c.currentTime + 0.05;
+    const a = makeVoice(hzOf(0), t); a.stop(t + 0.8);
+    const b = makeVoice(hzOf(target), t + 1.0); b.stop(t + 2.1);
+    voices = [a, b];
+  }
+  function ask() {
+    if (n >= o.count) return finish();
+    target = o.notes[Math.floor(Math.random() * o.notes.length)]; answered = false;
+    msg.textContent = `Question ${n + 1} of ${o.count}: which note came second?`;
+    opts2.replaceChildren(...o.notes.map(s => {
+      const b = lvEl("button", { type: "button", class: "lv-btn lv-ans" }, codeOf(s));
+      b.addEventListener("click", () => {
+        if (answered) return;
+        answered = true; n++;
+        const ok = s === target; if (ok) right++;
+        b.classList.add(ok ? "lv-right" : "lv-wrong");
+        if (!ok) { const r = [...opts2.children].find(x => x.textContent === codeOf(target)); if (r) r.classList.add("lv-right"); }
+        score.textContent = `${right} of ${n} right`;
+        setTimeout(ask, ok ? 700 : 1500);
+      });
+      return b;
+    }));
+    play();
+  }
+  function finish() {
+    hush(); opts2.replaceChildren(); againBtn.disabled = true; goBtn.disabled = false; goBtn.textContent = "Again";
+    const passed = right >= o.pass;
+    msg.textContent = `${right} of ${o.count} right. ` + (passed ? "Passed." : `${o.pass} needed: practise with the Ear quiz and try again.`);
+    emitLive({ type: "earTest", right, total: o.count });
+    if (passed) { el.classList.add("lv-passed"); lvChime(); if (o.onPass) { try { o.onPass({ right, total: o.count }); } catch (e) { /* ignore */ } } }
+  }
+  goBtn.addEventListener("click", () => { ac(); n = 0; right = 0; el.classList.remove("lv-passed"); goBtn.disabled = true; againBtn.disabled = false; score.textContent = `0 of ${o.count}`; ask(); });
+  againBtn.addEventListener("click", () => { if (target !== null && !answered) play(); });
+  return { el, stop: hush, destroy() { hush(); drone.stop(); } };
+}
+
+// ---------- Name that raga ----------
+// A phrase from one raga plays over the drone; the learner names the raga.
+// ragas: [{ name, phrases: [[semi]] }] (aroh, avroh, pakad...). Needs no microphone.
+export function ragaQuiz(opts) {
+  const o = Object.assign({ ragas: [], choices: 4 }, opts || {});
+  let current = null, answered = true, right = 0, total = 0, voices = [];
+  const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Listen to a phrase and name its raga. Notice which notes are missing and which ones the phrase leans on.");
+  const score = lvEl("span", { class: "lv-count" });
+  const answers = lvEl("div", { class: "lv-row lv-answers" });
+  const goBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Play a phrase");
+  const againBtn = lvEl("button", { type: "button", class: "lv-btn", disabled: true }, "Hear again");
+  const drone = lvDrone("Drone");
+  const el = lvEl("div", { class: "lv lv-ragaquiz" }, lvEl("div", { class: "lv-row" }, score, drone.el), answers, msg, lvEl("div", { class: "lv-row" }, goBtn, againBtn));
+  const hush = () => { voices.forEach(v => v.stop()); voices = []; };
+  function play() {
+    hush();
+    const c = ac(), t0 = c.currentTime + 0.1, noteS = 0.55;
+    current.phrase.forEach((s, i) => { const v = makeVoice(hzOf(s), t0 + i * noteS); v.stop(t0 + i * noteS + noteS * 0.9); voices.push(v); });
+  }
+  function ask() {
+    const pool = o.ragas.filter(r => r.phrases.length);
+    if (pool.length < 2) { msg.textContent = "Not enough ragas with notated phrases."; return; }
+    const r = pool[Math.floor(Math.random() * pool.length)];
+    const others = pool.filter(x => x !== r).sort(() => Math.random() - 0.5).slice(0, o.choices - 1);
+    current = { raga: r, phrase: r.phrases[Math.floor(Math.random() * r.phrases.length)] };
+    answered = false; againBtn.disabled = false;
+    answers.replaceChildren(...[r].concat(others).sort(() => Math.random() - 0.5).map(x => {
+      const b = lvEl("button", { type: "button", class: "lv-btn lv-ans" }, x.name);
+      b.addEventListener("click", () => {
+        if (answered) return;
+        answered = true; total++;
+        const ok = x === r; if (ok) right++;
+        b.classList.add(ok ? "lv-right" : "lv-wrong");
+        if (!ok) { const c = [...answers.children].find(y => y.textContent === r.name); if (c) c.classList.add("lv-right"); }
+        msg.textContent = ok ? `Yes: ${r.name}.` : `It was ${r.name}.` + (r.hint ? " " + r.hint : "");
+        score.textContent = `${right} of ${total} right`;
+        emitLive({ type: "ragaQuiz", correct: ok });
+      });
+      return b;
+    }));
+    msg.textContent = "Which raga is this?";
+    play();
+  }
+  goBtn.addEventListener("click", () => { ac(); ask(); });
+  againBtn.addEventListener("click", () => { if (current) play(); });
+  return { el, stop: hush, destroy() { hush(); drone.stop(); } };
 }

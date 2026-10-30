@@ -1,6 +1,6 @@
 # L01 - How to Practise
 
-**Objectives:** PRA-01, PRA-02, PRA-03, PRA-07, PRF-03, BOD-06, BOD-07, SNG-08
+**Objectives:** PRA-01, PRA-02, PRA-03, PRA-06, PRA-07, PRF-03, BOD-06, BOD-07, SNG-08
 **Time span:** Read on Day 0 or Day 1; apply every day for the rest of the course
 **Prerequisites:** [L00](L00-day-0-your-flute.md)
 **Previous:** [L00](L00-day-0-your-flute.md) | **Next:** [L02 - Posture and Holding](L02-posture-and-holding.md)
@@ -14,6 +14,7 @@
 - Review old material on a spaced schedule (PRA-03).
 - Keep a practice log and a listening log (PRF-03, PRA-07).
 - Warm up, take breaks and stop safely (BOD-06, BOD-07).
+- Set process goals and get through plateaus by changing your approach (PRA-06).
 
 ## 2. Prerequisites
 
@@ -113,6 +114,33 @@ fingers or your knowledge, so come back gradually:
 After any illness affecting the chest, throat or lips, check with a doctor before playing.
 Then keep sessions short until breathing feels normal.
 
+### 4.8 Goals and plateaus (PRA-06)
+
+**Set process goals, not only outcome goals.** "Play Raga Bhupali well" is an outcome: you can't practise it directly. A process goal is something you can do and check today: "10 minutes of long tones on `.N` and `R`, three 15-second holds within +/-15 cents" or "`S R G R` at 72 BPM, 3 clean in a row". Keep one outcome goal per month (usually the next milestone) and break it into process goals for each week (Recommendation).
+
+**Plateaus are normal (Fact for most learners).** Skill tends to grow in steps: weeks where nothing seems to change, then a sudden jump. Often the improvement is real but too gradual to notice from day to day.
+
+**When you feel stuck for 2 weeks or more, change the approach, not only the effort.** More hours of the same practice rarely breaks a plateau. Instead:
+
+1. **Check the evidence.** Compare a recording from 4 weeks ago with one from today, same exercise ([L08](L08-recording-and-self-assessment.md)). There is often a difference you did not notice.
+2. **Check the difficulty.** Aim for tasks you get right about 70-80% of the time. Too easy means no growth; too hard means no success.
+3. **Check the balance.** Does your log show tone, technique, repertoire and ear work, or mostly one thing?
+4. **Look for a hidden problem.** A leak or tension can block progress. Diagnose it ([L08](L08-recording-and-self-assessment.md), [troubleshooting](../troubleshooting/README.md)).
+5. **Change one thing for 2 weeks:** a new exercise for the same skill, a different tempo, a new piece, or a rest day you were skipping.
+
+**Monthly reflection (5 minutes, last day of each month).** Add this to your log:
+
+```
+Month: ______
+Outcome goal this month: ______        Reached? Y / partly / N
+Best recording vs. last month's: what changed? ______
+Where am I stuck? ______
+What I will change (one thing): ______
+Outcome goal for next month: ______
+```
+
+More help: [TS-11](../troubleshooting/TS-11-practice-plateaus-and-motivation.md).
+
 ## 5. Templates
 
 ### Practice log (copy one per day)
@@ -173,6 +201,7 @@ No resource in the library covers practice method for bansuri specifically. Inst
 3. You reached 72 BPM cleanly today. Where do you start tomorrow?
 4. You learned a melody on Monday. When are its first three reviews?
 5. List three signs that you should stop practising.
+6. Your clean tempo on an alankar has been stuck at 80 BPM for three weeks, even though you practise it more. What should you do?
 
 <details markdown="1">
 <summary>Answer key</summary>
@@ -182,6 +211,7 @@ No resource in the library covers practice method for bansuri specifically. Inst
 3. 64 BPM (8 below your best), then climb again.
 4. Tuesday (next day), Friday (3 days later), and the following Friday (1 week later).
 5. Any three of: dizziness, pain, numbness or tingling, lips too tired for a clear tone, repeated sloppy mistakes.
+6. Treat it as a normal plateau and change the approach, not only the effort: compare old and new recordings, check the difficulty and balance, look for a hidden problem such as tension or a leak, and change one thing for 2 weeks (PRA-06).
 
 </details>
 
@@ -193,6 +223,7 @@ No resource in the library covers practice method for bansuri specifically. Inst
 - [ ] Practice log kept on 5+ days per week (PRF-03).
 - [ ] Listening log has 4+ entries per week (PRA-07).
 - [ ] Warm-up done before every session for 2 weeks (BOD-06); breaks logged (BOD-07).
+- [ ] Monthly reflection written at the end of each month, with a process goal for the next month (PRA-06).
 
 ## 12. Next lesson
 

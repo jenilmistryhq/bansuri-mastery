@@ -57,6 +57,19 @@ All recordings: [Listening Library: Malkauns](../08-LISTENING-LIBRARY.md#malkaun
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
+## Practice composition (Original, written for this curriculum; not yet reviewed by a teacher)
+
+**Teentaal, 16 beats per line (one cycle), target 50-60 BPM. Starts on sam.** Each `|` marks a vibhag of 4 beats.
+
+```
+S - .n S | g m d m | g m g - | S - - - |
+g m d n | S' - n d | m g m g | S - - - ||
+```
+
+It circles `g m` around the pakad `g m d m g m g S` and has no Re or Pa anywhere. Play it slowly (50-60 BPM) and hold each `g` and `d` long enough to check it against the drone. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+
+**Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
+
 ## Practice steps
 
 1. Tuner check of all four half-hole notes (+/-15 cents) before any phrase.

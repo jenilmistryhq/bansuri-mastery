@@ -84,7 +84,7 @@ tala, two melodies. Strongly recommended: a teacher check before or after M3.
 
 | Weeks | Ear ([EX-EAR](../exercises/EX-EAR-ear-training-system.md)) | Theory/notation |
 |---|---|---|
-| 7-10 | Level 2 (S vs P against drone), then Level 3 (S R G P) | [EX-NOT](../exercises/EX-NOT-notation-drills.md) rhythmic sargam; EX-RHY tala drills |
+| 7-10 | Level 2 (S vs P against drone), then Level 3 (`S R G P`) | [EX-NOT](../exercises/EX-NOT-notation-drills.md) rhythmic sargam; EX-RHY tala drills |
 | 11-14 | Level 3 to pass; start Level 4 (all shuddha swaras) | 12 notes, intervals in semitones ([EX-THY](../exercises/EX-THY-theory-quizzes.md) Phase 2) |
 | 15-18 | Level 4; phrase memory (EAR-09) with your old recordings | Song structure (THY-14); write out the notation of the songs from 2F |
 

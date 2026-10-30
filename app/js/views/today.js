@@ -6,7 +6,7 @@ import { listRecordings } from "../recorder.js";
 import { getDay, current, dayState, phaseOf, lessonInfo, milestoneInfo, milestoneState, dueReviews, upcomingReviews, markReview, streaks, totals, practiceDates, lastIndex, getPlan } from "../course.js";
 import { today } from "../util.js";
 import { mountBench } from "../bench/bench.js";
-import { renderInline } from "../content.js";
+import { renderInline, fetchDoc } from "../content.js";
 import { dayResults, lastPlayedDay } from "../livestats.js";
 import { codeOf } from "../core/theory.js";
 import { makePlayable } from "../playable.js";
@@ -34,7 +34,7 @@ function welcome() {
       h("li", null, h("span", null, h("b", null, "Each day is a guided session "), "of about 45-60 minutes: warm-up, tone, technique, music, ear training and a short log. Timers and tools are built in.")),
       h("li", null, h("span", null, h("b", null, "Milestones prove progress. "), "You move on by passing practical tests, not by the calendar. A failed test tells you exactly what to practise.")),
       h("li", null, h("span", null, h("b", null, "Your progress stays on this device. "), "Export a backup in Settings to move it to another device."))),
-    h("p", { class: "small muted" }, "Built for a 6-hole C natural medium bansuri (Sa = C5). Using another flute? Set its Sa in ", h("a", { href: "#/settings" }, "Settings"), "."));
+    h("p", { class: "small muted" }, "Built for a 6-hole C natural medium bansuri (Sa = C5). Another flute? Day 0 finds its Sa for you. Already play? ", h("a", { href: "#/settings" }, "Take the playing test"), " to start at the right phase."));
 }
 
 function reviewsCard(cleanups) {
@@ -71,6 +71,48 @@ function reviewsCard(cleanups) {
     due.length ? h("p", { class: "small muted" }, "Play each piece once from memory. Mark how it went; the next review is scheduled for you.") : h("p", { class: "small muted" }, "Nothing due today."),
     list,
     up.length ? h("p", { class: "small muted" }, "Coming up: " + up.map(u => u.label + " (" + fmtDate(u.next) + ")").join(", ")) : null);
+}
+
+// Help when a day keeps not passing, and a gentle restart after a break.
+function adaptiveCard(cur) {
+  const s = getState(), log = s.log;
+  if (!s.startedAt) return null;
+  const tries = log.filter(e => e.day === cur && !e.passed).length;
+  const dates = [...new Set(log.map(e => e.date))].sort();
+  const last = dates[dates.length - 1];
+  const away = last ? daysBetween(last, today()) : 0;
+  if (away >= 4 && cur > 1) {
+    return h("section", { class: "card notice-card" }, h("h2", null, "Welcome back"),
+      h("p", null, "It has been " + away + " days. Fingers and lips forget quickly but return quickly too: start with a short review of the last day you did, then carry on."),
+      h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/session/" + (cur - 1) }, "Review Day " + (cur - 1) + " first"), h("a", { class: "btn", href: "#/session/" + cur }, "Go straight to Day " + cur)));
+  }
+  if (tries >= 2) {
+    const day = getDay(cur);
+    const bench = day && day.blocks.find(b => b.bench && b.bench.bpm);
+    return h("section", { class: "card notice-card" }, h("h2", null, "This day is taking a few tries"),
+      h("p", null, "That is normal: " + tries + " sessions on Day " + cur + " so far. Three things usually help:"),
+      h("ul", { class: "stack", style: { margin: "0", paddingLeft: "1.2em" } },
+        h("li", null, bench ? "Slow down: play the exercises 10 BPM slower (" + Math.max(30, bench.bench.bpm - 10) + " BPM), then build back up." : "Slow down: play everything at a slower tempo, then build back up."),
+        h("li", null, "Find the exact problem: ", h("a", { href: "#/coach" }, "let the Coach listen"), " to a long note, or loop the hard bar in the Bench."),
+        h("li", null, "Rest a day if your lips or hands are tired; it often clicks the day after.")),
+      h("div", { class: "row" }, h("a", { class: "btn", href: "#/coach" }, "Open the Coach"), h("a", { class: "btn", href: "#/session/" + Math.max(0, cur - 1) }, "Practise Day " + Math.max(0, cur - 1) + " again")));
+  }
+  return null;
+}
+
+// One playable melody a week, picked from the songs the learner can already play.
+async function songOfWeekCard() {
+  try {
+    const { parseSongs } = await import("./songs.js");
+    const songs = parseSongs(await fetchDoc("exercises/EX-MEL-practice-melodies.md"));
+    let reached = 0;
+    for (let n = 0; n <= current(); n++) { const d = getDay(n); if (d && d.lessons) for (const id of d.lessons) reached = Math.max(reached, Number(String(id).replace(/\D/g, "")) || 0); }
+    const ready = songs.filter(x => x.lesson <= reached);
+    if (!ready.length) return null;
+    const week = Math.floor(daysBetween("2026-01-05", today()) / 7);
+    const song = ready[((week % ready.length) + ready.length) % ready.length];
+    return h("a", { class: "card songlink", href: "#/songs" }, h("span", { class: "eyebrow" }, "Song of the week"), h("b", null, song.id + " " + song.title), h("span", { class: "small muted" }, "A fun extra: play it along with the app; the microphone checks every note."));
+  } catch (e) { return null; }
 }
 
 // "Last time" from the microphone: something concrete to beat today.
@@ -213,7 +255,11 @@ export async function render(main, { params, view }) {
     const nudge = backupNudge();
     if (nudge) page.append(nudge);
     page.append(statsRow());
-    page.append(h("a", { class: "card songlink", href: "#/songs" }, h("b", null, "Songs"), h("span", { class: "small muted" }, "Play along with a melody; the microphone checks every note.")));
+    const help = adaptiveCard(cur);
+    if (help) page.append(help);
+    const songHost = h("div");
+    page.append(songHost);
+    songOfWeekCard().then(c => songHost.replaceWith(c || h("a", { class: "card songlink", href: "#/songs" }, h("b", null, "Songs"), h("span", { class: "small muted" }, "Play along with a melody; the microphone checks every note."))));
     const lastCard = lastSessionCard();
     if (lastCard) page.append(lastCard);
     if (cur <= 42) page.append(realBansuriCard());

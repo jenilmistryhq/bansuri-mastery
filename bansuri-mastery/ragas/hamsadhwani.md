@@ -11,7 +11,7 @@
 | Avroh | `S' N P G R S` |
 | Vadi / samvadi | **Disputed:** Re / Pa (Wikipedia). Other teaching sources give different pairs; ask your teacher |
 | Time | Early night, about 9-12 (Wikipedia) |
-| Characteristic phrases | `G P N S'`, `S' N P G`, `G R S .N .P S` (Wikipedia pakad: G P N - S' N P G) |
+| Characteristic phrases | `G P N S'`, `S' N P G`, `G R S .N .P S` (Wikipedia pakad: `G P N - S' N P G`) |
 
 ## Character
 
@@ -43,6 +43,19 @@ All recordings: [Listening Library: Hamsadhwani](../08-LISTENING-LIBRARY.md#hams
 - **Then:** R-L51 (Hariprasad Chaurasia, teentaal) for the Hindustani treatment; R-L52 (Pravin Godkhindi).
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
+
+## Practice composition (Original, written for this curriculum; not yet reviewed by a teacher)
+
+**Teentaal, 16 beats per line (one cycle), target 60-80 BPM. Starts on sam.** Each `|` marks a vibhag of 4 beats.
+
+```
+S R G P | N - S' - | N P G R | G - R S |
+G P N S' | R' S' N P | G R S .N | .P - S - ||
+```
+
+It uses the leaps `G P N S'` and `S' N P G` and ends with `G R S .N .P S`. Keep Ma and Dha out completely. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+
+**Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
 
 ## Practice steps
 

@@ -205,13 +205,32 @@ for example "a melody using only `S R G` that sounds happy", "a melody whose hig
 
 </details>
 
-## 11. Mastery criteria
+## 11. Quiz
+
+1. How is composition different from improvisation?
+2. In a question-and-answer melody, where does each phrase end?
+3. What is the A A' B A' plan, and what makes the B section different?
+4. What are the sthayi, the antara and the mukhda of a bandish?
+5. When setting words to a melody, where do stressed syllables go?
+
+<details markdown="1">
+<summary>Answer key</summary>
+
+1. Composition is improvisation you keep: you choose the best ideas, write them down and polish them, and you can take your time.
+2. The question ends on an open note (R, G, P or D); the answer ends on Sa.
+3. Main idea (A), the same idea with a new ending (A'), a contrasting section (B), then the answer again (A'). B contrasts by using a higher register and a different rhythm.
+4. The sthayi is the first part, mostly in mandra and madhya, centred on Sa. The antara is the second part, rising to upper madhya and taar Sa. The mukhda is the opening phrase of the sthayi, which returns again and again.
+5. On strong beats (sam and tali beats) and on longer or higher notes; unstressed syllables go on weak beats and shorter notes.
+
+</details>
+
+## 12. Mastery criteria
 
 - [ ] CMP-01: original melody written, played in time from notation, recorded.
 - [ ] CMP-02: 16-bar melody with labelled phrase structure.
 - [ ] CMP-03: original bandish in Bhupali or Yaman, teentaal, notated and performed.
 - [ ] CMP-04: 8-line song melody, notated with syllables.
 
-## 12. Next
+## 13. Next
 
 Continue with [L31 - Alap and Swar Vistar](L31-alap-and-swar-vistar.md).

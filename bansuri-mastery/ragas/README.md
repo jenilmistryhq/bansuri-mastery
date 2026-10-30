@@ -55,7 +55,7 @@ any Sa. They always need at least one half-hole. Details: [L26](../lessons/L26-k
 2. Sing then play the **aroh and avroh** slowly against a C drone ([R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)).
 3. Learn the **pakad / characteristic phrases** until you can play them from memory.
 4. Do **swar vistar**: slow improvisation using only the card's rules ([L31](../lessons/L31-alap-and-swar-vistar.md)).
-5. Learn one **composition** (from your teacher, R-T01 SwarGanga or R-T04 Tanarang).
+5. Learn one **composition** (from your teacher, R-T01 SwarGanga or R-T04 Tanarang). Every card has a short original practice composition to start with (Bhupali and Yaman link to the one in their lesson); those have not yet been reviewed by a teacher.
 6. Test yourself: record 2 minutes, then check every phrase against the card's rules.
 
 ## About the verification lines

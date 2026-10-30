@@ -146,13 +146,32 @@ At 60 BPM, record: `S R G R S - - - ||` three times in a row, slurred.
 
 </details>
 
-## 11. Mastery criteria
+## 11. Quiz
+
+1. Write the fingerings for Sa, Re and Ga.
+2. Which hole or holes change between Sa and Ga, and why is this the hardest change of the three?
+3. What does "slurred" mean?
+4. How high should your fingers lift above the holes, and why?
+5. How do you play two repeated notes, such as `G G`, so that they sound separate?
+
+<details markdown="1">
+<summary>Answer key</summary>
+
+1. Sa `XXX OOO`, Re `XXO OOO`, Ga `XOO OOO`.
+2. Holes 2 and 3 together. If one finger lands before the other you briefly play an extra note (a blip), so both fingers must move as one.
+3. The air does not stop between notes; only the fingers change.
+4. Only about 1-2 cm. Fingers that lift far take longer to come back, which makes notes late and causes blips.
+5. Make a tiny break in the air between them with a light "hu" (or a light tongue "tu", see L13).
+
+</details>
+
+## 12. Mastery criteria
 
 - [ ] Finger 6 random fingerings from the chart without playing (FNG-01).
 - [ ] `S R G R S` at 60 BPM, 3 clean repetitions (FNG-02).
 - [ ] The recorded slurred `S G S G S` shows no blips (FNG-06).
 - [ ] Re and Ga long tones of 8 s, tuner within +/-20 cents.
 
-## 12. Next lesson
+## 13. Next lesson
 
 [L10 - Reading and Writing Sargam](L10-reading-and-writing-sargam.md)

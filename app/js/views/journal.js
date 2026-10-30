@@ -1,7 +1,7 @@
 // Journal (#/journal): practice log, recordings (audio and video) with pitch analysis, comparison and sharing.
 import { h, clear, fmtDate, fmtMinutes, toast } from "../util.js";
 import { getState, addLog } from "../state.js";
-import { totals, streaks } from "../course.js";
+import { totals, streaks, getPlan } from "../course.js";
 import { listRecordings, deleteRecording, patchRecording, recordWidget } from "../recorder.js";
 import { ac } from "../core/audio.js";
 import { analyzeAudioBuffer, compareToExpected, drawPitchPlot } from "../core/pitch.js";
@@ -68,14 +68,15 @@ function refControl(rec, redraw) {
   const sel = h("select", { class: "input", "aria-label": "Use as reference for", style: { width: "auto" } },
     h("option", { value: "" }, rec.ref ? "Reference: " + (rec.refLabel || rec.ref) : "Use as reference..."),
     h("option", { value: "tone" }, "Reference for tone (general)"),
-    items.map(([id, label]) => h("option", { value: id }, "Reference for " + label)),
+    items.length ? h("optgroup", { label: "Pieces in review" }, items.map(([id, label]) => h("option", { value: id }, "Reference for " + label))) : null,
+    h("optgroup", { label: "Lessons (plays on the lesson's last card)" }, Object.entries(getPlan().lessons).map(([id, l]) => h("option", { value: "lesson:" + id }, "Reference for " + id + " " + l.title))),
     rec.ref ? h("option", { value: "-" }, "Stop using as reference") : null);
   sel.addEventListener("change", async () => {
     const v = sel.value;
     if (!v) return;
     if (v === "-") await patchRecording(rec.id, { ref: null, refLabel: null });
-    else await patchRecording(rec.id, { ref: v, refLabel: v === "tone" ? "tone" : (getState().reviews[v] || {}).label || v });
-    toast(v === "-" ? "No longer a reference." : "Saved as a reference. It will play next to that piece in reviews.");
+    else await patchRecording(rec.id, { ref: v, refLabel: v === "tone" ? "tone" : v.startsWith("lesson:") ? v.slice(7) : (getState().reviews[v] || {}).label || v });
+    toast(v === "-" ? "No longer a reference." : v.startsWith("lesson:") ? "Saved as the reference for " + v.slice(7) + ". It plays on that lesson's last card." : "Saved as a reference. It will play next to that piece in reviews.");
     redraw();
   });
   return sel;

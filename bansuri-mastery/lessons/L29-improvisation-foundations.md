@@ -172,13 +172,32 @@ two per week.
 
 </details>
 
-## 11. Mastery criteria
+## 11. Quiz
+
+1. In call and response, which notes make a question phrase feel open, and where does the answer end?
+2. You play an unexpected note in the middle of an improvisation. What is the rule?
+3. Name four things you can vary when improvising with only `S R G`.
+4. Why does the 5-note set `.D S R G P` sound musical in almost any order?
+5. When making a variation of a melody, how many things should you change at a time? Name three variation types.
+
+<details markdown="1">
+<summary>Answer key</summary>
+
+1. The question ends on an unfinished note such as R, G or D; the answer ends on S.
+2. Never stop the pulse. Keep going, or repeat the note as if you meant it.
+3. Duration, order, repetition and silence (rests). Always end on `S`.
+4. It is pentatonic and has no clashing notes (it is the scale of Raga Bhupali).
+5. One thing at a time. Any three of: rhythm, octave, repetition, ornament, passing notes, inversion.
+
+</details>
+
+## 12. Mastery criteria
 
 - [ ] IMP-01: 8 answer phrases in a row without stopping.
 - [ ] IMP-02: 2-min recorded improvisation that stays in pulse and ends on Sa (rubric Rhythm 3+, Pitch 3+).
 - [ ] IMP-03: 4 distinct variations of one melody, recorded and notated.
 
-## 12. Next
+## 13. Next
 
 Continue with [L30 - Composition Foundations](L30-composition-foundations.md). Raga-based
 improvisation continues in [L31](L31-alap-and-swar-vistar.md).

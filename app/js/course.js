@@ -33,8 +33,27 @@ export function getDay(n) {
   merged.blocks = base.blocks || (tpl && tpl.blocks) || [];
   merged.n = n;
   merged.repeatOf = n !== idx ? idx : null;
+  // The generic warm-up rotates through five variants (all from L01-L03), so it is not the same every day.
+  merged.blocks = merged.blocks.map(b => b.id === "W" && /^Warm-up and tension scan/.test(b.text || "") ? Object.assign({}, b, { text: WARMUPS[((n % WARMUPS.length) + WARMUPS.length) % WARMUPS.length] }) : b);
+  // The learner's daily time (Settings): every block's minutes scale, the order and content do not.
+  const f = PACE[getState().prefs.pace] || 1;
+  if (f !== 1) {
+    merged.blocks = merged.blocks.map(b => Object.assign({}, b, b.minutes ? { minutes: Math.max(1, Math.round(b.minutes * f)) } : {}));
+    if (merged.minutes) merged.minutes = merged.blocks.reduce((a, b) => a + (b.minutes || 0), 0);
+  }
   return merged;
 }
+
+const WARMUPS = [
+  "Warm-up and tension scan (L01): shoulder rolls, wrist circles and finger stretches, then five slow, low breaths.",
+  "Warm-up (L01, L03): a tension scan from head to feet with the jaw loose, then three rounds of the hiss test: breathe in low, hiss out evenly for 10 s.",
+  "Warm-up (L01): shake out the hands and tap each finger to the thumb 10 times, then play Sa softly three times, 4 s each, to wake the lips.",
+  "Warm-up (L03): breathe in low for 4 counts and out on a steady hiss for 8, five times; then two soft long tones on your easiest note.",
+  "Warm-up (L02): a posture check in a mirror (tall spine, shoulders down, flute level), then three relaxed long tones.",
+];
+
+// Daily practice time: short (about 25-30 min), standard (the plan as written, 45-60 min), long.
+export const PACE = { short: 0.6, standard: 1, long: 1.3 };
 
 export function phaseOf(day) { return plan.phases.find(p => p.id === day.phase) || null; }
 export function lessonInfo(id) { return plan.lessons[id] || null; }

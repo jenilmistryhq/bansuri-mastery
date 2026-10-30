@@ -2,7 +2,63 @@
 // card, with the quiz as flashcards, common mistakes as tap-to-reveal and the mastery criteria as
 // a checklist that is remembered. Built from the lesson's own sections, so no extra writing is needed.
 import { h, store, storeSet } from "./util.js";
-import { makePlayable } from "./playable.js";
+import { makePlayable, isNotation } from "./playable.js";
+import { mountBench } from "./bench/bench.js";
+import { holdMeter } from "./core/live.js";
+import { listRecordings } from "./recorder.js";
+
+// Lessons whose main skill is a held sound: the practice card offers the live long-tone meter.
+const TONE_DRILLS = {
+  L04: { targets: [0], seconds: 3, cents: 40, label: "Hold Sa for 3 s" },
+  L07: { targets: [0], seconds: 8, cents: 30, label: "Hold Sa for 8 s" },
+  L09: { targets: [0, 2, 4], seconds: 4, cents: 30, label: "Hold S, R and G" },
+  L11: { targets: [-1, -3, -5], seconds: 4, cents: 30, label: "Hold .N, .D and .P" },
+  L14: { targets: [6, 7, 9, 11], seconds: 4, cents: 30, label: "Hold M, P, D and N" },
+  L16: { targets: [5], seconds: 4, cents: 25, label: "Hold shuddha m (half-hole)" },
+  L17: { targets: [0, 4, 7], seconds: 6, cents: 15, label: "Hold S, G and P in tune" },
+  L22: { targets: [12, 14, 16], seconds: 4, cents: 30, label: "Hold S', R' and G'" },
+  L25: { targets: [1, 3, 8, 10], seconds: 4, cents: 20, label: "Hold the komal notes" },
+};
+
+// The last card: do the lesson's main exercise now, with the microphone, and hear a reference.
+function practiceCard(node, path) {
+  const id = (/L\d\d/.exec(path) || [])[0];
+  const notations = [...new Set([...node.querySelectorAll("code")].map(c => c.textContent.trim()).filter(t => t.split(/\s+/).length >= 3 && isNotation(t)))].slice(0, 15);
+  const tone = TONE_DRILLS[id];
+  if (!tone && !notations.length) return null;
+  let widget = null, refUrl = null;
+  const host = h("div", { class: "toolhost", hidden: true });
+  const close = () => { if (widget) { widget.destroy(); widget = null; } host.hidden = true; host.replaceChildren(); };
+  const buttons = [];
+  if (tone) {
+    const b = h("button", { type: "button", class: "btn primary" }, tone.label);
+    b.addEventListener("click", () => { close(); widget = holdMeter(tone); host.append(widget.el); host.hidden = false; });
+    buttons.push(b);
+  }
+  let pick = null;
+  if (notations.length) {
+    pick = h("select", { class: "input", "aria-label": "Exercise", style: { width: "auto", maxWidth: "100%" } }, notations.map((t, i) => h("option", { value: String(i) }, t.length > 48 ? t.slice(0, 46) + " ..." : t)));
+    const b = h("button", { type: "button", class: "btn" + (tone ? "" : " primary") }, "Play along");
+    b.addEventListener("click", () => {
+      close();
+      const bench = mountBench(host, { compact: true, tabs: ["play"], tab: "play", notation: notations[Number(pick.value)], bpm: 60, checkMe: true, title: id + " exercise" });
+      widget = { destroy: () => bench.destroy() };
+      host.hidden = false;
+    });
+    buttons.push(b);
+  }
+  // A reference recording for this lesson: the learner's teacher, or their own best take, marked in the Journal.
+  const ref = h("div", { class: "small muted" }, "Reference sound: ask your teacher to play this lesson's sound, record it in the Journal and mark it \"Reference for " + id + "\". It will play here.");
+  listRecordings().then(recs => {
+    const r = recs.find(x => x.ref === "lesson:" + id);
+    if (!r) return;
+    refUrl = URL.createObjectURL(r.blob);
+    ref.replaceChildren(h("b", null, "Reference: " + (r.label || id) + " "), h("audio", { controls: true, src: refUrl, preload: "none" }));
+  }).catch(() => {});
+  const body = [h("p", null, "Do it now, with the microphone listening. Short and focused beats long and distracted."),
+    pick ? h("label", { class: "field" }, "Exercise from this lesson", pick) : null, h("div", { class: "row" }, buttons), host, ref];
+  return { kind: "Practise it now", title: "Your turn", body, cleanup: () => { close(); if (refUrl) URL.revokeObjectURL(refUrl); } };
+}
 
 const SKIP = /learning objectives|prerequisites|watch and listen|next lesson|independent exercises/i;
 const plain = el => el.textContent.replace(/^\s*\d+\.\s*/, "").trim();
@@ -116,6 +172,8 @@ export function lessonCards(node, path) {
     if (/simple explanation/i.test(s.title)) title = "In short";
     cards.push(...splitLong({ kind, title: title.charAt(0).toUpperCase() + title.slice(1), body: s.nodes.map(n => n.cloneNode(true)) }));
   }
+  const practice = practiceCard(node, path);
+  if (practice) cards.push(practice);
   return cards;
 }
 

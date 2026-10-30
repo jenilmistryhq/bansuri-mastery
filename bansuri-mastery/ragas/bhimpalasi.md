@@ -52,6 +52,19 @@ All recordings: [Listening Library: Bhimpalasi](../08-LISTENING-LIBRARY.md#bhimp
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
+## Practice composition (Original, written for this curriculum; not yet reviewed by a teacher)
+
+**Teentaal, 16 beats per line (one cycle), target 60-80 BPM. Starts on sam.** Each `|` marks a vibhag of 4 beats.
+
+```
+.n S m - | m g P m | g m P n | S' - n D |
+P - m - | g m P m | g m g R | S - - - ||
+```
+
+It starts with `.n S m`, skips Re and Dha going up (`g m P n S'`), uses Dha only in descent (`S' n D P`) and keeps returning to Ma. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+
+**Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
+
 ## Practice steps
 
 1. `.n S g m` and `m P n S'` slowly with drone.

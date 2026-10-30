@@ -12,8 +12,6 @@
 
 ## 1. Learning objectives
 
-By the end of this lesson you will be able to:
-
 1. State the exact range of your C flute in sargam, in Western note names and roughly in Hz.
 2. Decide quickly whether a song fits your flute.
 3. Play a melody with a **different note acting as Sa** on the same flute ("moving Sa").
@@ -30,21 +28,18 @@ By the end of this lesson you will be able to:
 
 ## 3. Simple explanation
 
-**Key** means "which pitch is home". When a singer says a song is "in D", the home note (Sa) of
-that song is D.
-
-Your flute is built so that `XXX OOO` gives C. That makes C the flute's **natural Sa**. With
-Sa = C, the seven shuddha notes are C D E F G A B: the white keys of a piano.
+**Key** means "which pitch is home". A song "in D" has D as its Sa. Your flute gives C on
+`XXX OOO`, so C is its **natural Sa**, and the seven shuddha notes are C D E F G A B (the
+white keys of a piano).
 
 Two problems happen all the time:
 
-1. **The song is in another key.** If a song's Sa is D, playing it with your flute's Sa (C)
-   puts every note one whole step too low. It sounds "correct" on its own, but it clashes with
-   the recording.
-2. **The song goes too high or too low.** Your flute cannot play below mandra Pa (G4). If a
-   melody dips below Sa by more than a fifth, the bottom notes simply do not exist.
+1. **The song is in another key.** If a song's Sa is D and you play with Sa = C, every note is
+   a whole step too low. It sounds fine alone but clashes with the recording.
+2. **The song goes too low or too high.** Nothing exists below mandra Pa (G4), so a melody
+   that dips more than a fifth below Sa cannot be played as written.
 
-There are four solutions, used by every bansuri player:
+Bansuri players use four solutions:
 
 | Solution | What you do | Cost |
 |---|---|---|
@@ -104,16 +99,15 @@ those pitches are already available with **no half-holes**:
 
 Two choices for where the new Sa sits:
 
-- **New Sa = madhya P (G5).** The new mandra notes come from your old madhya octave: new `.P`
-  = old R (D5), new `.D` = old G (E5), new `.N` = old M (F#5). This is the usual choice
-  because it gives a full mandra-madhya range.
-- **New Sa = mandra `.P` (G4).** You lose the whole lower octave (nothing exists below G4) but
-  gain a low, dark sound for melodies that stay above Sa.
+- **New Sa = madhya P (G5)**, the usual choice: it gives a full mandra-madhya range. New `.P`
+  = old R (D5), new `.D` = old G (E5), new `.N` = old M (F#5).
+- **New Sa = mandra `.P` (G4).** No lower octave at all, but a low, dark sound for melodies
+  that stay above Sa.
 
-> **Fact:** Pa-as-Sa is the most useful "second key" on a C flute. Surprisingly, a major-scale
-> (Bilawal) melody is *easier* with Pa as Sa than with the normal Sa, because the new Ma is
-> old Sa (no half-hole) and the new Ni is the all-open tivra Ma. Practise the scale
-> `S R G m P D N S'` with this mapping until your fingers stop thinking in the old names.
+> **Fact:** Pa-as-Sa is the most useful "second key" on a C flute. A major-scale (Bilawal)
+> melody is even *easier* this way: the new Ma is old Sa (no half-hole) and the new Ni is the
+> all-open tivra Ma. Practise `S R G m P D N S'` with this mapping until your fingers stop
+> thinking in the old names.
 
 **Step 5. Ma as Sa (song in F).** F major is F G A Bb C D E. On your flute that is
 `m P D n S' R' G'` in the old names. You need **two half-holes**: the new Sa itself (`m` =
@@ -131,9 +125,9 @@ paper:
 3. Check octave marks: notes may cross the Sa boundary and need new dots/apostrophes.
 4. Play the result. If it sounds like the same tune, you are done.
 
-Short cut: the **pitches** stay the same; only the names change. C is 5 semitones above G, so
-old `S` (C) is called new `m` when Sa = G. Old `P` (G) becomes new `S`. Always check with the
-table in Step 4 rather than in your head.
+Short cut: the **pitches** stay the same; only the names change. With Sa = G, old `P` (G)
+becomes new `S` and old `S` (C) becomes new `m`. Check with the table in Step 4, not in your
+head.
 
 ### Part C: Pitch-shifting a recording (TRN-06)
 
@@ -145,13 +139,18 @@ Tools ([section 7 of the library](../02-RESOURCE-LIBRARY.md#7-apps-and-tools)): 
 (R-A14) has a pitch control; Audacity (R-A13) has "Change Pitch"; Moises (R-A15) has a key
 control.
 
-Rule: **shift by the smaller amount.** Shifting more than 3-4 semitones makes voices sound
-unnatural. If the song is in A (3 semitones below C, or 9 above), shift up 3, or move Sa
-instead.
+Rule: **shift by the smaller amount.** More than 3-4 semitones makes voices sound unnatural.
+A song in A is 3 semitones below C (or 9 above): shift up 3, or move Sa instead.
 
 ### Part D: The flute family and a second flute (INS-08, INS-10)
 
-**Step 9.** Learn how size changes the flute:
+**Step 9.** Learn how size changes the flute. A longer flute (lower key) sounds deeper and
+breathier, needs a wider finger stretch and more, slower air, and its low notes respond more
+slowly. A shorter flute (higher key) is brighter, has closer holes, needs faster, more focused
+air and can sound shrill at the top.
+
+<details markdown="1">
+<summary>Reference: longer vs. shorter flutes</summary>
 
 | Longer flute (lower key) | Shorter flute (higher key) |
 |---|---|
@@ -160,11 +159,18 @@ instead.
 | Needs more air volume, slower air | Needs faster, more focused air |
 | Low notes are slower to respond | Responds quickly, high notes can be shrill |
 
+</details>
+
 Names: "medium" and "bass" describe the octave. A **C medium** has Sa = C5. A **C bass** (much
 longer) has Sa an octave lower. Hindustani concert performers often play long bass flutes.
 
 **Step 10. Choosing a second flute (Recommendation).** Buy a second flute only after
-Milestone M7, when you know what you want to play:
+Milestone M7, when you know what you want to play. In short: a longer bass flute for a
+classical concert sound, a flute a few semitones from C for songs in sharp keys, or a flute
+whose Sa matches the singer you accompany.
+
+<details markdown="1">
+<summary>Reference: second-flute choices</summary>
 
 | Your aim | Common choice | Why |
 |---|---|---|
@@ -172,11 +178,19 @@ Milestone M7, when you know what you want to play:
 | Songs in sharp keys | A flute a few semitones away from C (for example D or E medium) | Covers keys that need too many half-holes on C |
 | Accompanying a particular singer | A flute whose Sa equals the singer's Sa | No moving Sa needed |
 
+</details>
+
 > **Uncertain:** which second flute is "best" depends on your hands, your teacher and your
 > repertoire. Ask a teacher to watch you try a bass flute before buying one: the stretch can
 > cause hand strain ([TS-08](../troubleshooting/TS-08-body-pain-and-tension.md)).
 
-**Step 11. Flute test checklist (INS-10).** Use this when trying any flute:
+**Step 11. Flute test checklist (INS-10).** When trying any flute, check its body, its tuning
+(Sa, each madhya note and the octaves within about +/-15 cents), its low and high notes, the
+half-holes, the finger stretch and the tone. Use the full checklist, then write a
+one-paragraph verdict.
+
+<details markdown="1">
+<summary>Reference: flute test checklist</summary>
 
 - [ ] No cracks, splits or loose bindings; cork end sealed ([L00](L00-day-0-your-flute.md))
 - [ ] Sa at the stated pitch (tuner, relaxed blowing, after 2 min warm-up)
@@ -188,11 +202,17 @@ Milestone M7, when you know what you want to play:
 - [ ] Finger stretch comfortable for 10 minutes
 - [ ] Tone: clear, not excessively breathy, similar across registers
 
-Write a one-paragraph verdict.
+</details>
 
 ## 5. Diagrams and charts
 
 ### Range of your C natural medium flute (A = 440 Hz)
+
+Lowest note `.P` (G4), Sa `S` (C5), taar Sa `S'` (C6), comfortable top `G'` (E6), practical
+ceiling `M'` (F#6). The full chart with frequencies is in the reference below.
+
+<details markdown="1">
+<summary>Reference: range chart with frequencies</summary>
 
 | Sargam | Western | Approx. Hz | Register | Comment |
 |---|---|---|---|---|
@@ -214,6 +234,8 @@ Write a one-paragraph verdict.
 | `M'` | F#6 | 1480 | 2 | Practical ceiling: reachable, but often weak. `G'` (E6) is the safer comfortable top |
 | `P'` | G6 | 1568 | 3 | Fingering varies ([L22](L22-taar-saptak.md)) |
 
+</details>
+
 ```
  Pitch (low -> high)
  G4 .......... C5 ................ C6 ............ F#6 .. G6+
@@ -223,12 +245,17 @@ Write a one-paragraph verdict.
 
 ### Moving Sa summary
 
+<details markdown="1">
+<summary>Reference: moving Sa on a C flute</summary>
+
 | Song's Sa | Use on C flute | New Sa fingering | Half-holes needed in the major scale |
 |---|---|---|---|
 | C | Normal | `XXX OOO` | 1 (shuddha `m`) |
 | G | Pa as Sa | `XXX XXX` | **none** |
 | D | Re as Sa | `XXO OOO` | 1 (new N = `r'`) |
 | F | Ma as Sa | `HOO OOO` | 2 (new S itself, new m) |
+
+</details>
 
 ## 6. Watch and listen
 

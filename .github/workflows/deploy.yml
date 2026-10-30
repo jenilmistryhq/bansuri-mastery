@@ -45,6 +45,7 @@ jobs:
           python scripts/build_bench.py --check
           python scripts/build_plan.py --check
           python scripts/build_app.py --check
+          python scripts/review_claims.py --check
 
       - name: Unit tests
         run: |

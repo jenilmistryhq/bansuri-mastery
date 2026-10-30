@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-labelledby="t d">
+  <title id="t">Embouchure: blowing across the hole</title>
+  <desc id="d">Side view: the lips form a small opening and aim a thin stream of air across the blowing hole so that it splits on the far edge. Top view: the lower lip covers about a quarter to a third of the hole. Rolling the flute in covers more of the hole and lowers the pitch; rolling it out covers less and raises it.</desc>
+  <style>
+    text { font-family: Hind, "Segoe UI", system-ui, sans-serif; fill: #1b2420; }
+    .small { font-size: 14px; } .label { font-size: 16px; font-weight: 600; } .muted { fill: #56645d; }
+  </style>
+  <rect x="0" y="0" width="820" height="360" rx="16" fill="#f6f3ea"/>
+
+  <!-- Side view -->
+  <text x="24" y="34" class="label">Side view</text>
+  <!-- bamboo wall, cut through the blowing hole -->
+  <rect x="150" y="200" width="120" height="22" rx="4" fill="#c9a552" stroke="#8d6b22" stroke-width="2"/>
+  <rect x="330" y="200" width="200" height="22" rx="4" fill="#c9a552" stroke="#8d6b22" stroke-width="2"/>
+  <rect x="150" y="296" width="380" height="22" rx="4" fill="#c9a552" stroke="#8d6b22" stroke-width="2"/>
+  <text x="340" y="284" class="small muted" text-anchor="middle">inside of the flute</text>
+  <text x="300" y="242" class="small muted" text-anchor="middle">hole</text>
+  <!-- lips -->
+  <path d="M60,120 C110,112 150,126 168,146 C150,150 112,146 60,140 Z" fill="#c98973" stroke="#8f5d42" stroke-width="2"/>
+  <path d="M60,168 C112,160 160,170 196,198 C160,204 110,196 60,190 Z" fill="#c98973" stroke="#8f5d42" stroke-width="2"/>
+  <text x="54" y="112" class="small" text-anchor="start">upper lip</text>
+  <text x="54" y="214" class="small" text-anchor="start">lower lip</text>
+  <!-- air stream: from the lip opening across the hole to the far edge, where it splits -->
+  <path d="M176,170 C230,176 290,190 328,202" fill="none" stroke="#0d6a6e" stroke-width="5" stroke-linecap="round"/>
+  <path d="M328,202 L370,190" fill="none" stroke="#0d6a6e" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6"/>
+  <path d="M328,202 L338,240" fill="none" stroke="#0d6a6e" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6"/>
+  <circle cx="330" cy="202" r="6" fill="#0d6a6e"/>
+  <text x="222" y="160" class="small" text-anchor="middle">thin, steady air</text>
+  <text x="400" y="186" class="small">splits on the far edge</text>
+
+  <!-- Top view: coverage -->
+  <text x="574" y="34" class="label">Top view</text>
+  <ellipse cx="650" cy="120" rx="56" ry="38" fill="#2b1d0e"/>
+  <rect x="578" y="72" width="46" height="96" rx="14" fill="#c98973" stroke="#8f5d42" stroke-width="2" opacity="0.92"/>
+  <text x="650" y="188" class="small" text-anchor="middle">lower lip covers</text>
+  <text x="650" y="206" class="small" text-anchor="middle">about 1/4 to 1/3</text>
+
+  <!-- Rolling -->
+  <text x="574" y="250" class="label">Rolling the flute</text>
+  <text x="574" y="276" class="small">in (toward you): more covered,</text>
+  <text x="574" y="294" class="small">lower and darker, can choke</text>
+  <text x="574" y="322" class="small">out (away): less covered,</text>
+  <text x="574" y="340" class="small">brighter and airier, can go sharp</text>
+</svg>

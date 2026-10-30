@@ -3,7 +3,7 @@ import { h, fmtDate, toast } from "../util.js";
 import { milestoneInfo, milestoneState, recordAttempt, current } from "../course.js";
 import { fetchDoc, tablesOf, renderInline, renderMarkdown, sectionOf } from "../content.js";
 import { recordWidget } from "../recorder.js";
-import { holdMeter, phraseCheck } from "../core/live.js";
+import { holdMeter, phraseCheck, noteQuiz, echoGame } from "../core/live.js";
 import { parseNotation } from "../core/notation.js";
 
 const SWARA = { Sa: 0, Re: 2, Ga: 4, Ma: 5, Pa: 7, Dha: 9, Ni: 11 };
@@ -21,7 +21,19 @@ function notesOf(text) {
 export function micSpec(label, criterion) {
   const crit = criterion || "";
   const codes = [...label.matchAll(/`([^`]+)`/g)].map(m => notesOf(m[1])).filter(n => n.length);
-  const held = crit.match(/held (\d+) s/i);
+  const held = crit.match(/held (\d+) s/i) || label.match(/held (\d+) s/i);
+  const centsOf = t => { const m = t.match(/\+\/-(\d+) cents/); return m ? Number(m[1]) : null; };
+  const score = crit.match(/(\d+)\s*\/\s*(\d+)/);
+  // "Identify 20 single notes from `S R G P` against the drone | 18/20": a note-naming test.
+  if (/^identify/i.test(label) && codes.length && score) return { kind: "ear", notes: [...new Set(codes.flat())], count: Number(score[2]), pass: Number(score[1]) };
+  // "Phrase memory: hear 2 times, then play back 10 two-bar phrases | 8/10": a play-back test.
+  if (/play back/i.test(label) && score) return { kind: "echo", rounds: Number(score[2]), pass: Number(score[1]), len: 4 };
+  // "Each komal note held 4 s | within +/-15 cents".
+  if (/komal note/i.test(label) && held) return { kind: "hold", targets: [1, 3, 8, 10], seconds: Number(held[1]), cents: centsOf(crit) || 20 };
+  // "Tuning: hold each of `S G P` against the drone ... | All within +/-10 cents".
+  if (/\bhold\b/i.test(label) && codes.length && centsOf(crit) && !held) return { kind: "hold", targets: [...new Set(codes.flat())], seconds: 4, cents: centsOf(crit) };
+  // "Chromatic scale `S r R ...` up and down, slowly with drone | Every note within +/-20 cents".
+  if (/up and down/i.test(label) && codes.length && codes[0].length >= 3) return { kind: "phrase", phrase: codes[0].concat(codes[0].slice(0, -1).reverse()), reps: 1 };
   if (/long tone/i.test(label) && held) {
     let targets = codes.length ? [...new Set(codes.flat())] : [];
     if (!targets.length) for (const [w, v] of Object.entries(SWARA)) if (new RegExp("\\b" + w + "\\b").test(label)) targets.push(v);
@@ -102,7 +114,10 @@ export async function render(main, { params }) {
         e.preventDefault();
         if (!panel.hidden) { panel.hidden = true; if (widget) { widget.destroy(); widget = null; } micBtn.textContent = "Check with mic"; return; }
         const onPass = () => { cb.checked = true; micBtn.textContent = "Passed by mic"; micBtn.classList.add("passed"); toast("Item " + (it.num || "") + " passed."); };
-        widget = spec.kind === "hold" ? holdMeter({ targets: spec.targets, seconds: spec.seconds, cents: spec.cents, onPass }) : phraseCheck({ phrase: spec.phrase, reps: spec.reps, onPass });
+        widget = spec.kind === "hold" ? holdMeter({ targets: spec.targets, seconds: spec.seconds, cents: spec.cents, onPass })
+          : spec.kind === "ear" ? noteQuiz({ notes: spec.notes, count: spec.count, pass: spec.pass, onPass })
+          : spec.kind === "echo" ? echoGame({ level: "bil", test: { rounds: spec.rounds, pass: spec.pass, len: spec.len }, onPass })
+          : phraseCheck({ phrase: spec.phrase, reps: spec.reps, onPass });
         panel.replaceChildren(widget.el); panel.hidden = false; micBtn.textContent = "Close the check";
         cleanups.push(() => widget && widget.destroy());
       });

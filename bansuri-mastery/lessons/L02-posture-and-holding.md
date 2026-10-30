@@ -1,6 +1,6 @@
 # L02 - Posture and Holding
 
-**Objectives:** BOD-01, BOD-03, BOD-04, BOD-05
+**Objectives:** BOD-01, BOD-03, BOD-04, BOD-05, BOD-08
 **Time span:** Days 1-3 to learn; checked every session afterwards
 **Prerequisites:** [L00](L00-day-0-your-flute.md) (holding side chosen)
 **Previous:** [L01](L01-how-to-practise.md) | **Next:** [L03 - Breathing Basics](L03-breathing-basics.md)
@@ -13,6 +13,7 @@
 - Hold the flute steadily, supported by your thumbs and lip contact (BOD-03).
 - Cover the holes with the flat pads of your fingers and seal them with minimal pressure (BOD-04).
 - Scan your body for tension and release it while playing (BOD-05).
+- Recognise the warning signs of a playing injury and know when to rest or see a doctor or physiotherapist (BOD-08).
 
 ## 2. Prerequisites
 
@@ -80,7 +81,27 @@ Do this at the start of every session and halfway through:
 6. **Wrists:** fairly straight. A strongly bent wrist causes strain.
 7. **Fingers:** gently curved or flat; no white knuckles.
 
+### Step 6: Warning signs and when to stop (BOD-08)
+
+Tension that you ignore can become an injury. Repetitive strain (from gripping, bent wrists or long sessions without breaks) can stop you playing for weeks or months, so learn the difference between normal tiredness and a warning sign now, before you play for longer.
+
+| What you notice | What it means | What to do |
+|---|---|---|
+| Mild muscle tiredness in the hands, lips or shoulders that goes away within an hour of stopping | Normal for a beginner | Keep taking breaks every 15-20 minutes ([L01](L01-how-to-practise.md)); do the tension scan |
+| Aching that appears in the same place every session | Usually tension or posture (gripping, bent wrist, raised shoulders) | Shorten sessions, re-check Steps 3-5 on video, use the fixes in [TS-08](../troubleshooting/TS-08-body-pain-and-tension.md). If it is not better within a week, see a professional |
+| Sharp pain while playing | Not normal | Stop for the day. Do not play through it |
+| Pain that continues after you stop, returns every session, or wakes you at night | A possible strain injury | Stop playing and see a doctor or physiotherapist |
+| Numbness, tingling or "pins and needles" in fingers, hands or arms; weakness or clumsiness in a finger | Possible nerve irritation | Stop playing and see a doctor or physiotherapist |
+| Jaw pain, clicking or locking that persists; swelling | Possible joint or soft-tissue problem | Stop playing and see a doctor (or a dentist for the jaw) |
+
+**Fact:** this course cannot diagnose injuries, and none of this is medical advice. **Recommendation:** when you are unsure whether something is tiredness or a warning sign, treat it as a warning sign. A few days of rest costs little; playing through an injury can cost months. Listening, singing and theory (block E of the daily session) still count as practice on rest days.
+
 ## 5. Diagrams
+
+![Holding the flute: left-hand index, middle and ring fingers on holes 1-3, right hand on holes 4-6, thumbs underneath; the soft finger pad covers each hole](../assets/diagrams/holding.svg)
+
+<details markdown="1">
+<summary>Text version of the diagram</summary>
 
 ```
  Top view (right-pointing hold)
@@ -100,6 +121,8 @@ Do this at the start of every session and halfway through:
         [ pad ]      <- this area covers the hole
   ------(  hole  )------ bamboo
 ```
+
+</details>
 
 ## 6. Watch and listen
 
@@ -142,6 +165,7 @@ For pain, see [TS-08](../troubleshooting/TS-08-body-pain-and-tension.md). For no
 2. Which part of the finger covers the hole?
 3. What should happen when you lift all fingers at once?
 4. Name four places to check in a tension scan.
+5. After practice, two fingers on your bottom hand tingle and the feeling is still there an hour later. What should you do?
 
 <details markdown="1">
 <summary>Answer key</summary>
@@ -150,6 +174,7 @@ For pain, see [TS-08](../troubleshooting/TS-08-body-pain-and-tension.md). For no
 2. The pad, between the fingertip and the first joint.
 3. The flute should stay steady on its three support points.
 4. Any four of: jaw, lips, neck, shoulders, elbows, wrists, fingers.
+5. Stop playing and see a doctor or physiotherapist. Tingling or numbness is a warning sign, not normal tiredness (BOD-08, TS-08).
 
 </details>
 
@@ -159,6 +184,7 @@ For pain, see [TS-08](../troubleshooting/TS-08-body-pain-and-tension.md). For no
 - [ ] Flute held in playing position for 60 s with all holes sealed and no wobble (BOD-03).
 - [ ] Full ring marks on all six pads after a 10 s hold (BOD-04). The sound test comes in [L11](L11-lower-notes-ni-dha-pa.md).
 - [ ] Tension scan done at the start and middle of every session (BOD-05).
+- [ ] Can list the injury warning signs and the right response to each: rest, adjust, or see a doctor or physiotherapist (BOD-08).
 
 **Posture checklist (use on every video check):**
 

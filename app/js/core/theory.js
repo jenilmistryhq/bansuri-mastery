@@ -29,6 +29,17 @@ export function codeOf(semi) {
   return (oct < 0 ? ".".repeat(-oct) : "") + letterOf(semi) + (oct > 0 ? "'".repeat(oct) : "");
 }
 
+// The note in Devanagari, with Bhatkhande's octave marks: a dot below for mandra, above for taar.
+export function devaOf(semi) {
+  const oct = Math.floor(semi / 12);
+  return DEVA[letterOf(semi)] + (oct < 0 ? "̣".repeat(-oct) : oct > 0 ? "̇".repeat(oct) : "");
+}
+
+// A notation token in Devanagari (".P .D S" -> each note converted, other marks kept).
+export function devaNotation(text) {
+  return String(text).replace(/(\.*)([SrRgGmMPdDnN])('*)/g, (_, lo, l, hi) => devaOf(SEMI[l] + 12 * (hi.length - lo.length)));
+}
+
 export function octName(semi) {
   const o = Math.floor(semi / 12);
   return o < 0 ? "mandra" : o === 0 ? "madhya" : o === 1 ? "taar" : "ati-taar";

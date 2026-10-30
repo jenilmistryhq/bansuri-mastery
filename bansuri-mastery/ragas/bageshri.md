@@ -52,6 +52,19 @@ All recordings: [Listening Library: Bageshri](../08-LISTENING-LIBRARY.md#bageshr
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
+## Practice composition (Original, written for this curriculum; not yet reviewed by a teacher)
+
+**Teentaal, 16 beats per line (one cycle), target 60-80 BPM. Starts on sam.** Each `|` marks a vibhag of 4 beats.
+
+```
+.D .n S - | m - - - | m P D - | m g R S |
+g m D n | S' n D m | P D g m | g R S - ||
+```
+
+Line 1 is the pakad `.D .n S, m, m P D, m g R S`; line 2 goes up without Pa (`g m D n S'`) and comes down along the avroh `S' n D m P D g m g R S`. Pa appears only inside `m P D`. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+
+**Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
+
 ## Practice steps
 
 1. `S g m D n S'` with drone, slowly.

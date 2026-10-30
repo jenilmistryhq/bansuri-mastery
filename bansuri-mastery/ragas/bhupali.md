@@ -60,6 +60,10 @@ All recordings: [Listening Library: Bhupali](../08-LISTENING-LIBRARY.md#bhupali)
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
+## Practice composition
+
+An original practice composition in Bhupali (sthayi and antara in teentaal, written for this curriculum) is in [L20 section 6](../lessons/L20-raga-bhupali.md#6-practice-composition-original-written-for-this-curriculum). Learn it there, with a drone and a teentaal loop.
+
 ## Practice steps
 
 1. Aroh/avroh at 60 BPM, 1 note per beat, with drone. 3 clean repetitions.

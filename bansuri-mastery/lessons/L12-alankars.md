@@ -24,9 +24,9 @@ An **alankar** (also called **palta**) is a short note pattern that moves step b
 
 Why they matter (Fact about the tradition; Recommendation for you):
 
-- **Fingers:** they train every transition between neighbouring notes, in every combination.
-- **Ear and memory:** you learn to "see" the scale as a ladder and think in patterns, which is how improvisers think.
-- **Rhythm:** played with a metronome at increasing speeds, they build the steady time and speed you'll need for taans (fast passages) later.
+- **Fingers:** they train every transition between neighbouring notes.
+- **Ear and memory:** you learn to see the scale as a ladder and think in patterns, as improvisers do.
+- **Rhythm:** with a metronome at rising speeds, they build the steady time and speed you'll need for taans (fast passages).
 - **Raga preparation:** the same patterns are later played inside each raga's notes.
 
 **Number formulas.** Think of the notes of a scale as numbered 1, 2, 3... For Version A (`.P .D S R G`): 1 = `.P`, 2 = `.D`, 3 = `S`, 4 = `R`, 5 = `G`. A formula like "1 2 3 | 2 3 4 | 3 4 5" then becomes `.P .D S | .D S R | S R G`. Once you know the formula, you can play the alankar on **any** set of notes. That's why later versions unlock as you learn more notes.
@@ -69,7 +69,12 @@ Notes:
 
 ### Version B: six notes `.P .D .N S R G` (unlocked after L11)
 
-Numbers: 1 = `.P`, 2 = `.D`, 3 = `.N`, 4 = `S`, 5 = `R`, 6 = `G`.
+Numbers: 1 = `.P`, 2 = `.D`, 3 = `.N`, 4 = `S`, 5 = `R`, 6 = `G`. Apply the same ten
+formulas as in Version A. Try writing each one yourself first, then check it against the
+table.
+
+<details markdown="1">
+<summary>Reference: Version B alankars 1-10 written out</summary>
 
 | # | Aroh | Avroh |
 |---|---|---|
@@ -84,6 +89,8 @@ Numbers: 1 = `.P`, 2 = `.D`, 3 = `.N`, 4 = `S`, 5 = `R`, 6 = `G`.
 | 9 | <code>.P .N .D S &#124; .D S .N R &#124; .N R S G</code> | <code>G S R .N &#124; R .N S .D &#124; S .D .N .P</code> |
 | 10 | <code>.P .D .N .D .P &#124; .D .N S .N .D &#124; .N S R S .N &#124; S R G R S</code> | <code>G R S R G &#124; R S .N S R &#124; S .N .D .N S &#124; .N .D .P .D .N</code> |
 
+</details>
+
 ### Two notes per beat (example: Alankar 3, Version B)
 
 ```
@@ -94,6 +101,14 @@ Write the pairs together in one beat (`.P.D`, read as `.P` and `.D` in one beat)
 
 ### Later versions (unlocked by later lessons)
 
+As you learn more notes, the same formulas move onto new scales: the Kalyan scale after
+[L14](L14-tivra-ma-and-madhya-pa-dha-ni.md), Bilawal after [L16](L16-shuddha-ma-and-half-holing.md),
+two octaves after [L22](L22-taar-saptak.md), and raga scales after L21 and L25. All are written
+out in [EX-ALK](../exercises/EX-ALK-alankar-book.md).
+
+<details markdown="1">
+<summary>Reference: which version unlocks when</summary>
+
 | Version | Notes | Unlocked by | Where written out |
 |---|---|---|---|
 | C | Kalyan scale `S R G M P D N S'` (tivra Ma, madhya P D N) | [L14](L14-tivra-ma-and-madhya-pa-dha-ni.md) | [EX-ALK](../exercises/EX-ALK-alankar-book.md) |
@@ -101,6 +116,8 @@ Write the pairs together in one beat (`.P.D`, read as `.P` and `.D` in one beat)
 | D | Bilawal (major) `S R G m P D N S'` (shuddha Ma) | [L16](L16-shuddha-ma-and-half-holing.md) | [EX-ALK](../exercises/EX-ALK-alankar-book.md) |
 | E | Two octaves `.P` to `G'` | [L22](L22-taar-saptak.md) | [EX-ALK](../exercises/EX-ALK-alankar-book.md) |
 | F | Raga-specific (Yaman, Kafi, and so on) | [L21](L21-raga-yaman.md), [L25](L25-komal-swaras-and-12-notes.md) | raga cards in [ragas/](../ragas/README.md) |
+
+</details>
 
 Use the number formulas to build any of these yourself, then check against EX-ALK.
 

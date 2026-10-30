@@ -82,6 +82,11 @@ If you get a high, piercing whistle instead, you are probably overblowing into t
 
 ## 5. Diagrams
 
+![Embouchure: the lips aim a thin stream of air across the blowing hole so it splits on the far edge; the lower lip covers about a quarter to a third of the hole](../assets/diagrams/embouchure.svg)
+
+<details markdown="1">
+<summary>Text version of the diagram</summary>
+
 ```
  Side view (cross-section through the blowing hole)
 
@@ -103,6 +108,8 @@ If you get a high, piercing whistle instead, you are probably overblowing into t
    roll IN (toward you)  -> more coverage, lower/darker, can go flat or choke
    roll OUT (away)       -> less coverage, brighter/airier, can go sharp
 ```
+
+</details>
 
 Fingering for this lesson:
 
@@ -165,7 +172,26 @@ Listen back to the recording. If you mainly hear a **note** with some air around
 
 </details>
 
-## 11. Mastery criteria
+## 11. Quiz
+
+1. Do you blow into the bansuri or across the blowing hole? Where should the air stream hit?
+2. Name the three things that must be right at the same time to get a sound.
+3. Why is Sa (`XXX OOO`) the first note you learn?
+4. You hear a high squeal instead of a soft note. What is happening and what do you change?
+5. You hear only a whoosh of air. Name one thing to change, and how many things you should change per attempt.
+
+<details markdown="1">
+<summary>Answer key</summary>
+
+1. Across the hole, like blowing across the top of a bottle. The air should hit the far edge of the blowing hole, where it splits.
+2. Lip opening (embouchure), coverage of the blowing hole by the lower lip, and the angle of the air stream.
+3. It is the easiest note: only three fingers must seal, and it sits in the middle of the first register, where the flute responds most easily.
+4. Too much air, or air that is too fast, so the flute jumps to the higher octave. Use slower, softer air (and open the lips a tiny bit).
+5. Roll the flute slightly toward you for more coverage, or aim the air a little lower or further across. Change only one thing per attempt.
+
+</details>
+
+## 12. Mastery criteria
 
 - [ ] Mirror check: centred opening, no puffed cheeks, relaxed corners (TON-01).
 - [ ] Sweet spot found within 10 s, 3 times from a fresh start (TON-02).
@@ -174,6 +200,6 @@ Listen back to the recording. If you mainly hear a **note** with some air around
 
 Completing this lesson is part of milestone [M1 - First stable tone](../projects/M1-first-stable-tone.md).
 
-## 12. Next lesson
+## 13. Next lesson
 
 [L05 - What Is Music? Pitch, Sa and Sargam](L05-what-is-music-pitch-sa-sargam.md). You can study L05 and L06 on the same days you work on this lesson. They need no flute.

@@ -33,6 +33,10 @@ def collect():
             assets.append(rel)
     for d, _, files in os.walk(DOCS):
         for f in files:
+            # Course images (diagrams) are saved for offline use like the app's own files.
+            if f.endswith((".svg", ".png", ".jpg", ".webp")):
+                assets.append(posix(os.path.relpath(os.path.join(d, f), ROOT)))
+                continue
             if not f.endswith(".md"):
                 continue
             full = os.path.join(d, f)

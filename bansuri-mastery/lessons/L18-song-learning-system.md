@@ -47,15 +47,13 @@ golden rule:
 
 ### Step 2. Find the tonal centre (Sa) and context (EAR-10)
 
-1. Listen to the **last note** of the mukhda or the song. It usually feels like "home". Hum it.
-2. Hold that hummed note and play a drone. Change the drone pitch (most drone apps let you
-   choose C, C#, D...) until your hummed "home" note **locks** with the drone Sa.
-3. Alternative: play the recording into a tuner app during a held "home" note and read the
-   note name.
-4. Test: does the melody feel stable when the drone is on? If many phrases sound sour, try a
+1. Hum the **last note** of the mukhda or the song: it usually feels like "home".
+2. Change the drone pitch (C, C#, D...) until your hummed "home" note **locks** with the drone
+   Sa. Or hold a tuner app to the recording on a long "home" note and read the note name.
+3. Test: with the drone on, does the melody feel stable? If many phrases sound sour, try a
    different Sa.
-5. Also note the **taal/meter**: clap along. 8-beat feel (Keherwa)? 6 (Dadra)? 16 (Teentaal)?
-   See [EX-RHY](../exercises/EX-RHY-rhythm-drills.md).
+4. Clap along to find the **taal/meter**: Keherwa (8), Dadra (6) or Teentaal (16)? See
+   [EX-RHY](../exercises/EX-RHY-rhythm-drills.md).
 
 **If Sa is not C:** you have two choices, explained fully in [L26](L26-keys-transposition-and-limits.md):
 (a) play in **your** Sa (C) and accept that you cannot play along with the original; or
@@ -129,6 +127,13 @@ Check in this order:
 
 ## 5. Verifying uncertain notes (do not guess)
 
+The most useful checks are: **slow down** the recording around the note, put a **tuner** on a
+long note, **sing** the note and match it on the flute, and play your candidate **against the
+drone** (a wrong note sounds sour). The table lists all six methods.
+
+<details markdown="1">
+<summary>Reference: six ways to verify a note</summary>
+
 | Method | How | Best for |
 |---|---|---|
 | **Slow-down** | 50% speed, loop 1-2 s around the note | Fast notes, ornaments |
@@ -137,6 +142,8 @@ Check in this order:
 | **Drone test** | With drone on, play your candidate against the recording; a wrong note clashes (beating, sourness) | Komal vs shuddha decisions |
 | **Context logic** | If the song is in a raga or scale you know, which notes are likely? (Then **check** it.) | Narrowing options, not final proof |
 | **Ask someone** | A teacher or experienced player | When three methods disagree |
+
+</details>
 
 If after all methods a note is still uncertain, leave the `?` in your notation and note it in
 your log. That is honest; a wrong confident note is worse.
@@ -156,6 +163,14 @@ ceiling: reachable, but often weak.
 
 ## 7. How the process changes by style
 
+The 12 steps stay the same for every style; what changes is where the difficulty lies. In
+film songs it is usually the **rhythm**; in bhajans, **breath and tone** on long notes; in
+folk tunes, a **steady, lively pulse**; in ghazals, the **ornaments** (learn the plain melody
+first); in classical compositions, **raga grammar and starting on the right beat**.
+
+<details markdown="1">
+<summary>Reference: what to listen for in each style</summary>
+
 | Style | What to listen for extra | Special care |
 |---|---|---|
 | **Film songs** | Western-style rhythm, syncopation (notes off the beat), interludes played by instruments | Rhythm is often the hard part. Tap the beat while listening. Often uses komal notes and wide range. Melody notation on websites rarely shows rhythm. |
@@ -163,6 +178,8 @@ ceiling: reachable, but often weak.
 | **Folk tunes** | Dance rhythms (Dadra, Keherwa), tonguing, repeated notes | Steady pulse; lively articulation. |
 | **Ghazal** | Many ornaments (murki, kan), free timing (rubato) | Learn the plain melody first, add ornaments last. |
 | **Classical** (bandish, gat) | Raga grammar, exact taal position, ornaments are compulsory parts of the raga | Learn the raga first ([L19](L19-what-is-a-raga.md)); start the composition at the right beat (mukhda may begin before sam). |
+
+</details>
 
 ## 8. Worked example: Mary Had a Little Lamb
 
@@ -192,6 +209,12 @@ Pretend you do not know it and you have a recording.
 
 ## 9. Song-learning worksheet (copy for each song)
 
+Fill one in for every song. It keeps all 12 steps, the range check and your verification in
+one place.
+
+<details markdown="1">
+<summary>Reference: song-learning worksheet</summary>
+
 ```
 SONG: ______________________    STYLE: ____________   DATE STARTED: ________
 Source recording: _______________________________________________
@@ -204,6 +227,8 @@ Notation verified by play-from-notation test? Y / N   Date: ______
 Tempo ladder: 70% [ ] 80% [ ] 90% [ ] 100% [ ]   From memory [ ]   Play-along [ ]
 Rubric (1-4): Tone __ Pitch __ Rhythm __ Transitions __ Expression __
 ```
+
+</details>
 
 ## 10. Watch and listen
 

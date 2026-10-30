@@ -73,6 +73,16 @@ tests/                     browser smoke tests (puppeteer-core + local Chrome/Ed
 - Widgets open the microphone through `lvListen`, which closes a subscription that arrives after the widget was stopped, started twice or destroyed. Views return cleanups that destroy their widgets.
 - Songs (`views/songs.js`, `#/songs`) are parsed from `exercises/EX-MEL-practice-melodies.md`; raga tools (`ragaInfo` in `views/reader.js`) read the Aroh, Avroh and Notes rows of a raga card.
 
+## Course features (app side)
+
+- `placement.js`: the playing placement test (six items, checked by microphone) recommends a phase.
+- `course.js` `getDay`: applies the learner's pace (`prefs.pace`: short 0.6, standard 1, long 1.3 times every block's minutes) and rotates the generic warm-up text through five variants.
+- `glossary.js`: terms from `06-GLOSSARY.md` become tap-to-define buttons in lessons.
+- `lessoncards.js`: the last card, "Practise it now", runs the lesson's main exercise (a hold for tone lessons, or play-along on the lesson's notation) and plays a reference recording marked "Reference for Lxx" in the Journal.
+- `reader.js`: "Name that raga" on `ragas/README.md` (phrases from every card's aroh, avroh and pakad); raga tools on each card.
+- Devanagari: `settings.deva` shows sargam in Devanagari (`theory.devaOf`, `devaNotation`) in the bench score and the listening widgets.
+- Course images live in `bansuri-mastery/assets/`; the reader rewrites their paths and `build_app.py` lists them for offline use.
+
 ## Other app features
 
 - **Video self-check** (Journal): `recordWidget({video: true})` records camera plus microphone at

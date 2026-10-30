@@ -56,6 +56,10 @@ All recordings: [Listening Library: Yaman](../08-LISTENING-LIBRARY.md#yaman).
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
+## Practice composition
+
+An original practice composition in Yaman (sthayi and antara in teentaal, written for this curriculum) is in [L21 section 6](../lessons/L21-raga-yaman.md#6-practice-composition-original-written-for-this-curriculum). Learn it there, with a drone and a teentaal loop.
+
 ## Practice steps
 
 1. Aroh/avroh with drone, 1 note per beat at 60 BPM.

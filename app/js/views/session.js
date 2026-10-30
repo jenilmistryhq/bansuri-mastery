@@ -20,7 +20,7 @@ import { makePlayable } from "../playable.js";
 // "Long tones on `.P .D .N S R G`, 8-10 s each" -> hold each of those notes 8 s.
 export function holdSpec(b) {
   const text = b.text || "";
-  if (b.id === "READ" || b.id === "R" || !/long tones?|first sound|hold (each|the|a|it)/i.test(text)) return null;
+  if (b.id === "READ" || b.id === "R" || !/long tones?|first sound|\bhold (each|the|a|it)\b/i.test(text)) return null;
   const notes = [];
   for (const m of text.matchAll(/`([^`]+)`/g)) {
     const p = parseNotation(m[1]);

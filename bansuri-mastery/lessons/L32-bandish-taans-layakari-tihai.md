@@ -41,6 +41,11 @@ beat, reading rhythmic notation.
 
 ### Step 1. Three more talas (RHY-08)
 
+Rupak has 7 beats (3+2+2), Jhaptaal 10 (2+3+2+3) and Ektaal 12 (six vibhags of 2). Recite each for 3 cycles with claps and waves before using it. The thekas are in the reference below.
+
+<details markdown="1">
+<summary>Reference: Rupak, Jhaptaal and Ektaal (marks and thekas)</summary>
+
 | Tala | Beats | Divisions | Marks | Theka (bols) |
 |---|---|---|---|---|
 | Rupak | 7 | 3+2+2 | beat 1 = khali (and sam), then claps on 4 and 6 | Tin Tin Na \| Dhi Na \| Dhi Na |
@@ -50,17 +55,17 @@ beat, reading rhythmic notation.
 > **Fact:** Rupak is unusual because its first beat is shown with a wave (khali), not a clap.
 > Thekas vary slightly between gharanas (schools); see [R-T01](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references).
 
-Recite each for 3 cycles with claps and waves before using it.
+</details>
 
 ### Step 2. Learn a bandish (RAG-10, RHY-09)
 
-Below is an **original teaching composition** written for this curriculum (not a traditional
-bandish) in **Raga Bhupali, teentaal, madhya laya** (play at 70-90 BPM). It starts on
-**beat 13**, so the mukhda leads into sam.
+An **original teaching composition** for this curriculum (not a traditional bandish) in
+**Raga Bhupali, teentaal, madhya laya** (70-90 BPM). It starts on **beat 13**, so the mukhda
+leads into sam.
 
-**Sthayi.** The tala mark in brackets shows which vibhag each group of 4 beats belongs to:
-`(3)` = beats 13-16, `(X)` = beats 1-4, `(2)` = 5-8, `(0)` = 9-12. The mukhda is `G R S R`
-(beats 13-16), and it always leads into `G` on sam.
+**Sthayi.** The bracketed tala mark shows each group's vibhag: `(3)` = beats 13-16,
+`(X)` = 1-4, `(2)` = 5-8, `(0)` = 9-12. The mukhda `G R S R` (beats 13-16) always leads into
+`G` on sam.
 
 ```
 (3) G R S R | (X) G - P G | (2) D P G R | (0) S R G P | (3) D - S' - |
@@ -97,8 +102,8 @@ Notes: S R G P D S' D P G R S .D S R G -
 | Tigun | 3 | 48 notes = the 16 notes 3 times |
 | Chaugun | 4 | the 16 notes 4 times |
 
-Practice at 60 BPM: one cycle barabar, one dugun, one chaugun, then land on sam with `S`.
-Tigun (3 notes per beat) feels very different: count "1-la-li, 2-la-li..." to feel it.
+At 60 BPM, play one cycle barabar, one dugun, one chaugun, then land on sam with `S`. For
+tigun (3 notes per beat), count "1-la-li, 2-la-li..." to feel it.
 
 ### Step 4. Speed and evenness (FNG-13)
 
@@ -114,9 +119,8 @@ Evenness beats speed: a slower, even taan sounds better than a fast, uneven one.
 
 ### Step 5. Taans (RAG-11)
 
-Two taans for the Bhupali bandish. After the mukhda lands on sam, play the sthayi's beats 1-4
-(`G - P G`), then the taan from beat 5. Each taan lasts 8 beats at dugun (2 notes per beat),
-then the mukhda starts on beat 13.
+After the mukhda lands on sam, play the sthayi's beats 1-4 (`G - P G`), then a taan from
+beat 5: 8 beats at dugun (2 notes per beat). The mukhda then starts on beat 13.
 
 **Sapaat taan** (straight run):
 
@@ -130,8 +134,8 @@ then the mukhda starts on beat 13.
 (2) SR GR RG PG | (0) GP DP PD S'D | (3) G R S R (mukhda) | (X) G ...
 ```
 
-Rules: taans use only the raga's notes and follow its movement; end so the mukhda follows
-smoothly. Start at half speed with the loop.
+Taans use only the raga's notes, follow its movement and end so the mukhda follows smoothly.
+Start at half speed with the loop.
 
 ### Step 6. Tihai mathematics (RHY-11)
 
@@ -154,6 +158,9 @@ Beat:  7 8 9 10 | 11 12 13 14 | 15 16 | X(1)
        G R S -  |  G  R  S  - |  G  R |  S
 ```
 
+<details markdown="1">
+<summary>Reference: worked examples 2 and 3</summary>
+
 **Worked example 2** (phrase 5 beats, no gap):
 
 ```
@@ -172,11 +179,13 @@ Beat:  9  10 11 | 12 13 14 | 15 16 | X(1)
        DP GR S  | DP GR S  | DP GR |  S
 ```
 
-In each example, count every beat aloud and check that the final `S` is on sam.
+</details>
 
-**Note:** in these three examples `|` separates the **repetitions of the phrase**, not the
-vibhags of teentaal (which start on beats 1, 5, 9 and 13). In your own notation, keep `|` for
-vibhags and mark the tihai repetitions with spaces or brackets.
+Count every beat aloud and check that the final `S` is on sam.
+
+**Note:** in these examples `|` separates the **repetitions of the phrase**, not the vibhags
+of teentaal (beats 1, 5, 9, 13). In your own notation, keep `|` for vibhags and mark tihai
+repetitions with spaces or brackets.
 
 **Landing on the mukhda instead of sam:** if your tihai must end where the mukhda starts
 (beat 13), the last note goes on beat 13: start = 13 - T + 1 = 14 - T.
@@ -216,21 +225,9 @@ Bandish (sthayi x2, antara x1, sthayi x1)
 
 ## 8. Independent exercises
 
-Calculate the starting beat in teentaal (answers below):
-
-1. Phrase 2 beats, gap 1 beat.
-2. Phrase 4 beats, no gap.
-3. Phrase 3 beats, gap 2 beats.
-4. Compose a 5-beat Bhupali phrase ending on `S` and play it as a tihai.
-
-<details markdown="1"><summary>Answer key</summary>
-
-1. Total = 6 + 2 = 8; start = 18 - 8 = **beat 10** (phrases on 10-11, 13-14, 16-17).
-2. Total = 12; start = **beat 6** (6-9, 10-13, 14-17).
-3. Total = 9 + 4 = 13; start = **beat 5** (5-7, gap 8-9, 10-12, gap 13-14, 15-17).
-4. Total = 15; start on beat 3 (like worked example 2).
-
-</details>
+1. Do the tihai calculations in the [quiz](#11-quiz) before you play any tihai with a loop.
+2. Compose a 5-beat Bhupali phrase ending on `S` and play it as a tihai (total 15 beats, so it starts on beat 3, like worked example 2).
+3. Compose a 3-beat phrase with a 1-beat gap that lands on the mukhda (beat 13) instead of sam.
 
 More drills: [EX-RHY](../exercises/EX-RHY-rhythm-drills.md).
 
@@ -255,11 +252,30 @@ More drills: [EX-RHY](../exercises/EX-RHY-rhythm-drills.md).
 6. 5 taans landing on the mukhda (RAG-11).
 7. 3 composed tihais and 3 improvised tihais landing on sam (RHY-11, IMP-05).
 
-## 11. Mastery criteria
+## 11. Quiz
+
+1. In teentaal, a tihai phrase lasts 2 beats with a 1-beat gap. On which beat does it start to end on sam?
+2. A tihai phrase lasts 4 beats, with no gap. On which beat does it start?
+3. A tihai phrase lasts 3 beats, with a 2-beat gap. On which beat does it start?
+4. A tihai phrase lasts 3 beats, with a 1-beat gap, and must land on the mukhda (beat 13), not on sam. On which beat does it start?
+5. In tigun, how many notes do you play per beat, and how many notes fill one teentaal cycle?
+
+<details markdown="1">
+<summary>Answer key</summary>
+
+1. Total = 3 x 2 + 2 x 1 = 8; start = 18 - 8 = beat 10 (phrases on 10-11, 13-14, 16-17).
+2. Total = 3 x 4 = 12; start = 18 - 12 = beat 6 (6-9, 10-13, 14-17).
+3. Total = 3 x 3 + 2 x 2 = 13; start = 18 - 13 = beat 5 (5-7, gap 8-9, 10-12, gap 13-14, 15-17).
+4. Total = 3 x 3 + 2 x 1 = 11; start = 14 - 11 = beat 3 (phrases on 3-5, 7-9, 11-13).
+5. 3 notes per beat; 48 notes in one 16-beat cycle.
+
+</details>
+
+## 12. Mastery criteria
 
 All items in section 10 completed and recorded, with rubric Rhythm 3+ and Technique 3+.
 Items 3-7 form part of [Milestone M9](../projects/M9-intermediate-recital.md).
 
-## 12. Next
+## 13. Next
 
 Continue with [L33 - Gamak, Andolan and Advanced Ornaments](L33-gamak-andolan-advanced-ornaments.md).

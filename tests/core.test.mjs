@@ -16,7 +16,7 @@ function events(text, bpm = 60) {
 const fmt = ev => ev.map(e => `${codeOf(e.semi)}@${+e.start.toFixed(2)}/${+e.dur.toFixed(2)}`).join(" ");
 
 test("settings defaults without a browser", () => {
-  assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75 });
+  assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false });
   assert.ok(Math.abs(saHz() - 523.25) < 0.01);
 });
 

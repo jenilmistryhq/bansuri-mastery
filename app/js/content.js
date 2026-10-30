@@ -38,7 +38,7 @@ export function resolvePath(fromPath, rel) {
 
 const ALLOWED = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "a", "strong", "em", "b", "i", "code", "pre", "blockquote",
   "table", "thead", "tbody", "tr", "th", "td", "hr", "br", "details", "summary", "del", "s", "sup", "sub", "span", "div", "input", "kbd", "img", "section"]);
-const ATTRS = { a: ["href", "title"], th: ["align", "colspan", "rowspan"], td: ["align", "colspan", "rowspan"], details: ["open"], input: ["type", "checked", "disabled"], img: ["src", "alt", "title"], ol: ["start"] };
+const ATTRS = { a: ["href", "title"], th: ["align", "colspan", "rowspan"], td: ["align", "colspan", "rowspan"], details: ["open"], input: ["type", "checked", "disabled"], img: ["src", "alt", "title", "loading"], ol: ["start"] };
 const DROP_WITH_CONTENT = new Set(["script", "style", "iframe", "object", "embed", "form", "template", "noscript", "svg", "math", "link", "meta", "base"]);
 
 function sanitize(root) {
@@ -107,6 +107,14 @@ export function renderMarkdown(md, path) {
       continue;
     }
     a.setAttribute("href", routeFor(path, href));
+  }
+  // Images in the course (diagrams) are relative to the page; the app serves pages from the site root.
+  for (const img of root.querySelectorAll("img[src]")) {
+    const src = img.getAttribute("src");
+    if (/^(https?:)?\/\//i.test(src) || /^(data|blob):/i.test(src)) continue;
+    img.setAttribute("src", "bansuri-mastery/" + resolvePath(path, src));
+    img.setAttribute("loading", "lazy");
+    if (!img.getAttribute("alt")) img.setAttribute("alt", "");
   }
   const title = (root.querySelector("h1") || {}).textContent || path;
   return { node: document.importNode(root, true), title };

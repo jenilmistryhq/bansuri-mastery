@@ -210,3 +210,10 @@
 .lv-lights i.lv-on { background: var(--accent); border-color: var(--accent); }
 .lv-lights i.lv-on.lv-quiet { background: transparent; border-color: var(--accent); }
 .lv-padtxt { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.lv-answers { gap: 8px; }
+.lv-ans { min-width: 3.4rem; }
+.lv-ans.lv-right { border-color: var(--good); background: color-mix(in srgb, var(--good) 18%, transparent); }
+.lv-ans.lv-wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 18%, transparent); }
+
+.lv-deva { display: block; font-family: var(--body); font-size: 0.7em; font-weight: 500; color: var(--muted); line-height: 1.2; }
+.bb-score .bb-deva { display: block; font-family: var(--body); font-size: 0.72em; color: var(--muted); }

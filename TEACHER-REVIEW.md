@@ -18,6 +18,10 @@ valuable improvement it can get. You do not need to use GitHub or read code: a l
 The course is also readable as a website, under `/docs/` on the live site. The app's Practice
 Bench plays every notation in the course, so you can hear what a lesson asks for.
 
+**Every Uncertain or Disputed claim** in the course is listed, with its file and line, in
+[TEACHER-REVIEW-CLAIMS.md](TEACHER-REVIEW-CLAIMS.md). Ticking through that list is the fastest way
+to make the course trustworthy.
+
 ## What to look for
 
 - **Wrong:** a fingering, note, raga rule or fact that is incorrect.
@@ -49,3 +53,30 @@ Record in a quiet room, phone about 50 cm away, no effects. Say which flute key 
 included, recordings need an open licence: CC BY 4.0 (credit to you) or CC0 (public domain). Send
 them with the "Reference recording" form in this repository, or attach them to an email. Your name
 will appear in the credits unless you choose CC0 without credit.
+
+### Recordings wanted, lesson by lesson
+
+Each lesson's last card in the app has a "Reference sound" slot. A learner can fill it with their
+teacher's recording, and a recording you contribute could ship with the course. The sounds that
+help most:
+
+| Lesson | The sound to record (5-20 seconds each) |
+|---|---|
+| L04 First sound | A clear first Sa, then the same Sa too airy and too pinched, so learners hear the difference |
+| L07 Long tones | Sa held 8 s, steady; then with the pitch sagging at the end (the common mistake) |
+| L09, L11 | `S R G R S` and `.P .D .N S`, slowly, with clean changes |
+| L13 Articulation | `S S R R G G`, tongued, then slurred |
+| L14, L16 | Tivra `M` and shuddha `m` (half-hole) against the drone |
+| L17 Intonation | Ga against the drone: in tune, then 20 cents flat (hear the beating) |
+| L22 Taar saptak | `S' R' G'` held 3 s each |
+| L23 Meend | `G~R` and `R~S`, slow then normal |
+| L24 Kan, khatka, murki | One of each, slow then normal |
+| L25 Komal notes | `r g d n` held 3 s each against the drone |
+| L33 Gamak and andolan | Andolan on komal Re (Bhairav) and on Ga (Yaman) |
+
+### Rubric examples (very valuable)
+
+Learners score their own tone from 1 to 4 ([L08](bansuri-mastery/lessons/L08-recording-and-self-assessment.md)).
+Four short recordings of Sa, one at each tone level (1 = mostly air, 4 = full and clear), would
+make that score mean the same thing for everyone. Send them with the "Reference recording" form
+and say which level each one shows.

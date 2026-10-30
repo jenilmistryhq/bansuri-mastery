@@ -1,6 +1,6 @@
 # L08 - Recording and Self-Assessment
 
-**Objectives:** PRF-01, PRF-02, PRA-05
+**Objectives:** PRF-01, PRF-02, PRA-04, PRA-05
 **Time span:** Learn in Week 1; use at least 3 times a week for the whole course
 **Prerequisites:** [L04](L04-first-sound.md) (a sound to record), [L07](L07-long-tones-tuner-and-drone.md)
 **Previous:** [L07](L07-long-tones-tuner-and-drone.md) | **Next:** [L09 - Fingering Sa, Re, Ga](L09-fingering-sa-re-ga.md)
@@ -11,6 +11,7 @@
 
 - Record your practice with a phone and listen back with specific questions (PRF-01).
 - Score recordings with the **standard 5-category rubric** used in every milestone of this curriculum (PRF-02).
+- Turn a low score into a diagnosis: find the cause of a problem before you practise a fix (PRA-04).
 - Know when and how to get a teacher's check, and prepare for it (PRA-05).
 
 ## 2. Prerequisites
@@ -71,6 +72,24 @@ Score each category from 1 to 4. Use **half points only** when you truly cannot 
 - [ ] Against the drone, do I hear beating on any note?
 - [ ] Does the piece sound like music or like an exercise?
 
+### Diagnose before you fix (PRA-04)
+
+A low score tells you **what** is wrong, not **why**. A squeak can come from a leaking finger, from blowing too hard or from a tense lip, and each needs a different fix. Practising "harder" at the wrong cause wastes weeks. Use the five-step method from the [troubleshooting guide](../troubleshooting/README.md#2-the-general-diagnosis-method-use-it-for-any-problem):
+
+1. **Describe it exactly.** Not "my Ga is bad" but "Ga cracks about 1 time in 3 when I slur up from Sa at 60 BPM". Take the description from the recording, not from memory.
+2. **Isolate it.** Does it happen on one note only? In one register only? On one transition only? Only after 15+ minutes? Only at faster tempos? Each answer narrows the cause. The [diagnostic tree](../troubleshooting/README.md#1-the-diagnostic-tree) points you to the right TS guide.
+3. **Pick one hypothesis.** Choose the single most likely cause from that guide. For beginners it is usually simple: a leak, blowing too hard, or tension.
+4. **Change one thing only.** Finger pressure, OR air speed, OR flute angle, OR tempo. Change three things at once and you will not know which one helped.
+5. **Verify with evidence.** Record again (or use the tuner for pitch). The fix is real only at 5 clean out of 5, on two different days. If it has not worked after about a week of correct practice, go back to step 3 with the next most likely cause.
+
+Write each diagnosis in your log in one line:
+
+```
+Problem: Ga cracks 1 in 3 from Sa, slurred, 60 BPM | Isolated: one transition only | Cause tried: ring finger leak (TS-06) | Change: flatter pad on hole 3 | Result: 5/5 on Tue and Thu
+```
+
+**Recommendation:** after two hypotheses have failed, stop guessing and take the recordings to a teacher (section 9).
+
 ## 6. Watch and listen
 
 - Compare your recording of Sa with the teacher's in [R-V01](../02-RESOURCE-LIBRARY.md#31-structured-beginner-series). Ignore volume; compare **steadiness** and **clarity**.
@@ -122,6 +141,7 @@ Score each category from 1 to 4. Use **half points only** when you truly cannot 
 3. A recording has right notes but lots of tiny extra notes between them. Which category scores low?
 4. Your Sa is steady but beats against the drone. Which category is affected?
 5. When should you get a teacher check?
+6. Your recording shows squeaks on several notes, but only after about 20 minutes of playing. What is the likely cause, and what is the one change you try first?
 
 <details markdown="1">
 <summary>Answer key</summary>
@@ -131,6 +151,7 @@ Score each category from 1 to 4. Use **half points only** when you truly cannot 
 3. Transitions/Technique (Tr).
 4. Pitch (P).
 5. Before M1/M3, before M5, before M7, then every 2-3 months.
+6. Fatigue (lips, breath or hands; see TS-07/TS-08). Change one thing only: take a break every 15 minutes, then record again to check whether the squeaks disappear (PRA-04).
 
 </details>
 
@@ -138,6 +159,7 @@ Score each category from 1 to 4. Use **half points only** when you truly cannot 
 
 - [ ] 3 or more recordings per week in the log (PRF-01).
 - [ ] Rubric used on every recording; scores agree with a second listener within 1 point at least once (PRF-02).
+- [ ] Three of your own problems diagnosed in writing with the five-step method, each pointing to a TS guide (PRA-04).
 - [ ] Teacher identified (or search started) for checkpoint 1 (PRA-05).
 
 ## Next lesson

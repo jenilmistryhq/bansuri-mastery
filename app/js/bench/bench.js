@@ -1,6 +1,6 @@
 // Practice Bench UI. mountBench(container, opts) -> { destroy, setTab, loadNotation, stopAll }
 import { getSettings, setSettings, onSettings } from "../core/settings.js";
-import { LETTERS, NAME, DEVA, WEST, BASE, DIFF, codeOf, octName, fingOf, lessonFor, hzOf, westOf, letterOf } from "../core/theory.js";
+import { LETTERS, NAME, DEVA, WEST, BASE, DIFF, codeOf, octName, fingOf, lessonFor, hzOf, westOf, letterOf, devaNotation } from "../core/theory.js";
 import { ac, makeVoice, playNote, tanpura, click, tablaBol } from "../core/audio.js";
 import { parseNotation, buildEvents, analyzeRange, playEvents, PRESETS } from "../core/notation.js";
 import { analyzeAudioBuffer, decodeAudioFile, compareToExpected, drawPitchPlot, tuningOffset, CHECK_PLANS, startMicTuner } from "../core/pitch.js";
@@ -507,7 +507,13 @@ export function mountBench(container, opts) {
   }
   function renderScore(tokens) {
     const el = q("score"); el.innerHTML = "";
-    tokens.forEach((tk, i) => { const s = document.createElement("span"); s.textContent = tk.text; s.dataset.tk = i; s.className = tk.type === "bar" ? "bb-barmark" : tk.type === "skip" ? "bb-skip" : ""; el.appendChild(s); });
+    const deva = getSettings().deva;
+    tokens.forEach((tk, i) => {
+      const s = document.createElement("span"); s.textContent = tk.text; s.dataset.tk = i; s.className = tk.type === "bar" ? "bb-barmark" : tk.type === "skip" ? "bb-skip" : "";
+      // With Devanagari on, each beat also shows its notes in Devanagari underneath.
+      if (deva && tk.type === "beat") { const d = document.createElement("small"); d.className = "bb-deva"; d.textContent = devaNotation(tk.text); s.appendChild(d); }
+      el.appendChild(s);
+    });
   }
   function renderAnalysis(ev, skipped) {
     const el = q("analysis"), a = analyzeRange(ev);

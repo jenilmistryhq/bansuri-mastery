@@ -104,6 +104,21 @@ for p, t in texts.items():
 
 untaught = sorted(i for i in kt_ids if i not in lesson_ids)
 
+# Notation in the phase roadmaps must be in backticks: the day plan is built from them, and the app
+# gives every backticked notation a play button and a live check.
+tok = r"\.?[SrRgGmMPdDnN]'?"
+bare_re = re.compile(r"(?<![\w`'.])(%s(?:[ ]+%s){2,})(?![\w`'])" % (tok, tok))
+bare = []
+for p, t in texts.items():
+    if os.sep + "phases" + os.sep not in p:
+        continue
+    body = re.sub(r"```.*?```", "", t, flags=re.S)
+    body = re.sub(r"<code>.*?</code>", "", body)
+    for i, line in enumerate(body.splitlines()):
+        line = re.sub(r"`[^`]*`", "``", line)
+        for m in bare_re.finditer(line):
+            bare.append((os.path.relpath(p, root), i + 1, m.group(1)))
+
 # lesson coverage in phases
 lesson_files = sorted(f[:-3] for f in os.listdir(os.path.join(root, "lessons")) if f.endswith(".md") and f != "README.md")
 phase_text = "".join(texts[p] for p in texts if os.sep + "phases" + os.sep in p)
@@ -124,6 +139,8 @@ print("LESSONS:", len(lesson_files), "NOT IN PHASE ROADMAPS:", not_in_phases)
 # Objectives taught only in troubleshooting guides count as covered.
 ts_text = "".join(texts[p] for p in texts if os.sep + "troubleshooting" + os.sep in p)
 untaught_anywhere = [i for i in untaught if i not in expand(ts_text) and i not in ts_text]
-failed = bad_links or bad_anchor or char_hits or unknown or not_in_phases or untaught_anywhere
+print("NOTATION WITHOUT BACKTICKS IN PHASES:", len(bare))
+for x in bare: print("  ", x)
+failed = bad_links or bad_anchor or char_hits or unknown or not_in_phases or untaught_anywhere or bare
 print("RESULT:", "FAIL" if failed else "OK")
 sys.exit(1 if failed else 0)

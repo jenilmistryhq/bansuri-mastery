@@ -1,6 +1,9 @@
 // Unit tests for the live-listening logic (core/listen.js) and for how sessions and milestones
 // decide what the microphone checks. Readings are simulated: { t, semi, near, cents }.
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} };
 const { holdTracker, noteSequencer, phraseMatcher, judgeNote, tapStats, distinctNotes } = await import("../app/js/core/listen.js");
@@ -151,6 +154,13 @@ test("minutes per week", () => {
   const w = weeklyMinutes(dates, "2026-10-30", 3);
   assert.deepEqual(w.map(x => x.start), ["2026-10-12", "2026-10-19", "2026-10-26"]);
   assert.deepEqual(w.map(x => x.mins), [20, 40, 45]);
+});
+
+test("source files contain no control characters (a lost backslash in a regex)", () => {
+  const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
+  const root = fileURLToPath(new URL("../app/js", import.meta.url));
+  const bad = walk(root).filter(f => f.endsWith(".js")).filter(f => /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(fs.readFileSync(f, "utf8")));
+  assert.deepEqual(bad, []);
 });
 
 console.log(`live tests: ${passed} passed`);

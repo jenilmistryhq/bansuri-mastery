@@ -2,7 +2,7 @@
 // Stored in localStorage["bansuri.settings"]; always read and write through these functions.
 
 const SETTINGS_KEY = "bansuri.settings";
-export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75 });
+export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -12,7 +12,8 @@ function cleanSettings(s) {
     saNote: Math.round(n(s.saNote, 0, 11, SETTINGS_DEFAULTS.saNote)),
     saOct: Number(s.saOct) === 4 ? 4 : 5,
     a4: n(s.a4, 400, 480, SETTINGS_DEFAULTS.a4),
-    volume: n(s.volume, 0, 1, SETTINGS_DEFAULTS.volume)
+    volume: n(s.volume, 0, 1, SETTINGS_DEFAULTS.volume),
+    deva: s.deva === true
   };
 }
 

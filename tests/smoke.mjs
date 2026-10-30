@@ -111,6 +111,35 @@ try {
   await page.evaluate(() => [...document.querySelectorAll("#main .playnote")].find(b => b.offsetParent).click());
   check(await page.$eval("#main .playnote[aria-pressed='true']", () => true).catch(() => false), "a play button plays its notation");
 
+  console.log("Lessons: practise now, glossary");
+  await page.evaluate(() => { Object.keys(localStorage).filter(k => k.startsWith("bansuri.cardpos")).forEach(k => localStorage.removeItem(k)); });
+  await go("/read/lessons/L07-long-tones-tuner-and-drone.md");
+  for (let i = 0; i < 30 && !(await page.$("#main .deck .lcard .eyebrow").then(e => e && e.evaluate(x => /Practise it now/.test(x.textContent)))); i++) await page.click("#main .deck-nav .btn.primary");
+  check(/Practise it now/i.test(await page.$eval("#main .deck .lcard", e => e.innerText)), "a lesson ends with a Practise it now card");
+  await clickText("#main .deck .lcard button", "Hold Sa");
+  check(await page.$("#main .deck .lcard .lv-hold") !== null, "Practise it now opens the lesson's live exercise");
+  await page.waitForSelector("#main .gloss", { timeout: 5000 }).then(() => check(true, "glossary terms are tap-to-define"), () => check(false, "glossary terms are tap-to-define"));
+  await page.evaluate(() => document.querySelector("#main .gloss").click());
+  check(await page.$eval("#main .glossdef:not([hidden])", e => e.textContent.length > 10).catch(() => false), "tapping a term shows its meaning");
+  await go("/read/ragas/README.md");
+  await clickText("#main button", "Play Name that raga");
+  await page.waitForSelector("#main .lv-ragaquiz", { timeout: 8000 });
+  await clickText("#main .lv-ragaquiz button", "Play a phrase");
+  check(await page.$$eval("#main .lv-ragaquiz .lv-ans", x => x.length) === 4, "Name that raga offers four ragas to choose from");
+
+  console.log("Pace and Devanagari");
+  await go("/settings");
+  await page.select("#st-pace", "short");
+  await go("/session/0");
+  check(/^18:00$/.test(await page.$eval("#main .block .timer", e => e.textContent.trim())), "a short daily time scales a 30-minute block to 18 minutes");
+  await go("/settings");
+  await page.select("#st-pace", "standard");
+  await page.click("#st-deva");
+  await go("/bench");
+  await page.evaluate(() => document.querySelector('.bb-tabs button[data-tab="play"]').click());
+  check(await page.$(".bb-bench .bb-score .bb-deva") !== null, "the score shows sargam in Devanagari when chosen");
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("bansuri.settings")); s.deva = false; localStorage.setItem("bansuri.settings", JSON.stringify(s)); });
+
   console.log("Songs and ragas");
   await go("/songs");
   await page.evaluate(() => { const f = document.getElementById("songs-ready"); if (f.checked) f.click(); });
@@ -457,6 +486,26 @@ try {
     check(await lp.evaluate(() => { const rows = [...document.querySelectorAll("#main .mrow")].filter(r => r.querySelector(".micpanel")); const r = rows[rows.length - 1]; return !r.querySelector("input[type=checkbox]").checked && /1 of 3 clean/.test(r.innerText); }),
       "milestone phrase: one clean pass counts once (1 of 3), not more");
     await lp.evaluate(() => [...document.querySelectorAll("#main .micpanel .lv-primary")].pop().click());
+
+    // Placement: pass the first item (hold Sa), then stop: the test recommends Phase 1.
+    await lp.goto(BASE + "#/settings", { waitUntil: "networkidle0" });
+    await lp.waitForSelector("#st-placetest", { timeout: 5000 });
+    await lp.click("#st-placetest");
+    await lp.click("#main .placement .lv-primary");
+    await sleep(300); await tone(0);
+    await lp.waitForFunction(() => /S R G R S/.test(document.querySelector("#main .placement h3").textContent), { timeout: 9000 })
+      .then(() => check(true, "placement: holding Sa passes item 1 and moves on"), () => check(false, "placement: holding Sa passes item 1 and moves on"));
+    await tone(null);
+    await clickTextOn(lp, "#main .placement button", "I cannot play this yet");
+    check(/Recommended start: Phase 1/.test(await lp.$eval("#main .placement", e => e.innerText)) && await lp.$eval("#st-phase", e => e.value) === "1", "placement recommends Phase 1 and preselects it");
+
+    // Milestone M4: identifying notes is a note-naming test.
+    await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 130, startedAt: "2026-05-01" })));
+    await lp.goto(BASE + "#/milestone/M4", { waitUntil: "networkidle0" });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .mrow");
+    await lp.evaluate(() => [...document.querySelectorAll("#main .mrow button")].find(b => /Check with mic/.test(b.textContent)).click());
+    check(await lp.$("#main .micpanel .lv-quiz") !== null, "milestone M4: identifying notes opens a note-naming test");
 
     // The coach listens: a held Sa 35 cents flat is diagnosed as flat.
     await lp.goto(BASE + "#/coach", { waitUntil: "networkidle0" });

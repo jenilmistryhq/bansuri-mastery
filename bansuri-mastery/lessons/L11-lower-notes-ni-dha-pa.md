@@ -157,7 +157,26 @@ More: [TS-03](../troubleshooting/TS-03-low-notes-wont-sound.md), [TS-06](../trou
 
 </details>
 
-## 11. Mastery criteria
+## 11. Quiz
+
+1. Write the fingerings for `.N`, `.D` and `.P`.
+2. How should your air change as you go below Sa?
+3. `.P` squeaks or will not sound. What is the most common cause, and how do you check it?
+4. Your tuner shows G, but the note sounds bright and high. What has happened?
+5. Why does the change from `.P` back up to `S` often produce a blip?
+
+<details markdown="1">
+<summary>Answer key</summary>
+
+1. `.N` = `XXX XOO`, `.D` = `XXX XXO`, `.P` = `XXX XXX`.
+2. Slower, warmer and softer ("haaa", like warming cold hands), with a slightly larger, relaxed lip opening.
+3. A leak in one of the six holes. Hold all holes closed for 10 s without blowing, then look for full ring marks on every finger pad; re-centre any partial ones.
+4. You are in the wrong octave (G5 instead of G4). Use less, slower, warmer air.
+5. Three fingers (holes 4, 5 and 6) must lift at the same instant. Practise `.P S .P S` slowly with "glued" fingers.
+
+</details>
+
+## 12. Mastery criteria
 
 - [ ] `S .N .D .P .D .N S` at 60 BPM clean (FNG-03).
 - [ ] `.P` held 6 s clean, 5/5 attempts (TON-06).
@@ -166,6 +185,6 @@ More: [TS-03](../troubleshooting/TS-03-low-notes-wont-sound.md), [TS-06](../trou
 
 With L09-L11 done, you're ready for milestone [M2 - First melody](../projects/M2-first-melody.md) (after L12).
 
-## 12. Next lesson
+## 13. Next lesson
 
 [L12 - Alankars](L12-alankars.md)

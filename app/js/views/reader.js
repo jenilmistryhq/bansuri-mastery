@@ -3,9 +3,28 @@ import { h, store, storeSet } from "../util.js";
 import { fetchDoc, renderMarkdown, filesList } from "../content.js";
 import { makePlayable, stopPlayable } from "../playable.js";
 import { lessonCards, cardDeck } from "../lessoncards.js";
+import { loadGlossary, glossify } from "../glossary.js";
 import { parseNotation } from "../core/notation.js";
 import { tanpura } from "../core/audio.js";
-import { echoGame } from "../core/live.js";
+import { echoGame, ragaQuiz } from "../core/live.js";
+
+// Phrases from a raga card for "Name that raga": the aroh, the avroh and each pakad phrase
+// (pakad phrases are separated by commas).
+export function ragaPhrases(md) {
+  const name = ((/^# (?:Raga )?(.+)$/m.exec(md) || [])[1] || "").trim();
+  const row = label => { const m = new RegExp("^\\|\\s*" + label + "[^|]*\\|\\s*(.+?)\\s*\\|\\s*$", "m").exec(md); return m ? m[1] : ""; };
+  const phrases = [];
+  const add = text => {
+    const notes = [];
+    for (const tk of parseNotation(text).tokens) if (tk.type === "beat") for (const it of tk.items) if (it.semi !== undefined) notes.push(it.semi);
+    if (notes.length >= 4) phrases.push(notes);
+  };
+  for (const label of ["Aroh", "Avroh"]) { const c = /`([^`]+)`/.exec(row(label)); if (c) add(c[1]); }
+  const pk = /`([^`]+)`/.exec(row("Pakad"));
+  if (pk) { add(pk[1].replace(/,/g, " ")); pk[1].split(",").forEach(add); }
+  const notes = row("Notes").split("(")[0].trim();
+  return { name, phrases, hint: notes ? "Its notes: " + notes + "." : "" };
+}
 
 // The notes of a raga card (from its Aroh, Avroh and Notes rows) and the tanpura's first string:
 // Pa, or Ma when the raga omits Pa, or Ni when it omits both.
@@ -53,6 +72,7 @@ export async function render(main, { params }) {
     let mode = store("bansuri.readerMode", "cards");
     const cardsBtn = h("button", { type: "button", class: "seg-btn" }, "Cards");
     const fullBtn = h("button", { type: "button", class: "seg-btn" }, "Full lesson");
+    cards.forEach(c => { if (c.cleanup) cleanups.push(c.cleanup); });
     const deck = cardDeck(cards, path, { doneLabel: "Done", onDone: () => { location.hash = "#/today"; } });
     const show = m => {
       mode = m; storeSet("bansuri.readerMode", m);
@@ -66,6 +86,26 @@ export async function render(main, { params }) {
     const anchored = location.hash.split("#").length > 2;
     show(anchored || mode === "full" ? "full" : "cards");
   } else page.append(full);
+  // The raga index: a "Name that raga" ear game built from every raga card.
+  if (path === "ragas/README.md") {
+    const files = [...new Set([...md.matchAll(/\]\(([a-z-]+\.md)\)/g)].map(m => m[1]))];
+    const host = h("div", { class: "toolhost", hidden: true });
+    const btn = h("button", { type: "button", class: "btn primary" }, "Play Name that raga");
+    let quiz = null;
+    btn.addEventListener("click", async () => {
+      if (quiz) { quiz.destroy(); quiz = null; host.hidden = true; btn.textContent = "Play Name that raga"; return; }
+      btn.disabled = true;
+      const ragas = (await Promise.all(files.map(f => fetchDoc("ragas/" + f).then(ragaPhrases).catch(() => null)))).filter(r => r && r.phrases.length);
+      btn.disabled = false;
+      quiz = ragaQuiz({ ragas });
+      host.replaceChildren(quiz.el); host.hidden = false; btn.textContent = "Close the game";
+    });
+    page.insertBefore(h("section", { class: "card" }, h("h2", null, "Name that raga"),
+      h("p", { class: "small muted" }, "A phrase from one of these ragas plays over the drone; name the raga. Listen for the missing notes and the notes the phrase leans on (EAR-12)."),
+      h("div", { class: "row" }, btn), host), page.children[1] || null);
+    cleanups.push(() => { if (quiz) quiz.destroy(); });
+  }
+
   // Raga cards: a drone tuned for the raga and call-and-response in its notes.
   if (/^ragas\/(?!README)[a-z-]+\.md$/.test(path)) {
     const info = ragaInfo(md);
@@ -92,6 +132,15 @@ export async function render(main, { params }) {
     }
   }
   makePlayable(node);
+  // Glossary terms become tap-to-define, in the full text and in each card (not in the glossary itself).
+  if (path !== "06-GLOSSARY.md") {
+    loadGlossary().then(entries => {
+      if (!entries.length) return;
+      glossify(node, entries);
+      // In place, card by card (each card defines its terms once), so the card on screen updates too.
+      for (const c of cards) { const seen = new Set(); c.body.forEach(n => { if (n && n.nodeType === 1) glossify(n, entries, { seen }); }); }
+    });
+  }
 
   // Previous / next within the same folder.
   try {

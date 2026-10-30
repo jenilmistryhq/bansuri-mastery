@@ -49,6 +49,18 @@ S R G | R S - ||
 G R S | S - - ||
 ```
 
+### 1.4 Call and Answer (Original, Keherwa 8 beats per line, 60-80 BPM)
+
+```
+S R G R | S - - - ||
+G G R R | S - S - ||
+S R G G | R - R - ||
+G R S R | S - - - ||
+```
+
+Lines 1 and 3 end "open"; lines 2 and 4 answer and come home to Sa. Separate the repeated notes
+(`G G`, `R R`) with a light "hu".
+
 ---
 
 ## Level 2: Down to mandra Pa (unlocked by [L11](../lessons/L11-lower-notes-ni-dha-pa.md))
@@ -82,6 +94,17 @@ R G R S   | S - - -  ||
 S - - - | R - - - , | G - R - | S - - - , |
 .N - .D - | .P - - - , | .D .N S R | S - - - ||
 ```
+
+### 2.4 Cradle Song (Original, Dadra 6 beats per line, 60-80 BPM)
+
+```
+S - .N | .D - .P ||
+.D .N S | R - - ||
+G R S | .N - .D ||
+.P .D .N | S - - ||
+```
+
+Play it softly, like a lullaby: the low notes need warm, slow air ([L11](../lessons/L11-lower-notes-ni-dha-pa.md)).
 
 ---
 
@@ -117,6 +140,27 @@ G M D N  | S' - N D | P M G R | .N R S - ||
 ```
 SR G P  | D P G ||
 GR S .D | S - - ||
+```
+
+### 3.5 Amazing Grace, first half (Traditional, 3 beats per bar, 60-80 BPM)
+
+The hymn tune, usually called "New Britain", is traditional and in the public domain. It starts
+with a one-beat pickup on `.P`. `GS` = two notes in one beat.
+
+```
+.P | S - GS | G - R | S - .D | .P - .P |
+S - GS | G - R | P - - | P - - ||
+```
+
+### 3.6 Oh! Susanna, verse (Stephen Foster, 1848, public domain, 4 beats per bar, 70-90 BPM)
+
+Two notes per beat almost everywhere, starting with a one-beat pickup `SR`. The rhythm is
+simplified: the original has a few dotted (long-short) pairs, which you can copy by ear later.
+The chorus needs shuddha Ma, so it is not included here.
+
+```
+SR | GP PD PG SR | GG RS R SR |
+GP PD PG SR | GG RR S - ||
 ```
 
 ---
@@ -155,10 +199,10 @@ m m m m | m G G GG | G R R G | R - P - ||
 **Full melody, notes only** (Sa = C, starting low on mandra Pa):
 
 ```
-Line 1:  .P .P .D .P S .N
-Line 2:  .P .P .D .P R S
-Line 3:  .P .P P G S .N .D
-Line 4:  m m G S R S
+.P .P .D .P S .N
+.P .P .D .P R S
+.P .P P G S .N .D
+m m G S R S
 ```
 
 **Unlocking:** lines 1 and 2 use only `.P .D .N S R`, so you can play them **after
@@ -188,6 +232,26 @@ P D N S' | N D P - ||
 m G R G  | S - - - ||
 ```
 
+### 4.6 Frere Jacques (Traditional French round, public domain, 4 beats per bar, 60-90 BPM)
+
+```
+S R G S | S R G S | G m P - | G m P - |
+PD Pm G S | PD Pm G S | S .P S - | S .P S - ||
+```
+
+It is a round: record yourself playing it, then play it again starting when the recording
+reaches bar 3. The two parts should fit together.
+
+### 4.7 London Bridge (Traditional, public domain, 4 beats per bar, 70-90 BPM)
+
+The first beat of each line is really a long-short (dotted) pair; play it as two even notes
+first, then copy the lilt by ear.
+
+```
+PD Pm Gm P | RG m Gm P |
+PD Pm Gm P | R P G S ||
+```
+
 ---
 
 ## Level 5: Into taar saptak (unlocked by [L22](../lessons/L22-taar-saptak.md))
@@ -199,6 +263,18 @@ S G P S' | R' S' N D  ||
 P - S' - | G' - R' S' ||
 N D P G  | R - S -    ||
 ```
+
+### 5.2 Mountain Echo (Original, Keherwa 8 beats per line, 60-76 BPM)
+
+```
+P D N S' | R' - S' - ||
+G' R' S' N | D - P - ||
+P D S' R' | G' - R' S' ||
+N D P m | G R S - ||
+```
+
+The top note is `G'`, your comfortable ceiling. Keep the air focused rather than loud on
+`R'` and `G'`, and let the last line relax back down to Sa.
 
 Also play **4.1 Twinkle** one octave higher (start on `S'`, the `P` notes become `P'`, which is
 register 3) only if your flute's `P'` is reliable. Otherwise skip that.
@@ -226,6 +302,18 @@ R g R    | S - -   ||
 ```
 
 `g~R` = glide from komal Ga down to Re inside one beat.
+
+### 6.3 Dusk Waltz (Original, Dadra 6 beats per line, 60-72 BPM; Kafi notes)
+
+```
+S R g | R - S ||
+.n .D .n | S - - ||
+m P n | P - m ||
+g R g | S - - ||
+```
+
+Check `g`, `n` and `.n` against the drone before you start: half-holes drift sharp when the
+finger slides off too far ([L25](../lessons/L25-komal-swaras-and-12-notes.md)).
 
 ---
 

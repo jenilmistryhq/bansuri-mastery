@@ -7,6 +7,7 @@ import { getSettings, setSettings, saHz } from "../core/settings.js";
 import { playNote } from "../core/audio.js";
 import { WEST, codeOf } from "../core/theory.js";
 import { fluteFinder, micIntro } from "../core/live.js";
+import { placementTest } from "../placement.js";
 import { listenMic, micStats } from "../core/listen.js";
 import { ac } from "../core/audio.js";
 import { listRecordings, saveRecording, clearRecordings, blobToDataUrl } from "../recorder.js";
@@ -95,8 +96,20 @@ export async function render(main) {
   const chimes = h("input", { type: "checkbox", id: "st-chimes" });
   chimes.checked = s.prefs.chimes !== false;
   chimes.addEventListener("change", () => update(st => { st.prefs.chimes = chimes.checked; }));
+  // Daily practice time: scales every session block (the plan's content and order stay the same).
+  const paceSel = h("select", { id: "st-pace" }, h("option", { value: "short" }, "Short: about 25-35 min a day"), h("option", { value: "standard" }, "Standard: 45-60 min a day (as written)"), h("option", { value: "long" }, "Long: 60-80 min a day"));
+  paceSel.value = s.prefs.pace || "standard";
+  paceSel.addEventListener("change", () => { update(st => { st.prefs.pace = paceSel.value; }); toast("Session blocks now fit your daily time."); });
+  page.append(h("section", { class: "card" }, h("h2", null, "Daily practice time"),
+    h("p", { class: "small muted" }, "Every block keeps its place; only its minutes change. Short practice every day beats long practice now and then. Milestones still decide when you move on."),
+    h("label", { class: "field", for: "st-pace" }, "How long you practise", paceSel)));
+
+  const devaBox = h("input", { type: "checkbox", id: "st-deva" });
+  devaBox.checked = getSettings().deva;
+  devaBox.addEventListener("change", () => setSettings({ deva: devaBox.checked }));
   page.append(h("section", { class: "card" }, h("h2", null, "Display and sound"),
     h("label", { class: "field", for: "st-theme" }, "Theme", theme),
+    h("label", { class: "check", for: "st-deva" }, devaBox, "Show sargam in Devanagari too (सा रे ग) in the score and the listening exercises"),
     h("label", { class: "check", for: "st-chimes" }, chimes, "Chime when a session block's time is up")));
 
   // Daily reminder: a repeating calendar event, so the phone's own calendar reminds the learner.
@@ -131,8 +144,18 @@ export async function render(main) {
     toast("Now on Day " + ph.firstDay + ". Earlier milestones are marked as skipped; you can still take them.");
     location.hash = "#/today";
   });
-  page.append(h("section", { class: "card" }, h("h2", null, "Already play?"),
-    h("p", { class: "small muted" }, "If you can already do what earlier phases teach, start later. Take the earlier milestone tests first to be sure: they show quickly whether anything is missing. You are on Day " + current() + "."),
+  // The playing test: the microphone checks a few items and recommends the phase.
+  const testHost = h("div", { class: "toolhost", hidden: true });
+  const testBtn = h("button", { type: "button", class: "btn primary", id: "st-placetest" }, "Take the playing test");
+  let placer = null;
+  testBtn.addEventListener("click", () => {
+    if (placer) { placer.destroy(); placer = null; testHost.hidden = true; testBtn.textContent = "Take the playing test"; return; }
+    placer = placementTest({ onResult: phase => { phaseSel.value = String(phase); placeBtn.textContent = "Start from this phase"; } });
+    testHost.replaceChildren(placer.el); testHost.hidden = false; testBtn.textContent = "Close the test";
+  });
+  page.append(h("section", { class: "card", id: "already-play" }, h("h2", null, "Already play?"),
+    h("p", { class: "small muted" }, "If you can already do what earlier phases teach, start later. The playing test takes about five minutes: play a few items into the microphone and it recommends a phase. You are on Day " + current() + "."),
+    h("div", { class: "row" }, testBtn), testHost,
     h("div", { class: "row" }, h("div", { style: { flex: "1 1 260px" } }, phaseSel), placeBtn)));
 
   // Backup.
@@ -274,5 +297,5 @@ export async function render(main) {
     h("p", { class: "small muted" }, "Course content: CC BY-NC-SA 4.0. Code: MIT. Fonts: Hind, Rozha One (Indian Type Foundry) and JetBrains Mono, SIL Open Font License. Markdown rendering: marked (MIT). Everything runs in your browser; nothing you do here is sent anywhere."),
     h("p", { class: "small muted" }, "Limits: the app cannot hear your tone, see your posture or judge raga intonation. Use recordings, a tuner and, when you can, a teacher. ", h("a", { href: "#/read/07-QUALITY-REPORT.md" }, "Quality report"), ".")));
   main.append(page);
-  return () => { if (finder) finder.destroy(); if (micCheck) micCheck.stop(); };
+  return () => { if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
 }

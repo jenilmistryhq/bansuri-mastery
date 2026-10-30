@@ -73,6 +73,8 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Coach > Let the coach listen: play a long Sa; a deliberately airy or flat note is named as such.
 - [ ] Play a tongued `G G G` in Play back or a milestone phrase: each repeat is counted.
 - [ ] Settings > Microphone check: run it, copy the report, and send it along with any problem.
+- [ ] Settings > Already play? > Take the playing test: each item passes when played well; the recommended phase makes sense.
+- [ ] A lesson's last card (Practise it now): the exercise starts and listens; a recording marked "Reference for Lxx" in the Journal plays there.
 - [ ] Note the phone, room and distance from the phone when anything misreads.
 
 ### Camera
