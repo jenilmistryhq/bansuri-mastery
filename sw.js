@@ -1,6 +1,6 @@
 // Service worker: keeps the app and the whole course available offline.
 // VERSION is rewritten by scripts/build_app.py whenever any app or course file changes.
-const VERSION = "472fd8ad4641";
+const VERSION = "eabe86ab4c29";
 const CACHE = "bansuri-" + VERSION;
 const VOICE_CACHE = "voice-clips-v1";
 
