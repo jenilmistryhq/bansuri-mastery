@@ -747,3 +747,7 @@ html.noscroll, html.noscroll body { overflow: hidden; }
 .notice-one { margin: 0; }
 .page:has(.dashq) { max-width: 1180px; }
 main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; }
+
+/* Notation from a recording */
+.savedrow { display: grid; gap: 6px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.savedrow pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -59,6 +59,7 @@ export async function render(main) {
   const list = h("div", { class: "stack" });
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Songs"), h("h1", null, "Play a melody"),
     h("p", { class: "muted" }, "Listen, then play along: the app keeps the beat and drone while the microphone checks every note."),
+    h("p", { class: "small" }, "A song you want that is not here? ", h("a", { href: "#/transcribe" }, "Make its notation from a recording"), " (a YouTube video, the microphone or a file)."),
     h("label", { class: "check", for: "songs-ready" }, filter, "Only songs I can play now (" + songs.filter(ready).length + " of " + songs.length + ")")), list);
 
   function draw() {

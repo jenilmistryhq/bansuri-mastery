@@ -10,6 +10,7 @@ export const NEWS = {
     "Me now answers five questions: am I improving, am I practising regularly, where am I, what to work on, and level and badges.",
     "Today is simpler: Resume, one thing to fix, and the session.",
     "Lessons read in plain words, and the Hindi lessons include quizzes and checklists.",
+    "Practice > Transcribe writes down the notes of a recording (a YouTube video, the microphone or a file) as sargam for your flute.",
   ],
 };
 

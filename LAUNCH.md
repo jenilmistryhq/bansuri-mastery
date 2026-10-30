@@ -9,6 +9,7 @@ What only people can do. Tick each item when done; `python scripts/status.py` co
 
 ## The flute and the voice
 - [ ] Two or three players run Settings > Help > "Calibrate with your flute" and send their files; set the thresholds from them.
+- [ ] Try Practice > Transcribe on 5-10 real recordings (solo bansuri, a single voice, a film song) and write down how many notes were right; adjust the claims on the page if they are too hopeful.
 - [ ] Listen to the voice in English and Hindi (Settings > Voice and language > Hear the voice) and a hands-free session.
 
 ## Content

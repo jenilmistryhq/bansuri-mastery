@@ -14,8 +14,9 @@ export const CHECK_PLANS = [
   ["Anything: just list what I played", []]
 ];
 
-export function yin(buf, sr) {
-  const fmin = 170, fmax = 3000, tauMin = Math.floor(sr / fmax), tauMax = Math.min(Math.floor(sr / fmin), (buf.length >> 1) - 1);
+// fmin and fmax default to the flute's range; the transcriber widens them for voices.
+export function yin(buf, sr, fmin = 170, fmax = 3000, thresh = 0.15) {
+  const tauMin = Math.floor(sr / fmax), tauMax = Math.min(Math.floor(sr / fmin), (buf.length >> 1) - 1);
   let rms = 0; for (let i = 0; i < buf.length; i++) rms += buf[i] * buf[i]; rms = Math.sqrt(rms / buf.length);
   if (rms < 0.006) return null;
   const W = buf.length - tauMax, d = new Float32Array(tauMax + 1);
@@ -23,7 +24,7 @@ export function yin(buf, sr) {
   const cm = new Float32Array(tauMax + 1); cm[0] = 1; let run = 0;
   for (let tau = 1; tau <= tauMax; tau++) { run += d[tau]; cm[tau] = run ? d[tau] * tau / run : 1; }
   let tau = -1;
-  for (let t = tauMin; t <= tauMax; t++) { if (cm[t] < 0.15) { while (t + 1 <= tauMax && cm[t + 1] < cm[t]) t++; tau = t; break; } }
+  for (let t = tauMin; t <= tauMax; t++) { if (cm[t] < thresh) { while (t + 1 <= tauMax && cm[t + 1] < cm[t]) t++; tau = t; break; } }
   if (tau < 1) return null;
   const x0 = cm[tau - 1], x2 = tau < tauMax ? cm[tau + 1] : cm[tau], den = x0 + x2 - 2 * cm[tau];
   const best = den ? tau + (x0 - x2) / (2 * den) : tau;

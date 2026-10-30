@@ -5,7 +5,7 @@
 ```
 npm ci
 npx eslint .    # lint (CI runs it first)
-npm test        # unit tests, plan test, headless-browser smoke test
+npm test        # unit tests, plan test, transcription accuracy test, headless-browser smoke test
 SITE_ROOT=_site node tests/smoke.mjs   # the same smoke test against the assembled site (CI does this)
 node tests/webkit.mjs   # Safari's engine (WebKit), iPhone 13 size (CI does this; first: npx playwright-core install webkit)
 node tests/visual.mjs   # local only: screenshots compared with tests/visual/ baselines (--update after an intended change)
@@ -32,6 +32,7 @@ not hide the rest. It also covers:
 - the games with the synthetic microphone: a held note pops a balloon and offers a challenge link that opens the same game; steer by pitch runs a round; the jam points out a note outside the raga and turns the tanpura off when stopped; falling notes scores a right note and misses a wrong one; quests are tracked; make a melody turns tapped cells into notation; 5-minute practice logs at least 5 minutes; no microphone is left open;
 - voice and access: a natural-voice clip plays with a caption; "Talk to me" names a wrong note; notes shown as fingering pictures; Listen plays a song on the animated flute; the beat flash; Simple mode's big buttons and a hands-free session (the step is spoken, the meter starts itself, and playing Sa moves on); Hindi tabs and Hindi session steps;
 - an accessibility scan (axe-core, WCAG 2.1 A and AA) of the main screens: no serious or critical problems;
+- notation from a recording: a generated WAV of S R G R S comes back as sargam with Sa = C, and as .n S R S .n on a D flute;
 - the Privacy page, My students (a pasted teacher link appears in the table), course codes hidden in lessons, and the Journal's reference kit;
 - phone layouts with iPhone 13 emulation.
 
@@ -73,6 +74,12 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Bench > Check my flute > Start microphone: the tuner follows your notes.
 - [ ] Deny microphone permission once: the app explains and nothing breaks.
 - [ ] "Send to a teacher": the share sheet offers the audio file (or it downloads and the summary is copied).
+
+### Notation from a recording (Practice > Transcribe)
+- [ ] Desktop Chrome: open a solo bansuri video on YouTube in another tab, "Listen to a browser tab", share it with "Share tab audio", play 20-30 s, Stop. Sa and most notes should be right; note what is wrong.
+- [ ] The same with a film song (voice plus band): expect many wrong notes; the page should say why.
+- [ ] Phone: play a recording near the microphone, Stop: notation appears.
+- [ ] Change the flute and the key mode: the notation changes as expected; "Play along" plays it.
 
 ### Listening with a real flute (the most important manual check)
 - [ ] Bench > Long tones, target Sa: play Sa. The note shows as `S`, the ring fills, the needle moves when you blow harder or softer.

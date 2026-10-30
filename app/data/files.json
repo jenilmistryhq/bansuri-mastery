@@ -1,5 +1,5 @@
 {
- "version": "d49c1d19fe88",
+ "version": "6795a5ee6b1d",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -67,6 +67,7 @@
   "app/js/reminder.js",
   "app/js/state.js",
   "app/js/steps.js",
+  "app/js/transcribe.js",
   "app/js/tts-worker.js",
   "app/js/ui.js",
   "app/js/util.js",
@@ -91,6 +92,7 @@
   "app/js/views/students.js",
   "app/js/views/today-cards.js",
   "app/js/views/today.js",
+  "app/js/views/transcribe.js",
   "app/js/voice.js",
   "app/js/xp.js",
   "app/vendor/marked.esm.js",

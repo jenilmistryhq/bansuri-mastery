@@ -1,0 +1,152 @@
+// Accuracy tests for notation from a recording (app/js/transcribe.js), on synthetic recordings with
+// a known answer: a voice with vibrato, glides and breath noise, a flute, and a tune over a drone.
+// Real recordings are harder than these; the numbers here are a floor, not a promise.
+import assert from "node:assert/strict";
+
+globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} };
+const T = await import("../app/js/transcribe.js");
+const { parseNotation, buildEvents } = await import("../app/js/core/notation.js");
+
+let passed = 0;
+const test = async (name, fn) => { await fn(); passed++; console.log("  ok   " + name); };
+
+// A melody as [semitones from Sa, beats]; null is a rest.
+const TWINKLE = [[0, 1], [0, 1], [7, 1], [7, 1], [9, 1], [9, 1], [7, 2], [5, 1], [5, 1], [4, 1], [4, 1], [2, 1], [2, 1], [0, 2]];
+const YAMAN = [[-1, 0.5], [2, 0.5], [4, 1], [6, 0.5], [4, 0.5], [2, 1], [-1, 0.5], [2, 0.5], [0, 2], [7, 1], [6, 0.5], [4, 0.5], [2, 1], [4, 1], [2, 0.5], [-1, 0.5], [2, 0.5], [0, 2.5]];
+
+// Synthesis: harmonics, vibrato, a short glide into each new note, breath noise, and a short gap
+// before a repeated note (re-articulation). Optional drone on Sa and Pa underneath.
+function synth(melody, o) {
+  o = Object.assign({ sr: 22050, sa: 62, bpm: 96, vibrato: 30, detune: 0, harmonics: [1, 0.5, 0.3, 0.15], noise: 0.02, drone: 0, chords: 0, lead: 0.4 }, o);
+  const beat = 60 / o.bpm;
+  const total = o.lead + melody.reduce((a, [, b]) => a + b, 0) * beat + 0.5;
+  const n = Math.floor(total * o.sr), out = new Float32Array(n);
+  let t = o.lead, phase = 0, prev = null, seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647 - 0.5; };
+  for (const [semi, beats] of melody) {
+    const dur = beats * beat, i0 = Math.floor(t * o.sr), i1 = Math.floor((t + dur) * o.sr);
+    if (semi !== null) {
+      const target = o.sa + semi + o.detune / 100, from = prev === null ? target : o.sa + prev + o.detune / 100;
+      const gap = prev === semi ? 0.04 : 0;
+      for (let i = i0; i < i1; i++) {
+        const tt = (i - i0) / o.sr;
+        if (tt < gap) continue;
+        const glide = prev !== null && prev !== semi && tt < 0.05 ? from + (target - from) * (tt / 0.05) : target;
+        const vib = tt > 0.2 ? o.vibrato / 100 * Math.sin(2 * Math.PI * 5.5 * tt) : 0;
+        const f = 440 * Math.pow(2, (glide + vib - 69) / 12);
+        phase += 2 * Math.PI * f / o.sr;
+        const env = Math.min(1, (tt - gap) / 0.02, (dur - tt) / 0.03);
+        let s = 0; o.harmonics.forEach((a, k) => { s += a * Math.sin((k + 1) * phase); });
+        out[i] += 0.3 * env * s + o.noise * rnd();
+      }
+    }
+    prev = semi; t += dur;
+  }
+  if (o.drone) for (let i = 0; i < n; i++) {
+    const tt = i / o.sr, fs = 440 * Math.pow(2, (o.sa - 12 - 69) / 12);
+    out[i] += o.drone * (Math.sin(2 * Math.PI * fs * tt) + 0.6 * Math.sin(2 * Math.PI * fs * 1.5 * tt));
+  }
+  // A chord accompaniment (Sa-Ga-Pa, then Ma-Dha-Sa, changing every 2 beats, an octave below).
+  if (o.chords) for (let i = 0; i < n; i++) {
+    const tt = i / o.sr, k = Math.floor(tt / (2 * beat)) % 2, ch = k ? [5, 9, 12] : [0, 4, 7];
+    for (const c of ch) out[i] += o.chords * Math.sin(2 * Math.PI * 440 * Math.pow(2, (o.sa - 12 + c - 69) / 12) * tt);
+  }
+  return { data: out, sr: o.sr };
+}
+
+// Notes of a notation, in order (rests and holds left out).
+const notesOf = text => buildEvents(parseNotation(text).tokens, 60).ev.map(e => e.semi);
+// Edit distance between two note lists, as a share of the expected length.
+function errorRate(got, want) {
+  const D = Array.from({ length: got.length + 1 }, (_, i) => [i, ...new Array(want.length).fill(0)]);
+  for (let j = 1; j <= want.length; j++) D[0][j] = j;
+  for (let i = 1; i <= got.length; i++) for (let j = 1; j <= want.length; j++) D[i][j] = Math.min(D[i - 1][j - 1] + (got[i - 1] === want[j - 1] ? 0 : 1), D[i - 1][j] + 1, D[i][j - 1] + 1);
+  return D[got.length][want.length] / want.length;
+}
+const run = async (melody, o, opts) => {
+  const { data, sr } = synth(melody, o);
+  const { track, levels } = await T.pitchTrack(data, sr);
+  const r = T.transcribe(track, levels, opts);
+  // DBG=1 prints what was found, for tuning.
+  if (process.env.DBG) console.log(JSON.stringify({ bpm: r.bpm, phase: r.phase, notes: r.notes.map(n => [n.t0.toFixed(2), n.t1.toFixed(2), n.midi]) }));
+  return r;
+};
+const wantNotes = (melody, shift) => melody.filter(([s]) => s !== null).map(([s]) => s + shift);
+const near = (bpm, want) => [want, want / 2, want * 2].some(w => Math.abs(bpm - w) / w <= 0.04);
+
+await test("a sung tune in D (vibrato, glides, tuned 15 cents sharp): Sa, notes and tempo", async () => {
+  const r = await run(TWINKLE, { sa: 62, detune: 15 }, { flute: 74 });
+  assert.equal(((r.sa % 12) + 12) % 12, 2, "Sa is D, got " + r.sa);
+  assert.ok(near(r.bpm, 96), "tempo near 96 (or half/double), got " + r.bpm);
+  const err = errorRate(notesOf(r.notation), wantNotes(TWINKLE, 0));
+  assert.ok(err <= 0.1, "note error " + err + " in " + r.notation);
+  assert.ok(Math.abs(r.tune - 15) <= 5, "tuning offset about +15 cents, got " + r.tune);
+});
+
+await test("the same tune on a C flute (play with the recording): transposed so it still sounds in D", async () => {
+  const r = await run(TWINKLE, { sa: 62, detune: 15 }, { flute: 72, sameKey: true });
+  // D is 2 semitones above the C flute's Sa, so every note moves up 2 (the octave may change to fit).
+  const got = notesOf(r.notation), want = wantNotes(TWINKLE, 2);
+  const err = Math.min(errorRate(got, want), errorRate(got, want.map(s => s + 12)), errorRate(got, want.map(s => s - 12)));
+  assert.ok(err <= 0.1, "transposed note error " + err + " in " + r.notation);
+  assert.equal(r.flute % 12, 2, "the best flute for it is a D flute");
+});
+
+await test("keep the sargam: the same notation on any flute", async () => {
+  const r = await run(TWINKLE, { sa: 62 }, { flute: 72, sameKey: false });
+  assert.ok(errorRate(notesOf(r.notation), wantNotes(TWINKLE, 0)) <= 0.1, r.notation);
+});
+
+await test("a flute phrase in Yaman (half-beat notes, C5 flute)", async () => {
+  const r = await run(YAMAN, { sa: 72, vibrato: 8, harmonics: [1, 0.15, 0.05], noise: 0.03, bpm: 80 }, { flute: 72, sub: 2 });
+  assert.equal(r.sa % 12, 0, "Sa is C, got " + r.sa);
+  const err = errorRate(notesOf(r.notation), wantNotes(YAMAN, 0));
+  assert.ok(err <= 0.12, "note error " + err + " in " + r.notation);
+});
+
+await test("a tune over a tanpura-like drone still comes out", async () => {
+  const r = await run(TWINKLE, { sa: 65, drone: 0.06 }, { flute: 77 });
+  assert.equal(((r.sa % 12) + 12) % 12, 5, "Sa is F, got " + r.sa);
+  const err = errorRate(notesOf(r.notation), wantNotes(TWINKLE, 0));
+  assert.ok(err <= 0.15, "note error " + err + " in " + r.notation);
+});
+
+await test("a drone heard alone before the tune does not become notes", async () => {
+  const r = await run(TWINKLE, { sa: 65, drone: 0.06 }, { flute: 77 });
+  assert.ok(r.notes.every(n => n.midi >= 60), "no notes from the low drone: " + r.notes.map(n => n.midi).join(" "));
+});
+
+await test("a tempo you type in keeps the notes on the beat", async () => {
+  const r = await run(TWINKLE, { sa: 62 }, { flute: 74, bpm: 48 });
+  assert.equal(r.bpm, 48);
+  assert.ok(errorRate(notesOf(r.notation), wantNotes(TWINKLE, 0)) <= 0.1, r.notation);
+});
+
+await test("a low male voice (Sa = A2 region) is tracked", async () => {
+  const r = await run(TWINKLE, { sa: 50 }, { flute: 74 });
+  assert.equal(((r.sa % 12) + 12) % 12, 2, "Sa is D, got " + r.sa);
+  const got = notesOf(r.notation), want = wantNotes(TWINKLE, 0);
+  assert.ok(Math.min(errorRate(got, want), errorRate(got, want.map(s => s + 12)), errorRate(got, want.map(s => s - 12))) <= 0.1, r.notation);
+});
+
+// Not a pass/fail check: how the error grows as the accompaniment gets louder. Printed so the
+// limits stay visible (a melody under equal-level chords is beyond this method).
+await test("accompaniment: error rate by chord loudness (printed)", async () => {
+  const rows = [];
+  for (const level of [0.03, 0.06, 0.1, 0.15]) {
+    const r = await run(TWINKLE, { sa: 62, chords: level }, { flute: 74 });
+    rows.push(level + ": " + Math.round(errorRate(notesOf(r.notation), wantNotes(TWINKLE, 0)) * 100) + "% notes wrong, Sa " + (r.sa % 12 === 2 ? "right" : "wrong"));
+  }
+  console.log("       chords per note vs melody 0.3: " + rows.join("; "));
+});
+
+await test("notation helpers: beats compress, fit and flute names", () => {
+  const notes = [{ t0: 0, t1: 0.6, midi: 72 }, { t0: 0.625, t1: 0.9, midi: 74 }, { t0: 0.9375, t1: 1.2, midi: 76 }];
+  const text = T.toNotation(notes, 96, 0, 2, n => n.midi - 72);
+  assert.match(text, /^S RG/);
+  assert.equal(T.fitOf([-7, 0, 20]).below, 1);
+  assert.equal(T.bestOctave([-14, -12, -10]), 12);
+  assert.equal(T.fluteLabel(72), "C medium (Sa = C5)");
+});
+
+console.log("transcribe tests: " + passed + " passed");

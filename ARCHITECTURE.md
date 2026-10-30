@@ -69,6 +69,7 @@ Today is for doing and Me is for seeing progress. Today: the Resume card (the st
 | `#/library` | Every course page, grouped, with full-text search |
 | `#/settings` | Flute Sa, A4, sound, theme, daily reminder (.ics), placement, backup, reset |
 | `#/privacy` | What stays on the device, in plain words |
+| `#/transcribe` | Notation from a recording: a shared tab, the microphone or a file, as sargam for any flute |
 | `#/students` | My students (for teachers): pasted teacher links in one table, kept on this device |
 | `#/move/<payload>` | Progress moved from another device: shows what it holds, replaces on a second tap |
 
@@ -131,6 +132,15 @@ Today is for doing and Me is for seeing progress. Today: the Resume card (the st
 - `celebrate(text)`: a toast, a chime and confetti (no confetti with reduced motion), for new bests, quests and passed milestones.
 - Play leads with one game (`views/play.js` `FOR_QUEST`: the game that moves the first undone quest on) and lists the rest under "More to play". Falling notes has a speed ladder (2 stars or more raises the next round by 8 BPM, up to 160); the jam has prompts checked from `run.played` when it stops.
 - `holdMeter` draws `opts.ghost(target)` (the best hold, from `livestats.bestHold`) as a faint arc, and a glow from the detector's clarity (`r.clarity`). `playEvents` `onPreview`/`lead` lets play-along show the fingering 0.3 s before each note.
+
+## Notation from a recording (transcribe.js, views/transcribe.js)
+
+- Sound: `getDisplayMedia` (a browser tab, with "Share tab audio"; desktop Chrome and Edge), `getUserMedia`, or a file; streams are recorded with MediaRecorder (up to 6 minutes), then decoded like a file. Nothing is uploaded or stored; only saved notation is kept (`bansuri.transcribed`).
+- `monoDown` (mono, about 22-24 kHz, normalised) and `pitchTrack`: YIN every 20 ms over 75-2200 Hz (`yin` takes the range; the flute tools keep 170-3000 Hz), loudness over the middle 20 ms of each frame; `cleanTrack` folds octave slips, fills single gaps and takes a 5-frame median.
+- `tuningOf`: circular mean of the steady frames, so a recording tuned off A = 440 snaps to the right notes. `segmentNotes`: a note changes when the pitch moves more than 0.75 semitone (vibrato stays one note), at a silence or a loudness dip (repeated notes); runs under 80 ms (glides, grace notes) are dropped. Notes more than 17 semitones from the melody's median (a drone heard alone) are left out.
+- `findTonic`: note durations by pitch class, scored against a Sa template (Sa, Pa strongest) plus a bonus for the last note; the learner can pick another Sa. `estimateTempo`: phase coherence of note starts for 40-180 BPM with a prior around 95 BPM (Half and Double buttons fix octave errors); `beatFit` gives the beat position for a typed tempo.
+- `toNotation`: notes snap to 1, 2 or 4 steps per beat, "-" holds, "_" rests, 4 beats a bar, empty bars dropped. Flutes: "same key" writes semis from the flute's Sa (so it sounds like the recording; `bestFlute` names the flute whose Sa matches), "own key" keeps the recording's sargam; `bestOctave` and `fitOf` keep it inside .P to M' and count hard notes.
+- Limits, measured in `tests/transcribe.test.mjs`: synthetic voice, flute, drone and low-voice tunes come out with at most 15% wrong notes, but a chord accompaniment at about a third of the melody's level breaks it. Real recordings are untested beyond the smoke test's file.
 
 ## Course features (app side)
 

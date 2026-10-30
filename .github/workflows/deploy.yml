@@ -60,6 +60,7 @@ jobs:
           node tests/core.test.mjs
           node tests/live.test.mjs
           node tests/plan.test.mjs
+          node tests/transcribe.test.mjs
 
       - name: Browser smoke test
         env:

@@ -1,12 +1,12 @@
 # Status (2026-10-31)
 
-- App version `d49c1d19fe88`; last commit: c0e59ea A progress dashboard on Me, and a lean Today
+- App version `6795a5ee6b1d`; last commit: 8ecfe50 Launch safety, plain lessons, full Hindi lessons, teacher tools and test isolation
 - Course: 701 days, 11 milestones, 38 lessons
-- Hindi interface: 1822 of 1849 strings translated
+- Hindi interface: 1887 of 1914 strings translated
 - Hindi lessons: 38 of 38 lessons, 382 sections
 - Voice clips: English 13.2 MB, Hindi 27.2 MB; whole app 91.9 MB
 - Claims for a teacher to review: 63 (TEACHER-REVIEW-CLAIMS.md)
-- Launch checklist: 0 done, 11 open (LAUNCH.md)
+- Launch checklist: 0 done, 12 open (LAUNCH.md)
 
 ## Still open before launch
 
@@ -14,6 +14,7 @@
 - The same on an Android phone in Chrome, installed: the reminder notification arrives after the chosen time on a day without practice.
 - A screen reader pass: VoiceOver (iPhone) and TalkBack (Android) through Today, a session and a game (TESTING.md has the details).
 - Two or three players run Settings > Help > "Calibrate with your flute" and send their files; set the thresholds from them.
+- Try Practice > Transcribe on 5-10 real recordings (solo bansuri, a single voice, a film song) and write down how many notes were right; adjust the claims on the page if they are too hopeful.
 - Listen to the voice in English and Hindi (Settings > Voice and language > Hear the voice) and a hands-free session.
 - A native Hindi speaker reviews `hindi-review.csv` (`python scripts/hindi_review.py`), and the corrections are applied with `--apply` (then `python scripts/build_voice.py`).
 - A bansuri teacher reviews `TEACHER-REVIEW-CLAIMS.md` (63 claims marked Uncertain or Disputed) and the lessons are corrected.

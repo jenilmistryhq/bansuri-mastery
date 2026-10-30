@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "python -m http.server 8000",
     "build": "python scripts/build_bench.py && python scripts/build_plan.py && python scripts/build_app.py && python scripts/gen_nav.py",
-    "test": "node tests/core.test.mjs && node tests/live.test.mjs && node tests/plan.test.mjs && node tests/smoke.mjs",
+    "test": "node tests/core.test.mjs && node tests/live.test.mjs && node tests/plan.test.mjs && node tests/transcribe.test.mjs && node tests/smoke.mjs",
     "test:webkit": "node tests/webkit.mjs",
     "test:visual": "node tests/visual.mjs",
     "lint": "eslint ."

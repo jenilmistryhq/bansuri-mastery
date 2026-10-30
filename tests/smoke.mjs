@@ -935,6 +935,34 @@ try {
     await go("/journal");
     check(/reference kit/.test(await text()), "journal: the reference kit for recordings a teacher can check");
   });
+  await section("Notation from a recording", async () => {
+    // A recording made here: S R G R S on a C5 flute (harmonics, breath noise), 0.5 s a note, as a WAV.
+    const sr = 22050, notes = [72, 74, 76, 74, 72], len = Math.floor(sr * (0.4 + notes.length * 0.5 + 0.4)), pcm = new Int16Array(len);
+    let ph = 0;
+    notes.forEach((m, k) => { const f = 440 * Math.pow(2, (m - 69) / 12), i0 = Math.floor(sr * (0.4 + k * 0.5)); for (let i = 0; i < sr * 0.5; i++) { ph += 2 * Math.PI * f / sr; const env = Math.min(1, i / 300, (sr * 0.5 - i) / 400); pcm[i0 + i] = Math.round(9000 * env * (Math.sin(ph) + 0.2 * Math.sin(2 * ph)) + 300 * (Math.random() - 0.5)); } });
+    const wav = Buffer.alloc(44 + pcm.length * 2);
+    wav.write("RIFF", 0); wav.writeUInt32LE(36 + pcm.length * 2, 4); wav.write("WAVEfmt ", 8); wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22);
+    wav.writeUInt32LE(sr, 24); wav.writeUInt32LE(sr * 2, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write("data", 36); wav.writeUInt32LE(pcm.length * 2, 40);
+    Buffer.from(pcm.buffer).copy(wav, 44);
+    const wavPath = path.join(process.env.TEMP || process.env.TMPDIR || "/tmp", "bansuri-transcribe-test.wav");
+    fs.writeFileSync(wavPath, wav);
+    await go("/transcribe");
+    const input = await page.$("#tr-file");
+    await input.uploadFile(wavPath);
+    await page.waitForFunction(() => /^Done/.test((document.querySelector("#main [role=status]") || {}).textContent || ""), { timeout: 20000 }).catch(() => {});
+    const out = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "");
+    const plain = out.replace(/[|_-]/g, " ").replace(/\s+/g, " ").trim();
+    check(/S R G R S/.test(plain), "transcribe: a recorded S R G R S comes back as sargam [" + out.replace(/\n/g, " / ") + "]");
+    const sa = await page.$eval("#main select[aria-label='Sa of the recording']", e => e.options[e.selectedIndex].textContent).catch(() => "");
+    check(/^C/.test(sa), "transcribe: the recording's Sa is found (C) [" + sa + "]");
+    await shot("20-transcribe-result");
+    // On a D flute, playing with the recording: C is komal Ni below Sa, so S R G R S is written n S R S n.
+    await page.select("#main select[aria-label='Your flute']", "74");
+    await sleep(200);
+    const onD = (await page.$eval("#main textarea[aria-label^='Notation']", e => e.value)).replace(/[|_-]/g, " ").replace(/\s+/g, " ").trim();
+    check(/n S R S n/.test(onD.replace(/\.n/g, "n").replace(/n'/g, "n")), "transcribe: on a D flute the same sound is written n S R S n [" + onD + "]");
+    fs.unlinkSync(wavPath);
+  });
   await section("Standalone bench pages", async () => {
     for (const f of ["interactive-flute.html", "practice-bench.html"]) {
       await page.goto(BASE + "bansuri-mastery/tools/" + f, { waitUntil: "networkidle0" });
@@ -952,7 +980,7 @@ try {
   await section("Accessibility (axe-core: WCAG 2.1 A and AA rules)", async () => {
     {
       const axeSrc = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "node_modules", "axe-core", "axe.min.js"), "utf8");
-      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
+      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
         await go(route);
         await sleep(400);
         await page.evaluate(axeSrc);
@@ -967,7 +995,7 @@ try {
   });
   await section("Phone layout (iPhone 13 emulation: size, touch, user agent; the engine is still Chromium)", async () => {
     await page.emulate(KnownDevices["iPhone 13"]);
-    for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"], ["/listen", "18-phone-listen"], ["/play", "15-phone-play"], ["/compose", "16-phone-compose"], ["/quick", "17-phone-quick"]]) {
+    for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"], ["/listen", "18-phone-listen"], ["/play", "15-phone-play"], ["/compose", "16-phone-compose"], ["/quick", "17-phone-quick"], ["/transcribe", "19-phone-transcribe"]]) {
       await go(route);
       const ov = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       check(ov <= 1, route + " fits an iPhone screen (" + ov + "px overflow)");
