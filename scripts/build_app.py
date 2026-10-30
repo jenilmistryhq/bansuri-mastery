@@ -53,7 +53,8 @@ def version(assets, docs):
     h = hashlib.sha256()
     for rel in assets + ["index.html", "manifest.webmanifest"] + ["bansuri-mastery/" + d["path"] for d in docs]:
         with open(os.path.join(ROOT, rel), "rb") as fh:
-            h.update(rel.encode() + b"\0" + fh.read())
+            # Line endings are normalised, so a Windows checkout (CRLF) and CI (LF) get the same version.
+            h.update(rel.encode() + b"\0" + fh.read().replace(b"\r\n", b"\n"))
     return h.hexdigest()[:12]
 
 

@@ -1,6 +1,6 @@
 // Service worker: keeps the app and the whole course available offline.
 // VERSION is rewritten by scripts/build_app.py whenever any app or course file changes.
-const VERSION = "ded6e8c39f6b";
+const VERSION = "b52fd79ee14b";
 const CACHE = "bansuri-" + VERSION;
 
 self.addEventListener("install", event => {
