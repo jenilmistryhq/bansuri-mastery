@@ -36,7 +36,7 @@ try {
   check(await page.locator("#main .firstrun .btn.primary").count() === 1, "first run: the welcome and Start Day 0 render");
   await page.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 12, startedAt: "2026-10-01", prefs: { howChosen: true } })));
   await page.reload(); await page.waitForLoadState("networkidle"); await sleep(500);
-  check(await page.locator("#main .resume").count() === 1 && await page.locator("#main .quickact").count() === 6, "today: the Resume card and the quick actions render");
+  check(await page.locator("#main .resume").count() === 1 && await page.locator("#main .progresscard").count() === 1, "today: the Resume card and the progress card render");
   for (const [route, sel] of [["/session/12", "#main .block"], ["/plan", "#main .pathhead"], ["/library", "#main .catcard"], ["/read/lessons/L09-fingering-sa-re-ga.md", "#main .lcard"],
     ["/bench", ".bb-flute"], ["/play", "#main .gamecard"], ["/listen", "#main .listentile"], ["/songs", "#main .song"], ["/coach", "#main"], ["/journal", "#main .card"], ["/progress", "#main .headline"], ["/settings", "#main .jumpnav"], ["/compose", "#main .ccell"], ["/quick", "#main .lv-hold"]]) {
     await go(route);

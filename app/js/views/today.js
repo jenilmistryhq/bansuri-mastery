@@ -19,7 +19,7 @@ import { stepMeta, plainText } from "../steps.js";
 import { ring, weekStrip } from "../ui.js";
 import { saveBackup } from "../backup.js";
 import { levelOf, xpState } from "../xp.js";
-import { profileStrip, weakSpots, weekSummary, installCard, resumeCard, quickActions, reviewsCard, adaptiveCard, songOfWeekCard, lastSessionCard, backupNudge, realBansuriCard, journey } from "./today-cards.js";
+import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard } from "./today-cards.js";
 
 // First run: how the learner likes to learn, in pictures and both languages, so it works without
 // reading English. Each choice can be changed later in Settings.
@@ -139,7 +139,12 @@ export async function render(main, { params, view }) {
     action = h("p", { class: "notice info" }, "This day unlocks after Day " + (n - 1) + ". You can read ahead, but practise in order: each day builds on the last.");
   }
 
-  if (isToday && !firstTime) page.append(profileStrip(), resumeCard(n, day, ds, phase, action), quickActions());
+  // Today: what to do now. One action on top; at most one notice; the session; progress at the side.
+  if (isToday && !firstTime) {
+    page.append(resumeCard(n, day, ds, phase, action));
+    const notice = adaptiveCard(cur) || backupNudge() || installCard();
+    if (notice) { notice.classList.add("notice-one"); page.append(notice); }
+  }
   else if (!firstTime) page.append(h("section", { class: "hero" },
     h("span", { class: "eyebrow" }, (phase ? "Phase " + phase.id + ": " + phase.title : "") + (day.week ? " - Week " + day.week : "") + " - Day " + n + (day.repeatOf !== null ? " (repeats Day " + day.repeatOf + ")" : "")),
     h("h1", { class: "title" }, day.title || ("Day " + n)),
@@ -152,12 +157,10 @@ export async function render(main, { params, view }) {
   const mainCol = h("div", { class: "todaymain" }), side = h("aside", { class: "todayside", "aria-label": "Your progress and extras" });
   page.append(h("div", { class: "todaygrid" }, mainCol, side));
   if (isToday && !firstTime) {
-    const help = adaptiveCard(cur);
-    if (help) mainCol.append(help);
+    const fix = fixToday();
+    if (fix) mainCol.append(fix);
     const rc = reviewsCard(cleanups);
     if (rc) mainCol.append(rc);
-    const weak = weakSpots();
-    if (weak) mainCol.append(weak);
   }
 
   mainCol.append(h("section", { class: "card" },
@@ -173,25 +176,8 @@ export async function render(main, { params, view }) {
   }
 
   if (isToday && !firstTime) {
-    // Level and quests together: where you stand, and what to do for XP today.
-    const qs = questState(), left = qs.list.filter(q => !q.done);
-    side.append(h("section", { class: "card sidecard" },
-      h("h2", null, "Daily quests"),
-      h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "\u2713" : ""), h("span", null, q.text)))),
-      h("a", { class: "questline small", href: "#/play" }, left.length ? (qs.list.length - left.length) + " of " + qs.list.length + " done - games and quests are in Play" : "All done! New quests tomorrow.")));
-    const week = weekSummary();
-    if (week) side.prepend(week);
-    const inst = installCard();
-    if (inst) side.append(inst);
-    const lastCard = lastSessionCard();
-    if (lastCard) side.append(lastCard);
-    const songHost = h("div");
-    side.append(songHost);
-    songOfWeekCard().then(c => songHost.replaceWith(c || h("a", { class: "card songlink", href: "#/songs" }, h("b", null, "Songs"), h("span", { class: "small muted" }, "Play along with a melody; the microphone checks every note."))));
-    side.append(h("a", { class: "card songlink", href: "#/quick" }, h("b", null, "Short on time?"), h("span", { class: "small muted" }, "A 5-minute practice still counts.")));
-    if (cur <= 42) side.append(realBansuriCard());
-    const nudge = backupNudge();
-    if (nudge) side.append(nudge);
+    side.append(progressCard());
+    if (cur <= 7) side.append(realBansuriCard());
   }
 
   // Milestone summary.

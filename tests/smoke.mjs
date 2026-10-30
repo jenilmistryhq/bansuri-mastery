@@ -83,7 +83,7 @@ try {
   await shot("01-today");
 
   console.log("Routes render");
-  for (const [route, needle] of [["/plan", "Course map"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "How far you have come"], ["/settings", "Your flute"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Locked"]]) {
+  for (const [route, needle] of [["/plan", "Course map"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/settings", "Your flute"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Locked"]]) {
     await go(route);
     t = await text();
     check(t.includes(needle.toLowerCase()), route + " shows \"" + needle + "\"");
@@ -674,7 +674,7 @@ try {
     await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
     await lp.reload({ waitUntil: "networkidle0" });
     await lp.waitForSelector(".levelpill");
-    check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .profile", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
+    check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .progresscard", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
     await lp.evaluate(async () => { const x = await import(new URL("app/js/xp.js", location.href).href); x.award("lesson", { key: "smoke" }); x.award("lesson", { key: "smoke2" }); });
     await lp.waitForFunction(() => document.querySelector(".levelpill").textContent === "Lv 2", { timeout: 3000 })
       .then(() => check(true, "levels: earning XP moves the learner up to Level 2, celebrated"), () => check(false, "levels: earning XP moves the learner up to Level 2, celebrated"));
@@ -826,7 +826,9 @@ try {
   await page.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 3, startedAt: "2026-10-20", prefs: { howChosen: true } })));
   await page.reload({ waitUntil: "networkidle0" });
   await go("/today");
-  check(await page.$("#main .resume .btn.primary") !== null && await page.$("#main .profile .weekstrip") !== null && await page.$$eval("#main .quickact", x => x.length) === 6, "today: a Resume card, the profile strip with this week, and six quick actions");
+  check(await page.$("#main .resume .btn.primary") !== null && await page.$("#main .resume .streakchip") !== null && await page.$("#main .progresscard .weekstrip") !== null && await page.$$eval("#main .quickact", x => x.length) === 0, "today: Resume (with the streak) on top, progress at the side, nothing else competing");
+  await go("/progress");
+  check(await page.$$eval("#main .dashq", x => x.length) === 5, "me: the progress dashboard answers its five questions in order");
   await go("/plan");
   check(await page.$$eval("#main .pathhead .ring", x => x.length) >= 5, "course map: every phase shows a progress ring");
   await page.keyboard.press("/");
@@ -847,8 +849,10 @@ try {
   });
   await page.reload({ waitUntil: "networkidle0" });
   await go("/today");
+  check(/Morning Steps: 40%/.test(await page.$eval("#main .fixtoday", e => e.innerText).catch(() => "")), "today: the single weakest spot is offered as one line to fix today");
+  await go("/progress");
   const weakTxt = await page.$eval("#main .weakcard", e => e.innerText).catch(() => "");
-  check(/Hold G longer/.test(weakTxt) && /Morning Steps: 40%/.test(weakTxt), "weak spots: a short Ga hold and a 40% play-along are suggested, with one tap each");
+  check(/Hold G longer/.test(weakTxt) && /Morning Steps: 40%/.test(weakTxt), "me: weak spots list a short Ga hold and a 40% play-along, with one tap each");
   await go("/milestone/M1");
   check(await page.$("#main .stuckcard .btn.primary") !== null, "stuck: after two failed tries a milestone offers the three-minute check");
   // Move to another device: make the link, open it, see what it holds.

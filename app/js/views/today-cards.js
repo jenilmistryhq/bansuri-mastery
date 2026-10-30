@@ -38,7 +38,7 @@ export function profileStrip() {
 
 // Weak spots, from what the microphone measured: the notes held shortest, the pieces with the most
 // missed notes, the play-back levels with the most misses. Each has one tap to practise it.
-export function weakSpots() {
+function weakList() {
   const L = getState().live || {}, since = addDays(today(), -14), out = [];
   const bench = (tab, extra) => () => { try { localStorage.setItem("bansuri.bench.tab", JSON.stringify(tab)); for (const [k, v] of Object.entries(extra || {})) localStorage.setItem("bansuri.bench." + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } location.hash = "#/bench"; };
   for (const [k, list] of Object.entries(L.holds || {})) {
@@ -50,8 +50,22 @@ export function weakSpots() {
   for (const p of (L.plays || []).filter(x => x.d >= since && x.n)) { const q = pieces[p.piece] || (pieces[p.piece] = { ok: 0, n: 0 }); q.ok += p.ok; q.n += p.n; }
   for (const [piece, q] of Object.entries(pieces)) if (q.ok / q.n < 0.75) out.push({ score: q.ok / q.n, text: piece + ": " + Math.round(q.ok / q.n * 100) + "% of notes right lately. Try it 10 BPM slower.", label: "Play it", go: () => { location.hash = "#/songs"; } });
   for (const e of Object.values(L.echo || {})) if (e.total >= 5 && e.right / e.total < 0.5) out.push({ score: e.right / e.total, text: "Play back (" + e.label + "): " + e.right + " of " + e.total + " right", label: "Play back", go: bench("echo") });
-  if (!out.length) return null;
   out.sort((a, b) => a.score - b.score);
+  return out;
+}
+
+// The single weakest spot, as one line with one button (Today).
+export function fixToday() {
+  const w = weakList()[0];
+  if (!w) return null;
+  return h("section", { class: "fixtoday" }, h("span", { class: "fixicon", "aria-hidden": "true" }, icon("wave")),
+    h("span", { class: "fixtext" }, h("b", null, "Fix today: "), w.text), h("button", { type: "button", class: "btn small", onclick: w.go }, w.label));
+}
+
+// The weakest spots (up to three), each with one tap to practise (Progress).
+export function weakSpots() {
+  const out = weakList();
+  if (!out.length) return null;
   return h("section", { class: "card weakcard" }, h("h2", null, "Work on these"),
     h("ul", { class: "weaklist" }, out.slice(0, 3).map(w => h("li", null, h("span", null, w.text), h("button", { type: "button", class: "btn small", onclick: w.go }, w.label)))),
     h("p", { class: "small muted" }, "From what the microphone heard in the last two weeks."));
@@ -104,14 +118,32 @@ export function resumeCard(n, day, ds, phase, action) {
   const done = Object.values(ds.blocks || {}).filter(Boolean).length, total = day.blocks.length;
   const next = day.blocks.find(b => !(ds.blocks || {})[b.id]);
   const pct = total ? done / total * 100 : 0;
+  const st = streaks();
   return h("section", { class: "resume" },
     ring(pct, done + "/" + total, { size: 76, stroke: 8, cls: "resume-ring" }),
     h("div", { class: "resume-body" },
-      h("span", { class: "small muted" }, (phase ? "Phase " + phase.id + ": " + phase.title : "") + (day.week ? " - Week " + day.week : "")),
+      h("span", { class: "row resume-top" }, h("span", { class: "small muted" }, "Today"),
+        h("a", { class: "streakchip" + (st.current ? " lit" : ""), href: "#/progress", title: "Practice streak" }, icon("flame"), h("b", null, String(st.current)), h("span", { class: "small" }, st.current === 1 ? " day" : " days"))),
       h("h1", { class: "title" }, "Day " + n + ": " + (day.title || "")),
       h("span", { class: "small muted" }, (done ? "Next: " : "First: ") + (next ? (next.label || stepMeta(next).name) + (next.minutes ? ", " + next.minutes + " min" : "") : "all steps done") + " - about " + (day.minutes || 0) + " min in all"),
       action),
     journey(n, phase));
+}
+
+// Your progress in one card: level and how far to the next (in days, not XP), this week, quests.
+export function progressCard() {
+  const lv = levelOf(xpState().total), x = xpState(), t = today();
+  let recent = 0; for (let i = 0; i < 14; i++) recent += (x.days || {})[addDays(t, -i)] || 0;
+  const perDay = recent / 14, daysLeft = lv.next && perDay > 0 ? Math.ceil((lv.to - lv.xp) / perDay) : null;
+  const qs = questState(), left = qs.list.filter(q => !q.done);
+  return h("section", { class: "card progresscard" },
+    h("a", { class: "profile-level", href: "#/progress" },
+      h("span", { class: "levelbadge", "aria-hidden": "true" }, String(lv.level)),
+      h("span", { class: "profile-text" }, h("b", null, "Level " + lv.level + " "), h("span", { class: "leveltitle" }, lv.name),
+        h("span", { class: "progressbar levelbar thin", role: "progressbar", "aria-label": "Toward the next level", "aria-valuemin": "0", "aria-valuemax": String(lv.need || 1), "aria-valuenow": String(lv.into) }, h("i", { style: { width: lv.pct + "%" } })),
+        h("span", { class: "small muted" }, !lv.next ? "The highest level" : daysLeft ? "About " + daysLeft + (daysLeft === 1 ? " day" : " days") + " to Level " + lv.next.level + " at your pace" : (lv.to - lv.xp).toLocaleString() + " XP to Level " + lv.next.level))),
+    weekStrip(new Set(practiceDates().keys())),
+    h("a", { class: "questline small", href: "#/play" }, left.length ? "Quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done. Next: " + left[0].text : "All of today's quests are done."));
 }
 
 // One tap to the tools used most.

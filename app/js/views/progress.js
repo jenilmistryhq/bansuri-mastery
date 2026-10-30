@@ -9,6 +9,10 @@ import { levelBar, levelsTable, xpRules } from "../levelui.js";
 import { emblem } from "../ui.js";
 import { ICON_PATHS } from "../util.js";
 import { xpState } from "../xp.js";
+import { ring } from "../ui.js";
+import { weakSpots, weekSummary } from "./today-cards.js";
+
+const fmtDateLong = d => parseDate(d).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
 
 export function encodePayload(obj) {
   const bytes = new TextEncoder().encode(JSON.stringify(obj));
@@ -99,6 +103,61 @@ function weeksChart(weeks, opts) {
   return h("div", null, svg, table);
 }
 
+// A trend over the last 8 weeks: one measure, one axis. Points only on days with data, joined by a
+// 2px line; each point shows its value on hover; a table carries the same data for screen readers.
+// points: [{ d: "YYYY-MM-DD", v }]
+function trendChart(points, o) {
+  // The window starts at the first measurement (at least 2 weeks, at most 8), so the line fills the chart.
+  const t = today(), all = points.filter(p => p.d <= t && p.d >= addDays(t, -55)).sort((a, b) => a.d < b.d ? -1 : 1);
+  const span = all.length ? Math.round((parseDate(t) - parseDate(all[0].d)) / 86400000) + 2 : 14;
+  const days = Math.max(14, Math.min(56, span)), from = addDays(t, -(days - 1));
+  const pts = all.filter(p => p.d >= from);
+  const W = typeof window !== "undefined" && window.innerWidth < 600 ? Math.max(300, window.innerWidth - 70) : 560, H = 170, padL = 40, padR = 12, padT = 12, padB = 24;
+  const max = Math.max(o.floor, ...pts.map(p => p.v)) * 1.1;
+  const x = d => padL + (W - padL - padR) * (days - 1 - Math.round((parseDate(t) - parseDate(d)) / 86400000)) / (days - 1);
+  const y = v => padT + (H - padT - padB) * (1 - v / max);
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "trend", role: "img", "aria-label": o.what + ", last " + days + " days" });
+  const step = [1, 2, 5, 10, 20, 25, 50].find(n => max / n <= 4) || 100;
+  for (let v = 0; v <= max; v += step) {
+    svg.append(svgEl("line", { x1: padL, x2: W - padR, y1: y(v), y2: y(v), class: "wk-grid" }));
+    svg.append(svgEl("text", { x: padL - 6, y: y(v) + 4, class: "wk-tick", "text-anchor": "end" }, document.createTextNode(o.tick(v))));
+  }
+  for (const k of [days - 1, Math.round((days - 1) / 2), 0]) svg.append(svgEl("text", { x: x(addDays(t, -k)), y: H - 6, class: "wk-tick", "text-anchor": k === days - 1 ? "start" : k === 0 ? "end" : "middle" }, document.createTextNode(k === 0 ? "today" : addDays(t, -k).slice(5).replace("-", "/"))));
+  if (pts.length > 1) svg.append(svgEl("polyline", { points: pts.map(p => x(p.d) + "," + y(p.v)).join(" "), class: "trend-line" }));
+  pts.forEach((p, i) => {
+    const g = svgEl("g", { class: "trend-pt" + (i === pts.length - 1 ? " last" : "") });
+    g.append(svgEl("circle", { cx: x(p.d), cy: y(p.v), r: 11, class: "trend-hit" }), svgEl("circle", { cx: x(p.d), cy: y(p.v), r: 4.5, class: "trend-dot" }), svgEl("title", null, document.createTextNode(p.d + ": " + o.fmt(p.v))));
+    svg.append(g);
+  });
+  const last = pts[pts.length - 1];
+  if (last) svg.append(svgEl("text", { x: Math.min(x(last.d), W - padR), y: Math.max(12, y(last.v) - 10), class: "trend-label", "text-anchor": "end" }, document.createTextNode(o.fmt(last.v))));
+  const table = h("table", { class: "sr-only" }, h("caption", null, o.what), h("tbody", null, pts.map(p => h("tr", null, h("td", null, p.d), h("td", null, o.fmt(p.v))))));
+  return h("div", null, svg, table);
+}
+
+// Improvement from the microphone: the longest steady note each day, and play-along accuracy each day.
+function improving(s) {
+  const L = s.live || {}, byDay = {}, playDay = {};
+  for (const list of Object.values(L.holds || {})) for (const x of list) byDay[x.d] = Math.max(byDay[x.d] || 0, x.s);
+  for (const p of L.plays || []) if (p.n) { const q = playDay[p.d] || (playDay[p.d] = { ok: 0, n: 0 }); q.ok += p.ok; q.n += p.n; }
+  const holdPts = Object.entries(byDay).map(([d, v]) => ({ d, v })), playPts = Object.entries(playDay).map(([d, q]) => ({ d, v: Math.round(q.ok / q.n * 100) }));
+  const echoBest = Math.max(0, ...Object.values(L.echo || {}).map(e => e.best || 0));
+  const ear = Object.values(s.ear || {}).reduce((a, e) => ({ right: a.right + e.right, total: a.total + e.total }), { right: 0, total: 0 });
+  const change = pts => { if (pts.length < 2) return null; const sorted = pts.slice().sort((a, b) => a.d < b.d ? -1 : 1), first = sorted[0].v, last = sorted[sorted.length - 1].v; return last - first; };
+  const holdUp = change(holdPts), playUp = change(playPts);
+  const card = (title, sub, pts, opts, delta, unit) => h("section", { class: "card trendcard" },
+    h("div", { class: "row between" }, h("h3", null, title), delta === null ? null : h("span", { class: "chip " + (delta > 0 ? "good" : delta < 0 ? "warn" : "mutedc") }, (delta > 0 ? "up " : delta < 0 ? "down " : "steady ") + (delta ? Math.abs(Math.round(delta * 10) / 10) + unit : ""))),
+    h("p", { class: "small muted" }, sub),
+    pts.length >= 3 ? trendChart(pts, opts) : h("p", { class: "emptystate" }, "Your chart appears after 3 days of practice with the microphone (" + pts.length + " so far)."));
+  return h("div", { class: "dashgrid" },
+    card("Longest steady note", "Your best hold each day, from long tones in sessions, the bench and the coach.", holdPts, { what: "Longest steady note per day", floor: 8, tick: v => v + " s", fmt: v => v.toFixed(1) + " s" }, holdUp, " s"),
+    card("Play-along: notes right", "Share of notes played right when the microphone checked a melody.", playPts, { what: "Play-along notes right per day", floor: 100, tick: v => Math.round(v) + "%", fmt: v => Math.round(v) + "%" }, playUp, " points"),
+    h("section", { class: "card headline" }, h("h3", null, "By ear"),
+      h("div", { class: "bigstats" },
+        h("div", { class: "stat" }, h("b", null, echoBest ? String(echoBest) : "-"), h("span", null, "notes in your longest phrase played back")),
+        ear.total ? h("div", { class: "stat" }, h("b", null, Math.round(ear.right / ear.total * 100) + "%"), h("span", null, "ear quiz right (" + ear.total + " answers)")) : null)));
+}
+
 // A small line of one note's daily best holds, with the latest value labelled.
 function sparkline(list) {
   const W = 120, H = 28, pts = list.slice(-20), max = Math.max(...pts.map(p => p.s), 1);
@@ -145,29 +204,37 @@ export async function render(main) {
   const s = getState(), tt = totals(), st = streaks();
   const page = h("div", { class: "page" });
   const stat = (v, l) => h("div", { class: "stat" }, h("b", null, String(v)), h("span", null, l));
-  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Progress"), h("h1", null, "How far you have come"),
-    s.startedAt ? h("p", { class: "muted" }, "Learning since " + s.startedAt + ".") : h("p", { class: "muted" }, "Start Day 0 to begin tracking.")));
-  // One headline (three numbers that matter), then the details in a line.
-  page.append(h("section", { class: "card headline" },
-    h("div", { class: "bigstats" },
-      stat(st.current + (st.current === 1 ? " day" : " days"), "current streak"),
-      stat(tt.msPassed + " of " + getPlan().milestones.length, "milestones passed"),
-      stat(fmtMinutes(tt.minutes), "total practice")),
-    h("p", { class: "small muted" }, "Day " + current() + " of the course - " + tt.practiceDays + " days practised - best streak " + st.best + " days")));
+  page.append(h("section", { class: "hero" }, h("h1", null, "Your progress"),
+    s.startedAt ? h("p", { class: "muted" }, "Learning since " + fmtDateLong(s.startedAt) + ": Day " + current() + " of the course.") : h("p", { class: "muted" }, "Start Day 0 to begin tracking.")));
+  const q = (n, title) => h("h2", { class: "grouphead dashq" }, h("span", { class: "dashn", "aria-hidden": "true" }, String(n)), title);
 
-  page.append(levelSection());
-  page.append(h("section", { class: "card" }, h("h2", null, "Milestones"), milestonePath()));
-  page.append(h("section", { class: "card" }, h("h2", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12))));
-  page.append(h("section", { class: "card" }, h("h2", null, "Practice calendar"), heatmap(),
-    h("p", { class: "small muted" }, "Darker = longer practice (under 20, under 45, 45+ minutes). Regular short practice beats occasional long practice.")));
+  // 1. Am I improving? (what the microphone measured, over time)
+  page.append(q(1, "Am I improving?"), improving(s));
 
-  // Ear quiz.
-  const ear = Object.entries(s.ear);
-  if (ear.length) {
-    page.append(h("section", { class: "card" }, h("h2", null, "Ear quiz"),
-      h("div", { class: "stack" }, ear.sort().map(([lv, e]) => h("div", { class: "row between" }, h("span", null, "Level " + lv),
-        h("span", { class: "mono" }, e.right + " / " + e.total + " (" + (e.total ? Math.round(100 * e.right / e.total) : 0) + "%)"))))));
-  }
+  // 2. Am I practising regularly?
+  const lastWeek = weekSummary();
+  page.append(q(2, "Am I practising regularly?"), lastWeek || "", h("div", { class: "dashgrid" },
+    h("section", { class: "card headline" },
+      h("div", { class: "bigstats" },
+        stat(st.current + (st.current === 1 ? " day" : " days"), "current streak" + (st.restThisWeek ? " (rest day used)" : "")),
+        stat(tt.practiceDays, "days practised"),
+        stat(fmtMinutes(tt.minutes), "total practice")),
+      h("p", { class: "small muted" }, "Best streak " + st.best + " days. One missed day a week does not break a streak."),
+      heatmap(), h("p", { class: "small muted" }, "Darker = longer practice (under 20, under 45, 45+ minutes).")),
+    h("section", { class: "card" }, h("h3", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12)))));
+
+  // 3. Where am I in the course?
+  const plan = getPlan(), d = getDay(current()), ph = d ? plan.phases.find(p => p.id === d.phase) : null;
+  const phDays = ph ? plan.days.filter(x => x.phase === ph.id) : [], phDone = phDays.filter(x => x.n < current()).length;
+  const nextMs = plan.milestones.find(m => milestoneState(m.id).status !== "passed");
+  page.append(q(3, "Where am I in the course?"), h("section", { class: "card coursecard" },
+    ph ? h("div", { class: "row coursehead" }, ring(phDays.length ? phDone / phDays.length * 100 : 0, undefined, { size: 64, stroke: 7 }),
+      h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, "Phase " + ph.id + ": " + ph.title), h("span", { class: "small muted" }, phDone + " of " + phDays.length + " days" + (nextMs ? " - next milestone " + nextMs.id + " " + nextMs.title + (nextMs.day > current() ? " in " + (nextMs.day - current()) + " days" : ", ready now") : "")))) : null,
+    milestonePath(), h("p", { class: "small muted" }, tt.msPassed + " of " + plan.milestones.length + " milestones passed.")));
+
+  // 4. What should I work on?
+  const weak = weakSpots();
+  page.append(q(4, "What should I work on?"), weak || h("section", { class: "card" }, h("p", { class: "emptystate" }, "Nothing stands out yet. After a few days with the microphone, your weakest notes and pieces show here.")));
 
   // What the microphone measured: long tones, play back, play-along, tapping.
   const holds = holdSummary(), L = s.live;
@@ -175,7 +242,7 @@ export async function render(main) {
   if (holds.length || echo.length || plays.length || taps.length) {
     const bar = (v, max) => h("span", { class: "minibar", "aria-hidden": "true" }, h("i", { style: { width: Math.min(100, v / max * 100) + "%" } }));
     const maxHold = Math.max(20, ...holds.map(x => x.best));
-    page.append(h("section", { class: "card" }, h("h2", null, "Your playing"),
+    page.append(h("details", { class: "card" }, h("summary", null, h("b", null, "All measurements, note by note")),
       h("p", { class: "small muted" }, "Measured by the microphone in sessions, the bench and milestone checks."),
       holds.length ? h("div", { class: "stack" }, h("h3", null, "Longest steady hold"),
         holds.map(x => h("div", { class: "liverow" },
@@ -190,12 +257,19 @@ export async function render(main) {
         taps.map(t => h("div", { class: "row between" }, h("span", null, t.bpm + " BPM" + (t.silent ? " with silent bars" : "")), h("span", { class: "small mono" }, Math.round(t.within * 100) + "% within 50 ms, spread " + t.spread + " ms")))) : null));
   }
 
-  // Badges.
+  // 5. Level and badges, last: rewards, not information.
+  page.append(q(5, "Level and badges"), levelSection());
   const list = rules();
   const earned = list.filter(r => s.badges[r.id]).length;
   page.append(h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Badges"), h("span", { class: "chip info" }, earned + " of " + list.length)),
-    h("div", { class: "badges" }, list.map(r => h("div", { class: "badge" + (s.badges[r.id] ? " earned" : "") },
-      h("span", { class: "medalwrap" }, emblem(badgeIcon(r.id), !!s.badges[r.id]), h("span", { class: "medaltxt", "aria-hidden": "true" }, r.medal)), h("b", null, r.title), h("span", { class: "small muted" }, s.badges[r.id] ? "Earned " + s.badges[r.id] : r.desc))))));
+    // Earned badges and the next three to aim for; the rest are folded away.
+    (() => {
+      const badge = r => h("div", { class: "badge" + (s.badges[r.id] ? " earned" : "") },
+        h("span", { class: "medalwrap" }, emblem(badgeIcon(r.id), !!s.badges[r.id]), h("span", { class: "medaltxt", "aria-hidden": "true" }, r.medal)), h("b", null, r.title), h("span", { class: "small muted" }, s.badges[r.id] ? "Earned " + s.badges[r.id] : r.desc));
+      const got = list.filter(r => s.badges[r.id]), todo = list.filter(r => !s.badges[r.id]);
+      return [h("div", { class: "badges" }, got.concat(todo.slice(0, 3)).map(badge)),
+        todo.length > 3 ? h("details", null, h("summary", null, "All " + list.length + " badges"), h("div", { class: "badges" }, todo.slice(3).map(badge))) : null];
+    })()));
 
   // Share.
   const nameIn = h("input", { class: "input", id: "sh-name", maxlength: "40", placeholder: "Your first name (optional)", value: store("bansuri.shareName", "") });
