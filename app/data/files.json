@@ -1,5 +1,5 @@
 {
- "version": "f8a28e82b8c3",
+ "version": "8717cb978277",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -53,6 +53,7 @@
   "app/js/levelui.js",
   "app/js/livestats.js",
   "app/js/main.js",
+  "app/js/palette.js",
   "app/js/placement.js",
   "app/js/playable.js",
   "app/js/posture.js",
@@ -60,6 +61,7 @@
   "app/js/state.js",
   "app/js/steps.js",
   "app/js/tts-worker.js",
+  "app/js/ui.js",
   "app/js/util.js",
   "app/js/views/bench.js",
   "app/js/views/coach.js",

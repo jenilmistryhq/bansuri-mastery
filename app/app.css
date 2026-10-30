@@ -305,7 +305,19 @@ dialog.modal::backdrop { background: rgba(0,0,0,0.4); }
 .stepdot { min-width: 2.4rem; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
 .stepdot.done { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
 .stepdot.now { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
-.session-focus .block:not(.active) { display: none; }
+/* One step at a time, but every step stays visible as a row (a task list): only the active one is open. */
+.session-focus .block:not(.active) > :not(header) { display: none; }
+.session-focus .block:not(.active) { padding-block: 10px; }
+.session-focus .block:not(.active) .blockctl { display: none; }
+.session-focus .stepstrip { display: none; }
+.blockhead { cursor: pointer; }
+.block.active .blockhead { cursor: default; }
+.stepicon { position: relative; }
+.stepdone { display: none; position: absolute; inset: 0; border-radius: inherit; background: var(--good); color: #fff; place-items: center; }
+.stepdone .icon { width: 18px; height: 18px; stroke-width: 3; }
+.block.done .stepdone { display: grid; }
+.block.done:not(.active) h3 { color: var(--muted); }
+.block.done { opacity: 1; }
 .session-focus .block.active { box-shadow: none; }
 .session-focus .listonly { display: none; }
 .page:not(.session-focus) .stepnav { display: none; }
@@ -616,3 +628,94 @@ html.noscroll, html.noscroll body { overflow: hidden; }
 .summarychips { gap: 6px; }
 /* With the section menu shown, the small label above a page title only repeats it. */
 .subnav + .page > .hero > .eyebrow:first-child { display: none; }
+
+/* ---------- Dashboard, paths, catalogue, emblems, search (inspired by learning platforms, in our own colours) ---------- */
+.ring .ring-track { stroke: var(--sunken); }
+.ring .ring-fill { stroke: var(--accent); transition: stroke-dashoffset 400ms ease-out; }
+.ring.complete .ring-fill { stroke: var(--good); }
+.ring .ring-label { fill: var(--ink); font-family: var(--body); font-weight: 700; font-size: 15px; }
+@media (prefers-reduced-motion: reduce) { .ring .ring-fill { transition: none; } }
+
+/* Profile strip: level, XP, streak, this week. */
+.profile { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; align-items: center; padding: 14px 16px; border-radius: var(--radius);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--bamboo) 16%, var(--surface)), var(--surface) 60%); border: 1px solid var(--line); }
+.profile-level { display: flex; gap: 12px; align-items: center; text-decoration: none; color: var(--ink); min-width: 0; }
+.levelbadge { flex: none; width: 46px; height: 52px; display: grid; place-items: center; font-family: var(--display); font-size: 1.4rem; color: #2b1d0e;
+  background: linear-gradient(180deg, #f1d488, var(--bamboo)); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.profile-text { display: grid; gap: 3px; min-width: 0; }
+.profile-text .leveltitle { font-weight: 600; }
+.progressbar.thin { height: 6px; }
+.profile-streak { display: grid; justify-items: center; text-decoration: none; color: var(--ink); line-height: 1.1; }
+.profile-streak b { font-size: 1.4rem; font-family: var(--display); font-weight: 400; }
+.flame .icon { width: 26px; height: 26px; color: var(--muted); }
+.profile-streak.lit .flame .icon { color: #e8833a; fill: color-mix(in srgb, #e8833a 30%, transparent); }
+.weekstrip { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.wkday { display: grid; justify-items: center; gap: 3px; font-size: 0.72rem; color: var(--muted); }
+.wkday i { width: 100%; max-width: 38px; height: 8px; border-radius: 999px; background: var(--sunken); }
+.wkday.on i { background: var(--accent); }
+.wkday.today span { color: var(--ink); font-weight: 700; }
+.wkday.today i { outline: 2px solid var(--accent); outline-offset: 1px; }
+.wkday.future i { opacity: 0.5; }
+
+/* Resume: the day, a ring of steps done, the next step, one button. */
+.resume { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 16px; align-items: center; padding: 18px; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); }
+.resume-body { display: grid; gap: 6px; justify-items: start; min-width: 0; }
+.resume-body .title { font-size: clamp(1.35rem, 4.5vw, 1.9rem); }
+.resume .journey { grid-column: 1 / -1; }
+@media (max-width: 420px) { .resume { grid-template-columns: 1fr; } .resume-ring { display: none; } }
+
+/* Quick actions: one tap to the tools used most. */
+.quickacts { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.quickact { display: grid; justify-items: center; gap: 6px; padding: 10px 4px; border-radius: 12px; text-decoration: none; color: var(--ink); font-size: 0.8rem; text-align: center; line-height: 1.2; border: 1px solid transparent; }
+.quickact:hover { border-color: var(--line); background: var(--surface); }
+.quickicon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+.quickicon .icon { width: 22px; height: 22px; }
+@media (max-width: 560px) { .quickacts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Course map phases as paths. */
+.pathhead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; list-style: none; cursor: pointer; }
+.pathhead::-webkit-details-marker { display: none; }
+.pathtext { display: grid; gap: 2px; min-width: 0; }
+.phasebox > .row { margin-top: 10px; }
+
+/* Lesson catalogue. */
+.catalogue { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.catcard { display: grid; gap: 10px; align-content: start; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); text-decoration: none; min-height: 92px; }
+.catcard:hover { border-color: var(--accent); }
+.catcard.done { border-color: color-mix(in srgb, var(--good) 55%, var(--line)); }
+.catcard.started { border-left: 4px solid var(--accent); }
+.catcard.ahead { opacity: 0.72; }
+
+/* Badges as emblems. */
+.medalwrap { position: relative; width: 48px; height: 54px; }
+.emblem { width: 48px; height: 54px; display: block; }
+.emblem-hex { fill: var(--sunken); stroke: var(--line); stroke-width: 1.5; }
+.emblem-inner { fill: none; stroke: var(--line); stroke-width: 1; }
+.emblem-icon { stroke: var(--muted); }
+.emblem.earned .emblem-hex { fill: var(--bamboo); stroke: var(--bamboo-deep); }
+.emblem.earned .emblem-inner { stroke: #f6e3a8; }
+.emblem.earned .emblem-icon { stroke: #2b1d0e; }
+.medaltxt { position: absolute; right: -6px; bottom: -2px; font-size: 0.68rem; font-weight: 700; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 0 5px; color: var(--muted); }
+.badge.earned .medaltxt { color: var(--ink); }
+
+/* Search anywhere. */
+.palette { position: fixed; inset: 0; z-index: 100; background: rgb(0 0 0 / 0.45); display: grid; justify-items: center; align-items: start; padding: 10vh 16px 16px; }
+.pal-panel { width: min(640px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 50px rgb(0 0 0 / 0.35); overflow: hidden; }
+.pal-input { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.pal-input .input { border: 0; background: transparent; font-size: 1.05rem; padding: 6px 0; outline: none; }
+.pal-list { list-style: none; margin: 0; padding: 6px; max-height: 55vh; overflow-y: auto; }
+.pal-list li a { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; color: var(--ink); text-decoration: none; }
+.pal-list li.on a, .pal-list li a:hover { background: var(--accent-soft); }
+.pal-empty { padding: 12px; }
+.pal-hint { padding: 8px 14px; border-top: 1px solid var(--line); }
+.block { scroll-margin-top: 72px; }
+.blockopen { all: unset; cursor: pointer; display: inline; }
+.blockopen:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.block.active .blockopen { cursor: default; }
+@media (min-width: 900px) {
+  .profile { grid-template-columns: minmax(220px, auto) minmax(0, 1fr) auto; }
+  .profile .weekstrip { grid-column: auto; grid-row: 1; grid-column-start: 2; max-width: 380px; justify-self: center; width: 100%; }
+}
+.profile-text .levelbar { width: 100%; min-width: 160px; }
+@media (max-width: 560px) { .catalogue { grid-template-columns: repeat(2, minmax(0, 1fr)); } .catcard { min-height: 84px; padding: 10px; } }

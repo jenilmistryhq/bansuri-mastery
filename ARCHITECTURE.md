@@ -43,6 +43,8 @@ Five tabs (`main.js` `NAV`): Today, Course, Practice, Play and Me. Related scree
 
 Session steps are shown by name and icon (`steps.js` `STEP_META`) with their instruction in plain words (the spoken text from the voice index, in the learner's language); the plan's original wording is one tap away. Today puts the day's main action first, then the session at a glance; on wide screens a second column holds the level, quests and extras.
 
+Today is a home base: a profile strip (level, XP, streak, this week's practice days), a "Resume" card (steps done as a ring, the next step, one button straight back in) and six one-tap shortcuts. A session lists every step as a row (a task list: number, icon, minutes, a tick when done); only the active step is open. The course map shows each phase as a path with a progress ring, a status and "Continue"; the Library shows lessons as a catalogue (taught on which day, done or in progress). Badges are hexagon emblems (`ui.js`). `palette.js`: "/" or the search button finds any screen, setting or course page.
+
 ## Routes (hash-based, work on GitHub Pages)
 
 | Route | View |

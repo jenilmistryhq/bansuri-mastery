@@ -127,7 +127,7 @@ export async function render(main, { params }) {
   function refreshHead() {
     const done = day.blocks.filter(b => doneMap[b.id]).length;
     progress.style.width = (day.blocks.length ? (done / day.blocks.length) * 100 : 0) + "%";
-    totalClock.textContent = fmtClock(totalElapsed()) + " / " + planned + " min"; blocksEl.textContent = done + " of " + day.blocks.length + " blocks done";
+    totalClock.textContent = fmtClock(totalElapsed()) + " / " + planned + " min"; blocksEl.textContent = Math.round(done / day.blocks.length * 100) + "% done - " + done + " of " + day.blocks.length + " steps";
     progressEl.setAttribute("aria-valuenow", String(done));
     // Finishing is the main action only once the blocks are done; before that it stays available but quiet.
     finishBtn.classList.toggle("primary", done === day.blocks.length);
@@ -150,7 +150,7 @@ export async function render(main, { params }) {
   function setActive(id) {
     const changed = activeId !== id;
     activeId = id;
-    for (const [bid, c] of Object.entries(cards)) c.classList.toggle("active", bid === id);
+    for (const [bid, c] of Object.entries(cards)) { c.classList.toggle("active", bid === id); const ob = c.querySelector(".blockopen"); if (ob) ob.setAttribute("aria-expanded", String(bid === id)); }
     if (focus && changed) { enterStep(id); hfEnter(id); }
     refreshHead();
   }
@@ -262,7 +262,7 @@ export async function render(main, { params }) {
     resetBtn.addEventListener("click", () => { stopTimer(b.id); timers[b.id].acc = 0; timers[b.id].chimed = false; clock.textContent = fmtClock(total); clock.classList.remove("over"); refreshHead(); });
     const cb = h("input", { type: "checkbox" });
     cb.checked = !!doneMap[b.id];
-    const card = h("article", { class: "block" + (cb.checked ? " done" : "") });
+    const card = h("article", { class: "block" + (cb.checked ? " done" : ""), "data-id": b.id });
     cb.addEventListener("change", () => {
       doneMap[b.id] = cb.checked;
       card.classList.toggle("done", cb.checked);
@@ -280,9 +280,10 @@ export async function render(main, { params }) {
       }
     });
     const parts = [
-      h("header", null,
-        h("span", { class: "stepicon " + b.id, "aria-hidden": "true" }, icon(stepMeta(b).icon)),
-        h("h3", null, b.label, b.minutes ? h("span", { class: "muted small" }, " " + b.minutes + " min") : null),
+      // The header is the step's row in the list: tap it to open the step (like a task in a room).
+      h("header", { class: "blockhead", onclick: e => { if (!e.target.closest(".blockctl") && activeId !== b.id) { setActive(b.id); card.scrollIntoView({ behavior: "smooth", block: "start" }); } } },
+        h("span", { class: "stepicon " + b.id, "aria-hidden": "true" }, icon(stepMeta(b).icon), h("span", { class: "stepdone" }, icon("check"))),
+        h("h3", null, h("button", { type: "button", class: "blockopen", "aria-expanded": "false" }, h("span", { class: "stepno small muted" }, "Step " + (day.blocks.indexOf(b) + 1) + " "), b.label, b.minutes ? h("span", { class: "muted small" }, " " + b.minutes + " min") : null)),
         total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null),
       b.text ? h("p", { class: "steptext", translate: "no" }, renderInline(b.text, "phases/README.md")) : null,
       b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : ""), target: "_blank", rel: "noopener" }, r.label))) : null,

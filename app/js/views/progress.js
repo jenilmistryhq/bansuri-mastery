@@ -6,6 +6,8 @@ import { rules } from "../badges.js";
 import { holdSummary } from "../livestats.js";
 import { codeOf } from "../core/theory.js";
 import { levelBar, levelsTable, xpRules } from "../levelui.js";
+import { emblem } from "../ui.js";
+import { ICON_PATHS } from "../util.js";
 import { xpState } from "../xp.js";
 
 export function encodePayload(obj) {
@@ -110,6 +112,13 @@ function levelSection() {
     h("details", null, h("summary", null, "How to earn XP"), xpRules()));
 }
 
+// Each kind of badge gets its own emblem picture (the medal text stays on it, small).
+const BADGE_ICONS = { streak: "flame", hours: "today", ear: "ear", ms: "check", recorder: "mic", archivist: "mic", reviewer: "reset", setup: "settings", "first-day": "wave", "week-one": "today" };
+function badgeIcon(id) {
+  const key = Object.keys(BADGE_ICONS).find(k => id === k || id.startsWith(k + "-"));
+  return ICON_PATHS[BADGE_ICONS[key] || "star"] || ICON_PATHS.star;
+}
+
 // M0 to M10 as a path: passed, the next one, and those ahead.
 function milestonePath() {
   const ms = getPlan().milestones, cur = current();
@@ -176,7 +185,7 @@ export async function render(main) {
   const earned = list.filter(r => s.badges[r.id]).length;
   page.append(h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Badges"), h("span", { class: "chip info" }, earned + " of " + list.length)),
     h("div", { class: "badges" }, list.map(r => h("div", { class: "badge" + (s.badges[r.id] ? " earned" : "") },
-      h("span", { class: "medal", "aria-hidden": "true" }, r.medal), h("b", null, r.title), h("span", { class: "small muted" }, s.badges[r.id] ? "Earned " + s.badges[r.id] : r.desc))))));
+      h("span", { class: "medalwrap" }, emblem(badgeIcon(r.id), !!s.badges[r.id]), h("span", { class: "medaltxt", "aria-hidden": "true" }, r.medal)), h("b", null, r.title), h("span", { class: "small muted" }, s.badges[r.id] ? "Earned " + s.badges[r.id] : r.desc))))));
 
   // Share.
   const nameIn = h("input", { class: "input", id: "sh-name", maxlength: "40", placeholder: "Your first name (optional)", value: store("bansuri.shareName", "") });

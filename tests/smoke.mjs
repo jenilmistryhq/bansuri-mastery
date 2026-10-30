@@ -196,7 +196,7 @@ try {
     return n;
   };
   const steps0 = await walkSteps();
-  check(steps0 > 0 && await page.$$eval("#main .block", b => b.filter(x => getComputedStyle(x).display !== "none").length) === 1, "Day 0 shows one of its " + steps0 + " steps at a time");
+  check(steps0 > 0 && await page.$$eval("#main .block .stepnav", b => b.filter(x => getComputedStyle(x).display !== "none").length) === 1, "Day 0 opens one of its " + steps0 + " steps at a time (the others are rows to tap)");
   await page.waitForSelector("dialog.modal[open]");
   const yes = await page.$("#fin-yes");
   if (yes) await yes.click();
@@ -228,7 +228,7 @@ try {
   t = await text();
   check(t.includes("day 2"), "Today moves on to Day 2");
   await go("/session/2");
-  await page.click('#main .stepdot[data-id="K"]');
+  await page.evaluate(() => document.querySelector('#main .block[data-id="K"] > header').click());
   await sleep(200);
   check(await page.$("#main .block.active .lv-hold") !== null, "the first-sound step shows the live long-tone meter");
   await page.click("#main .session-head .btn.ghost");
@@ -543,8 +543,8 @@ try {
     await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 2, startedAt: "2026-10-01" })));
     await lp.goto(BASE + "#/session/2", { waitUntil: "networkidle0" });
     await lp.reload({ waitUntil: "networkidle0" });
-    await lp.waitForSelector('#main .stepdot[data-id="K"]');
-    await lp.click('#main .stepdot[data-id="K"]');
+    await lp.waitForSelector('#main .block[data-id="K"] > header');
+    await lp.evaluate(() => document.querySelector('#main .block[data-id="K"] > header').click());
     await lp.click("#main .block.active .lv-hold .lv-primary");
     await sleep(300); await tone(0);
     await lp.waitForFunction(() => document.querySelector("#main .block.active label.check input[type=checkbox]").checked, { timeout: 8000 })
@@ -674,7 +674,7 @@ try {
     await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
     await lp.reload({ waitUntil: "networkidle0" });
     await lp.waitForSelector(".levelpill");
-    check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .sidecard", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
+    check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .profile", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
     await lp.evaluate(async () => { const x = await import(new URL("app/js/xp.js", location.href).href); x.award("lesson", { key: "smoke" }); x.award("lesson", { key: "smoke2" }); });
     await lp.waitForFunction(() => document.querySelector(".levelpill").textContent === "Lv 2", { timeout: 3000 })
       .then(() => check(true, "levels: earning XP moves the learner up to Level 2, celebrated"), () => check(false, "levels: earning XP moves the learner up to Level 2, celebrated"));
@@ -758,8 +758,8 @@ try {
     await lp.waitForSelector("#main .simpletile", { timeout: 5000 }).catch(() => {});
     check(await lp.$$eval("#main .simpletile", x => x.length) === 4 && await lp.$$eval(".tabbar a", x => x.length) === 3, "simple mode: four big buttons and three tabs");
     await lp.goto(BASE + "#/session/2", { waitUntil: "networkidle0" });
-    await lp.waitForSelector('#main .stepdot[data-id="K"]');
-    await lp.click('#main .stepdot[data-id="K"]');
+    await lp.waitForSelector('#main .block[data-id="K"] > header');
+    await lp.evaluate(() => document.querySelector('#main .block[data-id="K"] > header').click());
     // The step is spoken, then the meter starts by itself; hold Sa to meet the goal, then Sa again to go on.
     await lp.waitForFunction(() => /Stop/.test((document.querySelector("#main .block.active .lv-hold .lv-primary") || {}).textContent || ""), { timeout: 25000 }).catch(() => {});
     await tone(0);
@@ -767,8 +767,8 @@ try {
     await tone(null);
     await lp.waitForFunction(() => { const c = document.querySelector(".caption"); return c && /play Sa/i.test(c.textContent); }, { timeout: 12000 }).catch(() => {});
     await sleep(800); await tone(0);
-    await lp.waitForFunction(() => { const d = document.querySelector("#main .stepdot.now"); return d && d.dataset.id !== "K"; }, { timeout: 12000 })
-      .then(() => check(true, "hands-free: the step is spoken, the meter starts itself, and playing Sa moves on"), async () => check(false, "hands-free: still on " + await lp.$eval("#main .stepdot.now", e => e.dataset.id).catch(() => "?")));
+    await lp.waitForFunction(() => { const d = document.querySelector("#main .block.active"); return d && d.dataset.id !== "K"; }, { timeout: 12000 })
+      .then(() => check(true, "hands-free: the step is spoken, the meter starts itself, and playing Sa moves on"), async () => check(false, "hands-free: still on " + await lp.$eval("#main .block.active", e => e.dataset.id).catch(() => "?")));
     await tone(null);
     await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
     await setSet({ simple: false });
@@ -814,6 +814,22 @@ try {
     await sp.setOfflineMode(false);
     await sp.close();
   }
+
+  console.log("Dashboard, rooms, paths and search");
+  await page.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 3, startedAt: "2026-10-20", prefs: { howChosen: true } })));
+  await page.reload({ waitUntil: "networkidle0" });
+  await go("/today");
+  check(await page.$("#main .resume .btn.primary") !== null && await page.$("#main .profile .weekstrip") !== null && await page.$$eval("#main .quickact", x => x.length) === 6, "today: a Resume card, the profile strip with this week, and six quick actions");
+  await go("/plan");
+  check(await page.$$eval("#main .pathhead .ring", x => x.length) >= 5, "course map: every phase shows a progress ring");
+  await page.keyboard.press("/");
+  await page.waitForSelector(".palette input", { timeout: 3000 }).catch(() => {});
+  await page.type(".palette input", "yaman");
+  await sleep(300);
+  check(/Yaman/i.test(await page.$eval(".palette .pal-list", e => e.innerText).catch(() => "")), "search: pressing / and typing finds the Yaman raga card");
+  await page.keyboard.press("Enter");
+  await sleep(800);
+  check(/#\/read\/.*yaman/i.test(await page.evaluate(() => location.hash)) && await page.$(".palette") === null, "search: Enter opens it and closes the search");
 
   console.log("Standalone bench pages");
   for (const f of ["interactive-flute.html", "practice-bench.html"]) {

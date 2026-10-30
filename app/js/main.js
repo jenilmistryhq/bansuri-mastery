@@ -12,6 +12,8 @@ import { onBeat } from "./core/audio.js";
 import { say } from "./voice.js";
 import { award, onXp, levelOf, xpState, markLevelSeen } from "./xp.js";
 import { floatXp } from "./levelui.js";
+import { openPalette, installPaletteKey } from "./palette.js";
+installPaletteKey();
 installErrorLog();
 // The shared widgets speak through the app's natural voice (when "Talk to me" is on).
 setSpeaker(say);
@@ -121,6 +123,7 @@ function shell() {
     h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", null, "Bansuri Mastery")),
     h("span", { class: "spacer" }),
     h("span", { class: "statuspills" }, dayPill, (levelPill = h("a", { class: "levelpill", href: "#/progress#level" }, ""))),
+    h("button", { type: "button", class: "iconbtn", title: "Search (press /)", onclick: openPalette }, icon("search", "Search")),
     h("a", { class: "iconbtn", href: "#/settings", title: "Settings" }, icon("settings", "Settings")));
   navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(NAV_ICON[k] || k), h("span", null, label))));
   mainEl = h("main", { id: "main", tabindex: "-1" });

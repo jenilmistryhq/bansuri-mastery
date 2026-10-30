@@ -16,6 +16,8 @@ import { icon } from "../util.js";
 import { getSettings, setSettings } from "../core/settings.js";
 import { speak, sayButton } from "../voice.js";
 import { stepMeta, plainText } from "../steps.js";
+import { ring, weekStrip } from "../ui.js";
+import { levelOf, xpState } from "../xp.js";
 
 // First run: how the learner likes to learn, in pictures and both languages, so it works without
 // reading English. Each choice can be changed later in Settings.
@@ -63,6 +65,43 @@ export function blockLines(day) {
   }));
   makePlayable(list);
   return list;
+}
+
+// Who you are in the course at a glance: level and XP, the streak, and this week's practice days.
+function profileStrip() {
+  const lv = levelOf(xpState().total), st = streaks(), dates = practiceDates();
+  return h("section", { class: "profile" },
+    h("a", { class: "profile-level", href: "#/progress#level" },
+      h("span", { class: "levelbadge", "aria-hidden": "true" }, String(lv.level)),
+      h("span", { class: "profile-text" }, h("b", null, "Level " + lv.level + " "), h("span", { class: "leveltitle" }, lv.name),
+        h("span", { class: "progressbar levelbar thin", role: "progressbar", "aria-label": "XP toward the next level", "aria-valuemin": "0", "aria-valuemax": String(lv.need || 1), "aria-valuenow": String(lv.into) }, h("i", { style: { width: lv.pct + "%" } })),
+        h("span", { class: "small muted mono" }, lv.next ? lv.xp.toLocaleString() + " / " + lv.to.toLocaleString() + " XP" : lv.xp.toLocaleString() + " XP"))),
+    h("a", { class: "profile-streak" + (st.current ? " lit" : ""), href: "#/journal", title: "Practice streak" },
+      h("span", { class: "flame", "aria-hidden": "true" }, icon("flame")), h("b", null, String(st.current)), h("span", { class: "small muted" }, st.current === 1 ? "day streak" : "day streak")),
+    weekStrip(new Set(dates.keys())));
+}
+
+// "Resume": the day, how far into it you are, the next step, and one button that goes straight there.
+function resumeCard(n, day, ds, phase, action) {
+  const done = Object.values(ds.blocks || {}).filter(Boolean).length, total = day.blocks.length;
+  const next = day.blocks.find(b => !(ds.blocks || {})[b.id]);
+  const pct = total ? done / total * 100 : 0;
+  return h("section", { class: "resume" },
+    ring(pct, done + "/" + total, { size: 76, stroke: 8, cls: "resume-ring" }),
+    h("div", { class: "resume-body" },
+      h("span", { class: "small muted" }, (phase ? "Phase " + phase.id + ": " + phase.title : "") + (day.week ? " - Week " + day.week : "")),
+      h("h1", { class: "title" }, "Day " + n + ": " + (day.title || "")),
+      h("span", { class: "small muted" }, (done ? "Next: " : "First: ") + (next ? (next.label || stepMeta(next).name) + (next.minutes ? ", " + next.minutes + " min" : "") : "all steps done") + " - about " + (day.minutes || 0) + " min in all"),
+      action),
+    journey(n, phase));
+}
+
+// One tap to the tools used most.
+function quickActions() {
+  const a = (href, ic, label) => h("a", { class: "quickact", href }, h("span", { class: "quickicon", "aria-hidden": "true" }, icon(ic)), h("span", null, label));
+  return h("nav", { class: "quickacts", "aria-label": "Quick actions" },
+    a("#/bench", "bench", "Flute and tuner"), a("#/coach", "coach", "Check my tone"), a("#/play", "star", "Play a game"),
+    a("#/songs", "note", "Songs"), a("#/listen", "listen", "Listen"), a("#/quick", "today", "5 minutes"));
 }
 
 // The first screen a new learner sees: what this is, one big button, and the language.
@@ -276,7 +315,7 @@ export async function render(main, { params, view }) {
   if (n === cur) {
     statusChip = null; // the page itself says this is today
     const msOpen = day.milestone && milestoneState(day.milestone).status !== "passed";
-    const sessionLabel = blocksDone ? "Continue the session (" + blocksDone + " of " + day.blocks.length + " done)" : (n === 0 ? "Start Day 0" : "Start today's session");
+    const sessionLabel = blocksDone ? (blocksDone === day.blocks.length ? "Finish today's session" : "Resume") : (n === 0 ? "Start Day 0" : "Start today's session");
     if (msOpen && day.kind === "milestone") {
       // A test day: the test is the main action, the session is rehearsal.
       const ms = milestoneState(day.milestone);
@@ -300,7 +339,8 @@ export async function render(main, { params, view }) {
     action = h("p", { class: "notice info" }, "This day unlocks after Day " + (n - 1) + ". You can read ahead, but practise in order: each day builds on the last.");
   }
 
-  if (!firstTime) page.append(h("section", { class: "hero" },
+  if (isToday && !firstTime) page.append(profileStrip(), resumeCard(n, day, ds, phase, action), quickActions());
+  else if (!firstTime) page.append(h("section", { class: "hero" },
     h("span", { class: "eyebrow" }, (phase ? "Phase " + phase.id + ": " + phase.title : "") + (day.week ? " - Week " + day.week : "") + " - Day " + n + (day.repeatOf !== null ? " (repeats Day " + day.repeatOf + ")" : "")),
     h("h1", { class: "title" }, day.title || ("Day " + n)),
     h("div", { class: "row" }, statusChip, h("span", { class: "chip mutedc" }, KIND_LABEL[day.kind] || "Practice"), day.minutes ? h("span", { class: "chip mutedc" }, "About " + day.minutes + " min") : null,
@@ -334,11 +374,9 @@ export async function render(main, { params, view }) {
     // Level and quests together: where you stand, and what to do for XP today.
     const qs = questState(), left = qs.list.filter(q => !q.done);
     side.append(h("section", { class: "card sidecard" },
-      h("a", { class: "levellink", href: "#/progress#level" }, levelBar({ compact: true })),
-      h("a", { class: "questline", href: "#/play" }, h("b", null, left.length ? "Quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done" : "All quests done!"),
-        h("span", { class: "small muted" }, left.length ? "Next: " + left[0].text : "New ones tomorrow."))));
-    // Numbers only once there is practice to count.
-    if (totals().minutes > 0) side.append(statsRow());
+      h("h2", null, "Daily quests"),
+      h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "\u2713" : ""), h("span", null, q.text)))),
+      h("a", { class: "questline small", href: "#/play" }, left.length ? (qs.list.length - left.length) + " of " + qs.list.length + " done - games and quests are in Play" : "All done! New quests tomorrow.")));
     const lastCard = lastSessionCard();
     if (lastCard) side.append(lastCard);
     const songHost = h("div");

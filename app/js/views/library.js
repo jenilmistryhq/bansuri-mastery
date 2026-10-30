@@ -1,6 +1,26 @@
 // Library (#/library): every course page, grouped, with title filter and full-text search.
 import { h, clear } from "../util.js";
 import { filesList, fetchDoc } from "../content.js";
+import { getPlan, current } from "../course.js";
+import { xpState } from "../xp.js";
+import { store } from "../util.js";
+
+// Lessons as a catalogue: each card shows the day it is taught and how far you got
+// (done, in progress, or not started), so the next one to open is obvious.
+function lessonCatalogue(docs) {
+  const plan = getPlan(), cur = current(), once = xpState().once || {};
+  const firstDay = {};
+  for (const d of plan.days) for (const id of d.lessons || []) if (firstDay[id] === undefined) firstDay[id] = d.n;
+  return h("div", { class: "catalogue" }, docs.map(d => {
+    const id = (/L\d\d/.exec(d.path) || [])[0], day = id ? firstDay[id] : undefined;
+    const done = !!once["lesson:" + d.path], started = !done && store("bansuri.cardpos." + d.path, 0) > 0;
+    const state = done ? "done" : started ? "started" : day !== undefined && day > cur ? "ahead" : "open";
+    const title = d.title.replace(/^L\d\d\s*-\s*/, "");
+    return h("a", { class: "catcard " + state, href: "#/read/" + d.path },
+      h("span", { class: "row between" }, h("span", { class: "chip mutedc mono" }, id || "Page"), done ? h("span", { class: "chip good" }, "✓ Done") : started ? h("span", { class: "chip info" }, "In progress") : day !== undefined ? h("span", { class: "small muted" }, day > cur ? "From Day " + day : "Day " + day) : null),
+      h("b", null, title));
+  }));
+}
 
 const GROUPS = [
   ["start", "Start here"], ["phases", "Roadmap"], ["lessons", "Lessons"], ["exercises", "Exercises"], ["ragas", "Ragas"],
@@ -28,7 +48,7 @@ export async function render(main) {
       const docs = files.docs.filter(d => groupOf(d.path) === key && (!q || (d.title + " " + d.path).toLowerCase().includes(q)));
       if (!docs.length) continue;
       listHost.append(h("section", { class: "card" }, h("h2", null, label),
-        h("div", { class: "libgroup" }, docs.map(d => h("a", { href: "#/read/" + d.path }, d.title)))));
+        key === "lessons" ? lessonCatalogue(docs) : h("div", { class: "libgroup" }, docs.map(d => h("a", { href: "#/read/" + d.path }, d.title)))));
     }
     if (!listHost.childNodes.length) listHost.append(h("p", { class: "muted" }, "No page titles match. Try Search all text."));
   }
