@@ -454,24 +454,48 @@ function makeVoice(freq, t, opts) {
   const c = ac(), level = opts.level || 0.26;
   const out = c.createGain(); out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(level, t + 0.05);
   const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(10000, freq * 6);
-  const parts = [[1, 1], [2, freq < 700 ? 0.2 : 0.09], [3, 0.05]];
+  // A bansuri-like voice: a strong fundamental with weak overtones (stronger on low notes), breath
+  // noise around the fundamental and the second harmonic, a short breathy "chiff" at the start, a slight
+  // scoop up into the pitch, and vibrato that fades in rather than starting at once.
+  // opts.breath scales the breath noise (1 = normal); opts.wobble adds a slow unsteadiness, in cents.
+  const breath = opts.breath === undefined ? 1 : opts.breath;
+  const parts = [[1, 1], [2, freq < 700 ? 0.2 : 0.09], [3, freq < 700 ? 0.06 : 0.03], [4, 0.02]];
   const oscs = parts.map(([h, a]) => {
-    const o = c.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(freq * h, t);
-    const g = c.createGain(); g.gain.value = a; o.connect(g); g.connect(lp); o.start(t);
+    const o = c.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(freq * h * 0.985, t); o.frequency.exponentialRampToValueAtTime(freq * h, t + 0.06);
+    const g = c.createGain(); g.gain.value = a * (opts.body === undefined ? 1 : opts.body); o.connect(g); g.connect(lp); o.start(t);
     return { o, h };
   });
   const lfo = c.createOscillator(); lfo.frequency.value = opts.andolan ? 1.2 : 5.2;
-  const lg = c.createGain(); lg.gain.value = opts.andolan ? 38 : 5; lfo.connect(lg);
+  const lg = c.createGain(); lfo.connect(lg);
+  if (opts.andolan) lg.gain.value = 38;
+  else { lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(5, t + 0.5); }
   oscs.forEach(({ o }) => lg.connect(o.detune)); lfo.start(t);
+  const wob = c.createOscillator(); wob.frequency.value = 0.9;
+  const wg = c.createGain(); wg.gain.value = opts.wobble || 0; wob.connect(wg);
+  oscs.forEach(({ o }) => wg.connect(o.detune)); wob.start(t);
   const ns = c.createBufferSource(); ns.buffer = noiseBuffer; ns.loop = true;
   const bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = freq * 2; bp.Q.value = 0.9;
-  const ng = c.createGain(); ng.gain.value = freq < 650 ? 0.06 : 0.035;
-  ns.connect(bp); bp.connect(ng); ng.connect(out); ns.start(t);
+  const ng = c.createGain(); ng.gain.value = (freq < 650 ? 0.05 : 0.03) * breath;
+  ns.connect(bp); bp.connect(ng); ng.connect(out);
+  const bp1 = c.createBiquadFilter(); bp1.type = "bandpass"; bp1.frequency.value = freq; bp1.Q.value = 4;
+  const ng1 = c.createGain(); ng1.gain.value = 0.05 * breath;
+  ns.connect(bp1); bp1.connect(ng1); ng1.connect(out);
+  // Broadband air: what makes a weak embouchure sound breathy (only above normal breath).
+  if (breath > 1) {
+    const hp = c.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 700;
+    const ga = c.createGain(); ga.gain.value = 0.045 * (breath - 1);
+    ns.connect(hp); hp.connect(ga); ga.connect(out);
+  }
+  const bpc = c.createBiquadFilter(); bpc.type = "bandpass"; bpc.frequency.value = 2600; bpc.Q.value = 0.8;
+  const gc = c.createGain(); gc.gain.setValueAtTime(0.0001, t); gc.gain.exponentialRampToValueAtTime(0.09 * Math.max(0.5, breath), t + 0.012); gc.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+  ns.connect(bpc); bpc.connect(gc); gc.connect(out);
+  ns.start(t);
   lp.connect(out); out.connect(masterGain);
   let stopped = false, endAt = Infinity;
   const voice = {
-    ramp(from, to, at, dur) { oscs.forEach(({ o, h }) => { o.frequency.setValueAtTime(from * h, at); o.frequency.exponentialRampToValueAtTime(to * h, at + dur); }); },
-    jump(from, to, at, k) { oscs.forEach(({ o, h }) => { o.frequency.setValueAtTime(from * h, at); o.frequency.setValueAtTime(from * h, at + k - 0.012); o.frequency.exponentialRampToValueAtTime(to * h, at + k); }); },
+    ramp(from, to, at, dur) { oscs.forEach(({ o, h }) => { o.frequency.cancelScheduledValues(at); o.frequency.setValueAtTime(from * h, at); o.frequency.exponentialRampToValueAtTime(to * h, at + dur); }); },
+    jump(from, to, at, k) { oscs.forEach(({ o, h }) => { o.frequency.cancelScheduledValues(at); o.frequency.setValueAtTime(from * h, at); o.frequency.setValueAtTime(from * h, at + k - 0.012); o.frequency.exponentialRampToValueAtTime(to * h, at + k); }); },
     glideNow(f) {
       const now = c.currentTime;
       oscs.forEach(({ o, h }) => o.frequency.setTargetAtTime(f * h, now, 0.014));
@@ -493,7 +517,7 @@ function makeVoice(freq, t, opts) {
       }
       stopped = true; endAt = at;
       out.gain.setTargetAtTime(0.0001, at, 0.03);
-      const end = at + 0.4; oscs.forEach(({ o }) => o.stop(end)); lfo.stop(end); ns.stop(end);
+      const end = at + 0.4; oscs.forEach(({ o }) => o.stop(end)); lfo.stop(end); wob.stop(end); ns.stop(end);
       setTimeout(() => liveVoices.delete(voice), Math.max(0, (end - c.currentTime) * 1000) + 50);
     }
   };
@@ -599,6 +623,14 @@ function click(t, kind, dest) {
     bg.gain.setValueAtTime(kind === "sam" ? 0.7 : 0.35, t); bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
     b.connect(bg); b.start(t); b.stop(t + 0.32);
   }
+}
+
+// The four tone levels of the L08 rubric, demonstrated on Sa: 1 = mostly air, 4 = full and clear.
+const TONE_LEVELS = { 1: { breath: 18, wobble: 25, body: 0.25 }, 2: { breath: 10, wobble: 20, body: 0.45 }, 3: { breath: 3.5, wobble: 15, body: 0.85 }, 4: { breath: 0.6, wobble: 0, body: 1 } };
+function toneDemo(level, seconds) {
+  const c = ac(), t = c.currentTime + 0.05, p = TONE_LEVELS[level] || TONE_LEVELS[4];
+  const v = makeVoice(hzOf(0), t, p); v.stop(t + (seconds || 3));
+  return v;
 }
 
 function playNote(semi, dur) {
@@ -867,6 +899,21 @@ function yin(buf, sr) {
   return { f: sr / best, clarity: 1 - cm[tau], rms };
 }
 
+// How periodic (tone-like rather than breath-like) a frame is, 0 to 1: one minus the lowest
+// normalised difference in the flute's pitch range. Unlike yin() it has no threshold, so a breathy
+// note still gets a (low) value instead of none.
+function periodicity(buf, sr) {
+  const tauMin = Math.floor(sr / 3000), tauMax = Math.min(Math.floor(sr / 170), (buf.length >> 1) - 1);
+  const W = buf.length - tauMax;
+  let run = 0, best = 1;
+  for (let tau = 1; tau <= tauMax; tau++) {
+    let d = 0; for (let i = 0; i < W; i++) { const x = buf[i] - buf[i + tau]; d += x * x; }
+    run += d;
+    if (tau >= tauMin && run) best = Math.min(best, d * tau / run);
+  }
+  return Math.max(0, 1 - best);
+}
+
 function relSemi(f) { return 12 * Math.log2(f / saHz()); }
 
 function verdict(cents) {
@@ -948,13 +995,17 @@ async function analyzeAudioBuffer(audio, opts) {
   let data = raw, sr = audio.sampleRate;
   if (sr > 32000) { const n = Math.floor(raw.length / 2); data = new Float32Array(n); for (let i = 0; i < n; i++) data[i] = (raw[2 * i] + raw[2 * i + 1]) * 0.5; sr = sr / 2; }
   const maxLen = Math.min(data.length, Math.floor(sr * maxSeconds));
-  const size = 1024, hop = Math.round(sr * 0.03), frames = [];
+  const size = 1024, hop = Math.round(sr * 0.03), frames = [], levels = [], clarities = [];
   let pos = 0;
   await new Promise(resolve => {
     const step = () => {
       const until = Math.min(maxLen - size, pos + hop * 120);
       for (; pos < until; pos += hop) {
-        const r = yin(data.subarray(pos, pos + size), sr);
+        const buf = data.subarray(pos, pos + size);
+        let sq = 0; for (let i = 0; i < buf.length; i++) sq += buf[i] * buf[i];
+        levels.push(Math.sqrt(sq / buf.length));
+        const r = yin(buf, sr);
+        clarities.push(levels[levels.length - 1] > 0.004 ? periodicity(buf, sr) : 0);
         frames.push(r && r.clarity > 0.8 ? { s: relSemi(r.f), f: r.f } : null);
       }
       if (opts.onProgress) opts.onProgress(Math.min(100, Math.round(pos / Math.max(1, maxLen - size) * 100)));
@@ -962,8 +1013,45 @@ async function analyzeAudioBuffer(audio, opts) {
     };
     step();
   });
-  const hopS = hop / sr, clean = cleanFrames(frames);
-  return { frames: clean, hopS, segments: playableOnly(segmentsFrom(clean, hopS)), seconds: maxLen / sr, truncated: data.length > maxLen };
+  const hopS = hop / sr, clean = cleanFrames(frames), segments = playableOnly(segmentsFrom(clean, hopS));
+  return { frames: clean, hopS, segments, seconds: maxLen / sr, truncated: data.length > maxLen, tone: toneEstimate(levels, clarities, clean, segments, hopS) };
+}
+
+// A tone estimate from 1 to 4, measured on the sounding part of a recording (the L08 tone rubric,
+// approximated): how much of the sound has a clear pitch (breathy tone has less), how clean that pitch
+// is, and how steady the held notes are. A guide to compare takes, not a teacher's judgement.
+// Clarity needed for tone levels 2, 3 and 4, calibrated on synthetic flute tones with rising breath
+// noise (tests/live.test.mjs); real recordings in a real room will need checking against a teacher.
+const CLARITY = { 2: 0.55, 3: 0.86, 4: 0.94 };
+
+function toneEstimate(levels, clarities, frames, segments, hopS) {
+  const peak = Math.max(0, ...levels);
+  if (peak < 0.01) return null;
+  const sounding = levels.map((l, i) => l > Math.max(0.008, peak * 0.15) ? i : -1).filter(i => i >= 0);
+  if (sounding.length < 20) return null;
+  const voiced = sounding.filter(i => frames[i]);
+  const voicedShare = voiced.length / sounding.length;
+  // Clarity over all of the sounding part: a breathy note lowers it smoothly, step by step.
+  const clarity = sounding.reduce((a, i) => a + clarities[i], 0) / sounding.length;
+  // Steadiness: the spread (cents) inside each held note of at least 1 s, typical value.
+  const spreads = [];
+  for (const sg of segments || []) {
+    if (sg.t1 - sg.t0 < 1) continue;
+    const vals = [];
+    for (let i = Math.round(sg.t0 / hopS) + 3; i < Math.round(sg.t1 / hopS) - 3; i++) if (frames[i]) vals.push(frames[i].s * 100);
+    if (vals.length < 10) continue;
+    const m = vals.reduce((a, b) => a + b, 0) / vals.length;
+    spreads.push(Math.sqrt(vals.reduce((a, b) => a + (b - m) * (b - m), 0) / vals.length));
+  }
+  spreads.sort((a, b) => a - b);
+  const wobble = spreads.length ? spreads[spreads.length >> 1] : null;
+  const steady = wobble === null ? 99 : wobble;
+  let score = 1;
+  if (clarity >= CLARITY[2]) score = 2;
+  if (clarity >= CLARITY[3] && voicedShare >= 0.8 && steady <= 15) score = 3;
+  if (clarity >= CLARITY[4] && voicedShare >= 0.92 && steady <= 8) score = 4;
+  const words = ["", "Mostly air: little clear pitch yet.", "Some clear tone, with a lot of breath or an unsteady pitch.", "Clear and fairly steady, with some breath.", "Full, clear and steady."];
+  return { score, voicedShare: Math.round(voicedShare * 100) / 100, clarity: Math.round(clarity * 100) / 100, wobble: wobble === null ? null : Math.round(wobble), text: words[score] };
 }
 
 // rows[i] = { n, expected, near, cents, held, t0, t1, status, verdict: [label, kind] }

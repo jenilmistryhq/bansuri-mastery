@@ -118,6 +118,12 @@ Fingering for this lesson:
         1  2  3     4  5  6
 ```
 
+### Photo: the embouchure in practice
+
+![Stephanie Bosch playing a long bansuri: the lower lip rests on the edge of the blowing hole](../assets/photos/stephanie-bosch-hands-on-holes.jpg)
+
+*The lower lip rests just on the edge of the blowing hole and the flute lies along the chin. Photo: Heinrich-Böll-Stiftung, CC BY-SA 2.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:A_bansuri_player_Stephanie_Bosch,_flute_side_blown_wind_instrument_India.jpg). All photo credits: [photo credits](../assets/photos/CREDITS.md).*
+
 ## 6. Watch and listen
 
 Watch at least two of these and compare them. Look closely at **the lips** and **the angle of the flute**:

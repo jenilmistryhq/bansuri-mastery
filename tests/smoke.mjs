@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import puppeteer, { KnownDevices } from "puppeteer-core";
 
 const ROOT = process.env.SITE_ROOT ? path.resolve(process.env.SITE_ROOT) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json", ".md": "text/markdown; charset=utf-8", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webmanifest": "application/manifest+json", ".png": "image/png" };
+const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json", ".md": "text/markdown; charset=utf-8", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webmanifest": "application/manifest+json", ".png": "image/png", ".jpg": "image/jpeg", ".mp3": "audio/mpeg", ".ogg": "audio/ogg", ".wasm": "application/wasm", ".task": "application/octet-stream" };
 
 const server = http.createServer((req, res) => {
   const url = decodeURIComponent(req.url.split("?")[0]);
@@ -310,6 +310,16 @@ try {
   await clickText("#main button", "Yes, it helped");
   check(/What you worked on/.test(await page.$eval("#main", e => e.innerText)), "the coach remembers what helped");
 
+  console.log("Posture and tone levels");
+  await go("/journal");
+  check(await page.$$eval("#main .chipbtn", b => b.filter(x => /^[1-4]: /.test(x.textContent)).length) === 4, "the four tone levels can be heard in the Journal");
+  await page.evaluate(() => { const d = [...document.querySelectorAll("details")].find(x => /Video self-check/.test(x.textContent)); d.open = true; });
+  await sleep(300);
+  await clickText("#main .posture button", "Start the posture check");
+  await page.waitForFunction(() => /No one in view|Shoulders|Head|could not start/.test(document.querySelector("#main .posture").innerText), { timeout: 60000 })
+    .then(async () => check(!/could not start/.test(await page.$eval("#main .posture", e => e.innerText)), "the posture check loads pose detection and watches the camera"), () => check(false, "the posture check loads pose detection and watches the camera"));
+  await clickText("#main .posture button", "Stop");
+
   console.log("Journal and progress");
   await go("/journal");
   await clickText("#main .chipbtn", "45 min");
@@ -595,7 +605,8 @@ try {
   console.log("  FAIL exception: " + e.message);
 } finally {
   // The docs theme asks api.github.com for repo stats; that third-party call is not ours to test.
-  const relevant = errors.filter((e, i, all) => !/AudioContext was not allowed to start/.test(e) && !/api.github.com/.test(e) && !(/Failed to load resource/.test(e) && all.some(x => /api.github.com/.test(x))));
+  // MediaPipe logs its normal start-up ("Created TensorFlow Lite XNNPACK delegate") as a console error.
+  const relevant = errors.filter((e, i, all) => !/AudioContext was not allowed to start/.test(e) && !/XNNPACK|TensorFlow Lite|Graph successfully started|gl_context|OpenGL error checking/.test(e) && !/api.github.com/.test(e) && !(/Failed to load resource/.test(e) && all.some(x => /api.github.com/.test(x))));
   check(relevant.length === 0, "no console errors, page errors or failed requests" + (relevant.length ? ":\n    " + relevant.slice(0, 10).join("\n    ") : ""));
   await browser.close();
   server.close();

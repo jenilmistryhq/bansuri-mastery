@@ -1,11 +1,19 @@
 {
- "version": "ae5110d2334a",
+ "version": "464215a6c2f9",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
   "app/audio/bansuri-e-bass-sample.ogg",
+  "app/audio/bansuri-major-scale-sankalp.mp3",
+  "app/audio/bansuri-major-scale-staccato-sankalp.mp3",
+  "app/audio/bansuri-raag-jog-phrase-ninad-p.mp3",
+  "app/audio/bansuri-sa-lower-octave-sankalp.mp3",
+  "app/audio/bansuri-sa-middle-octave-sankalp.mp3",
+  "app/audio/bansuri-sa-three-octaves-sankalp.mp3",
+  "app/audio/bansuri-sargam-sa-to-taar-sa-roguentropy.mp3",
   "app/audio/bansuri-small-e-sample.m4a",
   "app/audio/bansuri-small-e-sample.ogg",
+  "app/audio/carnatic-flute-mayamalavagowla.ogg",
   "app/data/plan.json",
   "app/fonts.css",
   "app/fonts/hind-devanagari-400-normal.woff2",
@@ -38,6 +46,7 @@
   "app/js/main.js",
   "app/js/placement.js",
   "app/js/playable.js",
+  "app/js/posture.js",
   "app/js/recorder.js",
   "app/js/state.js",
   "app/js/util.js",
@@ -56,7 +65,13 @@
   "app/js/views/today.js",
   "app/vendor/marked.esm.js",
   "bansuri-mastery/assets/diagrams/embouchure.svg",
-  "bansuri-mastery/assets/diagrams/holding.svg"
+  "bansuri-mastery/assets/diagrams/holding.svg",
+  "bansuri-mastery/assets/photos/hariprasad-chaurasia-front-hands.jpg",
+  "bansuri-mastery/assets/photos/jaspreet-seated-front-view.jpg",
+  "bansuri-mastery/assets/photos/pravin-godkhindi-seated-long-flute.jpg",
+  "bansuri-mastery/assets/photos/sameer-rao-seated-concert-posture.jpg",
+  "bansuri-mastery/assets/photos/stephanie-bosch-hands-on-holes.jpg",
+  "bansuri-mastery/assets/photos/subhash-prem-giri-side-view.jpg"
  ],
  "docs": [
   {
@@ -98,6 +113,10 @@
   {
    "path": "README.md",
    "title": "Bansuri Mastery"
+  },
+  {
+   "path": "assets/photos/CREDITS.md",
+   "title": "Photo credits"
   },
   {
    "path": "exercises/EX-ALK-alankar-book.md",

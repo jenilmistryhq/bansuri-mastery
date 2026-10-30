@@ -30,7 +30,7 @@ When you tap your foot to a song, you are tapping its **pulse**, or **beat**: a 
 
 In Indian music the speed is called **laya**:
 
-| Laya | Meaning | Rough BPM (Uncertain: ranges vary by context) |
+| Laya | Meaning | Rough BPM (Disputed: Wikipedia gives vilambit as 10-40 and madhya as 80-160 per minute; Digitabla says the layas match no fixed BPM and instrumental tempos run faster than vocal ones) |
 |---|---|---|
 | Vilambit | slow | under ~60 (very slow classical can be 20-40) |
 | Madhya | medium | ~60-150 |

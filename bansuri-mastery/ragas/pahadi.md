@@ -49,18 +49,22 @@ All recordings: [Listening Library: Pahadi](../08-LISTENING-LIBRARY.md#pahadi).
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
-## Practice composition (Original, written for this curriculum; not yet reviewed by a teacher)
+## Traditional composition (Bhatkhande, Kramik Pustak Malika)
 
-**Keherwa, 16 beats per line (two 8-beat cycles), target 60-80 BPM. Starts on sam.** Each `|` marks a vibhag of 4 beats.
+**What it is:** lakshan geet (a song whose words describe the raga; the words are left out here), teentaal, madhya laya, sthayi (first section) only.
+
+**Source:** V. N. Bhatkhande, *Hindustani Sangeet Paddhati: Kramik Pustak Malika*, Part 5 (Hindi translation from the Marathi, edited and published by Laxminarayan Garg, Sangeet Karyalaya, Hathras; 1956 per the Digital Library of India record), Bilawal thaat, raga Pahadi, page 245. Scan read: [Internet Archive, Digital Library of India copy, leaf n248](https://archive.org/details/in.ernet.dli.2015.326018/page/n248/mode/1up).
+
+It was transcribed from the public-domain book (Bhatkhande died in 1936) into this course's notation. Check it against the source page before you rely on it. It uses only `S R G` and mandra `.D`, and each line ends on mandra Dha; the book's introduction to Pahadi names a pause on mandra Dha as a defining feature of the raga.
+
+**Teentaal, 16 beats per line. The sthayi starts on beat 13 (the third tali), so sam is the first note of the second vibhag of each line (`G` in both lines).** Each `|` marks a vibhag of 4 beats.
 
 ```
-.D .P S R | G - R S | .D - .P - | .D S R - |
-G P G R | S R S .D | .P .D S R | S - - - ||
+.D .D S R | G G G G | G R S R | G R S .D |
+S R G G | G G G R | G R S R | G R S .D ||
 ```
 
-It uses only the core notes `S R G P D` and rests on mandra Dha and mandra Pa, as Pahadi does. Leave out the colour notes until you have heard how good players use them. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a keherwa loop and raise the tempo slowly.
-
-**Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
+Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

@@ -55,7 +55,7 @@ any Sa. They always need at least one half-hole. Details: [L26](../lessons/L26-k
 2. Sing then play the **aroh and avroh** slowly against a C drone ([R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)).
 3. Learn the **pakad / characteristic phrases** until you can play them from memory.
 4. Do **swar vistar**: slow improvisation using only the card's rules ([L31](../lessons/L31-alap-and-swar-vistar.md)).
-5. Learn one **composition** (from your teacher, R-T01 SwarGanga or R-T04 Tanarang). Every card has a short original practice composition to start with (Bhupali and Yaman link to the one in their lesson); those have not yet been reviewed by a teacher.
+5. Learn one **composition** (from your teacher, R-T01 SwarGanga or R-T04 Tanarang). Six cards (Khamaj, Bhairav, Kafi, Bhairavi, Hamsadhwani, Pahadi) give a **traditional composition** transcribed from Bhatkhande's *Kramik Pustak Malika*, with the page to check it against. Six others still have a short original practice composition, marked Uncertain until a teacher reviews it (the Bhatkhande volumes that contain those ragas could not be found online). Bhupali and Yaman link to the composition in their lesson. A grammar check (`scripts/raga_lint.py`) confirms that no composition uses a note its raga leaves out.
 6. Test yourself: record 2 minutes, then check every phrase against the card's rules.
 
 ## About the verification lines

@@ -22,7 +22,8 @@ A static web app (no server, no account, no framework) that teaches the course o
 - **Your playing:** best long tones per note, play-back level, play-along and tapping results on Progress, and "Last time" on Today to beat.
 - **Find my flute:** play Sa and the app sets your flute's key, octave and tuning (Day 0 and Settings). Settings also has a 15-second microphone check with a copyable report.
 - **Course that adapts:** a playing placement test for those who already play, a daily practice time (short, standard or long) that scales every session, help when a day keeps not passing, a "welcome back" review after a break, rotating warm-ups and a song of the week.
-- **Ragas by ear:** "Name that raga" on the raga index, and practice compositions on every raga card.
+- **Ragas by ear:** "Name that raga" on the raga index, and a composition on every raga card: six traditional ones transcribed from Bhatkhande's *Kramik Pustak Malika* (with the page to check), the rest original. A raga grammar check keeps every notation on a card within its raga's notes.
+- **Tone and posture:** the Journal gives a measured tone estimate (1-4) for each recording and lets you hear the four tone levels; a live posture check watches shoulders, head and arms through the camera (all in the browser).
 - **Lessons as cards:** each lesson opens as short cards (the idea, each step, common mistakes to tap and reveal, the quiz as flashcards, a mastery checklist), with the full text one tap away. Any notation in the course has a play button, glossary terms are tap-to-define, and each lesson ends with "Practise it now" (its main exercise, with the microphone, and a slot for a teacher's reference recording). Sargam can also be shown in Devanagari.
 - **Journal:** one-tap logging (minutes and how it went), a day-by-day timeline of practice, recordings and measured results, recordings kept on the device with pitch analysis and before/after comparison, and a **video self-check** (record yourself with the camera to check posture and embouchure).
 - **Progress:** the M0-M10 milestone path, minutes per week, a streak calendar, long-tone trends per note, statistics, badges and a shareable progress card (the data travels inside the link).
@@ -69,6 +70,8 @@ scripts/
   build_plan.py, plan/   generates app/data/plan.json (the day-by-day plan) from the roadmaps
   build_app.py           lists app files for offline use and versions sw.js
   check_links.py         checks every external link in the course (run weekly by CI)
+  raga_lint.py           raga grammar: no notation on a raga card uses a note the raga leaves out
+  review_claims.py       lists every Uncertain or Disputed claim in TEACHER-REVIEW-CLAIMS.md
   convert_audio.mjs      makes the AAC (.m4a) copies of the reference recordings for Safari
 tests/                   unit tests and a headless-browser smoke test
 .github/workflows/       validates, tests, builds and deploys to GitHub Pages; weekly link check
@@ -147,7 +150,9 @@ not what a good bansuri tone sounds like.
   JavaScript/CSS of the Practice Bench pages): [MIT](LICENSE-CODE).
 - **Fonts** in `app/fonts/` (Hind, Rozha One, JetBrains Mono): SIL Open Font License 1.1, licences beside the files.
 - **marked** in `app/vendor/`: MIT, licence beside the file.
-- **Reference recordings** in `app/audio/`: public domain, by Prithoo on Wikimedia Commons (see `CREDITS.txt`).
+- **Reference recordings** in `app/audio/`: public domain, CC0, CC BY and CC BY-SA recordings from Wikimedia Commons and Freesound, each credited in `app/audio/CREDITS.txt`.
+- **Photos** in `bansuri-mastery/assets/photos/`: Wikimedia Commons, each under its own licence (CC BY, CC BY-SA or public domain), credited in `CREDITS.md` there and under each photo.
+- **Pose detection** in `app/vendor/pose/`: MediaPipe Tasks Vision and the pose landmarker model (Apache 2.0, Google LLC), with its usage telemetry disabled (see `NOTICE.txt`).
 - Linked videos, websites, books and recordings belong to their creators; this project only links to them.
 
 Copyright (c) 2026 Jenil Mistry.

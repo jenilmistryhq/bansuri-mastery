@@ -1,0 +1,15 @@
+Pose detection for the video self-check (loaded only when the learner opens the live posture check).
+
+vision_bundle.mjs, vision_wasm_internal.js, vision_wasm_internal.wasm
+  MediaPipe Tasks Vision 1.1.1 (npm package @mediapipe/tasks-vision), Copyright Google LLC.
+  Licence: Apache License 2.0 (LICENSE-Apache-2.0.txt). https://github.com/google-ai-edge/mediapipe
+  vision_bundle.mjs is modified in one place: the usage-telemetry sender (which would POST to
+  odml.pa.googleapis.com) is replaced by a no-op, so the library makes no network requests.
+  The other files are unmodified from the npm package.
+
+pose_landmarker_lite.task
+  MediaPipe Pose Landmarker (lite, float16, version 1), Copyright Google LLC.
+  Licence: Apache License 2.0 (LICENSE-Apache-2.0.txt).
+  Source: https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task
+
+Everything runs in the browser. No image or video leaves the device.

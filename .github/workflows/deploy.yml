@@ -39,6 +39,9 @@ jobs:
       - name: Validate curriculum (links, IDs, typography)
         run: python scripts/validate.py
 
+      - name: Raga grammar (no notes a raga leaves out)
+        run: python scripts/raga_lint.py
+
       - name: Check generated files are up to date
         run: |
           python scripts/gen_nav.py --check

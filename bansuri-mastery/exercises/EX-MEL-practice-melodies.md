@@ -36,6 +36,8 @@ S R G R | S - - - ||
 
 ### 1.2 Hot Cross Buns (Traditional, 4 beats per bar, 60-90 BPM)
 
+Verified against: Wikipedia, "Hot Cross Buns (song)", score (the familiar "Alternative" tune), https://en.wikipedia.org/wiki/Hot_Cross_Buns_(song).
+
 ```
 G R S - | G R S - | SS SS RR RR | G R S - ||
 ```
@@ -88,6 +90,8 @@ R G R S   | S - - -  ||
 `.P .P .D .P S .N` and `.P .P .D .P R S`. Rhythm by ear. The full song is
 [4.4](#44-happy-birthday-traditional-melody-public-domain).
 
+Verified against: the sources listed under 4.4.
+
 ### 2.3 Breath Study (Original, Keherwa, 60 BPM; trains BRE-04 and TON-06)
 
 ```
@@ -111,6 +115,8 @@ Play it softly, like a lullaby: the low notes need warm, slow air ([L11](../less
 ## Level 3: Full madhya with tivra Ma (unlocked by [L14](../lessons/L14-tivra-ma-and-madhya-pa-dha-ni.md))
 
 ### 3.1 Mary Had a Little Lamb (Traditional, 4 beats per bar)
+
+Verified against: "Mary had a little lamb" (ABC, John Chambers' demo tunes), https://abcnotation.com/tunePage?a=trillian.mit.edu/~jc/music/abc/demo/Tunes/MaryHadALittleLamb/0000; and "Lesson 3 - Mary Had a Little Lamb" (ABC, Cecilio violin first lesson), https://abcnotation.com/tunePage?a=gitlab.com/chrisspen/abc-music/abc-music-master.zip/abc-music-master/cecilio-violin-first-lesson/03-2-mary-had-a-little-lamb/0000.
 
 ```
 G R S R | G G G - | R R R - | G P P - |
@@ -147,6 +153,8 @@ GR S .D | S - - ||
 The hymn tune, usually called "New Britain", is traditional and in the public domain. It starts
 with a one-beat pickup on `.P`. `GS` = two notes in one beat.
 
+Verified against: Colin Hume, "Amazing Grace" (ABC), https://abcnotation.com/tunePage?a=colinhume.com/ABC.txt/0030; and Paul Hardy's Session Tunebook, "Amazing Grace / New Britain" (ABC), https://abcnotation.com/tunePage?a=pghardy.net/tunebooks/pgh_session_tunebook/0009.
+
 ```
 .P | S - GS | G - R | S - .D | .P - .P |
 S - GS | G - R | P - - | P - - ||
@@ -158,9 +166,27 @@ Two notes per beat almost everywhere, starting with a one-beat pickup `SR`. The 
 simplified: the original has a few dotted (long-short) pairs, which you can copy by ear later.
 The chorus needs shuddha Ma, so it is not included here.
 
+Verified against: Paul Hardy's Session Tunebook, "Oh Susanna" (ABC), https://abcnotation.com/tunePage?a=pghardy.net/tunebooks/pgh_session_tunebook/0446; and the Digital Tradition, "Oh Susanna!" (ABC), https://abcnotation.com/tunePage?a=sniff.numachi.com/~rickheit/dtrad/abc_dtrad.tar.gz/abc_dtrad/OSUSANNA/0000.
+
 ```
 SR | GP PD PG SR | GG RS R SR |
 GP PD PG SR | GG RR S - ||
+```
+
+### 3.7 Auld Lang Syne (Traditional Scottish, public domain, 4 beats per bar, 60-80 BPM)
+
+Verse (lines 1-2) and chorus (lines 3-4), with a one-beat pickup on `.P`. Uses only
+`.P .D S R G P D S'`, no Ma at all. `-S`, `-G` and `-.D` are the dotted long-short pairs (see
+the extra rhythm mark at the top of this page): the "Should auld" lilt. Some editions start the last chorus phrase
+on `D` instead of `S'` (end of line 3).
+
+Verified against: Wikipedia, "Auld Lang Syne", score, https://en.wikipedia.org/wiki/Auld_Lang_Syne; Paul Hardy's Songs Tunebook, "Auld Lang Syne" (ABC), https://abcnotation.com/tunePage?a=pghardy.net/tunebooks/pgh_songs_tunebook/0001; and "Auld Lang Syne" for violin (ABC), https://abcnotation.com/tunePage?a=gitlab.com/chrisspen/abc-music/abc-music-master.zip/abc-music-master/violin/auld-lang-syne-g/0000.
+
+```
+.P | S -S S G | R -S R G | S -S G P | D - - D |
+P -G G S | R -S R G | S -.D .D .P | S - - D |
+P -G G S | R -S R D | P -G G P | D - - S' |
+P -G G S | R -S R G | S -.D .D .P | S - - ||
 ```
 
 ---
@@ -172,6 +198,8 @@ which is why they come after L16 on a bansuri.
 
 ### 4.1 Twinkle Twinkle Little Star (Traditional)
 
+Verified against: Wikipedia, "Twinkle, Twinkle, Little Star", score, https://en.wikipedia.org/wiki/Twinkle,_Twinkle,_Little_Star; and Frank Nordberg, "Ah! vous dirai-je, maman" (ABC), https://abcnotation.com/tunePage?a=trillian.mit.edu/~jc/music/abc/demo/Tunes/AhVousDiraiJeMaman/0000.
+
 ```
 S S P P | D D P - | m m G G | R R S - |
 P P m m | G G R - | P P m m | G G R - |
@@ -179,6 +207,8 @@ S S P P | D D P - | m m G G | R R S - ||
 ```
 
 ### 4.2 Ode to Joy (Beethoven, public domain)
+
+Verified against: Wikipedia, "Ode to Joy", score, https://en.wikipedia.org/wiki/Ode_to_Joy; and "Ode To Joy" (ABC, John Chambers' demo tunes), https://abcnotation.com/tunePage?a=trillian.mit.edu/~jc/music/abc/demo/Tunes/OdeToJoy/0000.
 
 ```
 G G m P | P m G R | S S R G | G -R R - ||
@@ -189,12 +219,16 @@ G G m P | P m G R | S S R G | R -S S - ||
 
 ### 4.3 Jingle Bells, chorus (James Lord Pierpont, public domain)
 
+Verified against: Paul Hardy's Xmas Tunebook, "Jingle Bells" (ABC), https://abcnotation.com/tunePage?a=pghardy.net/tunebooks/pgh_xmas_tunebook/0034; and Colin Hume, "Jingle Bells" (ABC), https://abcnotation.com/tunePage?a=colinhume.com/ABC.txt/0692.
+
 ```
 G G G - | G G G - | G P S R | G - - - |
 m m m m | m G G GG | G R R G | R - P - ||
 ```
 
 ### 4.4 Happy Birthday (traditional melody, public domain)
+
+Verified against: "Good Morning and Birthday Song", The Everyday Song Book (1927), ABC transcription by John Chambers, https://trillian.mit.edu/~jc/music/book/EverydaySongBook/016_Good_Morning_and_Birthday_Song.abc; and Wikipedia, "Happy Birthday to You", score, https://en.wikipedia.org/wiki/Happy_Birthday_to_You.
 
 **Full melody, notes only** (Sa = C, starting low on mandra Pa):
 
@@ -234,6 +268,8 @@ m G R G  | S - - - ||
 
 ### 4.6 Frere Jacques (Traditional French round, public domain, 4 beats per bar, 60-90 BPM)
 
+Verified against: "Frere Jacques", Singing Together (BBC, 1951), via folkinfo.org (ABC), https://abcnotation.com/tunePage?a=trillian.mit.edu/~jc/music/abc/mirror/folkinfo.org/Frere_Jacques/0000; and the Digital Tradition, "Frere Jacques" (ABC), https://abcnotation.com/tunePage?a=sniff.numachi.com/~rickheit/dtrad/abc_dtrad.tar.gz/abc_dtrad/FRERJACQ/0000.
+
 ```
 S R G S | S R G S | G m P - | G m P - |
 PD Pm G S | PD Pm G S | S .P S - | S .P S - ||
@@ -243,6 +279,8 @@ It is a round: record yourself playing it, then play it again starting when the 
 reaches bar 3. The two parts should fit together.
 
 ### 4.7 London Bridge (Traditional, public domain, 4 beats per bar, 70-90 BPM)
+
+Verified against: Wikipedia, "London Bridge Is Falling Down", score, https://en.wikipedia.org/wiki/London_Bridge_Is_Falling_Down; and flutetunes.com, "London Bridge is Falling Down" (MIDI), https://www.flutetunes.com/tunes.php?id=126.
 
 The first beat of each line is really a long-short (dotted) pair; play it as two even notes
 first, then copy the lilt by ear.

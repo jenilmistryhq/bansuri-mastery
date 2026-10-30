@@ -54,7 +54,7 @@ line means unsteady breath support.
 |---|---|---|---|
 | R1 | Octave slurs | `.P P .P P`, `.D D .D D`, `.N N .N N`, `S S' S S'` (same fingering; only air changes) | Clean jumps, no in-between squeak, 5/5 at 60 BPM |
 | R2 | Register slur up | Hold `.P` 4 beats, then without stopping the air, speed it up until `P` sounds; hold 4 beats | Smooth "click" into the upper octave |
-| R3 | Harmonics (Uncertain: depends on your flute) | Finger `XXX XXX`. Blow gently (G4), faster (G5 = `P`), faster still: some flutes give D6 (taar `R'`) | Explore only; stop if you need to force. Teaches air speed, not force |
+| R3 | Harmonics (Fact: faster air gives the 2nd and 3rd harmonics, an octave and a twelfth up, so G5 then D6 (Verified: UNSW Music Acoustics; HyperPhysics; Wikipedia: Altissimo). Uncertain: how easily your flute gives D6) | Finger `XXX XXX`. Blow gently (G4), faster (G5 = `P`), faster still: some flutes give D6 (taar `R'`) | Explore only; stop if you need to force. Teaches air speed, not force |
 | R4 | Register crossings | `G P G P`, `M D M D`, `G' to G` slurs | Even tone across the change |
 | R5 | Top-down long tones | Start on `S'`, hold, then `N`, `D`, `P`... down to `.P` | Tone stays the same "colour" from top to bottom (TON-10) |
 

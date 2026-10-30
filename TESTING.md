@@ -75,6 +75,8 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Settings > Microphone check: run it, copy the report, and send it along with any problem.
 - [ ] Settings > Already play? > Take the playing test: each item passes when played well; the recommended phase makes sense.
 - [ ] A lesson's last card (Practise it now): the exercise starts and listens; a recording marked "Reference for Lxx" in the Journal plays there.
+- [ ] Journal > record a long Sa > Analyse pitch: the tone estimate (1-4) matches what you hear; compare with the four tone levels.
+- [ ] Journal > Video self-check > Live posture check: raise one shoulder, tilt the head, lift the elbows; each is noticed within a second or two.
 - [ ] Note the phone, room and distance from the phone when anything misreads.
 
 ### Camera

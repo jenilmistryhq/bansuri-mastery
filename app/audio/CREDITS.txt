@@ -18,3 +18,77 @@ can play them (the app offers .m4a first and .ogg as a fallback). Same recording
 Both are amateur recordings at low bitrate (22 kHz, about 50 kbps). They were checked for
 licence and format, not by ear. They let a beginner hear the real instrument's breathy tone;
 for professional tone, use the recordings in bansuri-mastery/08-LISTENING-LIBRARY.md.
+
+----------------------------------------------------------------------------------------------
+Added 2026-10-30. Freesound originals are WAV/M4A and need a Freesound login to download, so
+the files below are Freesound's own public "HQ preview" encodings (MP3, about 128 kbps VBR,
+44.1 kHz), fetched from cdn.freesound.org. Audio content is unchanged; only the format differs
+from the uploaded original. Renamed for clarity. No other edits.
+
+bansuri-sa-middle-octave-sankalp.mp3
+  Original: "Bansuri single note middle octave" by sankalp, Freesound, 2013-03-03
+  https://freesound.org/people/sankalp/sounds/179696/
+  License: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+  Page says: middle octave Sa (slightly lower than standard F) played on a bansuri. 11 s.
+  Changes: Freesound HQ MP3 preview of the original WAV; renamed.
+  sha256 3275b486f11f3d9a25442c0a7f8c7b13991e06c2453093c9f06b7de9114f84e5
+
+bansuri-sa-lower-octave-sankalp.mp3
+  Original: "Bansuri single note lower octave" by sankalp, Freesound, 2013-03-03
+  https://freesound.org/people/sankalp/sounds/179695/
+  License: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+  Page says: lower Sa (slightly lower than standard F) played on a bamboo flute. 12 s.
+  Changes: Freesound HQ MP3 preview of the original WAV; renamed.
+  sha256 c1f415eee46c8f918159bdd79772a3c8a0560670b893249f548fbaa631aa03ef
+
+bansuri-sa-three-octaves-sankalp.mp3
+  Original: "single note played on bansuri in three octaves" by sankalp, Freesound, 2013-03-03
+  https://freesound.org/people/sankalp/sounds/179694/
+  License: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+  Page says: F note (a little lower than 440 Hz-tuned F) played on bansuri in three octaves. 17 s.
+  Changes: Freesound HQ MP3 preview of the original WAV; renamed.
+  sha256 f2435a850208fef34103b3d3015220c247ca26bb134421c3db05ed3e391a8f84
+
+bansuri-major-scale-sankalp.mp3
+  Original: "Major scaled played on bansuri" by sankalp, Freesound, 2013-03-03
+  https://freesound.org/people/sankalp/sounds/179693/
+  License: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+  Page says: major scale (F major) on a North Indian bamboo flute. 20 s.
+  Changes: Freesound HQ MP3 preview of the original WAV; renamed.
+  sha256 7dce95cb0ee3de3b56b22a19659d60daebd56c4dc3f0734e7cf269e9b813ff0c
+
+bansuri-major-scale-staccato-sankalp.mp3
+  Original: "Bansuri major scale staccato style" by sankalp, Freesound, 2013-03-03
+  https://freesound.org/people/sankalp/sounds/179698/
+  License: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+  Page says: F major scale (slightly below 440 Hz tuning) in staccato style on a bansuri. 10 s.
+  Changes: Freesound HQ MP3 preview of the original WAV; renamed.
+  sha256 d0f3f3e985a7642b0233cfc07830b48f32f5ac2e43c7708da4cfb0081acdd4f4
+
+bansuri-sargam-sa-to-taar-sa-roguentropy.mp3
+  Original: "Flute Sargams" by roguentropy, Freesound, 2026-02-07
+  https://freesound.org/people/roguentropy/sounds/844538/
+  License: CC0 1.0, https://creativecommons.org/publicdomain/zero/1.0/
+  Page says: "Going to S to S' and back on my flute" (tags: Bamboo, Bansuri). 15 s.
+  Changes: Freesound HQ MP3 preview of the original M4A; renamed.
+  sha256 07f4ab14d72db59c6cf18307fb1e77b7670a91df7077d1bc082f79673d2444c0
+
+bansuri-raag-jog-phrase-ninad-p.mp3
+  Original: "bansuri_flute_rag_jog.wav" by Ninad_P, Freesound, 2018-11-20
+  https://freesound.org/people/Ninad_P/sounds/448458/
+  License: CC0 1.0, https://creativecommons.org/publicdomain/zero/1.0/
+  Page says: a short phrase in Rag Jog played by the uploader on bansuri. 4 s.
+  Changes: Freesound HQ MP3 preview of the original WAV; renamed.
+  sha256 016ea80884bafa1cf8a1b49df5eef8996c622e5ca951a9f1c5c3d2f03ecba349
+
+carnatic-flute-mayamalavagowla.ogg
+  Original: "Carnatic flute.ogg" by Bansuri.arvind, Wikimedia Commons, 2011-10-16 (own work)
+  https://commons.wikimedia.org/wiki/File:Carnatic_flute.ogg
+  License: CC BY-SA 3.0, https://creativecommons.org/licenses/by-sa/3.0/
+  Page says: a Carnatic 8-hole flute, raga Mayamalavagowla played. 39 s, Ogg Vorbis.
+  NOTE: this is a South Indian 8-hole flute (venu), not a bansuri. ShareAlike: keep it as a
+  separate, unmodified file with this credit; any edited version must also be CC BY-SA 3.0.
+  Changes: none (byte-identical download); renamed.
+  sha256 f83048a0f7c568ebe2abd270b875d5ecc3bd8e71998a3006691d1a0e39189c5f
+
+These were checked for licence, source page and format, not by ear.

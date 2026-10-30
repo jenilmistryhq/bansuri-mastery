@@ -4,3 +4,5 @@
 *.mp3 binary
 *.m4a binary
 *.wav binary
+*.wasm binary
+*.task binary

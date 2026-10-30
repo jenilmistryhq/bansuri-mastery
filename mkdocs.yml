@@ -6,6 +6,9 @@ repo_name: jenilmistryhq/bansuri-mastery
 edit_uri: edit/main/bansuri-mastery/
 copyright: Content CC BY-NC-SA 4.0 &middot; Code MIT &middot; Copyright &copy; 2026 Jenil Mistry
 docs_dir: bansuri-mastery
+# Credits pages are linked from the pages that use the photos, not listed in the navigation.
+not_in_nav: |
+  assets/**/CREDITS.md
 site_dir: site
 use_directory_urls: true
 

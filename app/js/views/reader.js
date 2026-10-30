@@ -20,6 +20,8 @@ export function ragaPhrases(md) {
     if (notes.length >= 4) phrases.push(notes);
   };
   for (const label of ["Aroh", "Avroh"]) { const c = /`([^`]+)`/.exec(row(label)); if (c) add(c[1]); }
+  // Cards without a pakad (Pahadi) give their typical movement instead.
+  for (const m of row("Typical movement").matchAll(/`([^`]+)`/g)) add(m[1]);
   const pk = /`([^`]+)`/.exec(row("Pakad"));
   if (pk) { add(pk[1].replace(/,/g, " ")); pk[1].split(",").forEach(add); }
   const notes = row("Notes").split("(")[0].trim();

@@ -30,24 +30,48 @@ export function makeVoice(freq, t, opts) {
   const c = ac(), level = opts.level || 0.26;
   const out = c.createGain(); out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(level, t + 0.05);
   const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(10000, freq * 6);
-  const parts = [[1, 1], [2, freq < 700 ? 0.2 : 0.09], [3, 0.05]];
+  // A bansuri-like voice: a strong fundamental with weak overtones (stronger on low notes), breath
+  // noise around the fundamental and the second harmonic, a short breathy "chiff" at the start, a slight
+  // scoop up into the pitch, and vibrato that fades in rather than starting at once.
+  // opts.breath scales the breath noise (1 = normal); opts.wobble adds a slow unsteadiness, in cents.
+  const breath = opts.breath === undefined ? 1 : opts.breath;
+  const parts = [[1, 1], [2, freq < 700 ? 0.2 : 0.09], [3, freq < 700 ? 0.06 : 0.03], [4, 0.02]];
   const oscs = parts.map(([h, a]) => {
-    const o = c.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(freq * h, t);
-    const g = c.createGain(); g.gain.value = a; o.connect(g); g.connect(lp); o.start(t);
+    const o = c.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(freq * h * 0.985, t); o.frequency.exponentialRampToValueAtTime(freq * h, t + 0.06);
+    const g = c.createGain(); g.gain.value = a * (opts.body === undefined ? 1 : opts.body); o.connect(g); g.connect(lp); o.start(t);
     return { o, h };
   });
   const lfo = c.createOscillator(); lfo.frequency.value = opts.andolan ? 1.2 : 5.2;
-  const lg = c.createGain(); lg.gain.value = opts.andolan ? 38 : 5; lfo.connect(lg);
+  const lg = c.createGain(); lfo.connect(lg);
+  if (opts.andolan) lg.gain.value = 38;
+  else { lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(5, t + 0.5); }
   oscs.forEach(({ o }) => lg.connect(o.detune)); lfo.start(t);
+  const wob = c.createOscillator(); wob.frequency.value = 0.9;
+  const wg = c.createGain(); wg.gain.value = opts.wobble || 0; wob.connect(wg);
+  oscs.forEach(({ o }) => wg.connect(o.detune)); wob.start(t);
   const ns = c.createBufferSource(); ns.buffer = noiseBuffer; ns.loop = true;
   const bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = freq * 2; bp.Q.value = 0.9;
-  const ng = c.createGain(); ng.gain.value = freq < 650 ? 0.06 : 0.035;
-  ns.connect(bp); bp.connect(ng); ng.connect(out); ns.start(t);
+  const ng = c.createGain(); ng.gain.value = (freq < 650 ? 0.05 : 0.03) * breath;
+  ns.connect(bp); bp.connect(ng); ng.connect(out);
+  const bp1 = c.createBiquadFilter(); bp1.type = "bandpass"; bp1.frequency.value = freq; bp1.Q.value = 4;
+  const ng1 = c.createGain(); ng1.gain.value = 0.05 * breath;
+  ns.connect(bp1); bp1.connect(ng1); ng1.connect(out);
+  // Broadband air: what makes a weak embouchure sound breathy (only above normal breath).
+  if (breath > 1) {
+    const hp = c.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 700;
+    const ga = c.createGain(); ga.gain.value = 0.045 * (breath - 1);
+    ns.connect(hp); hp.connect(ga); ga.connect(out);
+  }
+  const bpc = c.createBiquadFilter(); bpc.type = "bandpass"; bpc.frequency.value = 2600; bpc.Q.value = 0.8;
+  const gc = c.createGain(); gc.gain.setValueAtTime(0.0001, t); gc.gain.exponentialRampToValueAtTime(0.09 * Math.max(0.5, breath), t + 0.012); gc.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+  ns.connect(bpc); bpc.connect(gc); gc.connect(out);
+  ns.start(t);
   lp.connect(out); out.connect(masterGain);
   let stopped = false, endAt = Infinity;
   const voice = {
-    ramp(from, to, at, dur) { oscs.forEach(({ o, h }) => { o.frequency.setValueAtTime(from * h, at); o.frequency.exponentialRampToValueAtTime(to * h, at + dur); }); },
-    jump(from, to, at, k) { oscs.forEach(({ o, h }) => { o.frequency.setValueAtTime(from * h, at); o.frequency.setValueAtTime(from * h, at + k - 0.012); o.frequency.exponentialRampToValueAtTime(to * h, at + k); }); },
+    ramp(from, to, at, dur) { oscs.forEach(({ o, h }) => { o.frequency.cancelScheduledValues(at); o.frequency.setValueAtTime(from * h, at); o.frequency.exponentialRampToValueAtTime(to * h, at + dur); }); },
+    jump(from, to, at, k) { oscs.forEach(({ o, h }) => { o.frequency.cancelScheduledValues(at); o.frequency.setValueAtTime(from * h, at); o.frequency.setValueAtTime(from * h, at + k - 0.012); o.frequency.exponentialRampToValueAtTime(to * h, at + k); }); },
     glideNow(f) {
       const now = c.currentTime;
       oscs.forEach(({ o, h }) => o.frequency.setTargetAtTime(f * h, now, 0.014));
@@ -69,7 +93,7 @@ export function makeVoice(freq, t, opts) {
       }
       stopped = true; endAt = at;
       out.gain.setTargetAtTime(0.0001, at, 0.03);
-      const end = at + 0.4; oscs.forEach(({ o }) => o.stop(end)); lfo.stop(end); ns.stop(end);
+      const end = at + 0.4; oscs.forEach(({ o }) => o.stop(end)); lfo.stop(end); wob.stop(end); ns.stop(end);
       setTimeout(() => liveVoices.delete(voice), Math.max(0, (end - c.currentTime) * 1000) + 50);
     }
   };
@@ -175,6 +199,14 @@ export function click(t, kind, dest) {
     bg.gain.setValueAtTime(kind === "sam" ? 0.7 : 0.35, t); bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
     b.connect(bg); b.start(t); b.stop(t + 0.32);
   }
+}
+
+// The four tone levels of the L08 rubric, demonstrated on Sa: 1 = mostly air, 4 = full and clear.
+export const TONE_LEVELS = { 1: { breath: 18, wobble: 25, body: 0.25 }, 2: { breath: 10, wobble: 20, body: 0.45 }, 3: { breath: 3.5, wobble: 15, body: 0.85 }, 4: { breath: 0.6, wobble: 0, body: 1 } };
+export function toneDemo(level, seconds) {
+  const c = ac(), t = c.currentTime + 0.05, p = TONE_LEVELS[level] || TONE_LEVELS[4];
+  const v = makeVoice(hzOf(0), t, p); v.stop(t + (seconds || 3));
+  return v;
 }
 
 export function playNote(semi, dur) {

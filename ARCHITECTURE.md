@@ -83,6 +83,13 @@ tests/                     browser smoke tests (puppeteer-core + local Chrome/Ed
 - Devanagari: `settings.deva` shows sargam in Devanagari (`theory.devaOf`, `devaNotation`) in the bench score and the listening widgets.
 - Course images live in `bansuri-mastery/assets/`; the reader rewrites their paths and `build_app.py` lists them for offline use.
 
+## Tone, posture and real recordings
+
+- `pitch.js` `toneEstimate`: from a recording, the share of sounding frames with a clear pitch, the mean periodicity (`periodicity()`, a threshold-free YIN measure) and the steadiness of held notes give a 1-4 tone estimate. Thresholds are calibrated on synthetic tones and on the four demo levels (`audio.js` `TONE_LEVELS`, `toneDemo`), which measure as 1, 2, 3 and 4; real-room accuracy still needs checking against a teacher.
+- `audio.js` `makeVoice`: a bansuri-like voice (strong fundamental, breath noise around the fundamental and second harmonic, a short chiff, a pitch scoop, delayed vibrato); `opts.breath`, `opts.wobble` and `opts.body` make the tone demos.
+- `posture.js`: MediaPipe pose landmarker (vendored in `app/vendor/pose`, loaded only on demand, not in the offline download) and `postureChecks(landmarks)`: shoulders level and not raised, head level, flute roughly level, elbows relaxed. The vendored bundle's telemetry sender is replaced by a no-op; the CSP adds `'wasm-unsafe-eval'` for WebAssembly only.
+- Lessons' last cards play a bundled real-bansuri recording (`lessoncards.js` `BUNDLED`) until the learner marks their own reference.
+
 ## Other app features
 
 - **Video self-check** (Journal): `recordWidget({video: true})` records camera plus microphone at

@@ -124,6 +124,22 @@ Tension that you ignore can become an injury. Repetitive strain (from gripping, 
 
 </details>
 
+### Photos: how players hold the bansuri
+
+![Hariprasad Chaurasia playing, front view: both hands relaxed on the holes, flute held level to the right](../assets/photos/hariprasad-chaurasia-front-hands.jpg)
+
+*Front view: relaxed fingers flat on the holes, shoulders down, flute roughly level. Photo: Suyash Dwivedi, CC BY-SA 4.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Hariprasad_Chaurasia_in_July_2015_(1).jpg).*
+
+![Subhash Prem Giri playing, side view: the line of the arms and the flute](../assets/photos/subhash-prem-giri-side-view.jpg)
+
+*Side view: elbows away from the body, wrists straight. Photo: Alexauraji, CC BY-SA 3.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Subhash_Prem_Giri.jpg).*
+
+![Jaspreet playing seated, front view, with relaxed arms](../assets/photos/jaspreet-seated-front-view.jpg)
+
+*Seated, relaxed arms and shoulders. Photo: Gavin Mackintosh, CC BY 2.0, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:A_bansuri_player_Jaspreet,_flute_classical_Indian_music_instrument.jpg).*
+
+Every player's hold differs a little; compare with the checklist above, not pixel by pixel. All photo credits: [photo credits](../assets/photos/CREDITS.md).
+
 ## 6. Watch and listen
 
 - [R-W06](../02-RESOURCE-LIBRARY.md#2-written-lessons-and-fingering-charts) (sound-of-bansuri, "Body & Finger Position" video): watch how relaxed the shoulders are and where the thumbs go. It uses an F flute, which is longer than yours, so the finger spread looks wider.

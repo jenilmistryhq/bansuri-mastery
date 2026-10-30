@@ -3,10 +3,19 @@ import { h, clear, fmtDate, fmtMinutes, toast } from "../util.js";
 import { getState, addLog } from "../state.js";
 import { totals, streaks, getPlan } from "../course.js";
 import { listRecordings, deleteRecording, patchRecording, recordWidget } from "../recorder.js";
-import { ac } from "../core/audio.js";
+import { ac, toneDemo } from "../core/audio.js";
 import { analyzeAudioBuffer, compareToExpected, drawPitchPlot } from "../core/pitch.js";
 import { dayResults } from "../livestats.js";
+import { postureCheck } from "../posture.js";
 import { codeOf, westOf } from "../core/theory.js";
+
+// The four tone levels of the L08 rubric, demonstrated on Sa, so a self-score means the same each time.
+export function toneLevels() {
+  const words = { 1: "1: mostly air", 2: "2: some tone, much breath", 3: "3: clear, a little breath", 4: "4: full and clear" };
+  let v = null;
+  return h("div", { class: "stack", style: { gap: "6px" } }, h("span", { class: "small muted" }, "Hear the tone levels (L08 rubric):"),
+    h("div", { class: "chips" }, [1, 2, 3, 4].map(l => h("button", { type: "button", class: "chipbtn", onclick: () => { if (v) v.stop(); v = toneDemo(l, 3); } }, words[l]))));
+}
 
 async function analyse(rec, host) {
   clear(host).append(h("p", { class: "small muted" }, "Analysing..."));
@@ -23,9 +32,12 @@ async function analyse(rec, host) {
       h("td", { class: "mono" }, (r.cents > 0 ? "+" : "") + r.cents + " cents"), h("td", null, r.held.toFixed(1) + " s"), h("td", null, h("span", { class: "chip " + r.verdict[1] }, r.verdict[0]))))
       : h("tr", null, h("td", { colspan: "5", class: "muted" }, "No steady notes found. Hold each note for at least half a second.")))));
   const inTune = rows.filter(r => r.verdict[1] === "good").length;
-  clear(host).append(canvas, h("p", { class: "small" }, rows.length + " steady notes, " + inTune + " within 10 cents." + (result.truncated ? " Only the first 3 minutes were analysed." : "")), table);
+  const tone = result.tone;
+  const toneLine = tone ? h("p", { class: "small tone-est" }, h("span", { class: "chip info" }, "Tone estimate " + tone.score + " of 4"), " " + tone.text + " ",
+    h("span", { class: "muted" }, "Measured from how much of the sound has a clear pitch" + (tone.wobble !== null ? " and how steady it is (" + tone.wobble + " cents)" : "") + ". A guide for comparing your own takes, not a teacher's verdict.")) : null;
+  clear(host).append(canvas, h("p", { class: "small" }, rows.length + " steady notes, " + inTune + " within 10 cents." + (result.truncated ? " Only the first 3 minutes were analysed." : "")), toneLine, table);
   await new Promise(r => requestAnimationFrame(() => { drawPitchPlot(canvas, result); r(); }));
-  const summary = { notes: rows.length, inTune, avgAbsCents: rows.length ? Math.round(rows.reduce((a, r) => a + Math.abs(r.cents), 0) / rows.length) : null,
+  const summary = { notes: rows.length, inTune, tone: tone ? tone.score : null, avgAbsCents: rows.length ? Math.round(rows.reduce((a, r) => a + Math.abs(r.cents), 0) / rows.length) : null,
     perNote: rows.slice(0, 40).map(r => ({ note: codeOf(r.near), cents: r.cents, held: Math.round(r.held * 10) / 10 })) };
   await patchRecording(rec.id, { analysis: summary });
   return { summary, rows, canvas };
@@ -98,17 +110,28 @@ export async function render(main) {
   cleanups.push(() => widget.cleanup && widget.cleanup());
   host.append(widget);
   page.append(h("section", { class: "card" }, h("h2", null, "Record"), h("label", { class: "field", for: "j-label" }, "What are you recording?", labelIn), host,
-    h("p", { class: "small muted" }, "Recordings stay in this browser. They are never uploaded. Include them in a backup from Settings.")));
+    h("p", { class: "small muted" }, "Recordings stay in this browser. They are never uploaded. Include them in a backup from Settings."),
+    toneLevels()));
 
+  // Live posture check: mounted when the video section is opened.
+  const postureHost = h("div");
+  let posture = null;
+  cleanups.push(() => posture && posture.destroy());
   // Video self-check: posture, hands and embouchure, which no tuner can measure.
   const vidWidget = recordWidget({ day: s.current, label: "Video self-check", video: true, onSaved: () => drawRecs() });
   cleanups.push(() => vidWidget.cleanup && vidWidget.cleanup());
-  page.append(h("details", { class: "card" },
+  const vidDetails = h("details", { class: "card" },
     h("summary", null, h("b", null, "Video self-check"), h("span", { class: "small muted" }, " - see your posture, hands and lips")),
     h("p", { class: "small muted" }, "Set the phone at eye level about an arm's length away, side-on or in front. Play a long tone and a short melody, then watch it back and compare with the checklists in ",
       h("a", { href: "#/read/lessons/L02-posture-and-holding.md" }, "L02 Posture and holding"), " and ", h("a", { href: "#/read/lessons/L04-first-sound.md" }, "L04 First sound"),
       ". The live preview is mirrored like a mirror; playback shows you as others see you. Videos stay on this device and are large (roughly 1 MB per 10 seconds), so delete old ones."),
-    vidWidget));
+    vidWidget,
+    h("h3", null, "Live posture check"),
+    h("p", { class: "small muted" }, "The camera watches your shoulders, head and arms while you hold the flute and gives advice from L02 as you adjust. Nothing is recorded or uploaded."),
+    postureHost);
+  // The posture widget (and its 19 MB model) is created only when the section is opened.
+  vidDetails.addEventListener("toggle", () => { if (vidDetails.open && !posture) { posture = postureCheck(); postureHost.append(posture.el); } });
+  page.append(vidDetails);
 
   // Recordings.
   const recHost = h("div");
@@ -137,7 +160,7 @@ export async function render(main) {
       });
       recHost.append(h("div", { class: "rec" },
         h("div", { class: "row" }, h("label", { class: "check" }, sel, "Compare"), h("div", { style: { flex: "1 1 200px" } }, name)),
-        h("span", { class: "small muted" }, fmtDate(rec.date) + (rec.day !== null && rec.day !== undefined ? " - Day " + rec.day : "") + " - " + (rec.durationS || 0).toFixed(1) + " s" + (rec.analysis ? " - " + rec.analysis.inTune + "/" + rec.analysis.notes + " notes in tune" : "")),
+        h("span", { class: "small muted" }, fmtDate(rec.date) + (rec.day !== null && rec.day !== undefined ? " - Day " + rec.day : "") + " - " + (rec.durationS || 0).toFixed(1) + " s" + (rec.analysis ? " - " + rec.analysis.inTune + "/" + rec.analysis.notes + " notes in tune" + (rec.analysis.tone ? ", tone " + rec.analysis.tone + "/4" : "") : "")),
         rec.kind === "video" ? h("video", { controls: true, src: url, preload: "metadata", playsinline: true, class: "selfview" }) : h("audio", { controls: true, src: url, preload: "none" }),
         h("div", { class: "row" },
           h("button", { type: "button", class: "btn", onclick: () => analyse(rec, aHost) }, "Analyse pitch"),

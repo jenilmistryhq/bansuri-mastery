@@ -204,6 +204,10 @@ one-paragraph verdict.
 
 </details>
 
+![Pravin Godkhindi playing a long bass bansuri, seated](../assets/photos/pravin-godkhindi-seated-long-flute.jpg)
+
+*A long bass bansuri: the larger the flute, the lower its Sa and the wider the finger stretch. Photo: Djshanx, public domain, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Pravin_Godkhindi_Performing.jpg).*
+
 ## 5. Diagrams and charts
 
 ### Range of your C natural medium flute (A = 440 Hz)

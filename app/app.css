@@ -377,3 +377,9 @@ dialog.modal::backdrop { background: rgba(0,0,0,0.4); }
 .glossdef { display: block; margin: 4px 0 6px; padding: 6px 10px; border-left: 3px solid var(--accent); background: var(--sunken); border-radius: 0 8px 8px 0; font-size: 0.92rem; }
 .notice-card { border-left: 4px solid var(--warn); }
 .reader img { max-width: 100%; height: auto; border-radius: 12px; display: block; }
+.pose-stage { position: relative; width: 100%; max-width: 480px; }
+.pose-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.pose-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pose-list li { padding: 6px 10px; border-radius: 8px; border-left: 4px solid var(--line); background: var(--sunken); }
+.pose-list .pose-ok { border-left-color: var(--good); }
+.pose-list .pose-warn { border-left-color: var(--warn); }

@@ -52,18 +52,22 @@ All recordings: [Listening Library: Khamaj](../08-LISTENING-LIBRARY.md#khamaj).
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
-## Practice composition (Original, written for this curriculum; not yet reviewed by a teacher)
+## Traditional composition (Bhatkhande, Kramik Pustak Malika)
 
-**Teentaal, 16 beats per line (one cycle), target 60-80 BPM. Starts on sam.** Each `|` marks a vibhag of 4 beats.
+**What it is:** sargam geet (a composition sung to the note names), teentaal, sthayi (first section) only.
+
+**Source:** V. N. Bhatkhande, *Hindustani Sangeet Paddhati: Kramik Pustak Malika*, Part 1 (Hindi edition, Sangeet Karyalaya, Hathras), raga Khamaj, sargam, page 32. Scans read: [older Hathras printing (eGangotri), leaf n35](https://archive.org/details/skPk_hindustani-sangeet-paddhati-kramik-pustak-malika-1st-book-of-vishnu-narayan-bhar/page/n35/mode/1up) and [2013 Sangeet Karyalaya printing, leaf n32](https://archive.org/details/bhatkhande-hindustani-sangeet-paddhati-kramik-pustak-malika-part-1_compress/page/n32/mode/1up). The two printings agree.
+
+It was transcribed from the public-domain book (Bhatkhande died in 1936) into this course's notation. Check it against the source page before you rely on it.
+
+**Teentaal, 16 beats per line. Starts on sam.** Each `|` marks a vibhag of 4 beats.
 
 ```
-S G m P | D N S' - | n D P m | G - R S |
-G m P D | n D m P | D m G m | G R S - ||
+G G S G | m P G m | n D - m | P D - m |
+G - - - | D N S' - | S' n D P | m G R S ||
 ```
 
-It goes up with shuddha `N` (`D N S'`), comes down with komal `n` (`n D P m`), skips Re going up, and contains the pakad `n D m P D m G`. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
-
-**Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
+Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

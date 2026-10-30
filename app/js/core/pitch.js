@@ -30,6 +30,21 @@ export function yin(buf, sr) {
   return { f: sr / best, clarity: 1 - cm[tau], rms };
 }
 
+// How periodic (tone-like rather than breath-like) a frame is, 0 to 1: one minus the lowest
+// normalised difference in the flute's pitch range. Unlike yin() it has no threshold, so a breathy
+// note still gets a (low) value instead of none.
+export function periodicity(buf, sr) {
+  const tauMin = Math.floor(sr / 3000), tauMax = Math.min(Math.floor(sr / 170), (buf.length >> 1) - 1);
+  const W = buf.length - tauMax;
+  let run = 0, best = 1;
+  for (let tau = 1; tau <= tauMax; tau++) {
+    let d = 0; for (let i = 0; i < W; i++) { const x = buf[i] - buf[i + tau]; d += x * x; }
+    run += d;
+    if (tau >= tauMin && run) best = Math.min(best, d * tau / run);
+  }
+  return Math.max(0, 1 - best);
+}
+
 export function relSemi(f) { return 12 * Math.log2(f / saHz()); }
 
 export function verdict(cents) {
@@ -111,13 +126,17 @@ export async function analyzeAudioBuffer(audio, opts) {
   let data = raw, sr = audio.sampleRate;
   if (sr > 32000) { const n = Math.floor(raw.length / 2); data = new Float32Array(n); for (let i = 0; i < n; i++) data[i] = (raw[2 * i] + raw[2 * i + 1]) * 0.5; sr = sr / 2; }
   const maxLen = Math.min(data.length, Math.floor(sr * maxSeconds));
-  const size = 1024, hop = Math.round(sr * 0.03), frames = [];
+  const size = 1024, hop = Math.round(sr * 0.03), frames = [], levels = [], clarities = [];
   let pos = 0;
   await new Promise(resolve => {
     const step = () => {
       const until = Math.min(maxLen - size, pos + hop * 120);
       for (; pos < until; pos += hop) {
-        const r = yin(data.subarray(pos, pos + size), sr);
+        const buf = data.subarray(pos, pos + size);
+        let sq = 0; for (let i = 0; i < buf.length; i++) sq += buf[i] * buf[i];
+        levels.push(Math.sqrt(sq / buf.length));
+        const r = yin(buf, sr);
+        clarities.push(levels[levels.length - 1] > 0.004 ? periodicity(buf, sr) : 0);
         frames.push(r && r.clarity > 0.8 ? { s: relSemi(r.f), f: r.f } : null);
       }
       if (opts.onProgress) opts.onProgress(Math.min(100, Math.round(pos / Math.max(1, maxLen - size) * 100)));
@@ -125,8 +144,45 @@ export async function analyzeAudioBuffer(audio, opts) {
     };
     step();
   });
-  const hopS = hop / sr, clean = cleanFrames(frames);
-  return { frames: clean, hopS, segments: playableOnly(segmentsFrom(clean, hopS)), seconds: maxLen / sr, truncated: data.length > maxLen };
+  const hopS = hop / sr, clean = cleanFrames(frames), segments = playableOnly(segmentsFrom(clean, hopS));
+  return { frames: clean, hopS, segments, seconds: maxLen / sr, truncated: data.length > maxLen, tone: toneEstimate(levels, clarities, clean, segments, hopS) };
+}
+
+// A tone estimate from 1 to 4, measured on the sounding part of a recording (the L08 tone rubric,
+// approximated): how much of the sound has a clear pitch (breathy tone has less), how clean that pitch
+// is, and how steady the held notes are. A guide to compare takes, not a teacher's judgement.
+// Clarity needed for tone levels 2, 3 and 4, calibrated on synthetic flute tones with rising breath
+// noise (tests/live.test.mjs); real recordings in a real room will need checking against a teacher.
+const CLARITY = { 2: 0.55, 3: 0.86, 4: 0.94 };
+
+export function toneEstimate(levels, clarities, frames, segments, hopS) {
+  const peak = Math.max(0, ...levels);
+  if (peak < 0.01) return null;
+  const sounding = levels.map((l, i) => l > Math.max(0.008, peak * 0.15) ? i : -1).filter(i => i >= 0);
+  if (sounding.length < 20) return null;
+  const voiced = sounding.filter(i => frames[i]);
+  const voicedShare = voiced.length / sounding.length;
+  // Clarity over all of the sounding part: a breathy note lowers it smoothly, step by step.
+  const clarity = sounding.reduce((a, i) => a + clarities[i], 0) / sounding.length;
+  // Steadiness: the spread (cents) inside each held note of at least 1 s, typical value.
+  const spreads = [];
+  for (const sg of segments || []) {
+    if (sg.t1 - sg.t0 < 1) continue;
+    const vals = [];
+    for (let i = Math.round(sg.t0 / hopS) + 3; i < Math.round(sg.t1 / hopS) - 3; i++) if (frames[i]) vals.push(frames[i].s * 100);
+    if (vals.length < 10) continue;
+    const m = vals.reduce((a, b) => a + b, 0) / vals.length;
+    spreads.push(Math.sqrt(vals.reduce((a, b) => a + (b - m) * (b - m), 0) / vals.length));
+  }
+  spreads.sort((a, b) => a - b);
+  const wobble = spreads.length ? spreads[spreads.length >> 1] : null;
+  const steady = wobble === null ? 99 : wobble;
+  let score = 1;
+  if (clarity >= CLARITY[2]) score = 2;
+  if (clarity >= CLARITY[3] && voicedShare >= 0.8 && steady <= 15) score = 3;
+  if (clarity >= CLARITY[4] && voicedShare >= 0.92 && steady <= 8) score = 4;
+  const words = ["", "Mostly air: little clear pitch yet.", "Some clear tone, with a lot of breath or an unsteady pitch.", "Clear and fairly steady, with some breath.", "Full, clear and steady."];
+  return { score, voicedShare: Math.round(voicedShare * 100) / 100, clarity: Math.round(clarity * 100) / 100, wobble: wobble === null ? null : Math.round(wobble), text: words[score] };
 }
 
 // rows[i] = { n, expected, near, cents, held, t0, t1, status, verdict: [label, kind] }

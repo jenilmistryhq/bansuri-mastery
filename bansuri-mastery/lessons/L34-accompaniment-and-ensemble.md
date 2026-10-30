@@ -65,8 +65,10 @@ players often name keys by harmonium keys, for example "safed 1" (first white ke
 | Safed 3 | E | | Kali 5 | A# |
 | Safed 4 | F | | Safed 7 | B |
 
-> **Uncertain:** some musicians count differently. Always confirm by playing Sa together with
-> the singer or harmonium before you start.
+> **Fact:** the table matches the safed/kali mapping given by Swarganga ("Patti (Scale)"), but
+> not everyone counts this way: Sharda Music names Sa keys by their position on the harmonium,
+> for example "5th Black" for A# and "8th White" for C (Verified: swarganga.org; sharda.org).
+> Always confirm by playing Sa together with the singer or harmonium before you start.
 
 If the singer's Sa is C, use your normal fingering. If it is G, use Pa as Sa. Otherwise use the
 decision table in [L26](L26-keys-transposition-and-limits.md).

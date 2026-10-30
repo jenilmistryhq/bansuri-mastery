@@ -44,18 +44,22 @@ All recordings: [Listening Library: Hamsadhwani](../08-LISTENING-LIBRARY.md#hams
 
 Check what you hear against this card: the aroh/avroh, the pakad and the notes to treat carefully.
 
-## Practice composition (Original, written for this curriculum; not yet reviewed by a teacher)
+## Traditional composition (Bhatkhande, Kramik Pustak Malika)
 
-**Teentaal, 16 beats per line (one cycle), target 60-80 BPM. Starts on sam.** Each `|` marks a vibhag of 4 beats.
+**What it is:** lakshan geet (a song whose words describe the raga; the words are left out here), teentaal, madhya laya, sthayi (first section) only.
+
+**Source:** V. N. Bhatkhande, *Hindustani Sangeet Paddhati: Kramik Pustak Malika*, Part 5 (Hindi translation from the Marathi, edited and published by Laxminarayan Garg, Sangeet Karyalaya, Hathras; 1956 per the Digital Library of India record), Bilawal thaat, raga Hamsadhwani, page 264. Scan read: [Internet Archive, Digital Library of India copy, leaf n267](https://archive.org/details/in.ernet.dli.2015.326018/page/n267/mode/1up).
+
+It was transcribed from the public-domain book (Bhatkhande died in 1936) into this course's notation. Check it against the source page before you rely on it. The book writes a small `G` above the `R` at the start of the last vibhag of line 2; it is shown here as a kan, `{G}R`.
+
+**Teentaal, 16 beats per line. The sthayi starts on beat 9 (khali), so sam is the first note of the third vibhag of each line (`.N` in line 1, `S'` in line 2).** Each `|` marks a vibhag of 4 beats.
 
 ```
-S R G P | N - S' - | N P G R | G - R S |
-G P N S' | R' S' N P | G R S .N | .P - S - ||
+S R G R | S R .N S | .N .P .N .N | S - - S |
+S - G R | G - G G | S' N P P | {G}R - - .N ||
 ```
 
-It uses the leaps `G P N S'` and `S' N P G` and ends with `G R S .N .P S`. Keep Ma and Dha out completely. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
-
-**Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
+Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

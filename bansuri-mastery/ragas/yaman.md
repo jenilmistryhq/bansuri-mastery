@@ -42,7 +42,7 @@ The tricky move is `M` (all open, register 1) to `D` (register 2) in `M D N S'`.
 
 | Raga | Difference |
 |---|---|
-| Yaman Kalyan | Adds a little shuddha `m`, usually in `G m G R` |
+| Yaman Kalyan | Adds a little shuddha `m`, usually in `G m G R` <!-- raga-lint: other raga --> |
 | Shuddha Kalyan | Bhupali-like ascent (no M, N) |
 | Bhupali | Same thaat, but no M and N at all |
 

@@ -6,6 +6,14 @@ import { makePlayable, isNotation } from "./playable.js";
 import { mountBench } from "./bench/bench.js";
 import { holdMeter } from "./core/live.js";
 import { listRecordings } from "./recorder.js";
+import { postureCheck } from "./posture.js";
+import { toneDemo } from "./core/audio.js";
+
+function toneLevelsRow() {
+  const words = { 1: "1: mostly air", 2: "2: some tone, much breath", 3: "3: clear, a little breath", 4: "4: full and clear" };
+  let v = null;
+  return h("div", { class: "chips" }, [1, 2, 3, 4].map(l => h("button", { type: "button", class: "chipbtn", onclick: () => { if (v) v.stop(); v = toneDemo(l, 3); } }, words[l])));
+}
 
 // Lessons whose main skill is a held sound: the practice card offers the live long-tone meter.
 const TONE_DRILLS = {
@@ -20,11 +28,41 @@ const TONE_DRILLS = {
   L25: { targets: [1, 3, 8, 10], seconds: 4, cents: 20, label: "Hold the komal notes" },
 };
 
+// Openly licensed recordings of a real bansuri bundled with the app (credits in app/audio/CREDITS.txt),
+// played on a lesson's last card until the learner marks a teacher's recording for it.
+const SANKALP = "sankalp on Freesound, CC BY 4.0";
+const BUNDLED = {
+  L04: ["bansuri-sa-middle-octave-sankalp.mp3", "A held middle Sa", SANKALP],
+  L05: ["bansuri-sa-middle-octave-sankalp.mp3", "A held middle Sa", SANKALP],
+  L07: ["bansuri-sa-middle-octave-sankalp.mp3", "A held middle Sa (11 s)", SANKALP],
+  L09: ["bansuri-sargam-sa-to-taar-sa-roguentropy.mp3", "Sa to upper Sa and back", "roguentropy on Freesound, CC0"],
+  L10: ["bansuri-sargam-sa-to-taar-sa-roguentropy.mp3", "Sa to upper Sa and back", "roguentropy on Freesound, CC0"],
+  L11: ["bansuri-sa-lower-octave-sankalp.mp3", "A held lower Sa", SANKALP],
+  L12: ["bansuri-major-scale-sankalp.mp3", "The Bilawal (major) scale", SANKALP],
+  L13: ["bansuri-major-scale-staccato-sankalp.mp3", "A tongued (staccato) scale", SANKALP],
+  L16: ["bansuri-major-scale-sankalp.mp3", "The Bilawal scale, with shuddha Ma", SANKALP],
+  L19: ["bansuri-raag-jog-phrase-ninad-p.mp3", "A short phrase in raga Jog", "Ninad_P on Freesound, CC0"],
+  L22: ["bansuri-sa-three-octaves-sankalp.mp3", "Sa in three octaves", SANKALP],
+  L25: ["carnatic-flute-mayamalavagowla.ogg", "Raga Mayamalavagowla (the Bhairav scale) on a Carnatic flute, not a bansuri", "Bansuri.arvind on Wikimedia Commons, CC BY-SA 3.0"],
+};
+
 // The last card: do the lesson's main exercise now, with the microphone, and hear a reference.
 function practiceCard(node, path) {
   const id = (/L\d\d/.exec(path) || [])[0];
   const notations = [...new Set([...node.querySelectorAll("code")].map(c => c.textContent.trim()).filter(t => t.split(/\s+/).length >= 3 && isNotation(t)))].slice(0, 15);
   const tone = TONE_DRILLS[id];
+  // L02 (posture and holding): the live posture check is the exercise.
+  if (id === "L02") {
+    let pc = null;
+    const host = h("div");
+    const b = h("button", { type: "button", class: "btn primary" }, "Check my posture with the camera");
+    b.addEventListener("click", () => { if (pc) { pc.destroy(); pc = null; host.replaceChildren(); return; } pc = postureCheck(); host.append(pc.el); });
+    return { kind: "Practise it now", title: "Your turn", body: [h("p", null, "Hold the flute as if playing, facing the camera; the check watches your shoulders, head and arms."), h("div", { class: "row" }, b), host], cleanup: () => pc && pc.destroy() };
+  }
+  // L08 (recording and self-assessment): hear the four tone levels before scoring yourself.
+  if (id === "L08") {
+    return { kind: "Practise it now", title: "Your turn", body: [h("p", null, "Listen to the four tone levels, then record a long Sa in the Journal and score it. The Journal also gives a measured tone estimate to compare with your own score."), toneLevelsRow(), h("a", { class: "btn primary", href: "#/journal" }, "Record in the Journal")] };
+  }
   if (!tone && !notations.length) return null;
   let widget = null, refUrl = null;
   const host = h("div", { class: "toolhost", hidden: true });
@@ -49,6 +87,9 @@ function practiceCard(node, path) {
   }
   // A reference recording for this lesson: the learner's teacher, or their own best take, marked in the Journal.
   const ref = h("div", { class: "small muted" }, "Reference sound: ask your teacher to play this lesson's sound, record it in the Journal and mark it \"Reference for " + id + "\". It will play here.");
+  const bundled = BUNDLED[id];
+  if (bundled) ref.replaceChildren(h("b", null, "Hear a real bansuri: " + bundled[1] + " "), h("audio", { controls: true, src: "app/audio/" + bundled[0], preload: "none" }),
+    h("span", { class: "small muted" }, " Recording: " + bundled[2] + ". Your teacher's recording, marked \"Reference for " + id + "\" in the Journal, replaces it."));
   listRecordings().then(recs => {
     const r = recs.find(x => x.ref === "lesson:" + id);
     if (!r) return;

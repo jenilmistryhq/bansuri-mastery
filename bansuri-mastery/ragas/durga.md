@@ -19,7 +19,7 @@
 Bright, joyful, folk-like. Built on the same shape as Bhupali, but with Ma instead of Ga.
 
 **A useful fact:** Durga uses the same intervals as Bhupali started from Pa. Bhupali's
-`P D S' R' G'` (G A C D E) becomes Durga when G is treated as Sa. This is a good first example of
+`P D S' R' G'` (G A C D E) becomes Durga when G is treated as Sa. <!-- raga-lint: other raga --> This is a good first example of
 "moving Sa" ([L26](../lessons/L26-keys-transposition-and-limits.md)).
 
 ## Notes to treat carefully

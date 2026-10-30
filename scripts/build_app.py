@@ -30,6 +30,9 @@ def collect():
             rel = posix(os.path.relpath(full, ROOT))
             if rel == "app/data/files.json" or f.endswith(SKIP_SUFFIX):
                 continue
+            # The pose model (about 19 MB) loads only when the posture check is opened; not part of the offline download.
+            if rel.startswith("app/vendor/pose/"):
+                continue
             assets.append(rel)
     for d, _, files in os.walk(DOCS):
         for f in files:
