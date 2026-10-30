@@ -48,8 +48,7 @@ function benchTemplate(uid, o) {
   const header = lede || settingsHtml ? `<header class="bb-top">${lede}${settingsHtml}</header>` : "";
   const flute = o.flute ? `
   <section class="bb-instrument" aria-label="Flute">
-    <svg class="bb-flute" data-ref="fluteSvg" viewBox="0 0 1000 145" role="img" aria-label="Bansuri with blowing hole on the left and six finger holes"></svg>
-    <div class="bb-holes" data-ref="holesStrip" aria-label="Finger holes (tap to change: open, closed, half)"></div>
+    <svg class="bb-flute" data-ref="fluteSvg" viewBox="0 0 1000 145" role="group" aria-label="Bansuri: the blowing hole on the left and six finger holes. Each hole is a button: open, closed or half."></svg>
     <div class="bb-readout">
       <div class="bb-readmain">
         <div class="bb-notebig"><span class="bb-name" data-ref="rName">Sa</span><span class="bb-deva" data-ref="rDeva">सा</span><span class="bb-mono" data-ref="rCode">S</span></div>
@@ -64,7 +63,16 @@ function benchTemplate(uid, o) {
         <button type="button" class="bb-btn bb-primary bb-blow" data-ref="blowBtn">Hold to blow</button>
       </div>
     </div>
-    ${o.compact ? "" : `<p class="bb-small bb-muted">Tap a hole to cycle open &rarr; closed &rarr; half. Keyboard: keys <span class="bb-mono">1-6</span> cycle holes, <span class="bb-mono">Q</span>/<span class="bb-mono">W</span> choose register, hold <span class="bb-mono">Space</span> to blow. Shown with the blowing hole on the left (flute pointing right); hole 1 is nearest the blowing hole.</p>`}
+    ${o.compact ? `<p class="bb-small bb-muted">Tap a hole on the flute to cover it (tap again: half, again: open), then press and hold <b>Hold to blow</b>.</p>` : `<div class="bb-howto">
+      <b>How to play this flute</b>
+      <ol>
+        <li><b>Cover the holes.</b> Tap a hole on the flute to put a finger on it. Tap it again to half-cover it, and once more to open it. Hole 1 is the one nearest the blowing hole; the top hand covers holes 1-3 and the bottom hand holes 4-6.</li>
+        <li><b>Choose your breath.</b> <i>Gentle air</i> plays the lower register; <i>Faster air</i> overblows into the upper register with the same fingers.</li>
+        <li><b>Blow.</b> Press and hold <b>Hold to blow</b> (or the Space key). Change holes while you blow to move from note to note, just as on a real flute.</li>
+        <li><b>Read the note.</b> Its name, sargam, pitch and the lesson that teaches it appear below the flute. Start with Sa: cover holes 1, 2 and 3 with gentle air.</li>
+      </ol>
+      <p class="bb-small bb-muted">Keyboard: Tab to a hole and press Enter or Space, or use keys <span class="bb-mono">1-6</span> for the holes, <span class="bb-mono">Q</span>/<span class="bb-mono">W</span> for the breath, and hold <span class="bb-mono">Space</span> to blow. The flute is shown with the blowing hole on the left (pointing right).</p>
+    </div>`}
   </section>` : "";
   const panels = [];
   if (has("chart")) panels.push(`
@@ -308,7 +316,7 @@ export function mountBench(container, opts) {
     s.push(`<g class="bb-air" data-ref="air">` + [0, 1, 2].map(k => `<path d="M${96 + k * 4} ${8 + k * 5} q 14 ${6 - k} 26 ${16 - k * 2} t 24 ${14 - k * 3}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" opacity="${1 - k * 0.25}"/>`).join("") + "</g>");
     // Finger holes; each fingertip (with a nail) comes down from above onto its hole.
     BENCH_HOLE_X.forEach((x, i) => {
-      s.push(`<g class="bb-holehit" data-i="${i}"><circle cx="${x}" cy="${Y}" r="30" fill="transparent"/><circle class="bb-holering" cx="${x}" cy="${Y}" r="20" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`);
+      s.push(`<g class="bb-holehit" data-i="${i}" data-ref="hole${i}" role="button" tabindex="0"><rect x="${x - 34}" y="0" width="68" height="${bot + 44}" fill="transparent"/><circle class="bb-holering" cx="${x}" cy="${Y}" r="20" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`);
       s.push(`<circle cx="${x}" cy="${Y}" r="12.5" fill="#f3dc9a" opacity="0.4"/><circle cx="${x}" cy="${Y}" r="11" fill="url(#${id("hole")})"/>`);
       s.push(`<g data-ref="pad${i}"><g mask="url(#${id("fade")})"><path d="M${x - 15} 0 V ${Y + 4} a 15 15 0 0 0 30 0 V 0 Z" fill="#000" opacity="0.35" filter="url(#${id("fsh")})" transform="translate(2 4)"/>`);
       s.push(`<path d="M${x - 16} 0 V ${Y + 2} a 16 16 0 0 0 32 0 V 0 Z" fill="url(#${id("skin")})" stroke="var(--finger-edge)" stroke-width="1"/>`);
@@ -323,13 +331,10 @@ export function mountBench(container, opts) {
     });
     q("fluteSvg").innerHTML = s.join("");
     q("fluteSvg").querySelectorAll(".bb-holehit").forEach(g => listen(g, "click", () => cycleHole(Number(g.dataset.i))));
-    const strip = q("holesStrip"); strip.innerHTML = "";
-    BENCH_HOLE_X.forEach((x, i) => {
-      if (i === 3) strip.appendChild(document.createElement("span"));
-      const b = document.createElement("button"); b.type = "button"; b.className = "bb-holebtn"; b.dataset.ref = "hb" + i;
-      b.innerHTML = '<span class="bb-dot"></span><span class="bb-st"></span><span class="bb-lab">hole ' + (i + 1) + "</span>";
-      listen(b, "click", () => cycleHole(i)); strip.appendChild(b);
-    });
+    // Keyboard: Enter or Space on a focused hole changes it (and does not start blowing).
+    q("fluteSvg").querySelectorAll(".bb-holehit").forEach(g => listen(g, "keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); cycleHole(Number(g.dataset.i)); }
+    }));
   }
   function cycleHole(i) { holes[i] = holes[i] === "O" ? "X" : holes[i] === "X" ? "H" : "O"; render(); }
   function setFingering(f, r) { holes = f.split(""); reg = r; render(); }
@@ -345,9 +350,11 @@ export function mountBench(container, opts) {
         pad.style.display = s === "O" ? "none" : "";
         // Half-holing: the finger slides off to uncover half the hole (as it is really done).
         if (s === "H") pad.setAttribute("transform", "translate(-15 0)"); else pad.removeAttribute("transform");
-        const b = q("hb" + i); b.dataset.s = s;
-        b.querySelector(".bb-st").textContent = s === "X" ? "closed" : s === "H" ? "half" : "open";
-        b.setAttribute("aria-label", `Hole ${i + 1}: ${s === "X" ? "closed" : s === "H" ? "half closed" : "open"}`);
+        const g = q("hole" + i); g.dataset.s = s;
+        const word = s === "X" ? "closed" : s === "H" ? "half closed" : "open";
+        g.setAttribute("aria-label", `Hole ${i + 1}: ${word}`);
+        let tip = g.querySelector("title"); if (!tip) { tip = document.createElementNS("http://www.w3.org/2000/svg", "title"); g.prepend(tip); }
+        tip.textContent = `Hole ${i + 1}: ${word} (tap to change)`;
       });
       q("reg1").setAttribute("aria-pressed", String(reg === 1)); q("reg2").setAttribute("aria-pressed", String(reg === 2));
       const f = cur.pat.slice(0, 3) + " " + cur.pat.slice(3);

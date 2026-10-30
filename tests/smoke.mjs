@@ -822,6 +822,11 @@ try {
     await sleep(300);
     check(await page.$(".lv-hold") !== null, f + ": loads, and the long-tone meter (shared widgets) works");
   }
+  // The flute is played directly: tapping a hole closes it; Enter on a focused hole changes it too.
+  await page.evaluate(() => document.querySelector(".bb-flute [data-ref=hole3]").dispatchEvent(new MouseEvent("click", { bubbles: true })));
+  check(await page.$eval(".bb-flute [data-ref=hole3]", e => e.getAttribute("aria-label")) === "Hole 4: closed" && await page.$(".bb-holebtn") === null, "flute: tapping hole 4 on the flute closes it (no separate buttons)");
+  await page.evaluate(() => document.querySelector(".bb-flute [data-ref=hole3]").focus()); await page.keyboard.press("Enter");
+  check(await page.$eval(".bb-flute [data-ref=hole3]", e => e.getAttribute("aria-label")) === "Hole 4: half closed", "flute: Enter on a focused hole half-closes it");
 
   console.log("Accessibility (axe-core: WCAG 2.1 A and AA rules)");
   {

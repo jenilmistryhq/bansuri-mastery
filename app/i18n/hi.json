@@ -1642,5 +1642,20 @@
 "Change the countdown in Settings.": "उलटी गिनती सेटिंग्स में बदलिए।",
 "Time to pick up the flute and settle your hold after tapping Start or Record. Used by every exercise, game, tuner, recording and the posture check.": "शुरू या रिकॉर्ड दबाने के बाद बाँसुरी उठाने और ठीक से पकड़ने का समय। हर अभ्यास, गेम, ट्यूनर, रिकॉर्डिंग और पोस्चर जाँच में इस्तेमाल होता है।",
 "Get into position: hold the flute as if playing.": "सही जगह पर आइए: बाँसुरी ऐसे पकड़िए जैसे बजा रहे हों।",
-"Not started. Press Start when you are ready (the microphone must be allowed).": "शुरू नहीं हुआ। तैयार होने पर शुरू दबाइए (माइक्रोफ़ोन की अनुमति ज़रूरी है)।"
+"Not started. Press Start when you are ready (the microphone must be allowed).": "शुरू नहीं हुआ। तैयार होने पर शुरू दबाइए (माइक्रोफ़ोन की अनुमति ज़रूरी है)।",
+"How to play this flute": "यह बाँसुरी कैसे बजाएँ",
+"Cover the holes.": "छेद बंद कीजिए।",
+"Tap a hole on the flute to put a finger on it. Tap it again to half-cover it, and once more to open it. Hole 1 is the one nearest the blowing hole; the top hand covers holes 1-3 and the bottom hand holes 4-6.": "बाँसुरी पर किसी छेद को छूकर उस पर उँगली रखिए। दोबारा छूने पर वह आधा ढकेगा, और एक बार और छूने पर खुल जाएगा। छेद 1 फूँकने वाले छेद के सबसे पास है; ऊपर वाला हाथ छेद 1-3 और नीचे वाला हाथ छेद 4-6 ढकता है।",
+"Choose your breath.": "अपनी साँस चुनिए।",
+"Gentle air": "धीमी हवा",
+"Faster air": "तेज़ हवा",
+"plays the lower register;": "नीचे का रजिस्टर बजाती है;",
+"overblows into the upper register with the same fingers.": "उन्हीं उँगलियों से ऊपर के रजिस्टर में ले जाती है।",
+"Blow.": "फूँकिए।",
+"Press and hold": "दबाए रखिए",
+"(or the Space key). Change holes while you blow to move from note to note, just as on a real flute.": "(या स्पेस की)। फूँकते हुए छेद बदलिए, ताकि एक स्वर से दूसरे पर जाएँ, बिल्कुल असली बाँसुरी की तरह।",
+"Read the note.": "स्वर पढ़िए।",
+"Its name, sargam, pitch and the lesson that teaches it appear below the flute. Start with Sa: cover holes 1, 2 and 3 with gentle air.": "उसका नाम, सरगम, पिच और उसे सिखाने वाला पाठ बाँसुरी के नीचे दिखते हैं। सा से शुरू कीजिए: धीमी हवा के साथ छेद 1, 2 और 3 ढकिए।",
+"Tap a hole on the flute to cover it (tap again: half, again: open), then press and hold": "बाँसुरी पर छेद छूकर उसे ढकिए (दोबारा: आधा, फिर: खुला), फिर दबाए रखिए",
+"Hole {n}: half closed": "छेद {n}: आधा बंद"
 }
