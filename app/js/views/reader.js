@@ -7,6 +7,7 @@ import { loadGlossary, glossify } from "../glossary.js";
 import { parseNotation } from "../core/notation.js";
 import { tanpura } from "../core/audio.js";
 import { echoGame, ragaQuiz } from "../core/live.js";
+import { award } from "../xp.js";
 
 // Phrases from a raga card for "Name that raga": the aroh, the avroh and each pakad phrase
 // (pakad phrases are separated by commas).
@@ -75,7 +76,7 @@ export async function render(main, { params }) {
     const cardsBtn = h("button", { type: "button", class: "seg-btn" }, "Cards");
     const fullBtn = h("button", { type: "button", class: "seg-btn" }, "Full lesson");
     cards.forEach(c => { if (c.cleanup) cleanups.push(c.cleanup); });
-    const deck = cardDeck(cards, path, { doneLabel: "Done", onDone: () => { location.hash = "#/today"; } });
+    const deck = cardDeck(cards, path, { doneLabel: "Done", onDone: () => { if (!award("lesson", { key: path })) award("lessonAgain"); location.hash = "#/today"; } });
     const show = m => {
       mode = m; storeSet("bansuri.readerMode", m);
       deck.hidden = m !== "cards"; full.hidden = m === "cards";

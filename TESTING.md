@@ -94,6 +94,7 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Keep the voice for offline use, then flight mode: the spoken prompts still play.
 - [ ] Screen readers: TalkBack (Android) and VoiceOver (iPhone) read the tabs, buttons, the meter's progress and the game status; the games can be played with Game sounds on and the screen covered.
 - [ ] Text size 160%, easy font and high contrast: nothing overlaps or is cut off on a phone.
+- [ ] Levels: a normal day of practice earns roughly 150-250 XP; Level 2 takes a few days; the level badge, "+XP" and the level-up celebration appear; Progress lists every level in English and Hindi.
 - [ ] The countdown (Settings, default 5 s) gives enough time to pick up the flute after tapping Start or Record; 0 turns it off; pressing Start again cancels it.
 - [ ] Beat flash and vibrate (Android) follow the metronome and the tabla.
 

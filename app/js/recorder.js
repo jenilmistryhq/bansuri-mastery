@@ -3,6 +3,7 @@
 import { update } from "./state.js";
 import { h, icon, fmtClock, toast, today } from "./util.js";
 import { countdown } from "./core/live.js";
+import { award } from "./xp.js";
 
 const DB = "bansuri", STORE = "recordings";
 
@@ -125,6 +126,7 @@ export function recordWidget({ day, label, onSaved, video }) {
       const item = { id: newId(), created: new Date().toISOString(), date: today(), day: day ?? null, label: currentLabel(), mime, blob, durationS, kind: video ? "video" : "audio" };
       try {
         await saveRecording(item);
+        award("recording");
         if (url) URL.revokeObjectURL(url);
         url = URL.createObjectURL(blob);
         audio.src = url; audio.hidden = false;

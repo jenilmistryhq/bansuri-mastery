@@ -4,7 +4,8 @@ import { h, store } from "../util.js";
 import { getState } from "../state.js";
 import { getDay, current, phaseOf } from "../course.js";
 import { fetchDoc } from "../content.js";
-import { questState, level } from "../fun.js";
+import { questState } from "../fun.js";
+import { levelBar } from "../levelui.js";
 import { pitchSteer, balloon, fallingNotes, jam, NOTE_SETS } from "../games.js";
 import { phraseCheck } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
@@ -95,12 +96,12 @@ export async function render(main, { params, view }) {
   }
 
   // Quests and level.
-  const qs = questState(), lv = level(qs.points);
+  const qs = questState();
   page.append(h("section", { class: "card quests" },
-    h("div", { class: "row between" }, h("h2", null, "Today's quests"), h("span", { class: "chip info" }, "Level " + lv.level + " - " + qs.points + " points")),
-    h("div", { class: "progressbar", role: "progressbar", "aria-label": "Points to the next level", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(lv.into) }, h("i", { style: { width: lv.into + "%" } })),
+    h("h2", null, "Today's quests"),
+    h("a", { class: "levellink", href: "#/progress#level" }, levelBar({ compact: true })),
     h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "✓" : ""), h("span", null, q.text), q.goal > 1 && !q.done ? h("span", { class: "small muted" }, " " + Math.min(q.goal, Math.floor(q.progress)) + " of " + q.goal) : null))),
-    h("p", { class: "small muted" }, "20 points per quest, 20 more for finishing all three. New quests every day.")));
+    h("p", { class: "small muted" }, "20 XP per quest, 20 more for finishing all three. New quests every day. Every game round earns a little XP too.")));
 
   // Games.
   const ragasP = loadRagas().catch(() => []);

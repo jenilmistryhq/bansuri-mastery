@@ -341,7 +341,7 @@ try {
   check(await page.evaluate(() => { const e = JSON.parse(localStorage.getItem("bansuri.progress")).log.pop(); return e.minutes === 45 && e.feel === "great" && e.note === "Long tones"; }), "one-tap log saves minutes, how it went and the note");
   check(/Went well/.test(await page.$eval("#main .timeline", e => e.innerText)), "the day-by-day timeline shows the entry");
   await go("/progress");
-  check(await page.$$eval("#main .wkchart .wk-bar", x => x.length) === 12 && await page.$("#main .wkchart path") !== null, "progress charts 12 weeks of practice");
+  check(await page.$$eval("#main .wkchart", c => c.map(x => x.querySelectorAll(".wk-bar").length).join()) === "12,12" && await page.$$eval("#main .wkchart path", x => x.length) >= 2, "progress charts 12 weeks of XP and of practice minutes");
   check(await page.$$eval("#main .mspath li", x => x.length) === 11, "progress shows the M0-M10 milestone path");
 
   console.log("Tala with tabla theka");
@@ -668,6 +668,19 @@ try {
     for (let i = 0; i < 3; i++) { await clickTextOn(lp, "#main button", i < 2 ? "Next step" : "Finish"); await sleep(200); }
     check(await lp.evaluate(() => (JSON.parse(localStorage.getItem("bansuri.progress") || "{}").log || []).some(e => e.note === "5-minute practice" && e.minutes >= 5)), "5-minute practice: finishing logs at least 5 minutes");
     check(await lp.evaluate(() => window.__openMics()) === 0, "the games leave no microphone open");
+
+    console.log("Levels and XP");
+    await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 3, startedAt: "2026-10-01", prefs: { howChosen: true }, xp: { total: 450, day: null, caps: {}, once: {}, recent: [], days: {}, seen: 1 } })));
+    await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector(".levelpill");
+    check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .levelcard", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
+    await lp.evaluate(async () => { const x = await import(new URL("app/js/xp.js", location.href).href); x.award("lesson", { key: "smoke" }); x.award("lesson", { key: "smoke2" }); });
+    await lp.waitForFunction(() => document.querySelector(".levelpill").textContent === "Lv 2", { timeout: 3000 })
+      .then(() => check(true, "levels: earning XP moves the learner up to Level 2, celebrated"), () => check(false, "levels: earning XP moves the learner up to Level 2, celebrated"));
+    await lp.goto(BASE + "#/progress", { waitUntil: "networkidle0" });
+    await lp.waitForSelector("#level .levelrow");
+    check(await lp.$$eval("#level .levelrow", x => x.length) === 30 && /Listener/.test(await lp.$eval("#level .levelrow.now", e => e.textContent)), "levels: Progress lists the 30 named levels, the current one marked");
 
     console.log("Get-ready countdown");
     await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });

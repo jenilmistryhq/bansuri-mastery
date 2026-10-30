@@ -5,6 +5,8 @@ import { totals, streaks, practiceDates, getPlan, getDay, current, milestoneStat
 import { rules } from "../badges.js";
 import { holdSummary } from "../livestats.js";
 import { codeOf } from "../core/theory.js";
+import { levelBar, levelsTable, xpRules } from "../levelui.js";
+import { xpState } from "../xp.js";
 
 export function encodePayload(obj) {
   const bytes = new TextEncoder().encode(JSON.stringify(obj));
@@ -59,11 +61,13 @@ export function weeklyMinutes(dates, t, n) {
 
 // A bar per week: one series, thin bars with a gap between, rounded tops on the baseline, a value
 // on hover (title) and a table for screen readers.
-function weeksChart(weeks) {
-  const W = 600, H = 170, padL = 34, padB = 22, padT = 10, max = Math.max(60, ...weeks.map(w => w.mins));
+// opts: { what: "Minutes practised" | "XP earned", fmt(v), floor (the smallest scale) }
+function weeksChart(weeks, opts) {
+  const o = Object.assign({ what: "Minutes practised", fmt: fmtMinutes, floor: 60 }, opts || {});
+  const W = 600, H = 170, padL = 40, padB = 22, padT = 10, max = Math.max(o.floor, ...weeks.map(w => w.mins));
   const step = (W - padL) / weeks.length, bw = Math.max(6, step - 6), y = v => padT + (H - padT - padB) * (1 - v / max);
-  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "wkchart", role: "img", "aria-label": "Minutes practised per week, last 12 weeks" });
-  const nice = max <= 120 ? 60 : max <= 300 ? 100 : max <= 600 ? 200 : 300;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "wkchart", role: "img", "aria-label": o.what + " per week, last 12 weeks" });
+  const nice = [60, 100, 200, 300, 500, 1000, 2000, 5000].find(n => max / n <= 4) || 10000;
   for (let v = 0; v <= max; v += nice) {
     svg.append(svgEl("line", { x1: padL, x2: W, y1: y(v), y2: y(v), class: "wk-grid" }));
     svg.append(svgEl("text", { x: padL - 6, y: y(v) + 4, class: "wk-tick", "text-anchor": "end" }, document.createTextNode(String(v))));
@@ -74,11 +78,11 @@ function weeksChart(weeks) {
     // A bar with rounded top corners, square on the baseline.
     if (hgt > 0) g.append(svgEl("path", { d: `M${x},${base} V${top + r} Q${x},${top} ${x + r},${top} H${x + bw - r} Q${x + bw},${top} ${x + bw},${top + r} V${base} Z` }));
     g.append(svgEl("rect", { x: x - 2, y: padT, width: bw + 4, height: H - padT - padB, class: "wk-hit" }));
-    g.append(svgEl("title", null, document.createTextNode("Week of " + w.start + ": " + fmtMinutes(w.mins))));
+    g.append(svgEl("title", null, document.createTextNode("Week of " + w.start + ": " + o.fmt(w.mins))));
     if (i % 3 === 2 || i === weeks.length - 1) g.append(svgEl("text", { x: x + bw / 2, y: H - 6, class: "wk-tick", "text-anchor": "middle" }, document.createTextNode(i === weeks.length - 1 ? "this week" : w.start.slice(5).replace("-", "/"))));
     svg.append(g);
   });
-  const table = h("table", { class: "sr-only" }, h("caption", null, "Minutes per week"), h("tbody", null, weeks.map(w => h("tr", null, h("td", null, w.start), h("td", null, String(Math.round(w.mins)))))));
+  const table = h("table", { class: "sr-only" }, h("caption", null, o.what + " per week"), h("tbody", null, weeks.map(w => h("tr", null, h("td", null, w.start), h("td", null, String(Math.round(w.mins)))))));
   return h("div", null, svg, table);
 }
 
@@ -91,6 +95,18 @@ function sparkline(list) {
   svg.append(svgEl("polyline", { points: pts.map((p, i) => x(i) + "," + y(p.s)).join(" "), class: "spark-line" }));
   svg.append(svgEl("circle", { cx: x(pts.length - 1), cy: y(pts[pts.length - 1].s), r: 3, class: "spark-dot" }));
   return svg;
+}
+
+// Level: the bar, XP per week, the latest XP, every named level and how XP is earned.
+const XP_SRC = { session: "Session", milestone: "Milestone", lesson: "Lesson", lessonAgain: "Lesson", card: "Flashcard", mastery: "Mastery item", review: "Review", best: "Personal best", play: "Play-along", echo: "Play back", tap: "Tapping", game: "Game", quest: "Quest", recording: "Recording", minutes: "Practice minutes" };
+function levelSection() {
+  const x = xpState(), days = new Map(Object.entries(x.days || {}));
+  const recent = (x.recent || []).slice(0, 8);
+  return h("section", { class: "card", id: "level" }, h("h2", null, "Level"), levelBar(),
+    h("h3", null, "XP per week"), weeksChart(weeklyMinutes(days, today(), 12), { what: "XP earned", fmt: v => Math.round(v) + " XP", floor: 200 }),
+    recent.length ? h("div", null, h("h3", null, "Latest XP"), h("ul", { class: "xprecent" }, recent.map(r => h("li", null, h("b", { class: "mono" }, "+" + r.n), " ", XP_SRC[r.src] || r.src, h("span", { class: "small muted" }, " " + r.d))))) : null,
+    h("details", null, h("summary", null, "All levels"), levelsTable()),
+    h("details", null, h("summary", null, "How to earn XP"), xpRules()));
 }
 
 // M0 to M10 as a path: passed, the next one, and those ahead.
@@ -115,6 +131,7 @@ export async function render(main) {
     stat("Day " + current(), "current day"), stat(tt.practiceDays, "days practised"), stat(fmtMinutes(tt.minutes), "total practice"),
     stat(st.current, "current streak"), stat(st.best, "best streak"), stat(tt.msPassed + "/" + getPlan().milestones.length, "milestones passed")));
 
+  page.append(levelSection());
   page.append(h("section", { class: "card" }, h("h2", null, "Milestones"), milestonePath()));
   page.append(h("section", { class: "card" }, h("h2", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12))));
   page.append(h("section", { class: "card" }, h("h2", null, "Practice calendar"), heatmap(),

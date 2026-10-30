@@ -8,6 +8,7 @@ import { analyzeAudioBuffer, compareToExpected, drawPitchPlot } from "../core/pi
 import { dayResults } from "../livestats.js";
 import { postureCheck } from "../posture.js";
 import { codeOf, westOf } from "../core/theory.js";
+import { award } from "../xp.js";
 
 // The four tone levels of the L08 rubric, demonstrated on Sa, so a self-score means the same each time.
 export function toneLevels() {
@@ -204,6 +205,7 @@ export async function render(main) {
   saveLog.addEventListener("click", () => {
     const m = Math.max(1, Math.min(600, Number(minIn.value) || minutes));
     addLog({ minutes: m, note: noteIn.value.trim(), day: null, feel: feel || undefined });
+    if (m) award("minutes", { amount: Math.round(m) });
     noteIn.value = ""; feel = ""; feelChips.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
     drawTimeline(); toast("Logged " + m + " min.");
   });

@@ -11,6 +11,7 @@ import { bestHold } from "./livestats.js";
 import { toneDemo } from "./core/audio.js";
 import { readButton, stopSpeaking } from "./voice.js";
 import { flutePlayer } from "./demo.js";
+import { award } from "./xp.js";
 
 function toneLevelsRow() {
   const words = { 1: "1: mostly air", 2: "2: some tone, much breath", 3: "3: clear, a little breath", 4: "4: full and clear" };
@@ -161,7 +162,7 @@ function quizCard(sec) {
     const ans = h("div", { class: "flash-a", hidden: true }, [...a.cloneNode(true).childNodes]);
     const show = h("button", { type: "button", class: "btn primary" }, "Show answer");
     const grade = h("div", { class: "row", hidden: true },
-      h("button", { type: "button", class: "btn primary", onclick: () => { known++; i++; draw(); } }, "I knew it"),
+      h("button", { type: "button", class: "btn primary", onclick: () => { award("card", { key: q.textContent.trim().slice(0, 120) }); known++; i++; draw(); } }, "I knew it"),
       h("button", { type: "button", class: "btn", onclick: () => { i++; draw(); } }, "Not yet"));
     show.addEventListener("click", () => { ans.hidden = false; show.hidden = true; grade.hidden = false; });
     box.append(h("span", { class: "eyebrow" }, `Question ${i + 1} of ${qs.length}`), h("div", { class: "flash-q" }, [...q.cloneNode(true).childNodes]), ans, show, grade);
@@ -178,7 +179,7 @@ function masteryCard(sec, path) {
   body.forEach(n => n.querySelectorAll && n.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     const id = String(k++);
     cb.disabled = false; cb.checked = !!saved[id];
-    cb.addEventListener("change", () => { const s = store(key, {}); s[id] = cb.checked; storeSet(key, s); });
+    cb.addEventListener("change", () => { const s = store(key, {}); s[id] = cb.checked; storeSet(key, s); if (cb.checked) award("mastery", { key: key + ":" + id }); });
   }));
   return { kind: "Can you do this?", title: "Mastery criteria", body: [h("p", { class: "small muted" }, "Tick what you can already do. When every box is ticked, the lesson is learned."), ...body] };
 }

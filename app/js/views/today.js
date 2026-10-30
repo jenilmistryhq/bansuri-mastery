@@ -8,7 +8,8 @@ import { today } from "../util.js";
 import { mountBench } from "../bench/bench.js";
 import { renderInline, fetchDoc } from "../content.js";
 import { dayResults, lastPlayedDay } from "../livestats.js";
-import { questState, level } from "../fun.js";
+import { questState } from "../fun.js";
+import { levelBar } from "../levelui.js";
 import { codeOf } from "../core/theory.js";
 import { makePlayable } from "../playable.js";
 import { icon } from "../util.js";
@@ -41,6 +42,7 @@ function simpleToday(page, cur, day) {
       big("#/play", "star", "Play a game", "steer_intro"),
       big("#/listen", "listen", "Listen", "listen_intro"),
       big("#/quick", "today", "5 minutes", "quick_intro")));
+  page.append(h("a", { class: "card levelcard", href: "#/progress#level" }, levelBar()));
   const qs = questState();
   page.append(h("section", { class: "card" }, h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "✓" : ""), h("span", null, q.text))))));
 }
@@ -295,9 +297,10 @@ export async function render(main, { params, view }) {
     if (nudge) page.append(nudge);
     page.append(statsRow());
     // Today's quests, at a glance.
-    const qs = questState(), lv = level(qs.points), left = qs.list.filter(q => !q.done);
+    page.append(h("a", { class: "card levelcard", href: "#/progress#level" }, levelBar()));
+    const qs = questState(), left = qs.list.filter(q => !q.done);
     page.append(h("a", { class: "card questcard", href: "#/play" },
-      h("div", { class: "row between" }, h("b", null, left.length ? "Today's quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done" : "All of today's quests done!"), h("span", { class: "chip info" }, "Level " + lv.level)),
+      h("div", { class: "row between" }, h("b", null, left.length ? "Today's quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done" : "All of today's quests done!")),
       left.length ? h("span", { class: "small muted" }, "Next: " + left[0].text + ". Games, quests and your collection are in Play.") : h("span", { class: "small muted" }, "Come back tomorrow for new ones, or play a game for fun."),
       h("span", { class: "small" }, "Short on time? ", h("span", { class: "linklike" }, "Try the 5-minute practice in Play."))));
     const help = adaptiveCard(cur);

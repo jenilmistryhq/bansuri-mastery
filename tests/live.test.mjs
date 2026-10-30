@@ -213,17 +213,17 @@ await test("quests: the same three all day, and results complete them once", asy
   assert.deepEqual(a, b);
   assert.equal(a.length, 3); assert.equal(a[0].id, "session");
   assert.equal(new Set(a.map(q => q.id)).size, 3);
-  // Steer is "once": a high score completes it; a second one adds no more points.
+  // Steer is "once": a high score completes it; a second one adds no more XP.
   const q = questState().list.find(x => x.id !== "session");
   const results = { hold: { type: "hold", seconds: 30 }, echo: { type: "echo", correct: true }, steer: { type: "game", game: "steer", score: 99 }, balloon: { type: "game", game: "balloon", score: 99 },
     falling: { type: "game", game: "falling", stars: 3 }, jam: { type: "game", game: "jam", minutes: 5 }, tap: { type: "tap", within: 0.9 }, song: { type: "play", n: 10, ok: 10 } };
-  const before = questState().points;
+  const before = questState().xp;
   for (let i = 0; i < 3; i++) advanceQuests(results[q.id]);
   const after = questState();
   assert.ok(after.list.find(x => x.id === q.id).done, q.id + " done");
-  assert.ok(after.points >= before + 20 && after.points <= before + 40, "points once (plus a possible bonus)");
+  assert.ok(after.xp >= before + 20 && after.xp <= before + 44, "XP once (plus a possible bonus)");
   advanceQuests(results[q.id]);
-  assert.equal(questState().points, after.points);
+  assert.equal(questState().xp, after.xp);
   assert.equal(advanceQuests({ type: "nothing" }).length, 0);
 });
 
@@ -241,6 +241,38 @@ await test("challenge links round-trip and reject junk", async () => {
 await test("a composed grid becomes notation with holds, rests and bars", async () => {
   const { gridNotation } = await import("../app/js/views/compose.js");
   assert.equal(gridNotation([0, "hold", 2, null, 4, 5, 7, "hold"]), "S - R _ | G m P - ||");
+});
+
+await test("levels: named, from Level 1 at 0 XP, each harder than the last", async () => {
+  const { LEVELS, levelOf } = await import("../app/js/xp.js");
+  assert.equal(LEVELS[0].level, 1); assert.equal(LEVELS[0].xp, 0);
+  assert.equal(levelOf(0).level, 1); assert.equal(levelOf(499).level, 1); assert.equal(levelOf(500).level, 2);
+  assert.equal(levelOf(150000).level, 25);
+  for (let i = 2; i < LEVELS.length; i++) assert.ok(LEVELS[i].xp - LEVELS[i - 1].xp > LEVELS[i - 1].xp - LEVELS[i - 2].xp, "gaps grow");
+  assert.ok(LEVELS.every(l => l.en && /[ऀ-ॿ]/.test(l.hi)), "English and Hindi names");
+  const top = levelOf(1e9); assert.equal(top.level, LEVELS.length); assert.equal(top.next, null);
+  assert.deepEqual([levelOf(750).into, levelOf(750).need, levelOf(750).pct], [250, 1000, 25]);
+});
+
+await test("XP: daily caps, once-only rewards, small XP for every game round", async () => {
+  const { award, xpState } = await import("../app/js/xp.js");
+  const t0 = xpState().total;
+  let echo = 0; for (let i = 0; i < 20; i++) echo += award("echo");
+  assert.equal(echo, 30, "play back is capped at 30 a day");
+  assert.equal(award("milestone", { key: "M9" }), 300);
+  assert.equal(award("milestone", { key: "M9" }), 0, "a milestone pays once");
+  let games = 0; for (let i = 0; i < 50; i++) games += award("game");
+  assert.equal(games, 150, "every game round: 3 XP, no cap");
+  assert.equal(award("minutes", { amount: 90 }), 60, "practice minutes are capped at 60 a day");
+  assert.equal(award("nonsense"), 0);
+  assert.equal(xpState().total, t0 + 30 + 300 + 150 + 60);
+});
+
+await test("XP is rebuilt from history for learners who practised before levels existed", async () => {
+  const { xpFromHistory } = await import("../app/js/xp.js");
+  const s = { days: { 1: { done: true, blocks: { W: true, T: true } }, 2: { done: false } }, log: [{ date: "2026-01-01", minutes: 90 }, { date: "2026-01-02", minutes: 20 }],
+    milestones: { M1: { status: "passed" }, M2: { status: "failed" } }, reviews: { a: { stage: 2 } }, live: { points: 40 }, recordings: 1 };
+  assert.equal(xpFromHistory(s), (50 + 20) + (60 + 20) + 300 + 20 + 40 + 15);
 });
 
 console.log(`live tests: ${passed} passed`);

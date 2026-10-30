@@ -10,6 +10,8 @@ import { setDict, observe } from "./core/i18n.js";
 import { setSpeaker } from "./core/live.js";
 import { onBeat } from "./core/audio.js";
 import { say } from "./voice.js";
+import { award, onXp, levelOf, xpState, markLevelSeen } from "./xp.js";
+import { floatXp } from "./levelui.js";
 installErrorLog();
 // The shared widgets speak through the app's natural voice (when "Talk to me" is on).
 setSpeaker(say);
@@ -20,6 +22,12 @@ document.addEventListener("bansuri:live", e => {
     const before = d.type === "hold" ? bestHold(d.target) : 0;
     recordLive(d);
     const done = advanceQuests(d);
+    // Experience from measured playing.
+    if (d.type === "hold" && before > 0 && d.seconds >= before + 0.3) award("best");
+    if (d.type === "echo" && d.correct) award("echo");
+    if (d.type === "game") { award("game"); if (d.best && d.score) award("best"); }
+    if (d.type === "play" && d.n && d.ok / d.n >= 0.8) award("play");
+    if (d.type === "tap" && d.within >= 0.7) award("tap");
     // Celebrate personal bests and finished quests.
     if (d.type === "hold" && before >= 2 && d.seconds >= before + 0.5) { celebrate("New best: " + (d.target === null || d.target === undefined ? "a note" : codeOf(d.target)) + " held " + d.seconds.toFixed(1) + " s!"); say("new_best"); }
     else if (d.type === "game" && d.best && d.score) { celebrate("New best score: " + d.score + "!"); say("new_best"); }
@@ -70,6 +78,21 @@ function applyAccess() {
   root.lang = s.lang === "hi" ? "hi" : "en";
 }
 
+// XP earned floats up from the level badge; a new level is celebrated, and spoken.
+let levelPill = null;
+function showLevel() {
+  if (!levelPill) return;
+  const lv = levelOf(xpState().total);
+  levelPill.textContent = "Lv " + lv.level;
+  levelPill.title = "Level " + lv.level + " [" + lv.name + "], " + lv.xp.toLocaleString() + " XP";
+  levelPill.setAttribute("aria-label", levelPill.title);
+}
+onXp(({ gained, level, leveledUp }) => {
+  floatXp(gained);
+  showLevel();
+  if (leveledUp) { celebrate("Level " + level.level + ": " + level.name + "!"); say("level_reached"); markLevelSeen(); }
+});
+
 // Beats seen and felt: a flash at the edge of the screen, and a buzz on phones that can.
 let flashEl = null;
 onBeat(kind => {
@@ -88,6 +111,7 @@ function shell() {
     h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", null, "Bansuri Mastery")),
     h("span", { class: "spacer" }),
     dayPill,
+    (levelPill = h("a", { class: "levelpill", href: "#/progress#level" }, "")),
     h("a", { class: "iconbtn", href: "#/library", title: "Course library" }, icon("library", "Course library")),
     h("a", { class: "iconbtn", href: "#/settings", title: "Settings" }, icon("settings", "Settings")));
   navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(k), h("span", null, label))));
@@ -153,6 +177,7 @@ function afterChange() {
   evaluating = true;
   try { evaluateBadges(); } catch (e) { console.warn("Badge check failed", e); } finally { evaluating = false; }
   updateChrome(parseHash().path.split("/")[1] || "today");
+  showLevel();
 }
 
 function offerUpdate(worker) {
@@ -182,6 +207,10 @@ async function boot() {
   onChange(() => { applyTheme(); afterChange(); });
   window.addEventListener("hashchange", route);
   await route();
+  showLevel();
+  // Learners who practised before levels existed: their level (rebuilt from history) is announced once.
+  const x = xpState(), lv0 = levelOf(x.total);
+  if (!getState().xp) { markLevelSeen(); if (lv0.level > 1) toast("Your practice so far puts you at Level " + lv0.level + ": " + lv0.name + ".", 6000); }
   try { evaluateBadges(); } catch (e) { console.warn("Badge check failed", e); }
   if (!isStorageOk()) toast("This browser is not saving progress (private mode?). Export a backup in Settings.", 6000);
   if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {

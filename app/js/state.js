@@ -60,6 +60,17 @@ function migrate(s) {
   if (q && isDate(q.date) && Array.isArray(q.list) && q.list.every(x => isObj(x) && typeof x.id === "string" && typeof x.text === "string" && num(x.goal, 0, 1e4)))
     out.live.quests = { date: q.date, list: q.list.slice(0, 5), progress: pick(q.progress, x => num(x, 0, 1e6)), done: pick(q.done, x => x === true) };
   out.live.plays = Array.isArray(lv.plays) ? lv.plays.filter(x => isObj(x) && isDate(x.d) && num(x.n, 1, 1e4) && num(x.ok, 0, x.n) && num(x.onTime, 0, 1e4) && num(x.timed, 0, 1e4) && num(x.bpm, 0, 400) && typeof x.piece === "string").slice(-120) : [];
+  // Experience and levels (xp.js). Missing: rebuilt from history on first use.
+  const x = isObj(s.xp) ? s.xp : null;
+  if (x && num(x.total, 0, 1e9)) {
+    out.xp = {
+      total: Math.round(x.total), day: isDate(x.day) ? x.day : null,
+      caps: pick(x.caps, v => num(v, 0, 1e6)), once: pick(x.once, isDate),
+      recent: Array.isArray(x.recent) ? x.recent.filter(r => isObj(r) && isDate(r.d) && typeof r.src === "string" && num(r.n, 0, 1e6)).slice(0, 40) : [],
+      days: pick(x.days, v => num(v, 0, 1e6)), seen: num(x.seen, 1, 1000) ? x.seen : null,
+    };
+    for (const k of Object.keys(out.xp.days)) if (!isDate(k)) delete out.xp.days[k];
+  }
   out.v = 1;
   return out;
 }

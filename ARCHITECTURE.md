@@ -92,6 +92,13 @@ tests/                     browser smoke tests (puppeteer-core + local Chrome/Ed
 - **Hindi**: `core/i18n.js` translates every text node and label as it appears (`observe(document.body)`) from `app/i18n/hi.json` (exact strings and `{placeholder}` patterns). Course content is marked `translate="no"`. Session steps use the Hindi text from the voice index.
 - **Settings** (`core/settings.js`): `lang`, `talk`, `notesAs` (letters or fingering pictures, `core/fingers.js`), `simple`, `textSize`, `easyFont`, `contrast`, `bigTargets`, `beatFlash` and `vibrate` (`audio.js` `onBeat`), `gameSpeed`, `noTimer`, `cues`, `hints`.
 
+## Levels and XP (xp.js, levelui.js)
+
+- `LEVELS`: 30 named levels (English and Hindi); level L starts at 250 x L x (L - 1) XP, so each step needs 500 more than the last. `levelOf(xp)` gives the level, its name in the current language and the progress to the next.
+- `award(src, { key, amount, extra })` applies `RULES` (XP per source, daily caps, once-only keys such as a lesson path or milestone id) and a +10% streak bonus, stores `state.xp` (`total`, today's caps, once keys, XP per day, the latest 40 awards) and notifies `onXp` listeners: main.js floats "+N XP", updates the level badge and celebrates a new level.
+- Sources: `course.js` (sessions, minutes, milestones, reviews), `lessoncards.js` and `views/reader.js` (flashcards, mastery items, finished lessons), `recorder.js`, `views/journal.js` and `views/quick.js` (minutes), quests (`fun.js`), and the `bansuri:live` results in main.js (bests, play back, play-along, tapping, every game round).
+- Learners from before levels existed get XP rebuilt from their history (`xpFromHistory`), announced once.
+
 ## Games, quests and challenges (games.js, fun.js, views/play.js)
 
 - Games return `{ el, destroy }` and open the microphone through a helper with the same late-subscription guard as `lvListen`. Results go out as `bansuri:live` events with `type: "game"` (`game`: steer, balloon, falling, jam); falling notes also emits a `play` result.

@@ -3,6 +3,7 @@
 import { h, today, toast } from "./util.js";
 import { getState, update } from "./state.js";
 import { ac, click } from "./core/audio.js";
+import { award, xpState } from "./xp.js";
 
 // Each quest: id, text(goal), the goal for this learner, and how a result advances it.
 const POOL = [
@@ -42,14 +43,14 @@ export function questState() {
   const q = s.live.quests && s.live.quests.date === today() ? s.live.quests : { date: today(), list: questsFor(today(), s), progress: {}, done: {} };
   // Today's session counts once a session has been logged today.
   const sessionDone = s.log.some(e => e.date === today() && e.day !== null && e.day !== undefined);
-  return { list: q.list.map(x => ({ ...x, progress: x.id === "session" ? (sessionDone ? 1 : 0) : (q.progress[x.id] || 0), done: x.id === "session" ? sessionDone : !!q.done[x.id] })), points: s.live.points || 0 };
+  return { list: q.list.map(x => ({ ...x, progress: x.id === "session" ? (sessionDone ? 1 : 0) : (q.progress[x.id] || 0), done: x.id === "session" ? sessionDone : !!q.done[x.id] })), xp: xpState().total };
 }
 
-export function level(points) { return { level: 1 + Math.floor(points / 100), into: points % 100 }; }
 
 // Advances today's quests with one result; returns the quests it completed (to celebrate).
 export function advanceQuests(d) {
   const finished = [];
+  let bonus = false;
   update(s => {
     const q = todays(s);
     for (const item of q.list) {
@@ -59,17 +60,21 @@ export function advanceQuests(d) {
       if (!inc) continue;
       q.progress[item.id] = def.once ? Math.max(q.progress[item.id] || 0, inc) : (q.progress[item.id] || 0) + inc;
       if (q.progress[item.id] >= item.goal) {
-        q.done[item.id] = true; s.live.points = (s.live.points || 0) + POINTS; finished.push(item);
-        if (q.list.filter(x => x.id !== "session").every(x => q.done[x.id])) s.live.points += BONUS;
+        q.done[item.id] = true; finished.push(item);
+        if (q.list.filter(x => x.id !== "session").every(x => q.done[x.id])) bonus = true;
       }
     }
   });
+  finished.forEach(() => award("quest", { amount: POINTS }));
+  if (bonus) award("quest", { amount: BONUS });
   return finished;
 }
 
 // Points for finishing today's session (once a day).
 export function sessionQuestPoints() {
-  update(s => { const q = todays(s); if (!q.done.session) { q.done.session = true; s.live.points = (s.live.points || 0) + POINTS; } });
+  let first = false;
+  update(s => { const q = todays(s); if (!q.done.session) { q.done.session = true; first = true; } });
+  if (first) award("quest", { amount: POINTS });
 }
 
 // A short burst of confetti and a chime. Without motion when the learner prefers less motion.

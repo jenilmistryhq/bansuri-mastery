@@ -1,4 +1,5 @@
 // Course logic: loads the generated day plan and moves the learner through it.
+import { award } from "./xp.js";
 import { getState, update } from "./state.js";
 import { today, addDays, daysBetween, parseDate, dateStr } from "./util.js";
 
@@ -101,6 +102,10 @@ export function finishSession(n, { minutes, note, passed, blocks }) {
     }
     if (!s.startedAt) s.startedAt = date;
   });
+  // Experience: a finished session (once a day, more for each step done) and the minutes practised.
+  const steps = Object.values(blocks || {}).filter(Boolean).length;
+  award("session", { key: date, extra: 10 * steps });
+  if (minutes) award("minutes", { amount: Math.round(minutes) });
   return { advanced };
 }
 
@@ -122,6 +127,7 @@ export function recordAttempt(id, attempt, passed) {
       if (s.current === n) { s.current = n + 1; advanced = true; }
     }
   });
+  if (passed) award("milestone", { key: id });
   return { advanced };
 }
 
@@ -149,6 +155,7 @@ export function markReview(id, ok) {
     r.done = (r.done || 0) + 1;
     r.last = t;
   });
+  award("review");
 }
 
 // Statistics from the practice log.
