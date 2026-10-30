@@ -439,6 +439,7 @@ try {
     check(await lp.$(".lv-hold.lv-passed") === null && /target is S/.test(await lp.$eval(".lv-hold .lv-msg", e => e.textContent)), "long tones: holding the wrong note (R) does not pass, and says so");
     await tone(0.08);
     await lp.waitForSelector(".lv-hold.lv-passed", { timeout: 9000 }).then(() => check(true, "long tones: holding Sa for 4 s fills the ring"), () => check(false, "long tones: holding Sa for 4 s fills the ring"));
+    check(/Tone: (clear|fairly clear|airy)/.test(await lp.$eval(".lv-hold .lv-glowtxt", e => e.textContent)), "long tones: the ring glows with the tone quality heard");
     await tone(null);
 
     await tab("echo");
@@ -560,6 +561,102 @@ try {
     check(await lp.evaluate(() => window.__openMics()) === 0, "leaving Settings while the flute finder listens closes the microphone");
     check(await lp.evaluate(() => { const s = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); return s.saNote === 4 && s.saOct === 5; }), "find my flute: the flute is saved as Sa = E5");
 
+    // Play: games that listen. Earlier rounds above recorded a best hold, which the ring shows as a ghost.
+    // (The flute finder above set Sa to E5; back to C5 so the test tones mean what they say.)
+    await lp.evaluate(() => localStorage.removeItem("bansuri.settings"));
+    await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector(".bb-bench [data-ref=toneNote]");
+    await tab("tones");
+    await lp.select(".bb-bench [data-ref=toneNote]", "0");
+    await lp.select(".bb-bench [data-ref=toneSecs]", "4");
+    await lp.click(".lv-hold .lv-primary");
+    await sleep(300); await tone(0);
+    await lp.waitForSelector(".lv-hold.lv-passed", { timeout: 9000 }).catch(() => {});
+    await tone(null);
+    await lp.click(".lv-hold .lv-primary");
+    await lp.select(".bb-bench [data-ref=toneSecs]", "8");
+    check(/Your best on this note/.test(await lp.$eval(".lv-hold", e => e.innerText)), "long tones: the ring shows your best hold as a ghost to beat");
+
+    await lp.goto(BASE + "#/play", { waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .gamecard");
+    check(await lp.$$eval("#main .questlist li", x => x.length) === 3, "play: three quests for today");
+    const startGame = async label => {
+      await clickTextOn(lp, "#main .gamecard", label);
+      await lp.waitForSelector("#main .game-card .game .btn.primary");
+      await lp.click("#main .game-card .game .btn.primary");
+      await sleep(150);
+      if (await lp.$("#main .game-card .lv-intro")) await lp.click("#main .game-card .lv-intro .lv-primary");
+      await sleep(300);
+    };
+    await startGame("Balloon");
+    await tone(0); await sleep(6000); await tone(null);
+    await lp.click("#main .game-card .game .btn.primary");
+    await lp.waitForFunction(() => /balloons? popped/.test(document.querySelector("#main .game-card .game").innerText), { timeout: 3000 }).catch(() => {});
+    const popped = await lp.$eval("#main .game-card .game", e => e.innerText);
+    check(/[1-9]\d* balloons? popped/.test(popped), "balloon: holding the note in tune pops a balloon (" + (/(\d+) balloons? popped/.exec(popped) || ["none"])[0] + ")");
+    const link = await lp.$eval("#main .challenge-share input", e => e.value).catch(() => "");
+    check(/#\/challenge\//.test(link), "balloon: a finished round offers a challenge link");
+    check(await lp.evaluate(() => { const p = JSON.parse(localStorage.getItem("bansuri.progress") || "{}"); return !!(p.live && p.live.quests && p.live.quests.list.length === 3); }), "quests are tracked once a game result comes in");
+
+    await startGame("Steer by pitch");
+    await tone(0); await sleep(1500); await tone(null);
+    await lp.click("#main .game-card .game .btn.primary");
+    await sleep(300);
+    check(/Score \d+\./.test(await lp.$eval("#main .game-card .game", e => e.innerText)), "steer by pitch: a round starts, listens and ends with a score");
+
+    await startGame("Jam with the band");
+    await tone(0); await sleep(700); await tone(null); await sleep(300);
+    await tone(1); await sleep(700); await tone(null); await sleep(300);
+    check(await lp.$("#main .jam-key.out") !== null && /is not in/.test(await lp.$eval("#main .game-card .game", e => e.innerText)), "jam: a note outside the raga is pointed out, with the nearby raga notes");
+    await clickTextOn(lp, "#main .game-card .game button", "Stop");
+    check(/% inside/.test(await lp.$eval("#main .game-card .game", e => e.innerText)), "jam: stopping sums up how much stayed inside the raga");
+    check(await lp.evaluate(async () => !(await import(new URL("app/js/core/audio.js", location.href).href)).tanpura.isOn()), "jam: stopping turns the tanpura off");
+
+    // Falling notes judges what is played: one held note, right then wrong.
+    const falling = async semi => {
+      await lp.evaluate(async () => {
+        const m = await import(new URL("app/js/games.js", location.href).href);
+        if (window.__fn) window.__fn.destroy();
+        window.__fn = m.fallingNotes({ songs: [{ title: "Test", notation: "S - - -", bpm: 120 }] });
+        document.querySelector("#main").prepend(window.__fn.el);
+        window.__fn.el.querySelector(".btn.primary").click();
+      });
+      await sleep(150); await tone(semi);
+      await lp.waitForFunction(() => /missed\. Score/.test(window.__fn.el.innerText), { timeout: 8000 }).catch(() => {});
+      await tone(null);
+      return lp.evaluate(() => window.__fn.el.querySelector("p[aria-live]").textContent);
+    };
+    const right = await falling(0), wrong = await falling(2);
+    check(/0 missed/.test(right) && /\*\*/.test(right), "falling notes: the right note on time scores (" + right.split(".")[0] + ")");
+    check(/1 missed/.test(wrong), "falling notes: a wrong note is a miss");
+    await lp.evaluate(() => { window.__fn.destroy(); window.__fn.el.remove(); });
+
+    // A challenge link replays the course for a friend.
+    if (link) {
+      await lp.goto(link, { waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main .challenge");
+      check(/scored \d+/.test(await lp.$eval("#main .challenge", e => e.innerText)) && await lp.$("#main .game-card:not([hidden]) .game") !== null, "a challenge link opens the same game with the score to beat");
+    }
+
+    // Make a melody: tapping cells writes notation.
+    await lp.goto(BASE + "#/compose", { waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .ccell");
+    await lp.evaluate(() => {
+      const row = l => [...document.querySelectorAll("#main .crow")].find(r => r.querySelector(".clabel").textContent === l);
+      row("S").querySelectorAll(".ccell")[0].click();
+      row("hold").querySelectorAll(".ccell")[1].click();
+      row("G").querySelectorAll(".ccell")[2].click();
+    });
+    check((await lp.$eval("#main .cout", e => e.textContent)).startsWith("S - G _ |"), "make a melody: tapped cells become notation (S - G _ |)");
+
+    // 5-minute practice: three steps, then it is logged.
+    await lp.goto(BASE + "#/quick", { waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .lv-hold");
+    for (let i = 0; i < 3; i++) { await clickTextOn(lp, "#main button", i < 2 ? "Next step" : "Finish"); await sleep(200); }
+    check(await lp.evaluate(() => (JSON.parse(localStorage.getItem("bansuri.progress") || "{}").log || []).some(e => e.note === "5-minute practice" && e.minutes >= 5)), "5-minute practice: finishing logs at least 5 minutes");
+    check(await lp.evaluate(() => window.__openMics()) === 0, "the games leave no microphone open");
+
     await lp.evaluate(() => localStorage.clear());
     await lp.close();
   }
@@ -594,7 +691,7 @@ try {
 
   console.log("Phone layout (iPhone 13 emulation: size, touch, user agent; the engine is still Chromium)");
   await page.emulate(KnownDevices["iPhone 13"]);
-  for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"]]) {
+  for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"], ["/play", "15-phone-play"], ["/compose", "16-phone-compose"], ["/quick", "17-phone-quick"]]) {
     await go(route);
     const ov = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     check(ov <= 1, route + " fits an iPhone screen (" + ov + "px overflow)");

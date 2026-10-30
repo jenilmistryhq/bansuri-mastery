@@ -25,7 +25,9 @@ app/
     badges.js              badge rules
     errors.js              local error log for problem reports
     lessoncards.js         lessons as cards; playable.js: play buttons on notation
-    views/                 today, session, plan, reader, milestones, journal, progress, share, settings, bench, coach
+    games.js               games played with the mic: pitchSteer, balloon, fallingNotes, jam
+    fun.js                 daily quests, points and levels, celebrate() (toast, chime, confetti)
+    views/                 today, session, plan, reader, milestones, journal, progress, share, settings, bench, coach, play, compose, quick
     core/                  shared with the standalone Practice Bench (see below)
     bench/                 Practice Bench UI module
 bansuri-mastery/           the curriculum (Markdown) - fetched by the app, also the MkDocs docs_dir
@@ -49,6 +51,10 @@ tests/                     browser smoke tests (puppeteer-core + local Chrome/Ed
 | `#/bench` | Full Practice Bench |
 | `#/songs` | Song library: every practice melody with play-along |
 | `#/coach` | Offline coach: diagnose a problem from the troubleshooting guides (`#/teacher` redirects here) |
+| `#/play` | Play: daily quests, the games, the collection of songs and ragas |
+| `#/challenge/<payload>` | A friend's challenge (base64url JSON: game, note set, seed, score, or a phrase), opened in Play |
+| `#/compose` | Make a melody: a grid of beats in a raga's notes |
+| `#/quick` | 5-minute practice: three short steps, logged as practice |
 | `#/library` | Every course page, grouped, with full-text search |
 | `#/settings` | Flute Sa, A4, sound, theme, daily reminder (.ics), placement, backup, reset |
 
@@ -72,6 +78,15 @@ tests/                     browser smoke tests (puppeteer-core + local Chrome/Ed
 - Play-along timing is judged against a fixed detector delay (`DETECT_LAG`, 0.09 s), so a learner who is always early or late is told so. If every note arrives very late (over 0.3 s), the summary points at Bluetooth audio. The tap game's device delay comes from its calibration (`tapLatency`).
 - Widgets open the microphone through `lvListen`, which closes a subscription that arrives after the widget was stopped, started twice or destroyed. Views return cleanups that destroy their widgets.
 - Songs (`views/songs.js`, `#/songs`) are parsed from `exercises/EX-MEL-practice-melodies.md`; raga tools (`ragaInfo` in `views/reader.js`) read the Aroh, Avroh and Notes rows of a raga card.
+
+## Games, quests and challenges (games.js, fun.js, views/play.js)
+
+- Games return `{ el, destroy }` and open the microphone through a helper with the same late-subscription guard as `lvListen`. Results go out as `bansuri:live` events with `type: "game"` (`game`: steer, balloon, falling, jam); falling notes also emits a `play` result.
+- Courses come from `seeded(seed)` (mulberry32) and `nextNote(set, prev, rnd)`, so a challenge link (`#/challenge/<payload>`, decoded and validated by `decodeChallenge`) replays the same gates or balloons. Bests are kept per note set in `bansuri.game.<game>.best.<level>`.
+- Falling notes judges each note from the readings in its window, with the detector delay `LAG` (0.09 s): perfect (in tune, first heard within 0.12 s), good, or miss.
+- Quests: `questsFor(date, state)` picks two from a pool by the date (plus "finish today's session"), the same all day. `main.js` passes every live result to `advanceQuests`; 20 points per quest, 20 more for all three, 100 points per level. Stored in `state.live.quests` and `state.live.points`.
+- `celebrate(text)`: a toast, a chime and confetti (no confetti with reduced motion), for new bests, quests and passed milestones.
+- `holdMeter` draws `opts.ghost(target)` (the best hold, from `livestats.bestHold`) as a faint arc, and a glow from the detector's clarity (`r.clarity`). `playEvents` `onPreview`/`lead` lets play-along show the fingering 0.3 s before each note.
 
 ## Course features (app side)
 

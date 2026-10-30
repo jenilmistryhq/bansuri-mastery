@@ -40,6 +40,12 @@ export function holdSummary() {
   })).sort((a, b) => (a.key === "any") - (b.key === "any") || Number(a.key) - Number(b.key));
 }
 
+// The learner's best steady hold on a note (semitone, or null for "any note"), in seconds.
+export function bestHold(target) {
+  const list = getState().live.holds[target === null || target === undefined ? "any" : String(target)] || [];
+  return list.reduce((m, x) => Math.max(m, x.s), 0);
+}
+
 // Everything played on one day, for "yesterday" on Today.
 export function dayResults(day) {
   const L = getState().live;

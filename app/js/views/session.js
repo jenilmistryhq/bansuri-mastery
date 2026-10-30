@@ -12,6 +12,8 @@ import { mountBench } from "../bench/bench.js";
 import { recordWidget } from "../recorder.js";
 import { ac, click } from "../core/audio.js";
 import { holdMeter, fluteFinder } from "../core/live.js";
+import { bestHold } from "../livestats.js";
+import { sessionQuestPoints } from "../fun.js";
 import { parseNotation } from "../core/notation.js";
 import { renderInline } from "../content.js";
 import { makePlayable } from "../playable.js";
@@ -111,7 +113,7 @@ export async function render(main, { params }) {
     if (b.bench && benchBlock !== id) { const tb = card.querySelector(".toolbtn"); if (tb && !holdSpec(b)) tb.click(); }
     const spec = holdSpec(b);
     if (spec && !meters[id]) {
-      meters[id] = holdMeter(Object.assign({}, spec, { onPass: () => goalMet(id) }));
+      meters[id] = holdMeter(Object.assign({}, spec, { onPass: () => goalMet(id), ghost: bestHold }));
       const host = card.querySelector(".meterhost"); if (host) host.append(meters[id].el);
     }
     // Day 0: the tools step finds the flute's Sa from the learner's own playing.
@@ -306,6 +308,7 @@ export async function render(main, { params }) {
       if (dlg.returnValue !== "save") { dlg.remove(); return; }
       if (!isMs && !repeat && !yes.checked && !no.checked) { toast("Choose whether you met the pass check."); dlg.returnValue = ""; dlg.showModal(); return; }
       const passed = isMs ? false : (repeat ? false : yes.checked);
+      sessionQuestPoints();
       const res = finishSession(n, { minutes: Math.max(0, Math.min(600, Number(minIn.value) || 0)), note: note.value.trim(), passed, blocks: doneMap });
       dlg.remove();
       if (res.advanced) { toast("Day " + n + " complete. Day " + (n + 1) + " is unlocked."); location.hash = "#/today"; }

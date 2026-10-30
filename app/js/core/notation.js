@@ -116,7 +116,8 @@ export function analyzeRange(ev) {
 
 // Schedules the events; returns a stop() function, with stop.setClick(on) to switch the beat
 // click on or off while playing and stop.t0 (the audio time the music starts). opts: { bpm, click,
-// countIn (beats, played only with the click), mute (no melody: the learner plays it), onNote(e), onEnd() }.
+// countIn (beats, played only with the click), mute (no melody: the learner plays it), onNote(e),
+// onPreview(e) and lead (seconds before each note), onEnd() }.
 export function playEvents(ev, beats, opts) {
   opts = opts || {};
   const c = ac(), beatS = 60 / (Number(opts.bpm) || 72);
@@ -126,6 +127,8 @@ export function playEvents(ev, beats, opts) {
   ev.forEach(e => {
     const f = hzOf(e.semi), at = t0 + e.start;
     if (opts.onNote) timers.push(setTimeout(() => opts.onNote(e), Math.max(0, (at - c.currentTime) * 1000)));
+    // A prompt shortly before each note (opts.lead seconds), like karaoke: the next fingering appears in time to place it.
+    if (opts.onPreview) timers.push(setTimeout(() => opts.onPreview(e), Math.max(0, (at - (opts.lead || 0.3) - c.currentTime) * 1000)));
     if (opts.mute) return;
     let v;
     if (e.kan !== null && e.kan !== undefined) {

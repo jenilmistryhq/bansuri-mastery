@@ -3,6 +3,7 @@ import { h, fmtDate, toast } from "../util.js";
 import { milestoneInfo, milestoneState, recordAttempt, current } from "../course.js";
 import { fetchDoc, tablesOf, renderInline, renderMarkdown, sectionOf } from "../content.js";
 import { recordWidget } from "../recorder.js";
+import { celebrate } from "../fun.js";
 import { holdMeter, phraseCheck, noteQuiz, echoGame } from "../core/live.js";
 import { parseNotation } from "../core/notation.js";
 
@@ -151,7 +152,7 @@ export async function render(main, { params }) {
     result.replaceChildren();
     if (passed) {
       result.append(h("div", { class: "notice good" }, h("b", null, "Passed. "), "Well earned. " + (res.advanced ? "The next day is unlocked." : "")), h("a", { class: "btn primary", href: "#/today" }, "Go to today"));
-      toast("Milestone " + id + " passed.");
+      celebrate("Milestone " + id + " passed!");
     } else {
       const failed = items.filter(it => it.required && !checks[it.key].checked);
       const remedy = sectionOf(md, /if you did not pass/i);

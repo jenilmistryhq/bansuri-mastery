@@ -55,6 +55,10 @@ function migrate(s) {
   const num = (x, lo, hi) => Number.isFinite(x) && x >= lo && x <= hi;
   out.live.echo = pick(lv.echo, e => isObj(e) && isDate(e.d) && num(e.best, 0, 50) && num(e.len, 0, 50) && num(e.right, 0, 1e6) && num(e.total, 0, 1e6) && typeof e.label === "string");
   out.live.taps = Array.isArray(lv.taps) ? lv.taps.filter(x => isObj(x) && isDate(x.d) && num(x.mean, -1000, 1000) && num(x.spread, 0, 1000) && num(x.within, 0, 1) && num(x.bpm, 1, 400)).slice(-60) : [];
+  out.live.points = num(lv.points, 0, 1e7) ? Math.round(lv.points) : 0;
+  const q = isObj(lv.quests) ? lv.quests : null;
+  if (q && isDate(q.date) && Array.isArray(q.list) && q.list.every(x => isObj(x) && typeof x.id === "string" && typeof x.text === "string" && num(x.goal, 0, 1e4)))
+    out.live.quests = { date: q.date, list: q.list.slice(0, 5), progress: pick(q.progress, x => num(x, 0, 1e6)), done: pick(q.done, x => x === true) };
   out.live.plays = Array.isArray(lv.plays) ? lv.plays.filter(x => isObj(x) && isDate(x.d) && num(x.n, 1, 1e4) && num(x.ok, 0, x.n) && num(x.onTime, 0, 1e4) && num(x.timed, 0, 1e4) && num(x.bpm, 0, 400) && typeof x.piece === "string").slice(-120) : [];
   out.v = 1;
   return out;

@@ -8,6 +8,7 @@ import { today } from "../util.js";
 import { mountBench } from "../bench/bench.js";
 import { renderInline, fetchDoc } from "../content.js";
 import { dayResults, lastPlayedDay } from "../livestats.js";
+import { questState, level } from "../fun.js";
 import { codeOf } from "../core/theory.js";
 import { makePlayable } from "../playable.js";
 
@@ -258,6 +259,12 @@ export async function render(main, { params, view }) {
     const nudge = backupNudge();
     if (nudge) page.append(nudge);
     page.append(statsRow());
+    // Today's quests, at a glance.
+    const qs = questState(), lv = level(qs.points), left = qs.list.filter(q => !q.done);
+    page.append(h("a", { class: "card questcard", href: "#/play" },
+      h("div", { class: "row between" }, h("b", null, left.length ? "Today's quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done" : "All of today's quests done!"), h("span", { class: "chip info" }, "Level " + lv.level)),
+      left.length ? h("span", { class: "small muted" }, "Next: " + left[0].text + ". Games, quests and your collection are in Play.") : h("span", { class: "small muted" }, "Come back tomorrow for new ones, or play a game for fun."),
+      h("span", { class: "small" }, "Short on time? ", h("span", { class: "linklike" }, "Try the 5-minute practice in Play."))));
     const help = adaptiveCard(cur);
     if (help) page.append(help);
     const songHost = h("div");

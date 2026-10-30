@@ -1,11 +1,24 @@
 // Boot, layout and hash router.
 import { stopPlayable } from "./playable.js";
-import { recordLive } from "./livestats.js";
+import { recordLive, bestHold } from "./livestats.js";
+import { advanceQuests, celebrate } from "./fun.js";
+import { codeOf } from "./core/theory.js";
 import { installErrorLog, logError } from "./errors.js";
 import { h, icon, clear, toast } from "./util.js";
 installErrorLog();
 // Results from the listening exercises (bench, sessions, milestones) are kept in the progress state.
-document.addEventListener("bansuri:live", e => { try { recordLive(e.detail); } catch (err) { logError(err && err.message ? err.message : String(err), "live result"); } });
+document.addEventListener("bansuri:live", e => {
+  try {
+    const d = e.detail || {};
+    const before = d.type === "hold" ? bestHold(d.target) : 0;
+    recordLive(d);
+    const done = advanceQuests(d);
+    // Celebrate personal bests and finished quests.
+    if (d.type === "hold" && before >= 2 && d.seconds >= before + 0.5) celebrate("New best: " + (d.target === null || d.target === undefined ? "a note" : codeOf(d.target)) + " held " + d.seconds.toFixed(1) + " s!");
+    else if (d.type === "game" && d.best && d.score) celebrate("New best score: " + d.score + "!");
+    done.forEach(q => celebrate("Quest complete: " + q.text + " (+20)"));
+  } catch (err) { logError(err && err.message ? err.message : String(err), "live result"); }
+});
 import { getState, onChange, isStorageOk } from "./state.js";
 import { loadPlan, getDay, current } from "./course.js";
 import { evaluate as evaluateBadges } from "./badges.js";
@@ -14,9 +27,10 @@ const ROUTES = [
   [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
-  [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"], [/^\/teacher(\/coach)?$/, "coach"],
+  [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"],
+  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
-const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Bench"], ["coach", "#/coach", "Coach"], ["journal", "#/journal", "Journal"], ["progress", "#/progress", "Progress"]];
+const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Bench"], ["play", "#/play", "Play"], ["coach", "#/coach", "Coach"], ["journal", "#/journal", "Journal"], ["progress", "#/progress", "Progress"]];
 
 let mainEl, navEl, dayPill, cleanup = null, routeToken = 0, updateReady = false;
 
@@ -81,7 +95,7 @@ async function route() {
   updateChrome(view);
   clear(mainEl).append(h("div", { class: "boot" }, "Loading..."));
   try {
-    const mod = await import("./views/" + view + ".js");
+    const mod = await import("./views/" + (view === "challenge" ? "play" : view) + ".js");
     if (token !== routeToken) return;
     clear(mainEl);
     const ret = await mod.render(mainEl, { params, anchor, view });

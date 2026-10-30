@@ -24,6 +24,7 @@ tuner without a real device. It also covers:
 - sessions one step at a time (a met goal ticks the step), lesson cards with flashcards, and play buttons on notation;
 - the microphone explainer, find my flute (an E5 tone is recognised and saved), "Your playing" on Progress, the song library and the raga tools;
 - updates and offline: a stale, incompatible module in the cache is never mixed in while online, and the app loads from the cache when offline;
+- the games with the synthetic microphone: a held note pops a balloon and offers a challenge link that opens the same game; steer by pitch runs a round; the jam points out a note outside the raga and turns the tanpura off when stopped; falling notes scores a right note and misses a wrong one; quests are tracked; make a melody turns tapped cells into notation; 5-minute practice logs at least 5 minutes; no microphone is left open;
 - phone layouts with iPhone 13 emulation.
 
 What automation cannot check: real phone browsers (iOS Safari uses WebKit, not Chromium), a real
@@ -77,6 +78,10 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] A lesson's last card (Practise it now): the exercise starts and listens; a recording marked "Reference for Lxx" in the Journal plays there.
 - [ ] Journal > record a long Sa > Analyse pitch: the tone estimate (1-4) matches what you hear; compare with the four tone levels.
 - [ ] Journal > Video self-check > Live posture check: raise one shoulder, tilt the head, lift the elbows; each is noticed within a second or two.
+- [ ] Play > Balloon and Steer by pitch with a real flute: the balloon grows only while you are in tune; the bird follows your notes without lag that makes the gates unfair.
+- [ ] Play > Falling notes on a known song at 60 BPM: notes played on time read Perfect or Good; the stars match how it went.
+- [ ] Play > Jam: the tabla and tanpura keep time; a note outside the raga is named with the nearby raga notes.
+- [ ] Bench > Long tones: the ring glows brighter for a clear tone than for an airy one; play-along shows the next fingering just before each note.
 - [ ] Note the phone, room and distance from the phone when anything misreads.
 
 ### Camera

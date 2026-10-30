@@ -7,6 +7,7 @@ import { mountBench } from "./bench/bench.js";
 import { holdMeter } from "./core/live.js";
 import { listRecordings } from "./recorder.js";
 import { postureCheck } from "./posture.js";
+import { bestHold } from "./livestats.js";
 import { toneDemo } from "./core/audio.js";
 
 function toneLevelsRow() {
@@ -70,7 +71,7 @@ function practiceCard(node, path) {
   const buttons = [];
   if (tone) {
     const b = h("button", { type: "button", class: "btn primary" }, tone.label);
-    b.addEventListener("click", () => { close(); widget = holdMeter(tone); host.append(widget.el); host.hidden = false; });
+    b.addEventListener("click", () => { close(); widget = holdMeter(Object.assign({ ghost: bestHold }, tone)); host.append(widget.el); host.hidden = false; });
     buttons.push(b);
   }
   let pick = null;

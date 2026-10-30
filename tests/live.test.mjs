@@ -197,4 +197,50 @@ await test("tone estimate: clearer, steadier tone scores higher", async () => {
   assert.deepEqual(scores, [4, 3, 2, 1]);
 });
 
+await test("game courses are reproducible from a seed, and stay in the note set", async () => {
+  const { seeded, nextNote } = await import("../app/js/games.js");
+  const course = seed => { const r = seeded(seed); let n = 0; const out = []; for (let i = 0; i < 30; i++) { n = nextNote([0, 2, 4, 5, 7], n, r); out.push(n); } return out; };
+  assert.deepEqual(course(42), course(42));
+  assert.notDeepEqual(course(42), course(43));
+  assert.ok(course(7).every(n => [0, 2, 4, 5, 7].includes(n)));
+});
+
+await test("quests: the same three all day, and results complete them once", async () => {
+  const { questsFor, advanceQuests, questState } = await import("../app/js/fun.js");
+  const { getState } = await import("../app/js/state.js");
+  const s = getState();
+  const a = questsFor("2026-10-30", s), b = questsFor("2026-10-30", s);
+  assert.deepEqual(a, b);
+  assert.equal(a.length, 3); assert.equal(a[0].id, "session");
+  assert.equal(new Set(a.map(q => q.id)).size, 3);
+  // Steer is "once": a high score completes it; a second one adds no more points.
+  const q = questState().list.find(x => x.id !== "session");
+  const results = { hold: { type: "hold", seconds: 30 }, echo: { type: "echo", correct: true }, steer: { type: "game", game: "steer", score: 99 }, balloon: { type: "game", game: "balloon", score: 99 },
+    falling: { type: "game", game: "falling", stars: 3 }, jam: { type: "game", game: "jam", minutes: 5 }, tap: { type: "tap", within: 0.9 }, song: { type: "play", n: 10, ok: 10 } };
+  const before = questState().points;
+  for (let i = 0; i < 3; i++) advanceQuests(results[q.id]);
+  const after = questState();
+  assert.ok(after.list.find(x => x.id === q.id).done, q.id + " done");
+  assert.ok(after.points >= before + 20 && after.points <= before + 40, "points once (plus a possible bonus)");
+  advanceQuests(results[q.id]);
+  assert.equal(questState().points, after.points);
+  assert.equal(advanceQuests({ type: "nothing" }).length, 0);
+});
+
+await test("challenge links round-trip and reject junk", async () => {
+  globalThis.location = { origin: "https://x.test", pathname: "/app/" };
+  const { encodePayload } = await import("../app/js/views/progress.js");
+  const { decodeChallenge } = await import("../app/js/views/play.js");
+  const c = decodeChallenge(encodePayload({ g: "steer", l: "srgmp", s: 1234, n: 17, by: "Asha" }));
+  assert.deepEqual(c, { g: "steer", l: "srgmp", s: 1234, n: 17, p: [], by: "Asha" });
+  assert.deepEqual(decodeChallenge(encodePayload({ g: "phrase", p: [0, 2, "x", 99, 4] })).p, [0, 2, 4]);
+  assert.equal(decodeChallenge(encodePayload({ g: "evil" })), null);
+  assert.equal(decodeChallenge("%%%"), null);
+});
+
+await test("a composed grid becomes notation with holds, rests and bars", async () => {
+  const { gridNotation } = await import("../app/js/views/compose.js");
+  assert.equal(gridNotation([0, "hold", 2, null, 4, 5, 7, "hold"]), "S - R _ | G m P - ||");
+});
+
 console.log(`live tests: ${passed} passed`);

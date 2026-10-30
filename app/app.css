@@ -79,7 +79,7 @@ main { grid-column: 2; min-width: 0; padding-left: max(16px, env(safe-area-inset
 .page.wide { max-width: 1120px; }
 
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
-  display: grid; grid-template-columns: repeat(6, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px);
+  display: grid; grid-template-columns: repeat(7, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px);
   padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
 .tabbar a { display: grid; justify-items: center; gap: 2px; padding: 8px 2px 6px; font-size: 0.72rem; color: var(--muted); text-decoration: none; }
 .tabbar a[aria-current="page"] { color: var(--accent); font-weight: 600; }
@@ -383,3 +383,43 @@ dialog.modal::backdrop { background: rgba(0,0,0,0.4); }
 .pose-list li { padding: 6px 10px; border-radius: 8px; border-left: 4px solid var(--line); background: var(--sunken); }
 .pose-list .pose-ok { border-left-color: var(--good); }
 .pose-list .pose-warn { border-left-color: var(--warn); }
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+
+/* Play: games, quests, collection, melody builder */
+.games { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.gamecard { display: grid; gap: 4px; text-align: left; padding: 14px 16px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.gamecard:hover { border-color: var(--accent); }
+.gamecard b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
+.game-card { border-color: var(--accent); }
+.game-stage { width: 100%; }
+.game-canvas { display: block; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); touch-action: none; max-width: 100%; }
+.questlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.questlist li { display: flex; gap: 10px; align-items: center; }
+.qmark { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: inline-grid; place-items: center; font-size: 0.8rem; flex: none; }
+.questlist li.done .qmark { background: var(--good); border-color: var(--good); color: var(--bg); }
+.questlist li.done > span:nth-child(2) { text-decoration: line-through; color: var(--muted); }
+.questcard { display: grid; gap: 4px; text-decoration: none; color: var(--ink); border-left: 4px solid var(--good); }
+.linklike { color: var(--accent); text-decoration: underline; }
+.collection { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.ccard { display: grid; gap: 2px; padding: 10px; border-radius: 10px; border: 1px solid var(--line); text-decoration: none; color: var(--ink); background: var(--bg); min-height: 64px; }
+.ccard.mastered { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, var(--surface)); }
+.ccard.open { border-color: var(--accent); }
+.ccard.locked { opacity: 0.55; border-style: dashed; }
+.challenge { border-left: 4px solid var(--bamboo); }
+.challenge-share { margin-top: 8px; }
+.challenge-share .input { flex: 1 1 220px; }
+.jam-keys { display: flex; flex-wrap: wrap; gap: 6px; }
+.jam-key { min-width: 2.6rem; text-align: center; padding: 10px 6px; border-radius: 10px; border: 2px solid var(--line); font-family: var(--mono); font-weight: 600; transition: background 80ms; }
+.jam-key.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.jam-key.out { border-color: var(--bad); color: var(--bad); }
+.jam-trail { min-height: 1.5em; color: var(--muted); overflow-wrap: anywhere; }
+.cwrap { overflow-x: auto; }
+.cgrid { display: grid; gap: 2px; min-width: max-content; }
+.crow { display: grid; grid-template-columns: 3rem repeat(var(--beats, 16), 1.9rem); gap: 2px; align-items: center; }
+.clabel { text-align: right; padding-right: 6px; }
+.ccell { height: 1.9rem; border-radius: 5px; border: 1px solid var(--line); background: var(--bg); padding: 0; }
+.ccell.bar { border-left: 2px solid var(--muted); }
+.ccell.on { background: var(--accent); border-color: var(--accent); }
+.ccell.hold.on { background: var(--bamboo); border-color: var(--bamboo); }
+.cout { background: var(--sunken); padding: 8px 10px; border-radius: 8px; overflow-x: auto; margin: 0; }
+@media (max-width: 560px) { .tabbar a { font-size: 0.66rem; } }

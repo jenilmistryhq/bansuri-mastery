@@ -579,8 +579,10 @@ export function mountBench(container, opts) {
           if (q("seqStatus").textContent !== label) q("seqStatus").textContent = label;
           root.querySelectorAll(".bb-score span.bb-on").forEach(s => s.classList.remove("bb-on"));
           const sp = root.querySelector(`.bb-score span[data-tk="${e.ti}"]`); if (sp) sp.classList.add("bb-on");
-          const fo = fingOf(e.semi); if (fo.f && o.flute) { holes = fo.f.split(""); reg = fo.reg; render(); }
         },
+        // The fingering changes a moment before each note, so there is time to place the fingers.
+        lead: 0.3,
+        onPreview: e => { const fo = fingOf(e.semi); if (fo.f && o.flute) { holes = fo.f.split(""); reg = fo.reg; render(); } },
         onEnd: () => { if (stop === stopSeq && token === seqToken) seqStop(); }
       });
       stopSeq = stop; passStops.push(stop); if (passStops.length > 3) passStops.shift();
@@ -854,7 +856,7 @@ export function mountBench(container, opts) {
   function mountTone() {
     if (liveWidgets.tones) liveWidgets.tones.destroy();
     const v = q("toneNote").value;
-    liveWidgets.tones = holdMeter({ targets: v === "any" ? null : [Number(v)], seconds: Number(q("toneSecs").value), cents: Number(q("toneCents").value) });
+    liveWidgets.tones = holdMeter({ targets: v === "any" ? null : [Number(v)], seconds: Number(q("toneSecs").value), cents: Number(q("toneCents").value), ghost: opts.ghost || null });
     q("toneHost").replaceChildren(liveWidgets.tones.el);
   }
   if (has("tones")) {

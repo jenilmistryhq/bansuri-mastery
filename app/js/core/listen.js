@@ -30,7 +30,7 @@ async function openMic() {
       if (y && y.clarity > 0.85) {
         m.hist.push(relSemi(y.f)); if (m.hist.length > 5) m.hist.shift();
         const semi = m.hist.slice().sort((a, b) => a - b)[m.hist.length >> 1], near = Math.round(semi);
-        r = { t, semi, near, cents: Math.round((semi - near) * 100), f: y.f, level };
+        r = { t, semi, near, cents: Math.round((semi - near) * 100), f: y.f, level, clarity: y.clarity };
         m.stats.voiced++;
       } else m.hist = [];
       m.stats.frames++; m.stats.peak = Math.max(m.stats.peak, level);

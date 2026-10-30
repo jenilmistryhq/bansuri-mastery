@@ -81,9 +81,10 @@ function lvDrone(label) {
 }
 
 // ---------- Long-tone meter ----------
-// opts: { targets: [semi] (in order) or null for any steady note, seconds, cents, onPass(results), compact }
+// opts: { targets: [semi] (in order) or null for any steady note, seconds, cents, onPass(results),
+//   ghost(target) -> the learner's best hold in seconds for that note (drawn as a faint arc to beat) }
 export function holdMeter(opts) {
-  const o = Object.assign({ targets: null, seconds: 8, cents: 25, onPass: null }, opts || {});
+  const o = Object.assign({ targets: null, seconds: 8, cents: 25, onPass: null, ghost: null }, opts || {});
   const targets = o.targets && o.targets.length ? o.targets : [null];
   let idx = 0, tracker = null, unsub = null, finished = false, lastSound = 0, pauseUntil = 0, shownSec = -1;
   const life = { gen: 0, dead: false, starting: false };
@@ -91,8 +92,18 @@ export function holdMeter(opts) {
   const R = 52, C = 2 * Math.PI * R;
   const ring = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   ring.setAttribute("viewBox", "0 0 120 120"); ring.setAttribute("class", "lv-ring"); ring.setAttribute("aria-hidden", "true");
-  ring.innerHTML = `<circle cx="60" cy="60" r="${R}" class="lv-track"></circle><circle cx="60" cy="60" r="${R}" class="lv-arc" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}"></circle>`;
-  const arcSvg = ring.querySelector(".lv-arc");
+  ring.innerHTML = `<circle cx="60" cy="60" r="${R}" class="lv-track"></circle><circle cx="60" cy="60" r="${R}" class="lv-ghost" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}"></circle><circle cx="60" cy="60" r="${R}" class="lv-arc" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}"></circle>`;
+  const arcSvg = ring.querySelector(".lv-arc"), ghostSvg = ring.querySelector(".lv-ghost");
+  const ghostTxt = lvEl("div", { class: "lv-count" });
+  // Your best so far for this note, as a faint arc: a race against yourself.
+  function showGhost() {
+    const best = o.ghost ? Number(o.ghost(targets[idx])) || 0 : 0;
+    ghostSvg.setAttribute("stroke-dashoffset", (C * (1 - Math.min(1, best / o.seconds))).toFixed(1));
+    ghostTxt.textContent = best ? `Your best on this note: ${best.toFixed(1)} s` : "";
+  }
+  // Tone glow: bright when the sound is clear, dim when it is airy (from the detector's clarity).
+  let glow = 0;
+  const glowTxt = lvEl("span", { class: "lv-glowtxt" });
   const noteBig = lvEl("div", { class: "lv-big" }, "-");
   const secs = lvEl("div", { class: "lv-secs" }, "0.0 s");
   const needle = lvEl("i", { class: "lv-needle" });
@@ -107,13 +118,15 @@ export function holdMeter(opts) {
   const el = lvEl("div", { class: "lv lv-hold" },
     goalEl, chips,
     lvEl("div", { class: "lv-stage" },
-      lvEl("div", { class: "lv-ringwrap", role: "progressbar", "aria-label": "Seconds held", "aria-valuemin": "0", "aria-valuemax": String(o.seconds), "aria-valuenow": "0" }, ring, lvEl("div", { class: "lv-ringtxt" }, noteBig, secs)),
+      lvEl("div", { class: "lv-ringwrap lv-glow", role: "progressbar", "aria-label": "Seconds held", "aria-valuemin": "0", "aria-valuemax": String(o.seconds), "aria-valuenow": "0" }, ring, lvEl("div", { class: "lv-ringtxt" }, noteBig, secs)),
       lvEl("div", { class: "lv-tune" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle), lvEl("div", { class: "lv-scale" }, lvEl("span", null, "flat"), centsTxt, lvEl("span", null, "sharp")))),
+    lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt),
     msg,
     lvEl("div", { class: "lv-row" }, startBtn, hearBtn, drone.el));
 
   function mark() { if (chips) chips.querySelectorAll(".lv-chip").forEach((c, i) => { c.classList.toggle("lv-now", i === idx && !finished); }); }
-  function newTracker() { tracker = holdTracker({ target: targets[idx], seconds: o.seconds, cents: o.cents }); goalEl.textContent = goal(); mark(); }
+  function newTracker() { tracker = holdTracker({ target: targets[idx], seconds: o.seconds, cents: o.cents }); goalEl.textContent = goal(); mark(); showGhost(); }
+  showGhost(); // the time to beat shows before the first Start
   function onReading(r) {
     if (finished || r.t < pauseUntil) return;
     const s = tracker.feed(r);
@@ -122,6 +135,10 @@ export function holdMeter(opts) {
     if (Math.floor(s.held) !== shownSec) { shownSec = Math.floor(s.held); el.querySelector(".lv-ringwrap").setAttribute("aria-valuenow", String(Math.min(o.seconds, shownSec))); }
     arcSvg.setAttribute("stroke-dashoffset", (C * (1 - frac)).toFixed(1));
     secs.textContent = s.held.toFixed(1) + " s" + (s.best > s.held + 0.5 ? " (best " + s.best.toFixed(1) + ")" : "");
+    const wrap = el.querySelector(".lv-ringwrap");
+    glow = glow * 0.85 + (r.semi !== null ? (r.clarity || 0) : 0) * 0.15;
+    wrap.style.setProperty("--glow", Math.max(0, (glow - 0.6) / 0.4).toFixed(2));
+    glowTxt.textContent = r.semi === null ? "" : glow > 0.93 ? "Tone: clear" : glow > 0.85 ? "Tone: fairly clear" : "Tone: airy";
     if (r.semi !== null && r.semi > -7.5) {
       lastSound = r.t;
       noteBig.replaceChildren(...[].concat(lvNote(r.near)));
