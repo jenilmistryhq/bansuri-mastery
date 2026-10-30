@@ -164,6 +164,7 @@ def main():
                 (d / f).write_bytes(encode_mp3(samples, rate))
                 if i % 25 == 0:
                     print(f"{lang}: {i + 1}/{len(todo)}", flush=True)
+        idx = index_for(lang)  # again, now that every clip exists (the size total counts them)
         for old in d.glob("*.mp3"):
             if old.name not in need:
                 old.unlink()

@@ -68,6 +68,9 @@ Today is for doing and Me is for seeing progress. Today: the Resume card (the st
 | `#/listen` | Listen: real recordings, tone levels, songs and raga scales on the animated flute |
 | `#/library` | Every course page, grouped, with full-text search |
 | `#/settings` | Flute Sa, A4, sound, theme, daily reminder (.ics), placement, backup, reset |
+| `#/privacy` | What stays on the device, in plain words |
+| `#/students` | My students (for teachers): pasted teacher links in one table, kept on this device |
+| `#/move/<payload>` | Progress moved from another device: shows what it holds, replaces on a second tap |
 
 ## Coach (views/coach.js)
 
@@ -112,7 +115,9 @@ Today is for doing and Me is for seeing progress. Today: the Resume card (the st
 - `streakRun(dates, end)` (course.js): one missed day in any 7 is a rest day that keeps the streak; tested in core tests.
 - `reminder.js`: the reminder time and the last practice day are kept in IndexedDB (`bansuri-meta`) so the service worker can read them; `periodicsync` ("practice-reminder") shows one notification a day after the time if nothing is logged. Chrome only, installed app; the calendar file is the fallback.
 - `backup.js` `saveBackup()`: Web Share with the file where supported, else a download. `move.js`: progress and settings, gzip-compressed (CompressionStream) into `#/move/<z...>`; `views/move.js` compares and replaces on a second tap; Settings shows a QR code (vendored qrcode-generator, MIT) while the link is under 2,300 characters.
-- Teacher link: `sharePayload(name, true)` adds minutes per week, longest holds, recent play-along and play-back; `views/share.js` shows them as a report.
+- Teacher link: `sharePayload(name, true)` adds minutes per week, longest holds, recent play-along and play-back; `views/share.js` shows them as a report. `views/students.js` keeps pasted links in `bansuri.students` (`{p, added}`; a newer link from the same name replaces the older) and decodes them with `share.js` `decode` for the table.
+- Storage safety: `main.js` asks `navigator.storage.persist()` once started; Settings shows whether storage is protected. On iOS browsers (`today-cards.js` `iosBrowser`) the install card shows from Day 1 and returns weekly, and the backup nudge comes every 3 days (7 elsewhere), because Safari can clear a site's data after about a week without a visit.
+- `news.js`: one "What's new" note (`NEWS.id`, dismissed into `prefs.newsSeen`). Today shows at most one notice: adaptive help, then news, then the backup nudge, then the install card.
 - Lessons in Hindi: `app/i18n/lessons-hi.json` (sections keyed by their English heading); `lessonCards(node, path, hi)` swaps in the Hindi text with the English in a toggle; each lesson's explanation has a Hindi clip (`build_voice.py` "lessons").
 - `calibrate.js`: four guided tasks record the detector's readings (no audio) to a JSON file for setting thresholds from real players. `scripts/hindi_review.py`: a CSV of every Hindi text for a native speaker, and `--apply` to write corrections back.
 - The service worker precaches the app and a few core pages, then saves the rest of the course in the background ("CACHE_REST") once the app is open.
@@ -124,6 +129,7 @@ Today is for doing and Me is for seeing progress. Today: the Resume card (the st
 - Falling notes judges each note from the readings in its window, with the detector delay `LAG` (0.09 s): perfect (in tune, first heard within 0.12 s), good, or miss.
 - Quests: `questsFor(date, state)` picks two from a pool by the date (plus "finish today's session"), the same all day. `main.js` passes every live result to `advanceQuests`; 20 points per quest, 20 more for all three, 100 points per level. Stored in `state.live.quests` and `state.live.points`.
 - `celebrate(text)`: a toast, a chime and confetti (no confetti with reduced motion), for new bests, quests and passed milestones.
+- Play leads with one game (`views/play.js` `FOR_QUEST`: the game that moves the first undone quest on) and lists the rest under "More to play". Falling notes has a speed ladder (2 stars or more raises the next round by 8 BPM, up to 160); the jam has prompts checked from `run.played` when it stops.
 - `holdMeter` draws `opts.ghost(target)` (the best hold, from `livestats.bestHold`) as a faint arc, and a glow from the detector's clarity (`r.clarity`). `playEvents` `onPreview`/`lead` lets play-along show the fingering 0.3 s before each note.
 
 ## Course features (app side)
@@ -131,6 +137,8 @@ Today is for doing and Me is for seeing progress. Today: the Resume card (the st
 - `placement.js`: the playing placement test (six items, checked by microphone) recommends a phase.
 - `course.js` `getDay`: applies the learner's pace (`prefs.pace`: short 0.6, standard 1, long 1.3 times every block's minutes) and rotates the generic warm-up text through five variants.
 - `glossary.js`: terms from `06-GLOSSARY.md` become tap-to-define buttons in lessons.
+- `codes.js` `plainCodes`: hides the course's reference codes in lessons ("(FNG-01)" goes, "EX-MEL" becomes "Practice melodies", "TS-03" becomes "troubleshooting guide 3"). Applied in `content.renderMarkdown` for `lessons/` after heading ids are set, so anchors still work; `settings.showCodes` turns it off.
+- Hindi lesson cards: `lessoncards.js` `hiSpecial` swaps in the Hindi quiz, mastery and mistakes sections from `lessons-hi.json` before their card builders run.
 - `lessoncards.js`: the last card, "Practise it now", runs the lesson's main exercise (a hold for tone lessons, or play-along on the lesson's notation) and plays a reference recording marked "Reference for Lxx" in the Journal.
 - `reader.js`: "Name that raga" on `ragas/README.md` (phrases from every card's aroh, avroh and pakad); raga tools on each card.
 - Devanagari: `settings.deva` shows sargam in Devanagari (`theory.devaOf`, `devaNotation`) in the bench score and the listening widgets.
@@ -154,6 +162,7 @@ Today is for doing and Me is for seeing progress. Today: the Resume card (the st
   locally (`bansuri.errors`, last 30). Settings > Problem report copies them with the app version and
   browser; nothing is sent automatically.
 - **CSV export** (Settings): the practice log and milestone attempts, with formula-safe quoting.
+- **Journal:** recordings grouped by week, "compare with N days ago" (the newest against one about 28 days older), and the reference kit: eight `recordWidget`s whose saved takes get `ref: "lesson:Lxx"`, so each plays as that lesson's reference.
 - **Reference audio:** `app/audio/` holds public-domain samples as Ogg Vorbis and AAC (`.m4a`, for
   Safari), made by `scripts/convert_audio.mjs`.
 

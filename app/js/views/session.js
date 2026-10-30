@@ -19,6 +19,8 @@ import { renderInline } from "../content.js";
 import { makePlayable } from "../playable.js";
 import { speak, stopSpeaking } from "../voice.js";
 import { stepMeta, plainText } from "../steps.js";
+import { flutePlayer } from "../demo.js";
+import { plainCodes } from "../codes.js";
 import { waitForNote } from "../core/listen.js";
 import { getSettings, setSettings } from "../core/settings.js";
 
@@ -167,6 +169,13 @@ export async function render(main, { params }) {
       meters[id] = holdMeter(Object.assign({}, spec, { onPass: () => goalMet(id), ghost: bestHold }));
       const host = card.querySelector(".meterhost"); if (host) host.append(meters[id].el);
     }
+    // Day 0 opens with sound: a real bansuri, then the fingers playing S R G R S on the flute picture.
+    if (n === 0 && b.id === "M" && !meters[id]) {
+      const demo = flutePlayer({ notation: "S R G R S -", bpm: 60, title: "Watch the fingers" });
+      meters[id] = { stop() { demo.destroy(); }, destroy() { demo.destroy(); } };
+      const host = card.querySelector(".meterhost");
+      if (host) host.append(h("div", { class: "stack" }, h("b", null, "A real bansuri"), h("audio", { controls: true, preload: "none", src: "app/audio/bansuri-sargam-sa-to-taar-sa-roguentropy.mp3" })), demo.el);
+    }
     // Day 0: the tools step finds the flute's Sa from the learner's own playing.
     if (n === 0 && b.id === "K" && !meters[id]) {
       meters[id] = fluteFinder({ onApply: () => goalMet(id) });
@@ -286,7 +295,7 @@ export async function render(main, { params }) {
         h("h3", null, h("button", { type: "button", class: "blockopen", "aria-expanded": "false" }, h("span", { class: "stepno small muted" }, "Step " + (day.blocks.indexOf(b) + 1) + " "), b.label, b.minutes ? h("span", { class: "muted small" }, " " + b.minutes + " min") : null)),
         total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null),
       b.text ? h("p", { class: "steptext", translate: "no" }, renderInline(b.text, "phases/README.md")) : null,
-      b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : ""), target: "_blank", rel: "noopener" }, r.label))) : null,
+      b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : ""), target: "_blank", rel: "noopener" }, plainCodes(r.label)))) : null,
     ];
     if (b.bench) {
       const host = h("div", { class: "toolhost", hidden: true });

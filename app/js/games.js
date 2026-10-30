@@ -254,9 +254,11 @@ export function fallingNotes(opts) {
   const songSel = h("select", { class: "input", "aria-label": "Song", style: { width: "auto", maxWidth: "100%" } }, o.songs.map((s, i) => h("option", { value: String(i) }, s.title + (s.ready === false ? " (not taught yet)" : ""))));
   const bpmIn = h("input", { class: "input", type: "number", min: "40", max: "160", value: "60", style: { width: "5rem" }, "aria-label": "Tempo" });
   const watch = h("input", { type: "checkbox", id: "fn-watch" });
+  const ladder = h("input", { type: "checkbox", id: "fn-ladder" });
   const status = h("p", { class: "small", "aria-live": "polite" }, "After a one-bar count-in, play each note as it reaches the line. Perfect = in tune and on time.");
   const btn = h("button", { type: "button", class: "btn primary" }, "Start");
-  const el = h("div", { class: "stack game" }, h("div", { class: "row" }, h("label", { class: "field" }, "Song", songSel), h("label", { class: "field" }, "BPM", bpmIn), h("label", { class: "check", for: "fn-watch" }, watch, "Play it for me (watch only)"), btn), h("div", { class: "game-stage" }, canvas), status);
+  const el = h("div", { class: "stack game" }, h("div", { class: "row" }, h("label", { class: "field" }, "Song", songSel), h("label", { class: "field" }, "BPM", bpmIn), h("label", { class: "check", for: "fn-watch" }, watch, "Play it for me (watch only)"),
+    h("label", { class: "check", for: "fn-ladder", title: "Speed drill: each round with 2 stars or more raises the tempo by 8 BPM" }, ladder, "Speed ladder"), btn), h("div", { class: "game-stage" }, canvas), status);
   const m = mic(el);
   let raf = 0, run = null;
   songSel.addEventListener("change", () => { const s = o.songs[Number(songSel.value)]; if (s) bpmIn.value = String(s.bpm || 60); });
@@ -321,6 +323,10 @@ export function fallingNotes(opts) {
     const key = "bansuri.game.falling.best." + r.title, best = store(key, 0);
     if (r.score > best) storeSet(key, r.score);
     status.textContent = `${r.title}: ${perfect} perfect, ${good} good, ${vals.length - perfect - good} missed. Score ${r.score}. ${"*".repeat(stars)}${"-".repeat(3 - stars)}` + (r.score > best ? " A new best!" : "");
+    if (ladder.checked) {
+      if (stars >= 2 && r.bpm < 160) { bpmIn.value = String(Math.min(160, r.bpm + 8)); status.textContent += " Up the ladder: next round at " + bpmIn.value + " BPM."; }
+      else status.textContent += " Stay at " + r.bpm + " BPM until you get 2 stars.";
+    }
     emitLive({ type: "game", game: "falling", title: r.title, score: r.score, pct, stars, best: r.score > best });
     emitLive({ type: "play", piece: r.title, bpm: r.bpm, ok: perfect + good, n: vals.length, onTime: perfect, timed: vals.length });
     if (o.onEnd) o.onEnd({ score: r.score, pct, stars });
@@ -366,7 +372,17 @@ export function jam(opts) {
   const status = h("p", { class: "small", "aria-live": "polite" }, "Choose a raga and press Start. Improvise with its notes; the lit keys show what you play.");
   const btn = h("button", { type: "button", class: "btn primary" }, "Start jamming");
   const idea = h("button", { type: "button", class: "btn", disabled: true }, "Play me a phrase idea");
-  const el = h("div", { class: "stack game" }, h("div", { class: "row" }, h("label", { class: "field" }, "Raga", ragaSel), h("label", { class: "field" }, "Tala", talaSel), h("label", { class: "field" }, "BPM", bpmIn), btn, idea), keys, trail, status);
+  // Improvisation prompts: a small task for the jam, checked from the notes played.
+  const pcs = semis => [...new Set(semis.map(x => ((x % 12) + 12) % 12))];
+  const PROMPTS = [
+    ["", "Free jam", null],
+    ["sa", "Start on Sa and end on Sa", seq => seq.length >= 4 && pcs([seq[0]])[0] === 0 && pcs([seq[seq.length - 1]])[0] === 0],
+    ["three", "Use only the raga's first three notes", (seq, r) => { const first = [...new Set(r.notes.map(x => ((x % 12) + 12) % 12))].sort((a, b) => a - b).slice(0, 3); return seq.length >= 6 && pcs(seq).every(x => first.includes(x)); }],
+    ["low", "Stay between Sa and Pa", seq => seq.length >= 6 && seq.every(x => x >= 0 && x <= 7)],
+    ["long", "Play at least 24 notes, all inside the raga", (seq, r, inside) => seq.length >= 24 && inside === seq.length],
+  ];
+  const promptSel = h("select", { class: "input", "aria-label": "Prompt", style: { width: "auto" } }, PROMPTS.map(([k, t]) => h("option", { value: k }, t)));
+  const el = h("div", { class: "stack game" }, h("div", { class: "row" }, h("label", { class: "field" }, "Raga", ragaSel), h("label", { class: "field" }, "Tala", talaSel), h("label", { class: "field" }, "BPM", bpmIn), h("label", { class: "field" }, "Prompt", promptSel), btn, idea), keys, trail, status);
   const m = mic(el);
   let run = null;
   const raga = () => o.ragas[Number(ragaSel.value)];
@@ -384,11 +400,11 @@ export function jam(opts) {
     if (run) return stop(true);
     const r = raga(); if (!r) return;
     ac();
-    run = { seq: noteSequencer(), notes: 0, inside: 0, started: Date.now(), next: ac().currentTime + 0.2, i: 0, timer: 0, mine: false, last: [] };
+    run = { seq: noteSequencer(), notes: 0, inside: 0, started: Date.now(), next: ac().currentTime + 0.2, i: 0, timer: 0, mine: false, last: [], played: [] };
     const ok = await m.start(rd => {
       if (!run) return;
       const n = run.seq.feed(rd); if (!n) return;
-      run.notes++;
+      run.notes++; run.played.push(n.semi);
       const inRaga = r.notes.some(x => ((x - n.semi) % 12 + 12) % 12 === 0);
       if (inRaga) { run.inside++; drawKeys(n.semi); status.textContent = ""; }
       else {
@@ -425,6 +441,8 @@ export function jam(opts) {
     if (report && r.notes) {
       const pct = Math.round(r.inside / r.notes * 100);
       status.textContent = `${r.notes} notes in ${mins.toFixed(1)} min, ${pct}% inside ${raga().name}.` + (pct >= 90 ? " Beautifully in the raga." : " Notes marked ! were outside the raga.");
+      const pr = PROMPTS.find(x => x[0] === promptSel.value);
+      if (pr && pr[2]) status.textContent += pr[2](r.played, raga(), r.inside) ? " Prompt done: " + pr[1] + " \u2713" : " Prompt not yet: " + pr[1] + ".";
       emitLive({ type: "game", game: "jam", raga: raga().name, minutes: Math.round(mins * 10) / 10, pct, score: r.inside });
     }
   }

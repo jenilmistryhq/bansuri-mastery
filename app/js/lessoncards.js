@@ -11,6 +11,7 @@ import { bestHold } from "./livestats.js";
 import { toneDemo } from "./core/audio.js";
 import { readButton, stopSpeaking, sayButton } from "./voice.js";
 import { renderMarkdown } from "./content.js";
+import { plainCodes } from "./codes.js";
 import { flutePlayer } from "./demo.js";
 import { award } from "./xp.js";
 
@@ -229,7 +230,7 @@ function dropClaimLabels(root) {
 }
 
 // "## 3. Simple explanation" or "Step 1. Review [L21](...)" -> the heading as the card sees it.
-export const headingKey = t => String(t).replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[*`]/g, "").replace(/^\s*\d+\.\s*/, "").replace(/\s+/g, " ").trim().toLowerCase();
+export const headingKey = t => plainCodes(String(t)).replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[*`]/g, "").replace(/^\s*\d+\.\s*/, "").replace(/\s+/g, " ").trim().toLowerCase();
 
 // hi: the lesson's Hindi sections ({ heading: markdown }) when the app is in Hindi, or null.
 export function lessonCards(node, path, hi) {
@@ -241,6 +242,10 @@ export function lessonCards(node, path, hi) {
   for (const s of secs) {
     const parentSkip = SKIP.test(s.parent) && s.level === "H3";
     if (SKIP.test(s.title) || parentSkip) continue;
+    // Quiz, checklist and mistakes in Hindi: their Hindi text keeps the same structure, so the
+    // cards are built from it the same way.
+    const hiSpecial = /common mistakes|^quiz$|mastery criteria/i.test(s.title) && hiMap.get(headingKey(s.title));
+    if (hiSpecial) { const n2 = renderMarkdown(hiSpecial, path).node; s.nodes = [...n2.children]; }
     if (/common mistakes/i.test(s.title)) { const c = mistakesCard(s); if (c) cards.push(c); continue; }
     if (/^quiz$/i.test(s.title)) { const c = quizCard(s); if (c) cards.push(c); continue; }
     if (/mastery criteria/i.test(s.title)) { cards.push(masteryCard(s, path)); continue; }

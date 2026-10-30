@@ -8,7 +8,7 @@ const SCREENS = () => [
   ["Today", "#/today", "today"], ["Today's session", "#/session/" + current(), "play"], ["Course map", "#/plan", "plan"], ["Library", "#/library", "library"],
   ["Practice Bench: flute, tuner, tanpura, tala", "#/bench", "bench"], ["Coach: check my tone", "#/coach", "coach"], ["Listen", "#/listen", "listen"],
   ["Songs: play along", "#/songs", "note"], ["Games", "#/play", "star"], ["Make a melody", "#/compose", "note"], ["5-minute practice", "#/quick", "today"],
-  ["Progress and level", "#/progress", "progress"], ["Journal: record and log", "#/journal", "journal"], ["Settings", "#/settings", "settings"],
+  ["Progress and level", "#/progress", "progress"], ["Journal: record and log", "#/journal", "journal"], ["Settings", "#/settings", "settings"], ["Privacy", "#/privacy", "settings"], ["My students (for teachers)", "#/students", "me"],
   ["Settings: your flute", "#/settings#g-flute", "settings"], ["Settings: voice and language", "#/settings#g-voice", "speaker"],
   ["Settings: accessibility", "#/settings#g-access", "settings"], ["Settings: backup and data", "#/settings#g-data", "settings"],
 ];

@@ -36,6 +36,9 @@ jobs:
           pip install -r requirements.txt
           npm ci
 
+      - name: Lint JavaScript
+        run: npx eslint .
+
       - name: Validate curriculum (links, IDs, typography)
         run: python scripts/validate.py
 
@@ -50,6 +53,7 @@ jobs:
           python scripts/build_app.py --check
           python scripts/review_claims.py --check
           python scripts/build_voice.py --check
+          python scripts/size_budget.py
 
       - name: Unit tests
         run: |
@@ -61,6 +65,12 @@ jobs:
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tests/smoke.mjs
+
+      - name: Cache the WebKit browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-webkit-1.48.2
 
       - name: Safari engine (WebKit) test
         run: |

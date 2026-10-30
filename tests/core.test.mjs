@@ -18,7 +18,7 @@ const fmt = ev => ev.map(e => `${codeOf(e.semi)}@${+e.start.toFixed(2)}/${+e.dur
 
 test("settings defaults without a browser", () => {
   assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false, lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1,
-    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5 });
+    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false });
   assert.ok(Math.abs(saHz() - 523.25) < 0.01);
 });
 
@@ -226,6 +226,17 @@ test("a transfer link carries the progress, compressed, and rejects junk", async
   const back = await decodeMove(data);
   assert.equal(back.kind, "move"); assert.ok(back.progress && typeof back.progress.current === "number");
   await assert.rejects(decodeMove("j" + Buffer.from(JSON.stringify({ app: "other" })).toString("base64url")));
+});
+
+const { plainCodes } = await import("../app/js/codes.js");
+test("lesson codes read as plain words (the course keeps them for teachers)", () => {
+  assert.equal(plainCodes("Step 1: Read the chart (FNG-01)"), "Step 1: Read the chart");
+  assert.equal(plainCodes("Long tones (TON-02, TON-03)"), "Long tones");
+  assert.equal(plainCodes("double tonguing (L13, FNG-12)"), "double tonguing (L13)");
+  assert.equal(plainCodes("EX-MEL 2.1 Evening Lamp"), "Practice melodies 2.1 Evening Lamp");
+  assert.equal(plainCodes("see TS-03 if it fails"), "see troubleshooting guide 3 if it fails");
+  assert.equal(plainCodes("ORN-01, why ornaments are grammar"), "Why ornaments are grammar");
+  assert.equal(plainCodes("Sa (`XXX OOO`) and Re"), "Sa (`XXX OOO`) and Re", "other brackets stay");
 });
 
 console.log(`core tests: ${passed} passed`);

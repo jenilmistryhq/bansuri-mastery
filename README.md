@@ -22,13 +22,15 @@ A static web app (no server, no account, no framework) that teaches the course o
 - **Easy to get around:** Today shows your level, streak and week at a glance, a Resume button that goes straight back to the step you were on, and one-tap shortcuts to the flute, the coach, games, songs, listening and a 5-minute practice. Sessions list every step with a tick as you finish it; phases show their progress; lessons are a catalogue with what is done. Press "/" (or the search button) to go to any screen, lesson or raga.
 - **Keeps you coming back:** a "last week" summary you can share, one rest day a week that does not break your streak, a daily reminder notification (installed app, Chrome), an install prompt after a few days, and "Work on these": your weakest notes and pieces from what the microphone heard, one tap each.
 - **When you are stuck:** after two failed tries at a milestone, a three-minute check finds which basic skill is holding you back and points to the lesson for it. Lessons let you record yourself and compare with the reference.
-- **Your data, your devices:** one-tap backup to Files or Drive; move your progress to another phone or computer with a link or QR code (no account); a teacher link with your practice per week and what the microphone measured.
-- **Hindi lessons:** the title, objectives, explanation and every step of all 38 lessons in Hindi (tables and quizzes in English), with each lesson's explanation spoken in Hindi.
+- **Your data, your devices:** the app asks the browser to protect its storage, and on iPhone suggests adding it to the home screen from Day 1 (Safari can clear a website's data after about a week without a visit) and nudges a backup every 3 days; one-tap backup to Files or Drive; move your progress to another phone or computer with a link or QR code (no account); a teacher link with your practice per week and what the microphone measured. Teachers paste their students' links into **My students** (Settings) to see everyone in one table.
+- **What's new and Privacy:** a short note on Today after an update, and a Privacy page that says what stays on the device (everything).
+- **Hindi lessons:** all 38 lessons in Hindi: title, objectives, explanation, every step, the quiz, the mastery checklist and the common-mistakes table, with each lesson's explanation spoken in Hindi. Choosing Hindi also shows sargam in Devanagari.
+- **Lessons in plain words:** the course's reference codes (FNG-01, EX-MEL...) are hidden in the app; a teacher can turn them back on in Settings.
 - **Levels and XP:** 30 named levels in English and Hindi, from Level 1 [Newcomer / नवागंतुक] to Level 30 [Anahad Nada / अनहद नाद]. Each level takes more XP than the last (500 more each time); the end of the course is around Level 25. XP comes from sessions, lessons, flashcards, milestones, reviews, personal bests, play-along, quests, recordings and practice minutes, with daily caps where repeating would beat practising; every game round earns a little. Your level shows in the top bar and on Today, with XP per week and every level on Progress.
 - **Get-ready countdown:** every exercise, game, tuner, recording and the posture check counts down (5 seconds by default, any number from 0 to 30 in Settings) after you tap Start or Record, so there is time to pick up the flute and settle your hold.
 - **Hindi:** the interface, the spoken prompts and every session step in Hindi (हिन्दी); the course pages stay in English.
 - **Accessibility:** text size, an easy-to-read font (Atkinson Hyperlegible), high contrast, bigger buttons, beats that flash and vibrate, captions for everything spoken, ticks and crosses as well as colours, game speed and no-timer options, game sounds for playing without looking, arrow keys in the melody grid, and an automated accessibility check (axe-core) in the tests.
-- **Play:** games played with the real flute: steer a bird through gates by pitch, blow up balloons by holding notes in tune, falling notes for any course song (perfect, good or miss, with stars), and a jam with tanpura and tabla in a raga that points out notes outside it. Daily quests with points and levels, a collection of songs and ragas that unlocks with the course, celebrations for new bests, and challenge links that replay the same course for a friend.
+- **Play:** one suggested game for today's quest with a big Play button, then the rest. Games played with the real flute: steer a bird through gates by pitch, blow up balloons by holding notes in tune, falling notes for any course song (perfect, good or miss, with stars), and a jam with tanpura and tabla in a raga that points out notes outside it. Daily quests with points and levels, a collection of songs and ragas that unlocks with the course, celebrations for new bests, and challenge links that replay the same course for a friend. For intermediate players: a **speed ladder** in falling notes (each 2-star round raises the tempo by 8 BPM) and **jam prompts** (start and end on Sa, use only three notes, stay between Sa and Pa, play 24 notes all inside the raga) checked from what you played.
 - **Make a melody:** tap notes on a grid of beats in a raga's notes; play it, play along with it, save it or send it as a challenge.
 - **5-minute practice:** for busy days, a long tone, a balloon round and a play-back round, logged as practice so the streak continues.
 - **Feedback while you play:** the long-tone ring glows with the clarity of your tone and shows your best hold on that note as a ghost to beat; in play-along the fingering appears just before each note.
@@ -40,13 +42,13 @@ A static web app (no server, no account, no framework) that teaches the course o
 - **Ragas by ear:** "Name that raga" on the raga index, and a composition on every raga card: six traditional ones transcribed from Bhatkhande's *Kramik Pustak Malika* (with the page to check), the rest original. A raga grammar check keeps every notation on a card within its raga's notes.
 - **Tone and posture:** the Journal gives a measured tone estimate (1-4) for each recording and lets you hear the four tone levels; a live posture check watches shoulders, head and arms through the camera (all in the browser).
 - **Lessons as cards:** each lesson opens as short cards (the idea, each step, common mistakes to tap and reveal, the quiz as flashcards, a mastery checklist), with the full text one tap away. Any notation in the course has a play button, glossary terms are tap-to-define, and each lesson ends with "Practise it now" (its main exercise, with the microphone, and a slot for a teacher's reference recording). Sargam can also be shown in Devanagari.
-- **Journal:** one-tap logging (minutes and how it went), a day-by-day timeline of practice, recordings and measured results, recordings kept on the device with pitch analysis and before/after comparison, and a **video self-check** (record yourself with the camera to check posture and embouchure).
+- **Journal:** one-tap logging (minutes and how it went), a day-by-day timeline of practice, recordings grouped by week with pitch analysis and a one-tap "compare with 4 weeks ago", a **reference kit** (eight core sounds a teacher records once; each plays as the reference in its lesson), and a **video self-check** (record yourself with the camera to check posture and embouchure).
 - **Progress:** the M0-M10 milestone path, minutes per week, a streak calendar, long-tone trends per note, statistics, badges and a shareable progress card (the data travels inside the link).
 - **Coach:** an offline problem solver. It can listen to a held Sa and name the likely problem (airy, squeaky, flat or sharp, wavering, too short, wrong fingering), or you pick a symptom. It shows the causes, quick checks to tick, a live drill that shows when the fix works, and remembers what helped.
 - **Hear a real bansuri:** public-domain recordings of a real flute on the first weeks' Today screen, so the synthesised sound is not your only model.
 - **Send to a teacher:** share a recording and its pitch summary with a human teacher through the phone's share sheet. Save a teacher's (or your best) take as the **reference** for a piece; it plays next to that piece in spaced review.
 - **Library and reader:** every course page rendered in the app, with full-text search.
-- **Daily reminder** (a repeating calendar event) and a weekly **backup nudge**.
+- **Daily reminder** (a repeating calendar event) and a regular **backup nudge**.
 - Installable and offline (service worker). Progress stays in the browser; backups export to a file, and the practice log and milestone results export to **CSV** for a spreadsheet.
 - **Problem report:** Settings keeps a short local log of app errors that you can copy into a bug report. Nothing is sent anywhere.
 
@@ -87,12 +89,17 @@ scripts/
   check_links.py         checks every external link in the course (run weekly by CI)
   raga_lint.py           raga grammar: no notation on a raga card uses a note the raga leaves out
   review_claims.py       lists every Uncertain or Disputed claim in TEACHER-REVIEW-CLAIMS.md
+  build_voice.py         makes the natural-voice clips (Kokoro) in English and Hindi
+  size_budget.py         fails CI if a file, the voice clips or the whole site grow past a budget
+  status.py              writes STATUS.md: course counts, Hindi coverage, voice size, open launch items
   convert_audio.mjs      makes the AAC (.m4a) copies of the reference recordings for Safari
 tests/                   unit tests and a headless-browser smoke test
 .github/workflows/       validates, tests, builds and deploys to GitHub Pages; weekly link check
 .github/ISSUE_TEMPLATE/  forms for content corrections and reference recordings
 TEACHER-REVIEW.md        a review guide for bansuri teachers, and how to contribute recordings
 TEACHER-REVIEW-CLAIMS.md every Uncertain or Disputed claim, for review (generated by scripts/review_claims.py)
+LAUNCH.md                the checks before launch that need people (devices, teachers, recordings)
+STATUS.md                the project at a glance (generated by scripts/status.py)
 ```
 
 ## Run it locally
@@ -112,6 +119,7 @@ pip install -r requirements.txt
 npm ci
 npm run build                   regenerates bench, plan, app file list and nav
 python scripts/validate.py
+npx eslint .                    lint the JavaScript
 npm test                        unit tests + headless-browser smoke test
 mkdocs serve                    the reference site at http://127.0.0.1:8000
 ```
@@ -141,11 +149,12 @@ every Monday and fails if a link is broken).
 
 The app has no server and no analytics. Progress, journal notes and recordings stay in your
 browser (localStorage and IndexedDB). The microphone is used only when you press Record or start
-the tuner, and the camera only for the video self-check. A share link carries a small progress
+an exercise, game or tuner, and the camera only for the posture and video self-checks. A share link carries a small progress
 summary inside the link itself. Sharing a recording with a teacher uses your phone's own share
 sheet; the app never uploads anything. The spoken prompts are recordings that come with the app.
 Reading a lesson aloud downloads a voice model from Hugging Face the first time (after you agree);
-the lesson text is turned into speech on your device and is never sent anywhere.
+the lesson text is turned into speech on your device and is never sent anywhere. The app's own
+Privacy page (Settings > About) says the same in plain words.
 
 Every project on `jenilmistryhq.github.io` shares one browser origin, so they could read each
 other's storage. A custom domain separates them:

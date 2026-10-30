@@ -1,24 +1,17 @@
 // Today (#/today) and any single day (#/day/<n>).
-import { h, fmtDate, fmtMinutes } from "../util.js";
+import { h, fmtDate } from "../util.js";
 import { getState, update } from "../state.js";
-import { daysBetween, addDays } from "../util.js";
-import { listRecordings } from "../recorder.js";
-import { getDay, current, dayState, phaseOf, lessonInfo, milestoneInfo, milestoneState, dueReviews, upcomingReviews, markReview, streaks, totals, practiceDates, lastIndex, getPlan } from "../course.js";
-import { today } from "../util.js";
-import { mountBench } from "../bench/bench.js";
-import { renderInline, fetchDoc } from "../content.js";
-import { dayResults, lastPlayedDay } from "../livestats.js";
+import { getDay, current, dayState, phaseOf, lessonInfo, milestoneInfo, milestoneState, lastIndex } from "../course.js";
+import { renderInline } from "../content.js";
 import { questState } from "../fun.js";
 import { levelBar } from "../levelui.js";
-import { codeOf } from "../core/theory.js";
 import { makePlayable } from "../playable.js";
 import { icon } from "../util.js";
 import { getSettings, setSettings } from "../core/settings.js";
 import { speak, sayButton } from "../voice.js";
 import { stepMeta, plainText } from "../steps.js";
-import { ring, weekStrip } from "../ui.js";
-import { saveBackup } from "../backup.js";
-import { levelOf, xpState } from "../xp.js";
+import { plainCodes } from "../codes.js";
+import { newsCard } from "../news.js";
 import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard } from "./today-cards.js";
 
 // First run: how the learner likes to learn, in pictures and both languages, so it works without
@@ -30,7 +23,7 @@ function howCard() {
     h("div", { class: "row between" }, h("h2", null, "How do you like to learn?"), sayButton(["welcome"], "Hear this")),
     h("div", { class: "row langpick", translate: "no" },
       h("button", { type: "button", class: "btn" + (getSettings().lang === "en" ? " primary" : ""), onclick: () => setSettings({ lang: "en" }) }, "English"),
-      h("button", { type: "button", class: "btn" + (getSettings().lang === "hi" ? " primary" : ""), onclick: () => setSettings({ lang: "hi" }) }, "हिन्दी")),
+      h("button", { type: "button", class: "btn" + (getSettings().lang === "hi" ? " primary" : ""), onclick: () => setSettings({ lang: "hi", deva: true }) }, "हिन्दी")),
     h("div", { class: "howtiles" },
       tile("read", "I like to read", "Lessons and steps as text", () => { done({ talk: false }); location.reload(); }),
       tile("speaker", "Talk to me", "The app says each step and how each note went", () => { done({ talk: true }); speak("welcome"); location.reload(); }),
@@ -63,7 +56,7 @@ export function blockLines(day) {
     return h("details", { class: "blockline" },
       h("summary", null, h("span", { class: "stepicon " + b.id, "aria-hidden": "true" }, icon(m.icon)), h("b", null, b.label || m.name), h("span", { class: "small muted" }, b.minutes ? b.minutes + " min" : "")),
       h("div", { class: "blockbody" }, text,
-        b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : "") }, r.label))) : null));
+        b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : "") }, plainCodes(r.label)))) : null));
   }));
   makePlayable(list);
   return list;
@@ -142,7 +135,7 @@ export async function render(main, { params, view }) {
   // Today: what to do now. One action on top; at most one notice; the session; progress at the side.
   if (isToday && !firstTime) {
     page.append(resumeCard(n, day, ds, phase, action));
-    const notice = adaptiveCard(cur) || backupNudge() || installCard();
+    const notice = adaptiveCard(cur) || newsCard() || backupNudge() || installCard();
     if (notice) { notice.classList.add("notice-one"); page.append(notice); }
   }
   else if (!firstTime) page.append(h("section", { class: "hero" },

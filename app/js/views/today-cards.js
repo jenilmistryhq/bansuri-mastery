@@ -4,19 +4,15 @@ import { h, fmtDate, fmtMinutes } from "../util.js";
 import { getState, update } from "../state.js";
 import { daysBetween, addDays } from "../util.js";
 import { listRecordings } from "../recorder.js";
-import { getDay, current, dayState, phaseOf, lessonInfo, milestoneInfo, milestoneState, dueReviews, upcomingReviews, markReview, streaks, totals, practiceDates, lastIndex, getPlan } from "../course.js";
+import { getDay, current, milestoneState, dueReviews, upcomingReviews, markReview, streaks, totals, practiceDates, lastIndex, getPlan } from "../course.js";
 import { today } from "../util.js";
 import { mountBench } from "../bench/bench.js";
-import { renderInline, fetchDoc } from "../content.js";
+import { fetchDoc } from "../content.js";
 import { dayResults, lastPlayedDay } from "../livestats.js";
 import { questState } from "../fun.js";
-import { levelBar } from "../levelui.js";
 import { codeOf } from "../core/theory.js";
-import { makePlayable } from "../playable.js";
 import { icon } from "../util.js";
-import { getSettings, setSettings } from "../core/settings.js";
-import { speak, sayButton } from "../voice.js";
-import { stepMeta, plainText } from "../steps.js";
+import { stepMeta } from "../steps.js";
 import { ring, weekStrip } from "../ui.js";
 import { saveBackup } from "../backup.js";
 import { levelOf, xpState } from "../xp.js";
@@ -97,16 +93,21 @@ export function weekSummary() {
 
 // After a few days: install the app (a home-screen icon, full screen, reminders). On iPhone the
 // browser has no install button, so the steps are shown instead.
+// On iPhone, Safari deletes a website's saved data after about 7 days without a visit, unless the
+// app is on the home screen. So there the offer comes from Day 1, says why, and comes back weekly.
+export const iosBrowser = () => typeof navigator !== "undefined" && /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) && !navigator.standalone;
+
 export function installCard() {
   const s = getState();
-  if (current() < 3 || s.prefs.installDismissed) return null;
   if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return null;
   const ios = /iPhone|iPad|iPod/.test(navigator.userAgent), evt = window.__installEvent;
+  if (current() < (ios ? 1 : 3) || (s.prefs.installDismissed && !(ios && daysBetween(s.prefs.installDismissed === true ? today() : s.prefs.installDismissed, today()) >= 7))) return null;
   if (!ios && !evt) return null;
   const card = h("section", { class: "card installcard" },
     h("div", { class: "row between" }, h("h2", null, "Put the app on your home screen"),
-      h("button", { type: "button", class: "btn ghost small", "aria-label": "Not now", onclick: () => { update(st => { st.prefs.installDismissed = true; }); card.remove(); } }, "Not now")),
-    h("p", { class: "small muted" }, "One tap to practise, full screen, works offline, and daily reminders can reach you."),
+      h("button", { type: "button", class: "btn ghost small", "aria-label": "Not now", onclick: () => { update(st => { st.prefs.installDismissed = today(); }); card.remove(); } }, "Not now")),
+    ios ? h("p", { class: "small" }, h("b", null, "Keeps your progress safe: "), "on iPhone, Safari deletes a website's saved data when it is not opened for about a week. On the home screen, the app keeps it.")
+      : h("p", { class: "small muted" }, "One tap to practise, full screen, works offline, and daily reminders can reach you."),
     ios ? h("p", { class: "small" }, "In Safari, tap the Share button, then \"Add to Home Screen\".")
       : h("button", { type: "button", class: "btn primary", onclick: async () => { evt.prompt(); const r = await evt.userChoice.catch(() => null); if (r && r.outcome === "accepted") card.remove(); } }, "Install the app"));
   return card;
@@ -253,7 +254,8 @@ export function backupNudge() {
   if (!s.startedAt) return null;
   const t = today();
   const since = s.lastBackup || s.startedAt;
-  if (daysBetween(since, t) < 7) return null;
+  // In Safari on iPhone (not installed) progress is at more risk: remind every 3 days there.
+  if (daysBetween(since, t) < (iosBrowser() ? 3 : 7)) return null;
   if (s.prefs.backupSnooze && s.prefs.backupSnooze > t) return null;
   const box = h("div", { class: "notice row between" },
     h("span", null, h("b", null, "Back up your progress. "), s.lastBackup ? "Your last backup was " + daysBetween(s.lastBackup, t) + " days ago." : "You have not made a backup yet. Your progress lives only in this browser."),

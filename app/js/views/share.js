@@ -3,7 +3,7 @@ import { h, fmtMinutes, fmtDate, toast } from "../util.js";
 import { getPlan } from "../course.js";
 import { codeOf } from "../core/theory.js";
 
-function decode(p) {
+export function decode(p) {
   try {
     const b64 = p.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((p.length + 3) % 4);
     const bin = atob(b64);
@@ -66,6 +66,8 @@ export async function render(main, { params }) {
       c.plays && c.plays.length ? [h("h3", null, "Recent play-along"), rows(["Piece", "Notes right", "BPM"], c.plays.map(([p, pct, bpm]) => [p, pct + "%", bpm]))] : null,
       c.echo && c.echo.length ? [h("h3", null, "Play back by ear"), rows(["Level", "Right", "Tried"], c.echo)] : null));
   }
+  // A teacher can keep this student in their table.
+  if (c.weeks || c.holds) page.append(h("p", { class: "small" }, "Are you this student's teacher? ", h("a", { href: "#/students", onclick: async e => { e.preventDefault(); const { addStudentLinks } = await import("./students.js"); addStudentLinks(location.href); location.hash = "#/students"; } }, "Add to My students"), "."));
   const dl = h("button", { type: "button", class: "btn" }, "Download as image");
   dl.addEventListener("click", () => {
     const cv = drawImage(c);

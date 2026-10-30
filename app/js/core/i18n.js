@@ -59,10 +59,14 @@ const skip = el => !!(el && el.closest && el.closest('[translate="no"], code, pr
 const seenSet = typeof window !== "undefined" && window.__i18nCollect ? new Set() : null;
 const seen = seenSet && { add(v) { if (v && !seenSet.has(v)) { seenSet.add(v); if (window.__i18nSave) window.__i18nSave(v); } } };
 
+// Cheapest test first: most changing text (meter readings, counters) has no letters at all, and
+// many words were already translated (no Latin letters left), so they skip the lookups below.
+const LATIN = /[A-Za-z]/;
 function doText(node) {
+  const v = node.nodeValue;
+  if (!v || !LATIN.test(v)) return;
   const p = node.parentElement;
   if (!p || skip(p)) return;
-  const v = node.nodeValue;
   if (seen && /[A-Za-z]{2}/.test(v)) seen.add(v.trim());
   if (!dict) return;
   const nv = t(v);

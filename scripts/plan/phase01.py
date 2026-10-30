@@ -81,6 +81,7 @@ def build():
 
     # ---------------- Day 0: setup ----------------
     days.append(day(0, "Day 0: Setup", [
+        blk("M", 3, "First, hear it: listen to a real bansuri, then watch the fingers play S R G R S on the flute picture.", label="Hear your instrument"),
         blk("READ", 15, "A. Your flute: read L00. Learn the parts (INS-01), do the inspection checklist (INS-03), note the maker's care instructions (INS-05), choose and write down your holding side, and set up the care routine (INS-04).",
             read=[lesson(0), rd("Phase 0 checklist", P0, "Checklist")], label="Meet your flute"),
         blk("K", 20, "B. Tools: set the drone (tanpura) to C, and try the tuner, metronome and recorder. The Practice Bench covers drone, tala and tuner.",

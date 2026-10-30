@@ -1,5 +1,5 @@
 // Journal (#/journal): practice log, recordings (audio and video) with pitch analysis, comparison and sharing.
-import { h, clear, fmtDate, fmtMinutes, toast } from "../util.js";
+import { h, clear, fmtDate, fmtMinutes, toast, addDays, daysBetween, parseDate } from "../util.js";
 import { getState, addLog } from "../state.js";
 import { totals, streaks, getPlan } from "../course.js";
 import { listRecordings, deleteRecording, patchRecording, recordWidget } from "../recorder.js";
@@ -144,9 +144,18 @@ export async function render(main) {
     let recs = [];
     try { recs = await listRecordings(); } catch (e) { clear(recHost).append(h("p", { class: "small" }, String(e.message))); return; }
     clear(recHost);
-    if (!recs.length) { recHost.append(h("p", { class: "muted" }, "No recordings yet. Record in a session or above.")); return; }
+    if (!recs.length) { recHost.append(h("p", { class: "emptystate" }, "No recordings yet. Record a long Sa above: in a few weeks you can play it next to a new one and hear how far you have come.")); return; }
+    // One tap: the newest recording next to the one closest to four weeks earlier.
+    const newest = recs[0], target = addDays(newest.date, -28);
+    const older = recs.filter(r => r.date <= addDays(newest.date, -14)).sort((a, b) => Math.abs(daysBetween(a.date, target)) - Math.abs(daysBetween(b.date, target)))[0];
+    if (older) recHost.append(h("div", { class: "row comparenow" }, h("span", { class: "small" }, "Hear the difference: your newest recording and one from " + daysBetween(older.date, newest.date) + " days earlier."),
+      h("button", { type: "button", class: "btn primary", onclick: () => { selected.clear(); selected.add(newest.id); selected.add(older.id); cmpBtn.click(); } }, "Compare with " + daysBetween(older.date, newest.date) + " days ago")));
     const shown = showAll ? recs : recs.slice(0, 8);
+    // Grouped by week (Monday first), newest week first.
+    let lastWeek = null;
     for (const rec of shown) {
+      const wk = addDays(rec.date, -((parseDate(rec.date).getDay() + 6) % 7));
+      if (wk !== lastWeek) { recHost.append(h("h3", { class: "weekhead" }, "Week of " + fmtDate(wk))); lastWeek = wk; }
       const url = URL.createObjectURL(rec.blob); urls.push(url);
       const name = h("input", { class: "input", value: rec.label, "aria-label": "Recording name" });
       name.addEventListener("change", () => patchRecording(rec.id, { label: name.value.trim() || rec.label }));
@@ -184,6 +193,22 @@ export async function render(main) {
     compareHost.scrollIntoView({ behavior: "smooth" });
   });
   page.append(h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Recordings"), cmpBtn), compareHost, recHost));
+
+  // Reference kit: a teacher (or your best take) records the core sounds once; each becomes the
+  // reference that plays in that lesson's "Practise it now" card.
+  const KIT = [["L04", "First sound: Sa, gently, 3 seconds"], ["L07", "A long, steady Sa (8-10 seconds)"], ["L09", "S R G R S, slowly"], ["L11", "Low notes: S .N .D .P .D .N S"],
+    ["L12", "Alankar 1, at 60 BPM"], ["L13", "Tongued notes: S S R R G G"], ["L16", "The Bilawal scale up and down"], ["L22", "Sa in three octaves"]];
+  const kitList = h("div", { class: "stack" });
+  listRecordings().then(recs => {
+    for (const [id, what] of KIT) {
+      const has = recs.some(r => r.ref === "lesson:" + id);
+      const status = h("span", { class: "small " + (has ? "" : "muted") }, has ? "✓ recorded" : "not yet");
+      const w = recordWidget({ label: "Reference for " + id, onSaved: async item => { await patchRecording(item.id, { ref: "lesson:" + id, refLabel: "Reference for " + id }); status.textContent = "✓ recorded"; status.className = "small"; } });
+      kitList.append(h("details", { class: "kitrow" }, h("summary", null, h("b", { class: "mono" }, id), " ", what, " ", status), w));
+    }
+  }).catch(() => {});
+  page.append(h("details", { class: "card" }, h("summary", null, h("b", null, "Reference kit: record the core sounds (for a teacher)")),
+    h("p", { class: "small muted" }, "Eight short recordings by a teacher, or your own best takes. Each one plays as the reference in its lesson, in place of the built-in recording."), kitList));
 
   // Log: one tap for the minutes and how it went, an optional note.
   const FEELS = [["great", "Went well"], ["ok", "OK"], ["hard", "Hard"]];

@@ -1,7 +1,7 @@
 // Interactive exercises that listen to the real flute: a long-tone meter, a phrase check, an
 // echo game (the app plays, you play it back) and a beat-tapping game. Plain DOM, styled by the
 // lv- classes in bench.css, so the app and the standalone Practice Bench share them.
-import { codeOf, nameOf, westOf, hzOf, WEST, devaOf } from "./theory.js";
+import { codeOf, nameOf, westOf, hzOf, WEST } from "./theory.js";
 import { ac, master, makeVoice, playNote, tanpura, click } from "./audio.js";
 import { setSettings, getSettings } from "./settings.js";
 import { noteLabel } from "./fingers.js";

@@ -1,5 +1,5 @@
 {
- "version": "9f716dcb94fe",
+ "version": "d49c1d19fe88",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -36,6 +36,7 @@
   "app/js/bench/bench.css",
   "app/js/bench/bench.js",
   "app/js/calibrate.js",
+  "app/js/codes.js",
   "app/js/content.js",
   "app/js/core/audio.js",
   "app/js/core/fingers.js",
@@ -57,6 +58,7 @@
   "app/js/livestats.js",
   "app/js/main.js",
   "app/js/move.js",
+  "app/js/news.js",
   "app/js/palette.js",
   "app/js/placement.js",
   "app/js/playable.js",
@@ -78,6 +80,7 @@
   "app/js/views/move.js",
   "app/js/views/plan.js",
   "app/js/views/play.js",
+  "app/js/views/privacy.js",
   "app/js/views/progress.js",
   "app/js/views/quick.js",
   "app/js/views/reader.js",
@@ -85,6 +88,7 @@
   "app/js/views/settings.js",
   "app/js/views/share.js",
   "app/js/views/songs.js",
+  "app/js/views/students.js",
   "app/js/views/today-cards.js",
   "app/js/views/today.js",
   "app/js/voice.js",

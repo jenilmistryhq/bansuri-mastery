@@ -321,7 +321,7 @@ const SETTINGS_KEY = "bansuri.settings";
 // starts listening or recording; 0 = none).
 const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
   lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
-  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5 });
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -347,7 +347,8 @@ function cleanSettings(s) {
     bigTargets: s.bigTargets === true,
     cues: s.cues === true,
     hints: s.hints !== false,
-    countdown: Math.round(n(s.countdown, 0, 30, 5))
+    countdown: Math.round(n(s.countdown, 0, 30, 5)),
+    showCodes: s.showCodes === true
   };
 }
 

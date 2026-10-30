@@ -4,6 +4,7 @@
 
 ```
 npm ci
+npx eslint .    # lint (CI runs it first)
 npm test        # unit tests, plan test, headless-browser smoke test
 SITE_ROOT=_site node tests/smoke.mjs   # the same smoke test against the assembled site (CI does this)
 node tests/webkit.mjs   # Safari's engine (WebKit), iPhone 13 size (CI does this; first: npx playwright-core install webkit)
@@ -12,7 +13,9 @@ node tests/visual.mjs   # local only: screenshots compared with tests/visual/ ba
 
 The smoke test drives the app in headless Chrome or Edge with a **fake microphone**
 (`--use-fake-device-for-media-stream`), so it covers recording, saving, pitch analysis and the live
-tuner without a real device. It also covers:
+tuner without a real device. Each section runs on its own (`section(name, fn)`): a failure is
+reported as `FAIL <section>: <error>` and the next section still runs, so one broken screen does
+not hide the rest. It also covers:
 
 - every route;
 - the lesson reader: tables, answer keys, link rewriting and anchors;
@@ -29,7 +32,12 @@ tuner without a real device. It also covers:
 - the games with the synthetic microphone: a held note pops a balloon and offers a challenge link that opens the same game; steer by pitch runs a round; the jam points out a note outside the raga and turns the tanpura off when stopped; falling notes scores a right note and misses a wrong one; quests are tracked; make a melody turns tapped cells into notation; 5-minute practice logs at least 5 minutes; no microphone is left open;
 - voice and access: a natural-voice clip plays with a caption; "Talk to me" names a wrong note; notes shown as fingering pictures; Listen plays a song on the animated flute; the beat flash; Simple mode's big buttons and a hands-free session (the step is spoken, the meter starts itself, and playing Sa moves on); Hindi tabs and Hindi session steps;
 - an accessibility scan (axe-core, WCAG 2.1 A and AA) of the main screens: no serious or critical problems;
+- the Privacy page, My students (a pasted teacher link appears in the table), course codes hidden in lessons, and the Journal's reference kit;
 - phone layouts with iPhone 13 emulation.
+
+CI also runs `scripts/size_budget.py` (one file under 25 MB, voice clips under 60 MB, the site
+under 150 MB). `python scripts/status.py` writes STATUS.md, and LAUNCH.md lists the checks that
+need people.
 
 What automation cannot check: real phone browsers (iOS Safari uses WebKit, not Chromium), a real
 microphone, camera and flute, and how the audio sounds. Use the checklist below before a release

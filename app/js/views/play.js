@@ -1,11 +1,9 @@
 // Play (#/play, #/challenge/<payload>): daily quests, games played with the real flute, the
 // collection of songs and ragas, and challenges shared as links.
 import { h, store } from "../util.js";
-import { getState } from "../state.js";
 import { getDay, current, phaseOf } from "../course.js";
 import { fetchDoc } from "../content.js";
 import { questState } from "../fun.js";
-import { levelBar } from "../levelui.js";
 import { pitchSteer, balloon, fallingNotes, jam, NOTE_SETS } from "../games.js";
 import { phraseCheck } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
@@ -97,31 +95,38 @@ export async function render(main, { params, view }) {
     }
   }
 
-  // Quests and level.
-  const qs = questState();
-  page.append(h("section", { class: "card quests" },
-    h("h2", null, "Today's quests"),
-    h("a", { class: "levellink", href: "#/progress#level" }, levelBar({ compact: true })),
-    h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "✓" : ""), h("span", null, q.text), q.goal > 1 && !q.done ? h("span", { class: "small muted" }, " " + Math.min(q.goal, Math.floor(q.progress)) + " of " + q.goal) : null))),
-    h("p", { class: "small muted" }, "20 XP per quest, 20 more for finishing all three. New quests every day. Every game round earns a little XP too.")));
-
-  // Games.
+  // One clear action: the game that moves today's quests on (or a favourite), then everything else.
   const ragasP = loadRagas().catch(() => []);
   const songsP = fetchDoc("exercises/EX-MEL-practice-melodies.md").then(parseSongs).catch(() => []);
-  const card = (title, text, onClick) => h("button", { type: "button", class: "gamecard", onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
-  page.append(h("section", { class: "games" },
-    card("Steer by pitch", "Fly a bird through gates by playing their notes.", () => open("Steer by pitch", withShare("steer", done => pitchSteer({ onEnd: done })))),
-    card("Balloon", "Hold the note in tune to blow up the balloon. Pop as many as you can.", () => open("Balloon", withShare("balloon", done => balloon({ onEnd: done })))),
-    card("Falling notes", "A song's notes fall in time: play each as it lands.", async () => {
+  const GAMES = {
+    steer: ["Steer by pitch", "Fly a bird through gates by playing their notes.", () => open("Steer by pitch", withShare("steer", done => pitchSteer({ onEnd: done })))],
+    balloon: ["Balloon", "Hold the note in tune to blow up the balloon. Pop as many as you can.", () => open("Balloon", withShare("balloon", done => balloon({ onEnd: done })))],
+    falling: ["Falling notes", "A song's notes fall in time: play each as it lands.", async () => {
       const reached = lessonReached(), songs = (await songsP).map(s => ({ title: s.id + " " + s.title, notation: s.notation, bpm: s.bpm, ready: s.lesson <= reached }));
       open("Falling notes", () => fallingNotes({ songs: songs.filter(s => s.ready).concat(songs.filter(s => !s.ready)) }));
-    }),
-    card("Jam with the band", "Tanpura and tabla in a raga: improvise, and the app keeps you in the raga.", async () => { const ragas = await ragasP; open("Jam with the band", () => jam({ ragas })); }),
-    card("Make a melody", "Build a tune from a raga's notes, play it, and challenge a friend.", () => { location.hash = "#/compose"; }),
-    card("5-minute practice", "Short on time? A long tone, a game and a song.", () => { location.hash = "#/quick"; })), stage);
+    }],
+    jam: ["Jam with the band", "Tanpura and tabla in a raga: improvise, and the app keeps you in the raga.", async () => { const ragas = await ragasP; open("Jam with the band", () => jam({ ragas })); }],
+    compose: ["Make a melody", "Build a tune from a raga's notes, play it, and challenge a friend.", () => { location.hash = "#/compose"; }],
+    quick: ["5-minute practice", "Short on time? A long tone, a game and a song.", () => { location.hash = "#/quick"; }],
+  };
+  // Which game helps with which quest.
+  const FOR_QUEST = { hold: "balloon", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
+  const qs = questState(), left = qs.list.filter(q => !q.done && FOR_QUEST[q.id]);
+  const pick = left.length ? FOR_QUEST[left[0].id] : "balloon";
+  const [pTitle, pText, pGo] = GAMES[pick];
+  page.append(h("section", { class: "card playnow" },
+    h("span", { class: "small muted" }, left.length ? "For today's quest: " + left[0].text : "A good one to play now"),
+    h("h2", null, pTitle), h("p", { class: "small muted" }, pText),
+    h("button", { type: "button", class: "btn primary big", onclick: pGo }, "Play " + pTitle)), stage);
+  const done = qs.list.filter(q => q.done).length;
+  page.append(h("a", { class: "questline small", href: "#/progress" }, "Quests: " + done + " of " + qs.list.length + " done today (20 XP each, 20 more for all three). Every game round earns a little XP."));
+
+  // The other games.
+  const card = (title, text, onClick) => h("button", { type: "button", class: "gamecard", onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
+  page.append(h("h2", { class: "grouphead" }, "More to play"), h("section", { class: "games" }, Object.entries(GAMES).filter(([k]) => k !== pick).map(([, g]) => card(g[0], g[1], g[2]))));
 
   // Collection.
-  const coll = h("section", { class: "card" }, h("h2", null, "Your collection"), h("p", { class: "small muted" }, "Songs and ragas unlock as the course reaches them. A song is mastered when you mark it \"I can play it\" or get 2 stars on it."));
+  const coll = h("details", { class: "card" }, h("summary", null, h("b", null, "Your collection: songs and ragas")), h("p", { class: "small muted" }, "Songs and ragas unlock as the course reaches them. A song is mastered when you mark it \"I can play it\" or get 2 stars on it."));
   page.append(coll);
   Promise.all([songsP, ragasP]).then(([songs, ragas]) => {
     const reached = lessonReached(), learned = store("bansuri.songs.learned", {}), d = getDay(current()), phase = d ? (phaseOf(d) || { id: 0 }).id : 0;

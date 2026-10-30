@@ -53,7 +53,7 @@ const ROUTES = [
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"],
-  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
+  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
 // Five tabs; related screens sit together under one tab, with a small menu at the top of each.
 const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["play", "#/play", "Play"], ["progress", "#/progress", "Me"]];
@@ -65,7 +65,7 @@ const GROUPS = {
   progress: [["progress", "#/progress", "Progress"], ["journal", "#/journal", "Journal"], ["settings", "#/settings", "Settings"]],
 };
 // Which tab a screen belongs to.
-const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress", move: "progress" };
+const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress", move: "progress", privacy: "progress", students: "progress" };
 // Simple mode: three big choices, no reading needed.
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
 
@@ -238,6 +238,9 @@ async function boot() {
   window.addEventListener("hashchange", route);
   await route();
   showLevel();
+  // Ask the browser to keep this site's storage (progress, recordings) even when space runs low or
+  // the site is not opened for a while. Granted silently for installed or often-used apps.
+  if (getState().startedAt && navigator.storage && navigator.storage.persist) navigator.storage.persisted().then(p => p || navigator.storage.persist()).catch(() => {});
   // Learners who practised before levels existed: their level (rebuilt from history) is announced once.
   const x = xpState(), lv0 = levelOf(x.total);
   if (!getState().xp) { markLevelSeen(); if (lv0.level > 1) toast("Your practice so far puts you at Level " + lv0.level + ": " + lv0.name + ".", 6000); }

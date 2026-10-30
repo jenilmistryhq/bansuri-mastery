@@ -11,7 +11,7 @@ import { placementTest } from "../placement.js";
 import { listenMic, micStats } from "../core/listen.js";
 import { ac } from "../core/audio.js";
 import { listRecordings, saveRecording, clearRecordings, blobToDataUrl } from "../recorder.js";
-import { sayButton, saveVoiceOffline, modelReady, readAloud, voiceSizeMB, removeSavedVoice } from "../voice.js";
+import { sayButton, saveVoiceOffline, modelReady, voiceSizeMB, removeSavedVoice } from "../voice.js";
 import { fingSvg } from "../core/fingers.js";
 import { enableReminder, disableReminder, remindersSupported } from "../reminder.js";
 import { saveBackup } from "../backup.js";
@@ -92,7 +92,8 @@ function accessSection() {
   // The language choice is written in both languages, so it can be found without reading English.
   const langSel = h("select", { id: "st-lang", translate: "no" }, h("option", { value: "en" }, "English"), h("option", { value: "hi" }, "हिन्दी (Hindi)"));
   langSel.value = set.lang;
-  langSel.addEventListener("change", () => setSettings({ lang: langSel.value }));
+  // Hindi readers expect sargam in Devanagari (सा रे ग): choosing Hindi turns it on.
+  langSel.addEventListener("change", () => setSettings(langSel.value === "hi" ? { lang: "hi", deva: true } : { lang: langSel.value }));
   const size = h("input", { id: "st-size", type: "range", min: "85", max: "160", step: "5", value: String(Math.round(set.textSize * 100)) });
   const sizeTxt = h("span", { class: "mono small" }, Math.round(set.textSize * 100) + "%");
   size.addEventListener("input", () => { sizeTxt.textContent = size.value + "%"; setSettings({ textSize: Number(size.value) / 100 }); });
@@ -120,6 +121,7 @@ function accessSection() {
     check("easyFont", "Easy-to-read font"),
     check("contrast", "High contrast"),
     check("bigTargets", "Bigger buttons"),
+    check("showCodes", "Show the course's reference codes in lessons (FNG-06, EX-MEL...), for teachers"),
     h("h3", null, "Beats you can see and feel"),
     check("beatFlash", "Flash the screen edge on every beat"),
     check("vibrate", "Vibrate on every beat (phones that support it)"),
@@ -315,7 +317,14 @@ export async function render(main) {
       location.hash = "#/today";
     } catch (e) { toast(String(e.message || "That file could not be read.")); }
   });
-  page.append(h("section", { class: "card" }, h("h2", null, "Your data"),
+  // Is the storage protected from automatic clearing? (and how much is used)
+  const storeLine = h("p", { class: "small muted", "aria-live": "polite" });
+  if (navigator.storage && navigator.storage.persisted) Promise.all([navigator.storage.persisted(), navigator.storage.estimate ? navigator.storage.estimate() : null]).then(([p, est]) => {
+    // Two text parts, so each is translated on its own.
+    storeLine.replaceChildren(p ? "Storage is protected: the browser will not clear it on its own." : /iPhone|iPad|iPod/.test(navigator.userAgent) ? "Storage is not protected yet: the browser may clear it if space runs low or after about a week without a visit (Safari). Add the app to your home screen to protect it." : "Storage is not protected yet: the browser may clear it if space runs low. Installing the app usually protects it.",
+      est && est.usage ? " Using " + (est.usage / 1e6).toFixed(1) + " MB." : "");
+  }).catch(() => {});
+  page.append(h("section", { class: "card" }, h("h2", null, "Your data"), storeLine,
     h("p", { class: "small muted" }, "Progress and recordings live only in this browser. Back up regularly, and to move to another device, download a backup here and restore it there."),
     h("label", { class: "check", for: "st-withrec" }, withRec, "Include recordings (larger file)"),
     h("div", { class: "row" }, exportBtn, shareBtn, csvBtn),
@@ -401,6 +410,7 @@ export async function render(main) {
     h("div", { class: "row" }, repBtn, errs.length ? clrBtn : null), repBox));
 
   page.append(h("section", { class: "card" }, h("h2", null, "About"),
+    h("p", null, h("a", { href: "#/privacy" }, "Privacy: what stays on your device"), " - in short, everything."),
     h("p", null, "Bansuri Mastery teaches the bansuri day by day from the open curriculum. Read it all as a ", h("a", { href: "docs/" }, "website"), " or in the ", h("a", { href: "#/library" }, "library"), "."),
     h("p", { class: "small muted" }, "Course content: CC BY-NC-SA 4.0. Code: MIT. Fonts: Hind, Rozha One (Indian Type Foundry) and JetBrains Mono, SIL Open Font License. Markdown rendering: marked (MIT). Everything runs in your browser; nothing you do here is sent anywhere."),
     h("p", { class: "small muted" }, "Limits: the app cannot hear your tone, see your posture or judge raga intonation. Use recordings, a tuner and, when you can, a teacher. ", h("a", { href: "#/read/07-QUALITY-REPORT.md" }, "Quality report"), ".")));
