@@ -5,7 +5,7 @@ import { ac, makeVoice, playNote, tanpura, click, tablaBol } from "../core/audio
 import { parseNotation, buildEvents, analyzeRange, playEvents, PRESETS } from "../core/notation.js";
 import { analyzeAudioBuffer, decodeAudioFile, compareToExpected, drawPitchPlot, tuningOffset, CHECK_PLANS, startMicTuner } from "../core/pitch.js";
 import { listenMic, emitLive } from "../core/listen.js";
-import { holdMeter, echoGame, tapGame, micIntro } from "../core/live.js";
+import { holdMeter, echoGame, tapGame, micIntro, countdown } from "../core/live.js";
 
 const BENCH_TABS = [["play", "Play along"], ["tones", "Long tones"], ["echo", "Play back"], ["rhythm", "Tala &amp; drone"], ["ear", "Ear quiz"], ["chart", "Fingering"], ["check", "Tuner"], ["about", "About"]];
 const BENCH_HOLE_X = [430, 505, 580, 690, 765, 840];
@@ -449,6 +449,7 @@ export function mountBench(container, opts) {
     if (checkUnsub) return true;
     const g = checkGen;
     if (!(await micIntro(q("checkSum").parentElement)) || g !== checkGen) return false;
+    if (!(await countdown(q("checkSum").parentElement, { btn: q("playBtn") })) || g !== checkGen || destroyed) return false;
     checkReads = [];
     try {
       const u = await listenMic(r => { if (r.semi !== null) { checkReads.push(r); if (checkReads.length > 3000) checkReads.splice(0, 1500); } });
@@ -775,6 +776,7 @@ export function mountBench(container, opts) {
   async function micToggle() {
     if (micStop) { micOff(); return; }
     const st = q("micStatus");
+    if (!(await countdown(q("micBtn").parentElement, { btn: q("micBtn") })) || destroyed) return;
     try {
       micStop = await startMicTuner(r => {
         micLast = performance.now();

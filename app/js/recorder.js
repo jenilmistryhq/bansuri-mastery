@@ -2,6 +2,7 @@
 // IndexedDB, never uploaded. The microphone is opened only when the learner presses Record.
 import { update } from "./state.js";
 import { h, icon, fmtClock, toast, today } from "./util.js";
+import { countdown } from "./core/live.js";
 
 const DB = "bansuri", STORE = "recordings";
 
@@ -135,6 +136,8 @@ export function recordWidget({ day, label, onSaved, video }) {
     }
     if (starting) return;
     starting = true;
+    // Time to pick up the flute after tapping Record.
+    if (!(await countdown(btn.parentElement, { btn, label: "Get ready: recording starts in" })) || disposed) { starting = false; return; }
     try {
       if (preview) preview.hidden = false;
       const started = await startRecording({ video: !!video, preview, onLevel: p => { bar.style.width = Math.min(100, p * 140) + "%"; bar.style.background = p > 0.95 ? "var(--bad)" : "var(--good)"; } });

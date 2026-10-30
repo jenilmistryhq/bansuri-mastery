@@ -29,6 +29,9 @@ if (!executablePath) { console.error("No Chrome/Edge found; set CHROME_PATH."); 
 
 // Fake media devices give the tests a microphone (a generated tone) without a permission prompt.
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
+// The get-ready countdown (Settings, 5 s by default) is off in tests, except where a check turns it on.
+const newPage = browser.newPage.bind(browser);
+browser.newPage = async () => { const p = await newPage(); await p.evaluateOnNewDocument(() => { if (window.__countdownSeconds === undefined) window.__countdownSeconds = 0; }); return p; };
 const page = await browser.newPage();
 // I18N_COLLECT=<file>: list every interface string the walk sees (for app/i18n/hi.json).
 const i18nSeen = new Set();
@@ -665,6 +668,27 @@ try {
     for (let i = 0; i < 3; i++) { await clickTextOn(lp, "#main button", i < 2 ? "Next step" : "Finish"); await sleep(200); }
     check(await lp.evaluate(() => (JSON.parse(localStorage.getItem("bansuri.progress") || "{}").log || []).some(e => e.note === "5-minute practice" && e.minutes >= 5)), "5-minute practice: finishing logs at least 5 minutes");
     check(await lp.evaluate(() => window.__openMics()) === 0, "the games leave no microphone open");
+
+    console.log("Get-ready countdown");
+    await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector(".bb-bench [data-ref=toneNote]");
+    await tab("tones");
+    await lp.waitForSelector(".lv-hold .lv-primary");
+    await lp.evaluate(() => { window.__countdownSeconds = 2; });
+    await lp.evaluate(() => document.querySelector(".lv-hold .lv-primary").click());
+    await sleep(300);
+    check(await lp.$eval(".lv-hold .lv-countdown .lv-cdnum", e => e.textContent).catch(() => "") === "2" && /Start/.test(await lp.$eval(".lv-hold .lv-primary", e => e.textContent)), "countdown: Start counts down before listening");
+    await sleep(2300);
+    check(await lp.$(".lv-hold .lv-countdown") === null && /Stop/.test(await lp.$eval(".lv-hold .lv-primary", e => e.textContent)), "countdown: listening starts when it reaches zero");
+    const press = async what => { const ok = await lp.evaluate(() => { const b = document.querySelector(".lv-hold .lv-primary"); if (b) b.click(); return !!b; }); if (!ok) console.log("    (debug) no meter button at " + what + ": " + (await lp.evaluate(() => (document.querySelector('.bb-bench [data-ref=toneHost]') || {}).innerHTML || "no host")).slice(0, 300)); };
+    await press("stop");
+    await press("start again"); // counting
+    await sleep(300);
+    await press("cancel"); // pressing Start again cancels
+    await sleep(2500);
+    check(await lp.$(".lv-hold .lv-countdown") === null && /Start|Again/.test(await lp.$eval(".lv-hold .lv-primary", e => e.textContent)) && await lp.evaluate(() => window.__openMics()) === 0, "countdown: pressing Start again cancels it, and the microphone stays closed");
+    await lp.evaluate(() => { window.__countdownSeconds = 0; });
 
     console.log("Voice, pictures, Simple mode and Hindi");
     const setSet = patch => lp.evaluate(p => { const s = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); localStorage.setItem("bansuri.settings", JSON.stringify(Object.assign(s, p))); }, patch);

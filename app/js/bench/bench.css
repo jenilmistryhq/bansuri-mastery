@@ -227,3 +227,10 @@
 .lv-slot.lv-octave::after { content: " \2195"; }
 .bb-score span.bb-hit::after { content: "\2713"; font-size: 0.6em; vertical-align: super; }
 .lv-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* Countdown before listening or recording */
+.lv-countdown { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; padding: 14px 16px; margin-bottom: 10px; border-radius: 14px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink); text-align: center; }
+.lv-countdown .lv-cdlabel { font-weight: 600; flex-basis: 100%; }
+.lv-countdown .lv-cdnum { font-family: var(--display); font-size: 3.2rem; line-height: 1; min-width: 2ch; color: var(--accent); animation: lv-cd 1s ease-out infinite; }
+.lv-countdown .lv-count { flex-basis: 100%; }
+@keyframes lv-cd { from { transform: scale(1.25); opacity: 0.6; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lv-countdown .lv-cdnum { animation: none; } }

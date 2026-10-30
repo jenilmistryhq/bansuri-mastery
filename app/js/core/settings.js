@@ -6,10 +6,11 @@ const SETTINGS_KEY = "bansuri.settings";
 // lang (en | hi), talk (speak prompts and feedback), notesAs (letters | pictures), simple (Simple mode),
 // textSize (1 = normal), easyFont, contrast, beatFlash, vibrate, gameSpeed (slow | normal | fast),
 // noTimer (games without a clock), bigTargets, cues (game sounds and spoken notes for blind players),
-// hints (a guide tone after an off note).
+// hints (a guide tone after an off note), countdown (seconds to get the flute ready before the app
+// starts listening or recording; 0 = none).
 export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
   lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
-  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true });
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5 });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -34,7 +35,8 @@ function cleanSettings(s) {
     noTimer: s.noTimer === true,
     bigTargets: s.bigTargets === true,
     cues: s.cues === true,
-    hints: s.hints !== false
+    hints: s.hints !== false,
+    countdown: Math.round(n(s.countdown, 0, 30, 5))
   };
 }
 

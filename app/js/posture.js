@@ -3,6 +3,7 @@
 // advice from L02. No image leaves the device. It cannot see the embouchure: that stays with the
 // recording, the mirror and a teacher.
 import { h } from "./util.js";
+import { countdown } from "./core/live.js";
 
 // Landmark numbers in the pose model: ears, shoulders, elbows, wrists.
 const P = { lEar: 7, rEar: 8, lSh: 11, rSh: 12, lEl: 13, rEl: 14, lWr: 15, rWr: 16 };
@@ -89,6 +90,9 @@ export function postureCheck() {
       const [pose, s] = await Promise.all([landmarker(), navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 640, height: 480 }, audio: false })]);
       if (stopped) { s.getTracks().forEach(t => t.stop()); return; }
       stream = s; video.srcObject = s; await video.play().catch(() => {});
+      // Time to pick up the flute and get into position, watching the preview.
+      msg.textContent = "Get into position: hold the flute as if playing.";
+      if (!(await countdown(el, { label: "Get ready: hold your flute as if playing" })) || stopped) { stop(); return; }
       msg.textContent = "Checking. Hold the flute as if playing. This sees posture and arms only; check the embouchure with a recording and a mirror.";
       btn.textContent = "Stop"; btn.disabled = false;
       let last = 0;

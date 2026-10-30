@@ -4,7 +4,7 @@ import { h, store, storeSet } from "./util.js";
 import { codeOf, fingOf, hzOf } from "./core/theory.js";
 import { ac, makeVoice, tanpura, tablaBol, click } from "./core/audio.js";
 import { listenMic, muteListening, noteSequencer, emitLive } from "./core/listen.js";
-import { micIntro } from "./core/live.js";
+import { micIntro, countdown } from "./core/live.js";
 import { parseNotation, buildEvents, playEvents } from "./core/notation.js";
 import { getSettings } from "./core/settings.js";
 import { drawFing, picturesOn, noteLabel } from "./core/fingers.js";
@@ -62,9 +62,11 @@ function chime(good) { try { const c = ac(), t = c.currentTime + 0.01; click(t, 
 function mic(el) {
   const life = { gen: 0, unsub: null };
   return {
-    async start(onReading) {
+    async start(onReading, btn) {
       if (life.unsub) return true;
       if (!(await micIntro(el))) return false;
+      const g0 = life.gen;
+      if (!(await countdown(el, { btn })) || g0 !== life.gen) return false;
       const g = ++life.gen;
       const u = await listenMic(onReading);
       if (g !== life.gen) { u(); return false; }
@@ -159,8 +161,8 @@ export function pitchSteer(opts) {
     storeSet("bansuri.game.steer.level", sel.value);
     const rnd = seeded(seed);
     run = { seed, level: sel.value, set, rnd, gates: [], note: set[0], bird: set[0], target: null, heardAt: -1e9, score: 0, lives: getSettings().noTimer ? Infinity : 3, since: 2, every: 2.6, tol: 0.75, flash: 0, bx: 120, last: performance.now() };
-    const ok = await m.start(r => { if (run && r.semi !== null && r.semi > -7.5 && r.semi < 26.5) { run.target = r.semi; run.heardAt = performance.now(); } });
-    if (!ok || !run) { run = null; status.textContent = "The microphone is needed to steer. Allow it and press Start."; return; }
+    const ok = await m.start(r => { if (run && r.semi !== null && r.semi > -7.5 && r.semi < 26.5) { run.target = r.semi; run.heardAt = performance.now(); } }, btn);
+    if (!ok || !run) { run = null; status.textContent = "Not started. Press Start when you are ready (the microphone must be allowed)."; return; }
     btn.textContent = "Stop"; status.textContent = "Fly! Play each gate's note.";
     raf = requestAnimationFrame(step);
   });
@@ -232,8 +234,8 @@ export function balloon(opts) {
     const seed = o.seed || Math.floor(Math.random() * 1e9), set = NOTE_SETS.find(s => s[0] === sel.value)[2];
     storeSet("bansuri.game.balloon.level", sel.value);
     run = { seed, level: sel.value, set, rnd: seeded(seed), target: set[0], size: 0, pops: 0, left: getSettings().noTimer ? Infinity : o.seconds, semi: -99, cents: null, heard: "", heardAt: -1e9, inTune: false, burst: 0, last: performance.now() };
-    const ok = await m.start(r => { if (run && r.semi !== null && r.semi > -7.5) { run.semi = r.semi; run.heardAt = performance.now(); run.cents = Math.round((r.semi - run.target) * 100); run.heard = codeOf(r.near); } });
-    if (!ok || !run) { run = null; status.textContent = "The microphone is needed. Allow it and press Start."; return; }
+    const ok = await m.start(r => { if (run && r.semi !== null && r.semi > -7.5) { run.semi = r.semi; run.heardAt = performance.now(); run.cents = Math.round((r.semi - run.target) * 100); run.heard = codeOf(r.near); } }, btn);
+    if (!ok || !run) { run = null; status.textContent = "Not started. Press Start when you are ready (the microphone must be allowed)."; return; }
     btn.textContent = "Stop"; raf = requestAnimationFrame(step);
     status.textContent = tr("Balloon:") + " " + codeOf(run.target);
     if (cuesOn()) speak("balloon_intro", ["note", run.target, "play"]);
@@ -333,8 +335,8 @@ export function fallingNotes(opts) {
     const ev = b.ev.filter(e => e.dur > 0.05);
     run = { title: song.title, bpm, ev, lanes: [...new Set(ev.map(e => e.semi))].sort((x, y) => x - y), results: new Map(), reads: [], score: 0, streak: 0, watch: watch.checked, t0: 0, stop: null };
     if (!run.watch) {
-      const ok = await m.start(r => { if (run && r.semi !== null) { run.reads.push(r); if (run.reads.length > 4000) run.reads.splice(0, 2000); } });
-      if (!ok || !run) { run = null; status.textContent = "The microphone is needed to score. Tick \"Play it for me\" to just watch."; return; }
+      const ok = await m.start(r => { if (run && r.semi !== null) { run.reads.push(r); if (run.reads.length > 4000) run.reads.splice(0, 2000); } }, btn);
+      if (!ok || !run) { run = null; status.textContent = "Not started. Press Start when you are ready (the microphone must be allowed), or tick \"Play it for me\" to just watch."; return; }
     }
     const stop = playEvents(b.ev, b.beats, { bpm, click: true, countIn: b.barLen, mute: !run.watch });
     run.stop = stop; run.t0 = stop.t0;
@@ -398,8 +400,9 @@ export function jam(opts) {
       }
       run.last.push(codeOf(n.semi) + (inRaga ? "" : "!")); if (run.last.length > 16) run.last.shift();
       trail.textContent = run.last.join(" ");
-    });
-    if (!ok || !run) { run = null; status.textContent = "The microphone is needed. Allow it and start again."; return; }
+    }, btn);
+    if (!ok || !run) { run = null; status.textContent = "Not started. Press Start when you are ready (the microphone must be allowed)."; return; }
+    run.started = Date.now(); run.next = ac().currentTime + 0.2;
     if (!tanpura.isOn()) { tanpura.setFirst(r.first || "pa"); tanpura.start(); run.mine = true; }
     run.timer = setInterval(tick, 40); tick();
     btn.textContent = "Stop"; idea.disabled = false; drawKeys();

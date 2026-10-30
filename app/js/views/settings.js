@@ -6,7 +6,7 @@ import { getPlan, current } from "../course.js";
 import { getSettings, setSettings, saHz } from "../core/settings.js";
 import { playNote } from "../core/audio.js";
 import { WEST, codeOf } from "../core/theory.js";
-import { fluteFinder, micIntro } from "../core/live.js";
+import { fluteFinder, micIntro, countdown } from "../core/live.js";
 import { placementTest } from "../placement.js";
 import { listenMic, micStats } from "../core/listen.js";
 import { ac } from "../core/audio.js";
@@ -57,6 +57,18 @@ function download(name, text, type) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
+// Seconds to get the flute ready between tapping Start (or Record) and the app listening.
+function countdownField(set) {
+  const inp = h("input", { id: "st-countdown", type: "number", min: "0", max: "30", step: "1", value: String(set.countdown), class: "input", style: { width: "6rem" } });
+  const quick = [0, 3, 5, 10].map(n => h("button", { type: "button", class: "btn small" + (set.countdown === n ? " primary" : ""), onclick: e => { inp.value = String(n); save(); e.currentTarget.parentElement.querySelectorAll(".btn").forEach(b => b.classList.toggle("primary", b === e.currentTarget)); } }, n ? n + " s" : "Off"));
+  const save = () => { const v = Math.max(0, Math.min(30, Math.round(Number(inp.value) || 0))); inp.value = String(v); setSettings({ countdown: v }); };
+  inp.addEventListener("change", save);
+  return h("div", { class: "stack" },
+    h("label", { class: "field", for: "st-countdown" }, "Countdown before the app listens or records (seconds, 0 = none)", inp),
+    h("div", { class: "row" }, quick),
+    h("p", { class: "small muted" }, "Time to pick up the flute and settle your hold after tapping Start or Record. Used by every exercise, game, tuner, recording and the posture check."));
+}
+
 // Language, voice and access: for learners who prefer listening to reading, and for anyone who
 // needs larger text, more contrast, pictures instead of letters, or beats they can see and feel.
 function accessSection() {
@@ -91,6 +103,7 @@ function accessSection() {
   return h("section", { class: "card", id: "access" }, h("h2", null, "Language, voice and access"),
     h("label", { class: "field", for: "st-lang" }, h("span", { translate: "no" }, "Language / भाषा"), langSel),
     h("p", { class: "small muted" }, "The app's buttons, messages and voice change language. The course pages stay in English, and the voice can read them aloud."),
+    countdownField(set),
     h("h3", null, "Voice"),
     check("talk", "Talk to me: say the steps, and how each note went", sayButton(["welcome"], "Hear the voice")),
     h("p", { class: "small muted" }, "A natural human-sounding voice, made on this device's copy of the app; nothing is sent anywhere. The microphone does not listen while the app speaks."),
@@ -295,6 +308,7 @@ export async function render(main) {
   micBtn.addEventListener("click", async () => {
     try { ac(); } catch (e) { /* audio unavailable */ } // start the audio clock inside the tap (iOS)
     if (!(await micIntro(micBtn.parentElement))) return;
+    if (!(await countdown(micBtn.parentElement, { btn: micBtn }))) return;
     micBtn.disabled = true; micOut.hidden = true; micCopy.hidden = true;
     const notes = {}; let voiced = 0, total = 0, cents = [];
     let unsub;

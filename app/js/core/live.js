@@ -66,6 +66,48 @@ export function micIntro(host) {
   });
 }
 
+// A countdown before the app listens or records, so there is time to pick up the flute and settle
+// the hold after tapping (setting: countdown, seconds; 0 = none). A tick each second (or the number
+// spoken, with "Talk to me"), a higher beep at "go". Cancel with its button, Escape, or by pressing
+// the start button (opts.btn) again. Resolves true to go ahead, false when cancelled.
+export function countdown(host, opts) {
+  const o = Object.assign({ btn: null, label: "Get ready: hold your flute" }, opts || {});
+  const test = typeof window !== "undefined" ? window.__countdownSeconds : undefined; // tests set this
+  let n = Math.round(test !== undefined ? test : getSettings().countdown);
+  if (!n || !host) return Promise.resolve(true);
+  return new Promise(resolve => {
+    let timer = 0, done = false;
+    const num = lvEl("b", { class: "lv-cdnum", "aria-hidden": "true" }, String(n));
+    const sr = lvEl("span", { class: "lv-sr", "aria-live": "assertive" }, o.label + ". " + n);
+    const cancelBtn = lvEl("button", { type: "button", class: "lv-btn" }, "Cancel");
+    const box = lvEl("div", { class: "lv-countdown", role: "timer" }, lvEl("span", { class: "lv-cdlabel" }, o.label), num, sr, cancelBtn,
+      lvEl("span", { class: "lv-count" }, "Change the countdown in Settings."));
+    const onKey = e => { if (e.key === "Escape") finish(false); };
+    const onBtn = e => { e.stopImmediatePropagation(); e.preventDefault(); finish(false); };
+    function finish(ok) {
+      if (done) return; done = true;
+      clearInterval(timer); box.remove();
+      document.removeEventListener("keydown", onKey);
+      if (o.btn) o.btn.removeEventListener("click", onBtn, true);
+      resolve(ok);
+    }
+    const sound = last => {
+      if (!last && speaker && getSettings().talk) { lvSay(["num", n]); return; }
+      try { const c = ac(), t = c.currentTime + 0.02; click(t, last ? "sam" : "tick"); muteListening(t + 0.3); } catch (e) { /* audio unavailable */ }
+    };
+    cancelBtn.addEventListener("click", () => finish(false));
+    document.addEventListener("keydown", onKey);
+    if (o.btn) o.btn.addEventListener("click", onBtn, true);
+    host.prepend(box);
+    sound(false);
+    timer = setInterval(() => {
+      n--;
+      if (n <= 0) { sound(true); finish(true); return; }
+      num.textContent = String(n); sr.textContent = String(n); sound(false);
+    }, 1000);
+  });
+}
+
 // Opens the microphone for a widget without leaking it. life.gen changes whenever the widget stops,
 // so a subscription that arrives after a stop, a second Start or a destroy is closed at once.
 async function lvListen(life, onReading) {
@@ -222,6 +264,7 @@ export function holdMeter(opts) {
     const g0 = life.gen;
     try {
       if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
+      if (!(await countdown(el, { btn: startBtn })) || life.dead || life.gen !== g0) return;
       finished = false; idx = 0; el.classList.remove("lv-passed");
       if (chips) chips.querySelectorAll(".lv-chip").forEach(c => c.classList.remove("lv-ok"));
       newTracker();
@@ -302,6 +345,7 @@ export function phraseCheck(opts) {
     const g0 = life.gen;
     try {
       if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
+      if (!(await countdown(el, { btn: startBtn })) || life.dead || life.gen !== g0) return;
       clean = 0; el.classList.remove("lv-passed"); count.textContent = o.reps > 1 ? `0 of ${o.reps} clean in a row` : "";
       seq = noteSequencer(); fresh();
       ac();
@@ -431,8 +475,8 @@ export function echoGame(opts) {
     slots.setAttribute("aria-label", st.marks.filter(m => m === "ok").length + " of " + phrase.length + " notes right");
     if (st.done) finish(false); else armQuiet();
   }
-  goBtn.addEventListener("click", async () => { ac(); if (!(await micIntro(el)) || life.dead || !(await ensureMic())) return; phrase = echoPhrase(level[2], len); againBtn.disabled = false; play(); });
-  againBtn.addEventListener("click", async () => { if (!phrase.length || !(await ensureMic())) return; play(); });
+  goBtn.addEventListener("click", async () => { ac(); if (!(await micIntro(el)) || life.dead || !(await countdown(el, { btn: goBtn })) || life.dead || !(await ensureMic())) return; phrase = echoPhrase(level[2], len); againBtn.disabled = false; play(); });
+  againBtn.addEventListener("click", async () => { if (!phrase.length || !(await countdown(el, { btn: againBtn })) || life.dead || !(await ensureMic())) return; play(); });
   sel.addEventListener("change", () => { level = levels.find(l => l[0] === sel.value); len = ((lvStore("echo") || {}).len || {})[level[0]] || 2; streak = 0; misses = 0; save(); showLen(); phrase = []; slots.replaceChildren(); againBtn.disabled = true; });
   showBox.addEventListener("change", () => drawSlots(matcher ? matcher.state() : null));
   showLen();
@@ -594,6 +638,7 @@ export function fluteFinder(opts) {
     const g0 = life.gen;
     try {
       if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
+      if (!(await countdown(el, { btn: startBtn })) || life.dead || life.gen !== g0) return;
       tracker = holdTracker({ target: null, seconds: 3, cents: 20 }); freqs = []; found = null; useBtn.hidden = true;
       ac();
       const u = await lvListen(life, onReading);

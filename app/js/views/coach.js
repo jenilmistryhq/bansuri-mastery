@@ -4,7 +4,7 @@
 import { h, clear, store, storeSet, today, fmtDate } from "../util.js";
 import { renderMarkdown, fetchDoc, tablesOf, sectionOf } from "../content.js";
 import { listenMic } from "../core/listen.js";
-import { holdMeter, phraseCheck, echoGame, tapGame, micIntro } from "../core/live.js";
+import { holdMeter, phraseCheck, echoGame, tapGame, micIntro, countdown } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
 
 const HISTORY = "bansuri.coach.history";
@@ -157,6 +157,7 @@ export async function render(main) {
   listenBtn.addEventListener("click", async () => {
     if (unsub) return;
     if (!(await micIntro(listenBtn.parentElement)) || gone) return;
+    if (!(await countdown(listenBtn.parentElement, { btn: listenBtn })) || gone || unsub) return;
     const reads = []; let started = null;
     clear(findings);
     try {
