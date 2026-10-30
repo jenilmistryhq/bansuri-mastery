@@ -1,0 +1,24 @@
+# Built site (CI builds it fresh)
+site/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Your private progress copy (never committed)
+my-progress/
+
+# Node
+node_modules/
+
+# Assembled site (CI)
+_site/

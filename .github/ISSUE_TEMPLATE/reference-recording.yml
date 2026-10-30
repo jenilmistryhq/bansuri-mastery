@@ -1,0 +1,44 @@
+name: Reference recording
+description: Offer a short bansuri recording (a note, scale, melody or ornament) for learners to hear.
+labels: ["audio"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Please read the "Recording reference audio" section of TEACHER-REVIEW.md first.
+        Attach audio files to this issue (drag and drop), or give a download link.
+  - type: input
+    id: what
+    attributes:
+      label: What is played
+      description: e.g. "Sa held 5 s, then .P to S'", "Bhupali aroh and avroh", "EX-MEL 3.1 Mary Had a Little Lamb", "meend G~R"
+    validations:
+      required: true
+  - type: input
+    id: flute
+    attributes:
+      label: Flute key
+      description: e.g. "C natural medium", "E bass"
+    validations:
+      required: true
+  - type: dropdown
+    id: license
+    attributes:
+      label: Licence
+      description: Recordings must be openly licensed to be included.
+      options:
+        - CC BY 4.0 (credit me)
+        - CC0 (public domain)
+    validations:
+      required: true
+  - type: input
+    id: credit
+    attributes:
+      label: Name for the credits
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights
+      options:
+        - label: I made this recording and I am the performer (or I have the performer's permission), so I can license it.
+          required: true

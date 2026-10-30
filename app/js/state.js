@@ -1,0 +1,103 @@
+// Learner progress, stored in this browser only (localStorage). Versioned, with backup export/import.
+import { today } from "./util.js";
+
+const KEY = "bansuri.progress";
+const listeners = new Set();
+
+function fresh() {
+  return { v: 1, startedAt: null, current: 0, days: {}, milestones: {}, reviews: {}, log: [], ear: {}, badges: {}, prefs: { chimes: true, theme: "auto" }, live: freshLive() };
+}
+
+function freshLive() { return { holds: {}, echo: {}, taps: [], plays: [] }; }
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return fresh();
+    return migrate(JSON.parse(raw));
+  } catch (e) { return fresh(); }
+}
+
+// Accepts only well-formed entries, so a damaged backup or storage cannot break the app.
+const isObj = x => !!x && typeof x === "object" && !Array.isArray(x);
+const isDate = x => typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x);
+function pick(obj, ok) {
+  const out = {};
+  if (isObj(obj)) for (const [k, v] of Object.entries(obj)) if (ok(v)) out[k] = v;
+  return out;
+}
+function migrate(s) {
+  const out = fresh();
+  if (!isObj(s)) return out;
+  out.startedAt = isDate(s.startedAt) ? s.startedAt : null;
+  out.current = Number.isInteger(s.current) && s.current >= 0 && s.current < 100000 ? s.current : 0;
+  out.days = pick(s.days, isObj);
+  out.milestones = {};
+  for (const [k, m] of Object.entries(pick(s.milestones, isObj))) {
+    out.milestones[k] = Object.assign({ status: "open" }, m, { attempts: Array.isArray(m.attempts) ? m.attempts.filter(isObj) : [] });
+    if (typeof out.milestones[k].status !== "string") out.milestones[k].status = "open";
+  }
+  out.reviews = pick(s.reviews, r => isObj(r) && isDate(r.next) && typeof r.label === "string");
+  for (const r of Object.values(out.reviews)) if (!Number.isInteger(r.stage) || r.stage < 0 || r.stage > 5) r.stage = 0;
+  out.log = Array.isArray(s.log) ? s.log.filter(e => isObj(e) && isDate(e.date)).map(e => Object.assign({}, e, { minutes: Math.max(0, Math.min(1440, Number(e.minutes) || 0)) })) : [];
+  out.ear = pick(s.ear, e => isObj(e) && Number.isFinite(e.right) && Number.isFinite(e.total));
+  out.badges = pick(s.badges, isDate);
+  out.prefs = Object.assign(fresh().prefs, isObj(s.prefs) ? s.prefs : {});
+  out.recordings = Number.isInteger(s.recordings) && s.recordings >= 0 ? s.recordings : 0;
+  out.lastBackup = isDate(s.lastBackup) ? s.lastBackup : null;
+  // Results from the listening exercises (livestats.js).
+  const lv = isObj(s.live) ? s.live : {};
+  out.live = freshLive();
+  for (const [k, list] of Object.entries(pick(lv.holds, Array.isArray))) {
+    const ok = list.filter(x => isObj(x) && isDate(x.d) && Number.isFinite(x.s) && x.s >= 0 && x.s < 600).slice(-60);
+    if (ok.length && (k === "any" || /^-?\d+$/.test(k))) out.live.holds[k] = ok;
+  }
+  const num = (x, lo, hi) => Number.isFinite(x) && x >= lo && x <= hi;
+  out.live.echo = pick(lv.echo, e => isObj(e) && isDate(e.d) && num(e.best, 0, 50) && num(e.len, 0, 50) && num(e.right, 0, 1e6) && num(e.total, 0, 1e6) && typeof e.label === "string");
+  out.live.taps = Array.isArray(lv.taps) ? lv.taps.filter(x => isObj(x) && isDate(x.d) && num(x.mean, -1000, 1000) && num(x.spread, 0, 1000) && num(x.within, 0, 1) && num(x.bpm, 1, 400)).slice(-60) : [];
+  out.live.plays = Array.isArray(lv.plays) ? lv.plays.filter(x => isObj(x) && isDate(x.d) && num(x.n, 1, 1e4) && num(x.ok, 0, x.n) && num(x.onTime, 0, 1e4) && num(x.timed, 0, 1e4) && num(x.bpm, 0, 400) && typeof x.piece === "string").slice(-120) : [];
+  out.v = 1;
+  return out;
+}
+
+let state = load();
+let storageOk = true;
+
+export function getState() { return state; }
+export function isStorageOk() { return storageOk; }
+
+export function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); storageOk = true; } catch (e) { storageOk = false; }
+  listeners.forEach(fn => { try { fn(state); } catch (e) { /* listener errors must not break saving */ } });
+}
+
+export function update(fn) { fn(state); save(); return state; }
+export function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
+
+export function ensureStarted() {
+  if (!state.startedAt) update(s => { s.startedAt = today(); });
+}
+
+export function addLog(entry) {
+  update(s => { s.log.push(Object.assign({ date: today() }, entry)); });
+}
+
+export function resetAll() { state = fresh(); save(); }
+
+// Backup: a JSON document. Recordings are added by the caller (recorder.js) when requested.
+export function backupObject() {
+  return { app: "bansuri-mastery", kind: "backup", exportedAt: new Date().toISOString(), progress: state, settings: readSettingsRaw() };
+}
+
+function readSettingsRaw() {
+  try { return JSON.parse(localStorage.getItem("bansuri.settings") || "null"); } catch (e) { return null; }
+}
+
+export function restoreFrom(obj) {
+  if (!obj || obj.app !== "bansuri-mastery" || obj.kind !== "backup" || !obj.progress) throw new Error("This file is not a Bansuri Mastery backup.");
+  state = migrate(obj.progress);
+  if (obj.settings && typeof obj.settings === "object") {
+    try { localStorage.setItem("bansuri.settings", JSON.stringify(obj.settings)); } catch (e) { /* ignore */ }
+  }
+  save();
+}

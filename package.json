@@ -1,0 +1,13 @@
+{
+  "name": "bansuri-mastery",
+  "private": true,
+  "description": "Learn the Indian bamboo flute day by day: a static web app over an open curriculum.",
+  "scripts": {
+    "serve": "python -m http.server 8000",
+    "build": "python scripts/build_bench.py && python scripts/build_plan.py && python scripts/build_app.py && python scripts/gen_nav.py",
+    "test": "node tests/core.test.mjs && node tests/live.test.mjs && node tests/plan.test.mjs && node tests/smoke.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "25.13.0"
+  }
+}

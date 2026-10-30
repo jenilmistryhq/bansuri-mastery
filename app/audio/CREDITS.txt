@@ -1,0 +1,20 @@
+Audio credits
+
+bansuri-e-bass-sample.ogg
+  Original: "Bansuri sample E bass.ogg" by Prithoo, Wikimedia Commons, 2009-12-13
+  https://commons.wikimedia.org/wiki/File:Bansuri_sample_E_bass.ogg
+  License: public domain (PD-self). Sound sample of a bass bansuri with tonic E.
+  sha256 9fdd1b65d1b1ca1047744e0d68fdf57b14f4124b02e76582bc5ccb908815c29e
+
+bansuri-small-e-sample.ogg
+  Original: "Sample2.ogg" by Prithoo, Wikimedia Commons, 2009-12-14
+  https://commons.wikimedia.org/wiki/File:Sample2.ogg
+  License: public domain (PD-self). Sound sample of a small bansuri in E.
+  sha256 66ba5dd0ea83a7cd6a88be8b96ab3c5f7857103a72530011076c60aad51bc5be
+
+The .m4a files are AAC copies of the two .ogg files, made with scripts/convert_audio.mjs so iPhones
+can play them (the app offers .m4a first and .ogg as a fallback). Same recordings, same licence.
+
+Both are amateur recordings at low bitrate (22 kHz, about 50 kbps). They were checked for
+licence and format, not by ear. They let a beginner hear the real instrument's breathy tone;
+for professional tone, use the recordings in bansuri-mastery/08-LISTENING-LIBRARY.md.

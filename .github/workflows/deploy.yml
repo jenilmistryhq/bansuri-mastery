@@ -1,0 +1,90 @@
+name: Build, test and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install tools
+        run: |
+          pip install -r requirements.txt
+          npm ci
+
+      - name: Validate curriculum (links, IDs, typography)
+        run: python scripts/validate.py
+
+      - name: Check generated files are up to date
+        run: |
+          python scripts/gen_nav.py --check
+          python scripts/build_bench.py --check
+          python scripts/build_plan.py --check
+          python scripts/build_app.py --check
+
+      - name: Unit tests
+        run: |
+          node tests/core.test.mjs
+          node tests/live.test.mjs
+          node tests/plan.test.mjs
+
+      - name: Browser smoke test
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tests/smoke.mjs
+
+      - name: Assemble site (app at /, reference site at /docs/)
+        env:
+          # Set a repository variable SITE_URL (e.g. https://bansuri.example.com/docs/) when using a custom domain.
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then unset SITE_URL; fi
+          mkdir -p _site
+          mkdocs build --strict -d _site/docs
+          cp -r index.html manifest.webmanifest sw.js app bansuri-mastery _site/
+          touch _site/.nojekyll
+
+      - name: Smoke test the assembled site
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          SITE_ROOT: _site
+        run: node tests/smoke.mjs
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

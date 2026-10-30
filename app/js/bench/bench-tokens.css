@@ -1,0 +1,44 @@
+/* Design tokens for the standalone Practice Bench. The app defines the same tokens in app.css. */
+:root {
+  --bg: #eef1ea;
+  --surface: #f9faf6;
+  --sunken: #e3e8de;
+  --ink: #1b2420;
+  --muted: #56645d;
+  --line: #cfd6ca;
+  --bamboo: #c9a552;
+  --bamboo-deep: #8d6b22;
+  --node: #a4823a;
+  --hole: #2b1d0e;
+  --finger: #b97a5b;
+  --finger-edge: #8a5638;
+  --accent: #0d6a6e;
+  --accent-soft: #d3e9e7;
+  --accent-ink: #ffffff;
+  --good: #2e7a3a;
+  --warn: #9a6512;
+  --bad: #b3261e;
+  --display: "Rozha One", "Georgia", serif;
+  --body: "Hind", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Consolas", monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111613; --surface: #19201c; --sunken: #0d110f; --ink: #e6ebe4; --muted: #9ba79f; --line: #2c3530;
+    --bamboo: #b28f40; --bamboo-deep: #6f5420; --node: #8a6d2e; --hole: #070503; --finger: #c48a6b; --finger-edge: #8f5d42;
+    --accent: #52b8b3; --accent-soft: #163331; --accent-ink: #06201f; --good: #6cc27a; --warn: #e1aa4c; --bad: #f0776b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111613; --surface: #19201c; --sunken: #0d110f; --ink: #e6ebe4; --muted: #9ba79f; --line: #2c3530;
+  --bamboo: #b28f40; --bamboo-deep: #6f5420; --node: #8a6d2e; --hole: #070503; --finger: #c48a6b; --finger-edge: #8f5d42;
+  --accent: #52b8b3; --accent-soft: #163331; --accent-ink: #06201f; --good: #6cc27a; --warn: #e1aa4c; --bad: #f0776b;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.bb-page { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; display: grid; gap: 22px; }
+.bb-page > p { margin: 0; font-size: 0.875rem; color: var(--muted); }
+.bb-page a { color: var(--accent); }

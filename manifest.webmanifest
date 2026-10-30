@@ -1,0 +1,13 @@
+{
+  "name": "Bansuri Mastery",
+  "short_name": "Bansuri",
+  "description": "Learn the Indian bamboo flute day by day.",
+  "start_url": "./#/today",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef1ea",
+  "theme_color": "#0d6a6e",
+  "icons": [
+    { "src": "app/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

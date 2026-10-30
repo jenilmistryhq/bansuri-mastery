@@ -1,0 +1,563 @@
+{
+ "version": "ded6e8c39f6b",
+ "assets": [
+  "app/app.css",
+  "app/audio/bansuri-e-bass-sample.m4a",
+  "app/audio/bansuri-e-bass-sample.ogg",
+  "app/audio/bansuri-small-e-sample.m4a",
+  "app/audio/bansuri-small-e-sample.ogg",
+  "app/data/plan.json",
+  "app/fonts.css",
+  "app/fonts/hind-devanagari-400-normal.woff2",
+  "app/fonts/hind-devanagari-600-normal.woff2",
+  "app/fonts/hind-latin-400-normal.woff2",
+  "app/fonts/hind-latin-500-normal.woff2",
+  "app/fonts/hind-latin-600-normal.woff2",
+  "app/fonts/jetbrains-mono-latin-400-normal.woff2",
+  "app/fonts/jetbrains-mono-latin-600-normal.woff2",
+  "app/fonts/rozha-one-devanagari-400-normal.woff2",
+  "app/fonts/rozha-one-latin-400-normal.woff2",
+  "app/icon.svg",
+  "app/js/badges.js",
+  "app/js/bench/bench-tokens.css",
+  "app/js/bench/bench.css",
+  "app/js/bench/bench.js",
+  "app/js/content.js",
+  "app/js/core/audio.js",
+  "app/js/core/listen.js",
+  "app/js/core/live.js",
+  "app/js/core/notation.js",
+  "app/js/core/pitch.js",
+  "app/js/core/settings.js",
+  "app/js/core/theory.js",
+  "app/js/course.js",
+  "app/js/errors.js",
+  "app/js/lessoncards.js",
+  "app/js/livestats.js",
+  "app/js/main.js",
+  "app/js/playable.js",
+  "app/js/recorder.js",
+  "app/js/state.js",
+  "app/js/util.js",
+  "app/js/views/bench.js",
+  "app/js/views/coach.js",
+  "app/js/views/journal.js",
+  "app/js/views/library.js",
+  "app/js/views/milestone.js",
+  "app/js/views/plan.js",
+  "app/js/views/progress.js",
+  "app/js/views/reader.js",
+  "app/js/views/session.js",
+  "app/js/views/settings.js",
+  "app/js/views/share.js",
+  "app/js/views/songs.js",
+  "app/js/views/today.js",
+  "app/vendor/marked.esm.js"
+ ],
+ "docs": [
+  {
+   "path": "00-MASTERY-MAP.md",
+   "title": "Mastery Map"
+  },
+  {
+   "path": "01-KNOWLEDGE-TREE.md",
+   "title": "Knowledge Tree of Bansuri Musicianship"
+  },
+  {
+   "path": "02-RESOURCE-LIBRARY.md",
+   "title": "Resource Library"
+  },
+  {
+   "path": "03-PROGRESS-TRACKER.md",
+   "title": "Progress Tracker"
+  },
+  {
+   "path": "05-CONVENTIONS-AND-NOTATION-KEY.md",
+   "title": "Conventions and Notation Key"
+  },
+  {
+   "path": "06-GLOSSARY.md",
+   "title": "Glossary"
+  },
+  {
+   "path": "07-QUALITY-REPORT.md",
+   "title": "Quality Report"
+  },
+  {
+   "path": "08-LISTENING-LIBRARY.md",
+   "title": "Listening Library"
+  },
+  {
+   "path": "09-SONG-SUGGESTIONS.md",
+   "title": "Song Suggestions for a C Bansuri"
+  },
+  {
+   "path": "README.md",
+   "title": "Bansuri Mastery"
+  },
+  {
+   "path": "exercises/EX-ALK-alankar-book.md",
+   "title": "EX-ALK: Alankar Book"
+  },
+  {
+   "path": "exercises/EX-EAR-ear-training-system.md",
+   "title": "EX-EAR: Ear-Training System"
+  },
+  {
+   "path": "exercises/EX-IMP-improv-and-composition-prompts.md",
+   "title": "EX-IMP: Improvisation and Composition Prompts"
+  },
+  {
+   "path": "exercises/EX-MEL-practice-melodies.md",
+   "title": "EX-MEL: Graded Practice Melodies"
+  },
+  {
+   "path": "exercises/EX-NOT-notation-drills.md",
+   "title": "EX-NOT: Notation Drills"
+  },
+  {
+   "path": "exercises/EX-RHY-rhythm-drills.md",
+   "title": "EX-RHY: Rhythm Drills"
+  },
+  {
+   "path": "exercises/EX-THY-theory-quizzes.md",
+   "title": "EX-THY: Theory Quizzes"
+  },
+  {
+   "path": "exercises/EX-TON-tone-and-breath-drills.md",
+   "title": "EX-TON: Tone and Breath Drills"
+  },
+  {
+   "path": "exercises/README.md",
+   "title": "Exercises"
+  },
+  {
+   "path": "knowledge-tree/D01-INS-instrument.md",
+   "title": "D01 - INS: Instrument Knowledge and Care"
+  },
+  {
+   "path": "knowledge-tree/D02-BOD-body.md",
+   "title": "D02 - BOD: Body, Posture and Physical Health"
+  },
+  {
+   "path": "knowledge-tree/D03-TON-tone.md",
+   "title": "D03 - TON: Tone Production"
+  },
+  {
+   "path": "knowledge-tree/D04-BRE-breath.md",
+   "title": "D04 - BRE: Breath Management"
+  },
+  {
+   "path": "knowledge-tree/D05-FNG-fingering.md",
+   "title": "D05 - FNG: Fingering and Articulation"
+  },
+  {
+   "path": "knowledge-tree/D06-PIT-pitch.md",
+   "title": "D06 - PIT: Pitch and Intonation"
+  },
+  {
+   "path": "knowledge-tree/D07-RHY-rhythm.md",
+   "title": "D07 - RHY: Rhythm, Laya and Tala"
+  },
+  {
+   "path": "knowledge-tree/D08-THY-theory.md",
+   "title": "D08 - THY: Music Theory"
+  },
+  {
+   "path": "knowledge-tree/D09-NOT-notation.md",
+   "title": "D09 - NOT: Notation"
+  },
+  {
+   "path": "knowledge-tree/D10-EAR-ear.md",
+   "title": "D10 - EAR: Ear Training"
+  },
+  {
+   "path": "knowledge-tree/D11-ORN-ornaments.md",
+   "title": "D11 - ORN: Ornamentation"
+  },
+  {
+   "path": "knowledge-tree/D12-RAG-raga.md",
+   "title": "D12 - RAG: Raga"
+  },
+  {
+   "path": "knowledge-tree/D13-SNG-songs.md",
+   "title": "D13 - SNG: Song Learning and Repertoire"
+  },
+  {
+   "path": "knowledge-tree/D14-TRN-transposition.md",
+   "title": "D14 - TRN: Keys, Transposition and Instrument Limits"
+  },
+  {
+   "path": "knowledge-tree/D15-IMP-improvisation.md",
+   "title": "D15 - IMP: Improvisation"
+  },
+  {
+   "path": "knowledge-tree/D16-CMP-composition.md",
+   "title": "D16 - CMP: Composition"
+  },
+  {
+   "path": "knowledge-tree/D17-ENS-ensemble.md",
+   "title": "D17 - ENS: Accompaniment and Ensemble"
+  },
+  {
+   "path": "knowledge-tree/D18-PRF-performance.md",
+   "title": "D18 - PRF: Recording, Self-Assessment and Performance"
+  },
+  {
+   "path": "knowledge-tree/D19-PRA-practice.md",
+   "title": "D19 - PRA: Practice and Independent Learning"
+  },
+  {
+   "path": "knowledge-tree/README.md",
+   "title": "Knowledge Tree: Domain Files"
+  },
+  {
+   "path": "lessons/L00-day-0-your-flute.md",
+   "title": "L00 - Day 0: Your Flute"
+  },
+  {
+   "path": "lessons/L01-how-to-practise.md",
+   "title": "L01 - How to Practise"
+  },
+  {
+   "path": "lessons/L02-posture-and-holding.md",
+   "title": "L02 - Posture and Holding"
+  },
+  {
+   "path": "lessons/L03-breathing-basics.md",
+   "title": "L03 - Breathing Basics"
+  },
+  {
+   "path": "lessons/L04-first-sound.md",
+   "title": "L04 - First Sound"
+  },
+  {
+   "path": "lessons/L05-what-is-music-pitch-sa-sargam.md",
+   "title": "L05 - What Is Music? Pitch, Sa and Sargam"
+  },
+  {
+   "path": "lessons/L06-pulse-and-tempo.md",
+   "title": "L06 - Pulse and Tempo"
+  },
+  {
+   "path": "lessons/L07-long-tones-tuner-and-drone.md",
+   "title": "L07 - Long Tones, Tuner and Drone"
+  },
+  {
+   "path": "lessons/L08-recording-and-self-assessment.md",
+   "title": "L08 - Recording and Self-Assessment"
+  },
+  {
+   "path": "lessons/L09-fingering-sa-re-ga.md",
+   "title": "L09 - Fingering Sa, Re, Ga"
+  },
+  {
+   "path": "lessons/L10-reading-and-writing-sargam.md",
+   "title": "L10 - Reading and Writing Sargam"
+  },
+  {
+   "path": "lessons/L11-lower-notes-ni-dha-pa.md",
+   "title": "L11 - Lower Notes: Ni, Dha, Pa (Mandra Saptak)"
+  },
+  {
+   "path": "lessons/L12-alankars.md",
+   "title": "L12 - Alankars (Note Patterns)"
+  },
+  {
+   "path": "lessons/L13-articulation-tonguing-and-slurs.md",
+   "title": "L13 - Articulation: Slurs, Breath Attacks and Tonguing"
+  },
+  {
+   "path": "lessons/L14-tivra-ma-and-madhya-pa-dha-ni.md",
+   "title": "L14 - Tivra Ma and Madhya Pa, Dha, Ni (Completing the Middle Octave)"
+  },
+  {
+   "path": "lessons/L15-taal-basics.md",
+   "title": "L15 - Taal Basics: Keherwa, Dadra and Teentaal"
+  },
+  {
+   "path": "lessons/L16-shuddha-ma-and-half-holing.md",
+   "title": "L16 - Shuddha Ma and the Art of Half-Holing"
+  },
+  {
+   "path": "lessons/L17-intonation-and-drone.md",
+   "title": "L17 - Intonation and the Drone"
+  },
+  {
+   "path": "lessons/L18-song-learning-system.md",
+   "title": "L18 - The Song-Learning System (Learning Any Melody by Ear)"
+  },
+  {
+   "path": "lessons/L19-what-is-a-raga.md",
+   "title": "L19 - What Is a Raga?"
+  },
+  {
+   "path": "lessons/L20-raga-bhupali.md",
+   "title": "L20 - Raga Bhupali (Your First Raga)"
+  },
+  {
+   "path": "lessons/L21-raga-yaman.md",
+   "title": "L21 - Raga Yaman"
+  },
+  {
+   "path": "lessons/L22-taar-saptak.md",
+   "title": "L22 - Taar Saptak: The Upper Octave"
+  },
+  {
+   "path": "lessons/L23-meend.md",
+   "title": "L23 - Meend: The Singing Glide"
+  },
+  {
+   "path": "lessons/L24-kan-khatka-murki.md",
+   "title": "L24 - Kan, Khatka and Murki: Grace Notes and Quick Turns"
+  },
+  {
+   "path": "lessons/L25-komal-swaras-and-12-notes.md",
+   "title": "L25 - Komal Swaras and All 12 Notes"
+  },
+  {
+   "path": "lessons/L26-keys-transposition-and-limits.md",
+   "title": "L26 - Keys, Transposition and the Limits of Your Flute"
+  },
+  {
+   "path": "lessons/L27-bhatkhande-notation.md",
+   "title": "L27 - Bhatkhande Notation and Reading Real-World Notations"
+  },
+  {
+   "path": "lessons/L28-western-notation-basics.md",
+   "title": "L28 - Western Notation and Theory Basics"
+  },
+  {
+   "path": "lessons/L29-improvisation-foundations.md",
+   "title": "L29 - Improvisation Foundations"
+  },
+  {
+   "path": "lessons/L30-composition-foundations.md",
+   "title": "L30 - Composition Foundations"
+  },
+  {
+   "path": "lessons/L31-alap-and-swar-vistar.md",
+   "title": "L31 - Alap and Swar Vistar"
+  },
+  {
+   "path": "lessons/L32-bandish-taans-layakari-tihai.md",
+   "title": "L32 - Bandish (Gat), Taans, Layakari and Tihai"
+  },
+  {
+   "path": "lessons/L33-gamak-andolan-advanced-ornaments.md",
+   "title": "L33 - Gamak, Andolan and Advanced Ornaments"
+  },
+  {
+   "path": "lessons/L34-accompaniment-and-ensemble.md",
+   "title": "L34 - Accompaniment and Ensemble Playing"
+  },
+  {
+   "path": "lessons/L35-performance-and-interpretation.md",
+   "title": "L35 - Performance and Interpretation"
+  },
+  {
+   "path": "lessons/L36-style-adaptation.md",
+   "title": "L36 - Style Adaptation: Film, Bhajan, Ghazal, Folk, Dhun and Classical"
+  },
+  {
+   "path": "lessons/L37-full-raga-presentation-and-independence.md",
+   "title": "L37 - Full Raga Presentation and Musical Independence"
+  },
+  {
+   "path": "lessons/README.md",
+   "title": "Lessons"
+  },
+  {
+   "path": "phases/README.md",
+   "title": "Roadmap"
+  },
+  {
+   "path": "phases/phase-0-setup.md",
+   "title": "Phase 0 - Day 0: Setup"
+  },
+  {
+   "path": "phases/phase-1-foundations.md",
+   "title": "Phase 1 - Foundations (about Weeks 1-6)"
+  },
+  {
+   "path": "phases/phase-2-core-technique.md",
+   "title": "Phase 2 - Core Technique (about Weeks 7-18)"
+  },
+  {
+   "path": "phases/phase-3-musicianship.md",
+   "title": "Phase 3 - Musicianship (about Weeks 19-44, months 5-10)"
+  },
+  {
+   "path": "phases/phase-4-intermediate-artistry.md",
+   "title": "Phase 4 - Intermediate Artistry (about months 10-20)"
+  },
+  {
+   "path": "phases/phase-5-advanced-independence.md",
+   "title": "Phase 5 - Advanced Musicianship and Independence (about month 20 onward)"
+  },
+  {
+   "path": "projects/M0-setup.md",
+   "title": "M0 - Setup Complete"
+  },
+  {
+   "path": "projects/M1-first-stable-tone.md",
+   "title": "M1 - First Stable Tone"
+  },
+  {
+   "path": "projects/M10-independent-musician.md",
+   "title": "M10 - Independent Musician"
+  },
+  {
+   "path": "projects/M2-first-melody.md",
+   "title": "M2 - First Melody in Time"
+  },
+  {
+   "path": "projects/M3-middle-octave.md",
+   "title": "M3 - Full Middle Octave"
+  },
+  {
+   "path": "projects/M4-ear-and-notation-check.md",
+   "title": "M4 - Ear and Notation Check"
+  },
+  {
+   "path": "projects/M5-first-raga-bhupali.md",
+   "title": "M5 - First Raga: Bhupali"
+  },
+  {
+   "path": "projects/M6-song-by-ear.md",
+   "title": "M6 - A Song Learned Entirely by Ear"
+  },
+  {
+   "path": "projects/M7-recital-one.md",
+   "title": "M7 - First Recital"
+  },
+  {
+   "path": "projects/M8-komal-and-transposition.md",
+   "title": "M8 - Komal Notes, Transposition and Composition"
+  },
+  {
+   "path": "projects/M9-intermediate-recital.md",
+   "title": "M9 - Intermediate Recital and Accompaniment"
+  },
+  {
+   "path": "projects/README.md",
+   "title": "Milestones and Projects"
+  },
+  {
+   "path": "ragas/README.md",
+   "title": "Raga Cards"
+  },
+  {
+   "path": "ragas/bageshri.md",
+   "title": "Raga Bageshri"
+  },
+  {
+   "path": "ragas/bhairav.md",
+   "title": "Raga Bhairav"
+  },
+  {
+   "path": "ragas/bhairavi.md",
+   "title": "Raga Bhairavi"
+  },
+  {
+   "path": "ragas/bhimpalasi.md",
+   "title": "Raga Bhimpalasi"
+  },
+  {
+   "path": "ragas/bhupali.md",
+   "title": "Raga Bhupali (Bhoop)"
+  },
+  {
+   "path": "ragas/des.md",
+   "title": "Raga Des (Desh)"
+  },
+  {
+   "path": "ragas/durga.md",
+   "title": "Raga Durga"
+  },
+  {
+   "path": "ragas/hamsadhwani.md",
+   "title": "Raga Hamsadhwani"
+  },
+  {
+   "path": "ragas/kafi.md",
+   "title": "Raga Kafi"
+  },
+  {
+   "path": "ragas/khamaj.md",
+   "title": "Raga Khamaj"
+  },
+  {
+   "path": "ragas/malkauns.md",
+   "title": "Raga Malkauns"
+  },
+  {
+   "path": "ragas/pahadi.md",
+   "title": "Raga Pahadi"
+  },
+  {
+   "path": "ragas/shivranjani.md",
+   "title": "Raga Shivranjani"
+  },
+  {
+   "path": "ragas/yaman.md",
+   "title": "Raga Yaman"
+  },
+  {
+   "path": "tools/index.md",
+   "title": "Practice Bench"
+  },
+  {
+   "path": "troubleshooting/README.md",
+   "title": "Troubleshooting: Find the Cause Before You Fix It"
+  },
+  {
+   "path": "troubleshooting/TS-01-no-sound-or-airy-tone.md",
+   "title": "TS-01: No Sound, or an Airy (Hissy) Tone"
+  },
+  {
+   "path": "troubleshooting/TS-02-squeaks-and-wrong-octave.md",
+   "title": "TS-02: Squeaks and Notes Jumping to the Wrong Octave"
+  },
+  {
+   "path": "troubleshooting/TS-03-low-notes-wont-sound.md",
+   "title": "TS-03: Low Notes (`.N .D .P`) Will Not Sound"
+  },
+  {
+   "path": "troubleshooting/TS-04-high-notes.md",
+   "title": "TS-04: Upper Notes (Madhya `P D N`, Taar Saptak) Will Not Sound Well"
+  },
+  {
+   "path": "troubleshooting/TS-05-pitch-out-of-tune.md",
+   "title": "TS-05: Pitch Out of Tune"
+  },
+  {
+   "path": "troubleshooting/TS-06-finger-leaks-and-transitions.md",
+   "title": "TS-06: Finger Leaks, Blips Between Notes, Uneven Fast Passages"
+  },
+  {
+   "path": "troubleshooting/TS-07-breath-dizziness-and-endurance.md",
+   "title": "TS-07: Dizziness, Running Out of Breath, Low Endurance"
+  },
+  {
+   "path": "troubleshooting/TS-08-body-pain-and-tension.md",
+   "title": "TS-08: Pain, Tension, Stiffness, Numbness"
+  },
+  {
+   "path": "troubleshooting/TS-09-rhythm-and-tempo.md",
+   "title": "TS-09: Rhythm and Tempo Problems"
+  },
+  {
+   "path": "troubleshooting/TS-10-ear-and-memory.md",
+   "title": "TS-10: Ear and Memory Problems"
+  },
+  {
+   "path": "troubleshooting/TS-11-practice-plateaus-and-motivation.md",
+   "title": "TS-11: Plateaus, Low Motivation and Unproductive Practice"
+  },
+  {
+   "path": "troubleshooting/TS-12-flute-damage-and-care.md",
+   "title": "TS-12: Flute Damage, Cracks and Care Problems"
+  }
+ ]
+}

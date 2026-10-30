@@ -1,0 +1,170 @@
+// Lessons as cards: the rendered lesson is split at its headings into short cards, one idea per
+// card, with the quiz as flashcards, common mistakes as tap-to-reveal and the mastery criteria as
+// a checklist that is remembered. Built from the lesson's own sections, so no extra writing is needed.
+import { h, store, storeSet } from "./util.js";
+import { makePlayable } from "./playable.js";
+
+const SKIP = /learning objectives|prerequisites|watch and listen|next lesson|independent exercises/i;
+const plain = el => el.textContent.replace(/^\s*\d+\.\s*/, "").trim();
+
+// Sections of the rendered lesson: [{ title, level, nodes }] split at h2 and h3.
+function sections(node) {
+  const out = []; let cur = null, h2 = "";
+  for (const el of [...node.children]) {
+    if (el.tagName === "H1") continue;
+    if (el.tagName === "H2" || el.tagName === "H3") {
+      if (el.tagName === "H2") h2 = plain(el);
+      cur = { title: plain(el), level: el.tagName, parent: h2, nodes: [] };
+      out.push(cur);
+    } else if (cur) cur.nodes.push(el);
+  }
+  return out;
+}
+
+function mistakesCard(sec) {
+  const table = sec.nodes.find(n => n.querySelector && n.querySelector("table")) || sec.nodes.find(n => n.tagName === "TABLE");
+  const t = table && (table.tagName === "TABLE" ? table : table.querySelector("table"));
+  if (!t) return null;
+  const rows = [...t.querySelectorAll("tbody tr")].map(tr => [...tr.children]);
+  const list = h("div", { class: "reveal-list" }, rows.map(cells => {
+    const fix = cells[cells.length - 1].cloneNode(true);
+    const item = h("button", { type: "button", class: "reveal", "aria-expanded": "false" },
+      h("b", null, cells[0].textContent.trim()), cells.length > 2 ? h("span", { class: "small muted" }, " - " + cells[1].textContent.trim()) : null);
+    const ans = h("div", { class: "reveal-ans", hidden: true }, h("span", { class: "eyebrow" }, "Fix"), fix);
+    item.addEventListener("click", () => { ans.hidden = !ans.hidden; item.setAttribute("aria-expanded", String(!ans.hidden)); });
+    return h("div", { class: "reveal-item" }, item, ans);
+  }));
+  return { kind: "Watch out", title: "Common mistakes", body: [h("p", { class: "small muted" }, "Tap a mistake to see the fix."), list] };
+}
+
+function quizCard(sec) {
+  const qList = sec.nodes.find(n => n.tagName === "OL");
+  const key = sec.nodes.find(n => n.tagName === "DETAILS");
+  const aList = key && key.querySelector("ol");
+  if (!qList || !aList) return null;
+  const qs = [...qList.children].map((li, i) => [li, aList.children[i]]).filter(([, a]) => a);
+  if (!qs.length) return null;
+  let i = 0, known = 0;
+  const box = h("div", { class: "flash" });
+  const draw = () => {
+    box.replaceChildren();
+    if (i >= qs.length) {
+      box.append(h("p", { class: "flash-q" }, `You knew ${known} of ${qs.length}.`),
+        h("p", { class: "small muted" }, known === qs.length ? "Excellent. On to the next card." : "Read the cards for the ones you missed, then try again."),
+        h("button", { type: "button", class: "btn", onclick: () => { i = 0; known = 0; draw(); } }, "Again"));
+      return;
+    }
+    const [q, a] = qs[i];
+    const ans = h("div", { class: "flash-a", hidden: true }, [...a.cloneNode(true).childNodes]);
+    const show = h("button", { type: "button", class: "btn primary" }, "Show answer");
+    const grade = h("div", { class: "row", hidden: true },
+      h("button", { type: "button", class: "btn primary", onclick: () => { known++; i++; draw(); } }, "I knew it"),
+      h("button", { type: "button", class: "btn", onclick: () => { i++; draw(); } }, "Not yet"));
+    show.addEventListener("click", () => { ans.hidden = false; show.hidden = true; grade.hidden = false; });
+    box.append(h("span", { class: "eyebrow" }, `Question ${i + 1} of ${qs.length}`), h("div", { class: "flash-q" }, [...q.cloneNode(true).childNodes]), ans, show, grade);
+    makePlayable(box);
+  };
+  draw();
+  return { kind: "Quick quiz", title: "Test yourself", body: [box] };
+}
+
+function masteryCard(sec, path) {
+  const key = "bansuri.mastery." + path, saved = store(key, {});
+  const body = sec.nodes.map(n => n.cloneNode(true));
+  let k = 0;
+  body.forEach(n => n.querySelectorAll && n.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    const id = String(k++);
+    cb.disabled = false; cb.checked = !!saved[id];
+    cb.addEventListener("change", () => { const s = store(key, {}); s[id] = cb.checked; storeSet(key, s); });
+  }));
+  return { kind: "Can you do this?", title: "Mastery criteria", body: [h("p", { class: "small muted" }, "Tick what you can already do. When every box is ticked, the lesson is learned."), ...body] };
+}
+
+// Splits a long card into parts of about 700 characters, at element boundaries; a table or a
+// code block always stays whole.
+function splitLong(card) {
+  const len = n => n.textContent.length;
+  const total = card.body.reduce((a, n) => a + len(n), 0);
+  if (total <= 900 || card.body.length < 2) return [card];
+  const parts = []; let cur = [], size = 0;
+  for (const n of card.body) {
+    if (cur.length && size + len(n) > 700) { parts.push(cur); cur = []; size = 0; }
+    cur.push(n); size += len(n);
+  }
+  if (cur.length) parts.push(cur);
+  if (parts.length > 1 && parts[parts.length - 1].reduce((a, n) => a + len(n), 0) < 200) { const tail = parts.pop(); parts[parts.length - 1].push(...tail); }
+  return parts.map((body, i) => Object.assign({}, card, { title: card.title + (parts.length > 1 ? ` (${i + 1} of ${parts.length})` : ""), body }));
+}
+
+export function lessonCards(node, path) {
+  const secs = sections(node), cards = [];
+  const steps = secs.filter(s => s.level === "H3" && /step-by-step/i.test(s.parent) && /^step\b/i.test(s.title)).length;
+  let step = 0;
+  for (const s of secs) {
+    const parentSkip = SKIP.test(s.parent) && s.level === "H3";
+    if (SKIP.test(s.title) || parentSkip) continue;
+    if (/common mistakes/i.test(s.title)) { const c = mistakesCard(s); if (c) cards.push(c); continue; }
+    if (/^quiz$/i.test(s.title)) { const c = quizCard(s); if (c) cards.push(c); continue; }
+    if (/mastery criteria/i.test(s.title)) { cards.push(masteryCard(s, path)); continue; }
+    if (!s.nodes.length) continue; // a heading that only introduces its subsections
+    let kind = s.parent && s.level === "H3" ? s.parent : "", title = s.title;
+    if (/simple explanation/i.test(s.title) || /simple explanation/i.test(kind)) kind = "The idea";
+    else if (/step-by-step/i.test(s.parent) && s.level === "H3") {
+      if (/^step\b/i.test(s.title)) { kind = `Step ${++step} of ${steps}`; title = s.title.replace(/^step\s*\d+\s*[:.-]\s*/i, ""); }
+      else kind = "Steps";
+    }
+    if (/simple explanation/i.test(s.title)) title = "In short";
+    cards.push(...splitLong({ kind, title: title.charAt(0).toUpperCase() + title.slice(1), body: s.nodes.map(n => n.cloneNode(true)) }));
+  }
+  return cards;
+}
+
+// The deck: one card at a time, with progress, buttons, arrow keys and swipe.
+export function cardDeck(cards, path, opts) {
+  const posKey = "bansuri.cardpos." + path;
+  let i = Math.min(store(posKey, 0), Math.max(0, cards.length - 1));
+  const bar = h("i", { style: { width: "0%" } });
+  const count = h("span", { class: "small muted" });
+  const stage = h("div", { class: "deck-stage", "aria-live": "polite" });
+  const back = h("button", { type: "button", class: "btn" }, "Back");
+  const next = h("button", { type: "button", class: "btn primary" }, "Next");
+  const el = h("section", { class: "deck", tabindex: "-1" },
+    h("div", { class: "row between" }, count, h("div", { class: "progressbar deck-progress" }, bar)),
+    stage, h("div", { class: "row between deck-nav" }, back, next));
+  function draw(dir) {
+    const c = cards[i];
+    const card = h("article", { class: "card lcard" + (dir ? " in-" + dir : "") },
+      c.kind ? h("span", { class: "eyebrow" }, c.kind) : null, h("h2", null, c.title), h("div", { class: "reader lbody" }, c.body));
+    makePlayable(card);
+    stage.replaceChildren(card);
+    bar.style.width = ((i + 1) / cards.length * 100) + "%";
+    count.textContent = `${i + 1} of ${cards.length}`;
+    back.disabled = i === 0;
+    next.textContent = i === cards.length - 1 ? (opts && opts.doneLabel) || "Finish" : "Next";
+    storeSet(posKey, i);
+  }
+  function go(d) {
+    if (d > 0 && i === cards.length - 1) { storeSet(posKey, 0); if (opts && opts.onDone) opts.onDone(); return; }
+    const j = Math.max(0, Math.min(cards.length - 1, i + d));
+    if (j === i) return;
+    i = j; draw(d > 0 ? "next" : "prev");
+    // Bring the new card's top into view, below the sticky app bar.
+    const y = el.getBoundingClientRect().top + window.scrollY - 76;
+    if (y < window.scrollY) window.scrollTo({ top: y, behavior: "smooth" });
+  }
+  back.addEventListener("click", () => go(-1));
+  next.addEventListener("click", () => go(1));
+  el.addEventListener("keydown", e => {
+    if (/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName)) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); go(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
+  });
+  let x0 = null, y0 = null;
+  stage.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") { x0 = e.clientX; y0 = e.clientY; } });
+  stage.addEventListener("pointerup", e => {
+    if (x0 === null) return;
+    const dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) go(dx < 0 ? 1 : -1);
+  });
+  draw();
+  return el;
+}

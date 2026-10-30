@@ -1,0 +1,40 @@
+name: Content correction
+description: Report something wrong, unclear, unsafe or missing in the course.
+labels: ["content"]
+body:
+  - type: input
+    id: file
+    attributes:
+      label: Page
+      description: File name or lesson, e.g. lessons/L16-shuddha-ma-and-half-holing.md or "Day 23"
+    validations:
+      required: true
+  - type: input
+    id: section
+    attributes:
+      label: Section heading
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Wrong (fingering, note, raga rule, fact)
+        - Unsafe or builds a bad habit
+        - Taught too early or too late
+        - Missing
+        - Unclear for a beginner
+        - My tradition teaches it differently
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong, and what should it say?
+      description: Sources, your gharana or teacher, recordings or examples all help.
+    validations:
+      required: true
+  - type: input
+    id: who
+    attributes:
+      label: Your background (optional)
+      description: e.g. "bansuri teacher, 12 years, Maihar gharana" or "learner on Day 40"
