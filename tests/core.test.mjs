@@ -1,5 +1,6 @@
 // Tests for the pure core modules (no DOM). Run: node tests/core.test.mjs
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { codeOf, fingOf, lessonFor, octName } from "../app/js/core/theory.js";
 import { parseNotation, buildEvents, analyzeRange, PRESETS } from "../app/js/core/notation.js";
 import { getSettings, saHz } from "../app/js/core/settings.js";
@@ -16,7 +17,8 @@ function events(text, bpm = 60) {
 const fmt = ev => ev.map(e => `${codeOf(e.semi)}@${+e.start.toFixed(2)}/${+e.dur.toFixed(2)}`).join(" ");
 
 test("settings defaults without a browser", () => {
-  assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false });
+  assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false, lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1,
+    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true });
   assert.ok(Math.abs(saHz() - 523.25) < 0.01);
 });
 
@@ -164,6 +166,45 @@ test("beat click accents follow the bar lines", () => {
   assert.equal(hb.beats.map(b => b.down ? "X" : ".").join(""), ".X..X..X..");
   // No bar lines: only the first beat is accented.
   assert.equal(downs("S R G"), "X..");
+});
+
+const { setDict, t: tr, tf } = await import("../app/js/core/i18n.js");
+test("interface translation: exact strings, spacing kept, patterns with values", () => {
+  setDict({ "Start": "शुरू", "{n} of {m} notes right": "{m} में से {n}", "Score {n}.": "", "Day {n}": "दिन {n}" });
+  assert.equal(tr("  Start "), "  शुरू ");
+  assert.equal(tr("3 of 4 notes right"), "4 में से 3");
+  assert.equal(tr("Score 5."), "Score 5.", "an empty translation keeps the English");
+  assert.equal(tr("Something new"), "Something new");
+  assert.equal(tf("Day {n}", { n: 7 }), "दिन 7");
+  setDict(null);
+  assert.equal(tr("Start"), "Start");
+});
+
+const { holesText } = await import("../app/js/core/fingers.js");
+test("fingering pictures describe the holes in words too", () => {
+  assert.equal(holesText(0), "3 closed, 3 open");
+  assert.equal(holesText(-5), "6 closed");
+  assert.equal(holesText(5), "1 half, 5 open");
+  assert.equal(holesText(-9), "not playable on this flute");
+});
+
+const { sentences } = await import("../app/js/voice.js");
+test("read-aloud text is split into short sentences", () => {
+  const out = sentences("Hold `S` for 8 s. Then rest!   Breathe low: slowly. " + "A long sentence that goes on and on ".repeat(6) + "end.");
+  assert.ok(out.length >= 2);
+  assert.ok(out.every(x => !x.includes("`")));
+  assert.ok(out[0].startsWith("Hold S for 8 s."));
+});
+
+test("Hindi dictionary: every translation keeps its placeholders, no dashes or curly quotes", () => {
+  const d = JSON.parse(fs.readFileSync(new URL("../app/i18n/hi.json", import.meta.url), "utf8"));
+  const ph = x => (x.match(/\{[a-z]\w*\}/g) || []).sort().join();
+  for (const [en, hi] of Object.entries(d)) {
+    if (!hi) continue;
+    assert.equal(ph(hi), ph(en), en);
+    assert.ok(!/[\u2013\u2014\u2018\u2019\u201C\u201D\u2026]/.test(hi), en);
+  }
+  assert.ok(Object.keys(d).length > 1000);
 });
 
 console.log(`core tests: ${passed} passed`);

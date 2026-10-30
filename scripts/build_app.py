@@ -33,6 +33,13 @@ def collect():
             # The pose model (about 19 MB) loads only when the posture check is opened; not part of the offline download.
             if rel.startswith("app/vendor/pose/"):
                 continue
+            # The in-browser reading voice (about 24 MB of runtime) loads only when a lesson is read aloud.
+            if rel.startswith("app/vendor/kokoro/"):
+                continue
+            # Voice clips (several MB per language) are kept by the service worker as they are played,
+            # or all at once from Settings; only their index is part of the offline download.
+            if rel.startswith("app/voice/") and not rel.endswith("index.json"):
+                continue
             assets.append(rel)
     for d, _, files in os.walk(DOCS):
         for f in files:

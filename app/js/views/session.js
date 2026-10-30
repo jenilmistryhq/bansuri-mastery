@@ -17,6 +17,9 @@ import { sessionQuestPoints } from "../fun.js";
 import { parseNotation } from "../core/notation.js";
 import { renderInline } from "../content.js";
 import { makePlayable } from "../playable.js";
+import { speak, stopSpeaking, textOf, lang } from "../voice.js";
+import { waitForNote } from "../core/listen.js";
+import { getSettings, setSettings } from "../core/settings.js";
 
 // A long-tone step gets a live meter. Its target notes and hold time are read from the step text:
 // "Long tones on `.P .D .N S R G`, 8-10 s each" -> hold each of those notes 8 s.
@@ -73,6 +76,52 @@ export async function render(main, { params }) {
   const stepStrip = h("div", { class: "stepstrip", role: "list", "aria-label": "Steps" });
   const viewBtn = h("button", { type: "button", class: "btn ghost small" });
   const meters = {};
+  // Hands-free: the app says each step, starts its timer or meter, and moves on when the learner
+  // plays Sa (after the time is up or the goal is met). No reading or tapping needed.
+  let handsFree = !!getState().prefs.handsFree || getSettings().simple, waiter = null, hfGen = 0;
+  const hfBtn = h("button", { type: "button", class: "btn small", "aria-pressed": "false" }, icon("speaker"), "Talk me through it");
+  const cancelWait = () => { if (waiter) { waiter.cancel(); waiter = null; } };
+  function hfAwaitSa(id, refs) {
+    if (!handsFree) return;
+    const g = hfGen;
+    cancelWait();
+    speak(...refs, "play_sa_continue").then(() => {
+      if (!handsFree || g !== hfGen || activeId !== id) return;
+      waiter = waitForNote(0, 1.2);
+      waiter.promise.then(ok => {
+        waiter = null;
+        if (!ok || !handsFree || g !== hfGen || activeId !== id) return;
+        const nb = cards[id] && cards[id].querySelector(".stepnav .btn.primary");
+        if (nb) nb.click();
+      });
+    });
+  }
+  function hfEnter(id) {
+    if (!handsFree) return;
+    const g = ++hfGen;
+    cancelWait();
+    const b = day.blocks.find(x => x.id === id), i = day.blocks.indexOf(b);
+    const lead = i === 0 ? "session_start" : i === day.blocks.length - 1 ? "last_step" : "next_step";
+    const extra = b.id === "READ" ? ["read_lesson"] : b.id === "R" ? ["log_practice"] : [];
+    speak(lead, ["step", b.text || ""], ...extra).then(() => {
+      if (g !== hfGen || !handsFree || activeId !== id) return;
+      if (meters[id] && holdSpec(b)) meters[id].start();
+      if (timers[id] && timers[id].total && !timers[id].running && !doneMap[id]) startTimer(id);
+      else if (!timers[id] || !timers[id].total) hfAwaitSa(id, []);
+    });
+  }
+  function applyHandsFree() {
+    hfBtn.classList.toggle("primary", handsFree);
+    hfBtn.setAttribute("aria-pressed", String(handsFree));
+    if (!handsFree) { hfGen++; cancelWait(); stopSpeaking(); }
+  }
+  hfBtn.addEventListener("click", () => {
+    handsFree = !handsFree;
+    update(st => { st.prefs.handsFree = handsFree; });
+    if (handsFree) { setSettings({ talk: true }); if (!focus) viewBtn.click(); try { ac(); } catch (e) { /* audio unlocks on this tap */ } }
+    applyHandsFree();
+    if (handsFree && activeId) hfEnter(activeId);
+  });
 
   function refreshHead() {
     const done = day.blocks.filter(b => doneMap[b.id]).length;
@@ -88,7 +137,7 @@ export async function render(main, { params }) {
     h("div", { class: "row between" },
       h("div", { class: "stack", style: { gap: "0" } }, h("span", { class: "eyebrow" }, "Day " + n + (n < cur ? " - practising again" : "")), h("h2", null, day.title || "Session")),
       h("div", { class: "row" }, h("div", { class: "stack", style: { gap: "0" } }, totalClock, blocksEl), finishBtn)),
-    stepStrip, progressEl, h("div", { class: "row end" }, viewBtn)));
+    stepStrip, progressEl, h("div", { class: "row between" }, hfBtn, viewBtn)));
 
   if (day.milestone) {
     const ms = milestoneState(day.milestone);
@@ -100,7 +149,7 @@ export async function render(main, { params }) {
     const changed = activeId !== id;
     activeId = id;
     for (const [bid, c] of Object.entries(cards)) c.classList.toggle("active", bid === id);
-    if (focus && changed) enterStep(id);
+    if (focus && changed) { enterStep(id); hfEnter(id); }
     refreshHead();
   }
   // Entering a step in focus mode opens what it needs: its tool, and the live meter for long tones.
@@ -133,6 +182,7 @@ export async function render(main, { params }) {
     }
     const nb = card.querySelector(".stepnav .btn.primary"); if (nb) nb.classList.add("pulse");
     toast("Goal reached: step done. Keep going, or move on.");
+    if (handsFree) setTimeout(() => hfAwaitSa(id, ["goal_reached"]), 1800);
   }
   function applyView() {
     page.classList.toggle("session-focus", focus);
@@ -188,6 +238,7 @@ export async function render(main, { params }) {
         const idx = day.blocks.findIndex(b => b.id === id);
         const next = day.blocks[idx + 1];
         toast("Time for this block is up." + (next ? " Next: " + next.label + "." : " That was the last block."));
+        if (handsFree && id === activeId && !(meters[id] && holdSpec(day.blocks[idx]) && !doneMap[id])) hfAwaitSa(id, ["time_up"]);
       }
     }
     refreshHead();
@@ -231,7 +282,7 @@ export async function render(main, { params }) {
         h("span", { class: "tag " + b.id }, b.id === "READ" ? "Read" : b.id === "TEST" ? "Test" : b.id),
         h("h3", null, b.label, b.minutes ? h("span", { class: "muted small" }, " " + b.minutes + " min") : null),
         total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null),
-      b.text ? h("p", null, renderInline(b.text, "phases/README.md")) : null,
+      b.text ? h("p", { class: "steptext", translate: "no" }, renderInline(b.text, "phases/README.md")) : null,
       b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : ""), target: "_blank", rel: "noopener" }, r.label))) : null,
     ];
     if (b.bench) {
@@ -267,12 +318,19 @@ export async function render(main, { params }) {
     });
     parts.push(h("div", { class: "row between stepnav" }, backBtn, nextBtn));
     stepStrip.append(h("button", { type: "button", role: "listitem", class: "stepdot", "data-id": b.id, title: b.label, onclick: () => setActive(b.id) }, b.id === "READ" ? "Rd" : b.id === "TEST" ? "Test" : b.id));
+    // In Hindi, the step's instruction is shown (and spoken) in Hindi; the original stays a tap away.
+    if (b.text && lang() === "hi") textOf(["step", b.text]).then(hi => {
+      const p = card.querySelector(".steptext"); if (!hi || !p) return;
+      const orig = h("details", { class: "small muted" }, h("summary", null, "English"), p.cloneNode(true));
+      p.replaceWith(h("p", { class: "steptext", lang: "hi" }, hi), orig);
+    });
     card.append(...parts);
     makePlayable(card);
     cards[b.id] = card;
     page.append(card);
   }
   const first = day.blocks.find(b => !doneMap[b.id]) || day.blocks[day.blocks.length - 1];
+  applyHandsFree();
   applyView();
   if (first) setActive(first.id);
   refreshHead();
@@ -320,6 +378,7 @@ export async function render(main, { params }) {
   });
 
   return () => {
+    hfGen++; cancelWait(); stopSpeaking();
     clearInterval(tick);
     disposed = true;
     document.removeEventListener("visibilitychange", onVisible);

@@ -205,3 +205,16 @@ export function pitchAdvice(cents) {
   if (cents > 15) return "A little sharp: slow the air, or roll the flute in a touch.";
   return "In tune. Keep it steady.";
 }
+
+// The flute as a button: resolves true once the learner holds the target note (for "Play Sa to go
+// on"), or false when cancelled. Returns { promise, cancel }.
+export function waitForNote(target, seconds) {
+  let cancelled = false, unsub = null, finish = null;
+  const promise = new Promise(resolve => {
+    finish = ok => { if (unsub) { unsub(); unsub = null; } resolve(ok); };
+    const tr = holdTracker({ target, seconds: seconds || 1.2, cents: 45 });
+    listenMic(r => { if (!cancelled && tr.feed(r).done) { cancelled = true; finish(true); } })
+      .then(u => { if (cancelled) u(); else unsub = u; }, () => finish(false));
+  });
+  return { promise, cancel() { if (cancelled) return; cancelled = true; finish(false); } };
+}

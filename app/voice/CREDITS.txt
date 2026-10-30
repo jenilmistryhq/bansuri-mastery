@@ -1,0 +1,4 @@
+The app's spoken prompts, feedback, note names and session steps were generated with Kokoro-82M
+(https://huggingface.co/hexgrad/Kokoro-82M, Apache License 2.0) by scripts/build_voice.py, using
+kokoro-onnx. English voice: af_heart. Hindi voice: hf_alpha.
+The Hindi text was drafted by machine; a native speaker should check it (scripts/voice/*.json).

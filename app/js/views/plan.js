@@ -29,9 +29,8 @@ export async function render(main) {
     const weeks = new Map();
     for (const d of days) { const w = d.week || 0; if (!weeks.has(w)) weeks.set(w, []); weeks.get(w).push(d); }
     const box = h("details", { class: "phasebox" },
-      h("summary", null, h("h2", null, "Phase " + ph.id + ": " + ph.title), h("span", { class: "small muted" }, "Days " + days[0].n + "-" + days[days.length - 1].n + " - " + done + " of " + days.length + " done"),
-        h("a", { class: "small", href: "#/read/" + ph.doc }, "Roadmap")),
-      h("div", { class: "stack" }, [...weeks.entries()].map(([w, list]) => h("div", { class: "weekrow" },
+      h("summary", null, h("h2", null, "Phase " + ph.id + ": " + ph.title), h("span", { class: "small muted" }, "Days " + days[0].n + "-" + days[days.length - 1].n + " - " + done + " of " + days.length + " done")),
+      h("div", { class: "stack" }, h("a", { class: "small", href: "#/read/" + ph.doc }, "Phase " + ph.id + " roadmap"), [...weeks.entries()].map(([w, list]) => h("div", { class: "weekrow" },
         h("span", { class: "small muted" }, w ? "Week " + w : "Day 0"),
         h("div", { class: "days" }, list.map(d => {
           const st = status(d.n);

@@ -176,8 +176,19 @@ const STROKES = {
   ti: (t, a) => dayan(t, 0.18 * a, 0.07, true), te: (t, a) => dayan(t, 0.18 * a, 0.07, true), ra: (t, a) => dayan(t, 0.15 * a, 0.06, true),
   ki: (t, a) => bayan(t, 0.35 * a, false), ka: (t, a) => bayan(t, 0.4 * a, false), ke: (t, a) => bayan(t, 0.4 * a, false), kat: (t, a) => bayan(t, 0.45 * a, false),
 };
+// Beats can also be seen and felt (for learners who cannot hear the click well): onBeat(fn) gets
+// "sam", "tali", "khali" or "tick" at the moment each beat sounds.
+const beatFns = new Set();
+export function onBeat(fn) { beatFns.add(fn); return () => beatFns.delete(fn); }
+function beatAt(t, kind) {
+  if (!beatFns.size) return;
+  const c = ac(), ms = Math.max(0, (t - c.currentTime) * 1000);
+  setTimeout(() => beatFns.forEach(fn => { try { fn(kind); } catch (e) { /* ignore */ } }), ms);
+}
+
 // Play one bol (e.g. "Dha", "DhaGe", "TiRaKiTa") spread across one beat starting at time t.
 export function tablaBol(t, bol, beatSeconds, accent) {
+  beatAt(t, accent ? "sam" : "tick");
   const syl = (bol || "").match(/[A-Z][a-z]*/g) || [];
   const step = beatSeconds / Math.max(1, syl.length);
   syl.forEach((s, i) => { const f = STROKES[s.toLowerCase()] || STROKES.na; f(t + i * step, accent ? 1.3 : 1); });
@@ -186,6 +197,7 @@ export function tablaBol(t, bol, beatSeconds, accent) {
 // dest: optional node to play into (a sequence's own bus, so stopping it silences its clicks).
 export function click(t, kind, dest) {
   const c = ac(), to = dest || masterGain;
+  beatAt(t, kind || "tick");
   const g = c.createGain(); g.connect(to);
   const o = c.createOscillator(); o.type = "triangle";
   // Every beat must be clearly audible on phone and laptop speakers; sam and tali stand out by

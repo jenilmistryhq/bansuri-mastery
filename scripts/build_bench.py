@@ -1,7 +1,7 @@
 """Build the single-file Practice Bench pages from the app's ES modules.
 
 Sources (edit these):
-  app/js/core/settings.js, theory.js, audio.js, notation.js, pitch.js, listen.js, live.js
+  app/js/core/settings.js, theory.js, fingers.js, audio.js, notation.js, pitch.js, listen.js, live.js
   app/js/bench/bench.js, bench.css, bench-tokens.css
 
 Outputs (generated, do not edit):
@@ -22,7 +22,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 JS = os.path.join(ROOT, "app", "js")
 TOOLS = os.path.join(ROOT, "bansuri-mastery", "tools")
-MODULES = ["core/settings.js", "core/theory.js", "core/audio.js", "core/notation.js", "core/pitch.js", "core/listen.js", "core/live.js", "bench/bench.js"]
+MODULES = ["core/settings.js", "core/theory.js", "core/fingers.js", "core/audio.js", "core/notation.js", "core/pitch.js", "core/listen.js", "core/live.js", "bench/bench.js"]
 OUT_FULL = os.path.join(TOOLS, "practice-bench.html")
 OUT_FRAGMENT = os.path.join(TOOLS, "interactive-flute.html")
 

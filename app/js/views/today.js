@@ -11,6 +11,39 @@ import { dayResults, lastPlayedDay } from "../livestats.js";
 import { questState, level } from "../fun.js";
 import { codeOf } from "../core/theory.js";
 import { makePlayable } from "../playable.js";
+import { icon } from "../util.js";
+import { getSettings, setSettings } from "../core/settings.js";
+import { speak, sayButton } from "../voice.js";
+
+// First run: how the learner likes to learn, in pictures and both languages, so it works without
+// reading English. Each choice can be changed later in Settings.
+function howCard() {
+  const tile = (ic, label, sub, onClick) => h("button", { type: "button", class: "howtile", onclick: onClick }, icon(ic), h("b", null, label), sub ? h("span", { class: "small" }, sub) : null);
+  const done = patch => { setSettings(patch); update(st => { st.prefs.howChosen = true; }); };
+  return h("section", { class: "card howcard", "aria-label": "How do you like to learn?" },
+    h("div", { class: "row between" }, h("h2", null, "How do you like to learn?"), sayButton(["welcome"], "Listen")),
+    h("div", { class: "row langpick", translate: "no" },
+      h("button", { type: "button", class: "btn" + (getSettings().lang === "en" ? " primary" : ""), onclick: () => setSettings({ lang: "en" }) }, "English"),
+      h("button", { type: "button", class: "btn" + (getSettings().lang === "hi" ? " primary" : ""), onclick: () => setSettings({ lang: "hi" }) }, "हिन्दी")),
+    h("div", { class: "howtiles" },
+      tile("read", "I like to read", "Lessons and steps as text", () => { done({ talk: false }); location.reload(); }),
+      tile("speaker", "Talk to me", "The app says each step and how each note went", () => { done({ talk: true }); speak("welcome"); location.reload(); }),
+      tile("hand", "Simple mode", "Three big buttons; the app talks you through everything", () => done({ talk: true, simple: true, notesAs: "pictures" }))));
+}
+
+// Simple mode: three big choices and today's quests, no reading needed.
+function simpleToday(page, cur, day) {
+  const big = (href, ic, label, ref, cls) => h("a", { class: "simpletile " + (cls || ""), href, onclick: () => speak(ref) }, icon(ic), h("b", null, label));
+  page.append(
+    h("section", { class: "hero simplehero" }, h("span", { class: "eyebrow" }, "Day " + cur), h("h1", null, day && day.title ? day.title : "Today"), sayButton(["welcome"], "Listen")),
+    h("div", { class: "simpletiles" },
+      big(day && day.kind === "milestone" ? "#/milestone/" + day.milestone : "#/session/" + cur, "play", "Start practice", "session_start", "primary"),
+      big("#/play", "star", "Play a game", "steer_intro"),
+      big("#/listen", "listen", "Listen", "listen_intro"),
+      big("#/quick", "today", "5 minutes", "quick_intro")));
+  const qs = questState();
+  page.append(h("section", { class: "card" }, h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "✓" : ""), h("span", null, q.text))))));
+}
 
 const KIND_LABEL = { setup: "Setup day", review: "Review day", milestone: "Milestone", practice: "Practice day" };
 
@@ -215,6 +248,8 @@ export async function render(main, { params, view }) {
   const s = getState();
   const page = h("div", { class: "page" });
 
+  if (isToday && getSettings().simple) { simpleToday(page, cur, day); main.append(page); return; }
+  if (isToday && !s.prefs.howChosen) page.append(howCard());
   if (isToday && !s.startedAt && cur === 0) page.append(welcome());
 
   // Status and primary action.

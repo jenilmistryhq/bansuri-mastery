@@ -1,0 +1,1062 @@
+{
+ "A. Your flute: read L00. Learn the parts (INS-01), do the inspection checklist (INS-03), note the maker's care instructions (INS-05), choose and write down your holding side, and set up the care routine (INS-04).": {
+  "en": "Your flute: read lesson 0. Learn the parts of the flute, do the inspection checklist, and note the maker's care instructions. Choose your holding side and write it down. Then set up your care routine.",
+  "hi": "आपकी बाँसुरी: पाठ 0 पढ़िए। बाँसुरी के हिस्से सीखिए, जाँच की चेकलिस्ट पूरी कीजिए, और बनाने वाले के देखभाल के निर्देश नोट कीजिए। बाँसुरी किस तरफ़ पकड़नी है, यह चुनकर लिख लीजिए। फिर देखभाल का रूटीन बनाइए।"
+ },
+ "B. Tools: set the drone (tanpura) to C, and try the tuner, metronome and recorder. The Practice Bench covers drone, tala and tuner.": {
+  "en": "Tools: set the tanpura drone to C, and try the tuner, metronome and recorder. The Practice Bench has the drone, tala and tuner.",
+  "hi": "टूल्स: तानपुरा C पर सेट कीजिए, और ट्यूनर, मेट्रोनोम और रिकॉर्डर आज़माइए। प्रैक्टिस बेंच में तानपुरा, ताल और ट्यूनर हैं।"
+ },
+ "C. How you will practise: read L01 (daily session structure, the '3 clean in a row' rule). Choose a fixed time and place. Skim the progress tracker and the conventions.": {
+  "en": "How you will practise: read lesson 1, about the daily session and the rule of three clean in a row. Choose a fixed time and place. Skim the progress tracker and the conventions.",
+  "hi": "आप अभ्यास कैसे करेंगे: पाठ 1 पढ़िए, रोज़ के सेशन और लगातार तीन बार साफ़ बजाने के नियम के बारे में। अभ्यास का एक तय समय और जगह चुनिए। प्रोग्रेस ट्रैकर और नियमों पर एक नज़र डालिए।"
+ },
+ "D. Safety: read the dizziness protocol (L03) and the pain warning signs (TS-08). E. Optional: find a teacher for a check around Week 2-3.": {
+  "en": "Safety: read what to do if you feel dizzy, in lesson 3, and the warning signs of pain. Optional: find a teacher for a check around week 2 or 3.",
+  "hi": "सुरक्षा: पाठ 3 में पढ़िए कि चक्कर आए तो क्या करें, और दर्द के चेतावनी संकेत भी पढ़िए। चाहें तो, दूसरे या तीसरे हफ्ते के आसपास जाँच के लिए कोई गुरु ढूँढिए।"
+ },
+ "Read L02 (posture and holding) and L03 (breathing).": {
+  "en": "Read lesson 2, posture and holding, and lesson 3, breathing.",
+  "hi": "पाठ 2 पढ़िए, बैठने और पकड़ने का तरीका, और पाठ 3, साँस लेना।"
+ },
+ "Warm-up and tension scan (L01: shoulder rolls, wrist and finger stretches, low breathing).": {
+  "en": "Warm-up and tension scan from lesson 1: shoulder rolls, wrist and finger stretches, and low breathing.",
+  "hi": "पाठ 1 से वार्म-अप और तनाव की जाँच: कंधे घुमाइए, कलाई और उँगलियाँ स्ट्रेच कीजिए, और पेट से गहरी साँस लीजिए।"
+ },
+ "Posture and holding drill 10 min. Then read L04 and make first-sound attempts on the blowing hole only, 10 min max with rests.": {
+  "en": "Posture and holding drill, 10 minutes. Then read lesson 4, and try for a first sound on the blowing hole only. 10 minutes at most, with rests.",
+  "hi": "बैठने और पकड़ने का अभ्यास, 10 मिनट। फिर पाठ 4 पढ़िए, और सिर्फ़ फूँकने वाले छेद पर पहली आवाज़ निकालने की कोशिश कीजिए। ज़्यादा से ज़्यादा 10 मिनट, बीच में आराम के साथ।"
+ },
+ "Breathing: low breathing 10 breaths x3, then the hiss test (5 min).": {
+  "en": "Breathing: 10 low breaths, three times. Then the hiss test, 5 minutes.",
+  "hi": "साँस: पेट से 10 गहरी साँसें, तीन बार। फिर स्स्स वाला टेस्ट, 5 मिनट।"
+ },
+ "L05 part 1 (what pitch is); higher/lower game.": {
+  "en": "Lesson 5, part 1: what pitch is. Then the higher or lower game.",
+  "hi": "पाठ 5, भाग 1: सुर की ऊँचाई क्या होती है। फिर ऊँचा या नीचा वाला गेम।"
+ },
+ "Log today's practice.": {
+  "en": "Log today's practice.",
+  "hi": "आज का अभ्यास लॉग कीजिए।"
+ },
+ "Breathing 5 min.": {
+  "en": "Breathing, 5 minutes.",
+  "hi": "साँस का अभ्यास, 5 मिनट।"
+ },
+ "First sound on Sa (`XXX OOO`), 3 x 4 min with 1-min rests.": {
+  "en": "First sound on Sa, with the top three holes closed. Three rounds of four minutes, with one-minute rests.",
+  "hi": "सा पर पहली आवाज़, ऊपर के तीन छेद बंद। चार-चार मिनट के तीन राउंड, बीच में एक मिनट आराम।"
+ },
+ "Hum Sa with the C drone 5 min (L05). Then read L06 and clap with a metronome at 60 BPM for 5 min.": {
+  "en": "Hum Sa with the C drone for 5 minutes, from lesson 5. Then read lesson 6, and clap with a metronome at 60 beats per minute for 5 minutes.",
+  "hi": "C तानपुरे के साथ सा गुनगुनाइए, 5 मिनट, पाठ 5 से। फिर पाठ 6 पढ़िए, और मेट्रोनोम के साथ 60 बीट प्रति मिनट पर 5 मिनट ताली बजाइए।"
+ },
+ "Log today's practice (L01 log template).": {
+  "en": "Log today's practice, using the log template in lesson 1.",
+  "hi": "पाठ 1 के लॉग टेम्पलेट से आज का अभ्यास लॉग कीजिए।"
+ },
+ "Sa attempts 3 x 4 min; aim for 2-s notes.": {
+  "en": "Sa attempts, three rounds of four minutes. Aim for two-second notes.",
+  "hi": "सा का अभ्यास, चार-चार मिनट के तीन राउंड। 2 सेकंड के स्वर का लक्ष्य रखिए।"
+ },
+ "Read L08: recording and self-assessment.": {
+  "en": "Read lesson 8: recording and checking yourself.",
+  "hi": "पाठ 8 पढ़िए: रिकॉर्ड करना और खुद को जाँचना।"
+ },
+ "L06 durations (1 and 2 beats) clapping 10 min. Sargam recitation S R G m P D N S' up and down 3 times.": {
+  "en": "Lesson 6, note lengths: clap notes of one and two beats, 10 minutes. Then recite the sargam, Sa, Re, Ga, Ma, Pa, Dha, Ni, upper Sa, up and down three times.",
+  "hi": "पाठ 6, स्वरों की लंबाई: एक और दो बीट के स्वरों पर ताली, 10 मिनट। फिर सरगम बोलिए, सा रे ग म प ध नि, तार सा, ऊपर और नीचे, तीन बार।"
+ },
+ "Record your first Sa and log the session.": {
+  "en": "Record your first Sa, and log the session.",
+  "hi": "अपना पहला सा रिकॉर्ड कीजिए, और सेशन लॉग कीजिए।"
+ },
+ "Read L07: long tones, tuner and drone.": {
+  "en": "Read lesson 7: long tones, tuner and drone.",
+  "hi": "पाठ 7 पढ़िए: लंबे स्वर, ट्यूनर और तानपुरा।"
+ },
+ "Long tones on Sa, target 4 s, x10, with the tuner. Confirm your Sa pitch and octave (INS-02): record Sa and use check plan 'Day 0: Sa only'.": {
+  "en": "Long tones on Sa with the tuner, aiming for four seconds, ten times. Then confirm your Sa pitch and octave: record Sa, and use the check plan called Day 0, Sa only.",
+  "hi": "ट्यूनर के साथ सा पर लंबे स्वर, 4 सेकंड का लक्ष्य, दस बार। फिर अपने सा का सुर और सप्तक पक्का कीजिए: सा रिकॉर्ड कीजिए, और दिन 0, सिर्फ़ सा, वाला चेक प्लान इस्तेमाल कीजिए।"
+ },
+ "Hum Sa and R with the drone 5 min. Clap at 60 and 80 BPM 5 min.": {
+  "en": "Hum Sa and Re with the drone, 5 minutes. Clap at 60 and at 80 beats per minute, 5 minutes.",
+  "hi": "तानपुरे के साथ सा और रे गुनगुनाइए, 5 मिनट। 60 और 80 बीट प्रति मिनट पर ताली, 5 मिनट।"
+ },
+ "Long tones on Sa, 4-6 s, x10, with the drone.": {
+  "en": "Long tones on Sa, four to six seconds, ten times, with the drone.",
+  "hi": "तानपुरे के साथ सा पर लंबे स्वर, 4 से 6 सेकंड, दस बार।"
+ },
+ "Rolling the flute in and out to find the clearest sound.": {
+  "en": "Roll the flute in and out to find the clearest sound.",
+  "hi": "सबसे साफ़ आवाज़ ढूँढने के लिए बाँसुरी को अंदर और बाहर घुमाइए।"
+ },
+ "EX-EAR Level 1: higher / lower / same and pitch matching.": {
+  "en": "Ear training, level 1: higher, lower or same, and pitch matching.",
+  "hi": "ईयर ट्रेनिंग, लेवल 1: ऊँचा, नीचा या बराबर, और सुर मिलाना।"
+ },
+ "Long tones 15 min (mirror check).": {
+  "en": "Long tones, 15 minutes, checking yourself in the mirror.",
+  "hi": "लंबे स्वर, 15 मिनट, आईने में खुद को देखते हुए।"
+ },
+ "L05 saptak and sargam singing with the drone 10 min. L06 half-beat clapping 5 min.": {
+  "en": "Lesson 5: sing the saptak and sargam with the drone, 10 minutes. Lesson 6: half-beat clapping, 5 minutes.",
+  "hi": "पाठ 5: तानपुरे के साथ सप्तक और सरगम गाइए, 10 मिनट। पाठ 6: आधी बीट पर ताली, 5 मिनट।"
+ },
+ "Listening 10 min: any bansuri recording from the listening library.": {
+  "en": "Listening, 10 minutes: any bansuri recording from the listening library.",
+  "hi": "सुनना, 10 मिनट: सुनने की लाइब्रेरी से बाँसुरी की कोई भी रिकॉर्डिंग।"
+ },
+ "Record a long tone, score it with the rubric (L08) and log.": {
+  "en": "Record a long tone, score it with the rubric from lesson 8, and log it.",
+  "hi": "एक लंबा स्वर रिकॉर्ड कीजिए, पाठ 8 के रूब्रिक से उसे स्कोर दीजिए, और लॉग कीजिए।"
+ },
+ "Long tones 10 min.": {
+  "en": "Long tones, 10 minutes.",
+  "hi": "लंबे स्वर, 10 मिनट।"
+ },
+ "Re-read the L02 and L04 checklists in the mirror.": {
+  "en": "Re-read the checklists in lessons 2 and 4, in front of the mirror.",
+  "hi": "आईने के सामने पाठ 2 और पाठ 4 की चेकलिस्ट फिर से पढ़िए।"
+ },
+ "Listen to your Day 3 and Day 6 recordings back to back; write what changed. Weekly log reflection.": {
+  "en": "Listen to your day 3 and day 6 recordings one after the other, and write what changed. Then the weekly log reflection.",
+  "hi": "अपनी तीसरे दिन और छठे दिन की रिकॉर्डिंग एक के बाद एक सुनिए, और लिखिए कि क्या बदला। फिर हफ्ते के लॉग पर एक नज़र।"
+ },
+ "Sa long tones 6-8 s x8 with the drone.": {
+  "en": "Long tones on Sa, six to eight seconds, eight times, with the drone.",
+  "hi": "तानपुरे के साथ सा पर लंबे स्वर, 6 से 8 सेकंड, आठ बार।"
+ },
+ "Read L09: fingering Sa Re Ga.": {
+  "en": "Read lesson 9: fingering for Sa, Re and Ga.",
+  "hi": "पाठ 9 पढ़िए: सा, रे और ग की उँगलियाँ।"
+ },
+ "Re (`XXO OOO`) long tones.": {
+  "en": "Long tones on Re, with the top two holes closed.",
+  "hi": "रे पर लंबे स्वर, ऊपर के दो छेद बंद।"
+ },
+ "EX-EAR Level 1, 5 min; clap EX-RHY Levels 1-2, 5 min.": {
+  "en": "Ear training level 1, 5 minutes. Then clap the rhythm exercises, levels 1 and 2, 5 minutes.",
+  "hi": "ईयर ट्रेनिंग लेवल 1, 5 मिनट। फिर ताल के अभ्यास, लेवल 1 और 2, ताली के साथ, 5 मिनट।"
+ },
+ "Long tones on Sa and Re.": {
+  "en": "Long tones on Sa and Re.",
+  "hi": "सा और रे पर लंबे स्वर।"
+ },
+ "Ga (`XOO OOO`) long tones 10 min; slow S-R and R-G changes 5 min.": {
+  "en": "Long tones on Ga, with only the top hole closed, 10 minutes. Then slow changes from Sa to Re, and from Re to Ga, 5 minutes.",
+  "hi": "ग पर लंबे स्वर, सिर्फ़ सबसे ऊपर का छेद बंद, 10 मिनट। फिर सा से रे, और रे से ग पर धीरे-धीरे बदलना, 5 मिनट।"
+ },
+ "Read L10 part 1 and read 4 lines aloud.": {
+  "en": "Read lesson 10, part 1, and read four lines aloud.",
+  "hi": "पाठ 10 का भाग 1 पढ़िए, और चार लाइनें ज़ोर से पढ़िए।"
+ },
+ "S R G long tones, 6 s each.": {
+  "en": "Long tones on Sa, Re and Ga, six seconds each.",
+  "hi": "सा, रे और ग पर लंबे स्वर, हर एक 6 सेकंड।"
+ },
+ "`S R G R S` at 50 BPM, 1 note per beat.": {
+  "en": "Play Sa, Re, Ga, Re, Sa at 50 beats per minute, one note per beat.",
+  "hi": "सा रे ग रे सा बजाइए, 50 बीट प्रति मिनट पर, हर बीट पर एक स्वर।"
+ },
+ "First melody from EX-MEL Level 1: Morning Steps.": {
+  "en": "Your first melody from the practice melodies, level 1: Morning Steps.",
+  "hi": "अभ्यास धुनों के लेवल 1 से आपकी पहली धुन: मॉर्निंग स्टेप्स।"
+ },
+ "L05: movable Sa.": {
+  "en": "Lesson 5: movable Sa.",
+  "hi": "पाठ 5: चल सा, यानी सा को किसी भी सुर पर रखना।"
+ },
+ "Long tones S R G.": {
+  "en": "Long tones on Sa, Re and Ga.",
+  "hi": "सा, रे और ग पर लंबे स्वर।"
+ },
+ "Transition drill (L09 'finger together' drill).": {
+  "en": "Transition drill: the finger together drill from lesson 9.",
+  "hi": "स्वर बदलने का अभ्यास: पाठ 9 का उँगलियाँ एक साथ वाला अभ्यास।"
+ },
+ "EX-MEL Level 1: Hot Cross Buns.": {
+  "en": "Practice melodies, level 1: Hot Cross Buns.",
+  "hi": "अभ्यास धुनें, लेवल 1: हॉट क्रॉस बन्स।"
+ },
+ "Write 3 phrases you play (L10 writing) 5 min. EX-EAR Level 1, 5 min.": {
+  "en": "Write three phrases you play, as in lesson 10, 5 minutes. Then ear training level 1, 5 minutes.",
+  "hi": "आप जो बजाते हैं, उसके तीन टुकड़े लिखिए, पाठ 10 की तरह, 5 मिनट। फिर ईयर ट्रेनिंग लेवल 1, 5 मिनट।"
+ },
+ "Record S-R-G slurred and listen for blips; log.": {
+  "en": "Record Sa, Re, Ga played smoothly in one breath, and listen for blips. Then log it.",
+  "hi": "सा रे ग को जोड़कर, एक साँस में बजाइए और रिकॉर्ड कीजिए, फिर सुनिए कि कहीं झटका तो नहीं। फिर लॉग कीजिए।"
+ },
+ "Aim for 8 s on S, R and G.": {
+  "en": "Aim for eight seconds on Sa, Re and Ga.",
+  "hi": "सा, रे और ग पर 8 सेकंड का लक्ष्य रखिए।"
+ },
+ "S R G alankar warm-ups from EX-ALK at 50 BPM (W1 to W4). Read L12 sections 1-3 for why alankars matter.": {
+  "en": "Sa Re Ga alankar warm-ups from the alankar exercises, warm-ups 1 to 4, at 50 beats per minute. Then read sections 1 to 3 of lesson 12, on why alankars matter.",
+  "hi": "अलंकार अभ्यास से सा रे ग के वार्म-अप अलंकार, वार्म-अप 1 से 4, 50 बीट प्रति मिनट पर। फिर पाठ 12 के भाग 1 से 3 पढ़िए, कि अलंकार क्यों ज़रूरी हैं।"
+ },
+ "EX-MEL Level 1: Three-Note Waltz.": {
+  "en": "Practice melodies, level 1: Three-Note Waltz.",
+  "hi": "अभ्यास धुनें, लेवल 1: थ्री नोट वॉल्ट्ज़।"
+ },
+ "Clapping (EX-RHY).": {
+  "en": "Clapping, from the rhythm exercises.",
+  "hi": "ताल के अभ्यास से ताली।"
+ },
+ "M1 rehearsal: try the M1 test twice and record it. Then K/M review.": {
+  "en": "Milestone 1 rehearsal: try the milestone 1 test twice, and record it. Then review your technique and your melodies.",
+  "hi": "माइलस्टोन 1 की तैयारी: माइलस्टोन 1 का टेस्ट दो बार कीजिए, और रिकॉर्ड कीजिए। फिर अपनी तकनीक और धुनों का रिव्यू कीजिए।"
+ },
+ "EX-EAR Level 1.": {
+  "en": "Ear training, level 1.",
+  "hi": "ईयर ट्रेनिंग, लेवल 1।"
+ },
+ "Warm up for at most 10 minutes before the test (projects/README).": {
+  "en": "Warm up for at most 10 minutes before the test.",
+  "hi": "टेस्ट से पहले ज़्यादा से ज़्यादा 10 मिनट वार्म-अप कीजिए।"
+ },
+ "Review + M1 - First stable tone. If not passed, continue the Week 2 days 11-13 rotation (max 1 more week), then retest. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Review, then milestone 1: a first stable tone. If you do not pass, keep rotating days 11 to 13 of week 2, for up to one more week, then test again. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "रिव्यू, फिर माइलस्टोन 1: पहला स्थिर स्वर। अगर पास न हों, तो दूसरे हफ्ते के दिन 11 से 13 का अभ्यास दोहराते रहिए, ज़्यादा से ज़्यादा एक हफ्ता और, फिर दोबारा टेस्ट दीजिए। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "Write the result in the app; if you did not pass, follow the milestone's 'If you did not pass' table.": {
+  "en": "Write the result in the app. If you did not pass, follow the milestone's steps for what to do next.",
+  "hi": "नतीजा ऐप में लिखिए। अगर पास नहीं हुए, तो माइलस्टोन में बताए गए अगले कदम अपनाइए।"
+ },
+ "Read L11: lower notes Ni Dha Pa.": {
+  "en": "Read lesson 11: the lower notes Ni, Dha and Pa.",
+  "hi": "पाठ 11 पढ़िए: मंद्र सप्तक के स्वर नि, ध और प।"
+ },
+ "`.N` (`XXX XOO`) long tones 10 min; `S .N S` changes 5 min.": {
+  "en": "Long tones on lower Ni, with the top four holes closed, 10 minutes. Then Sa, lower Ni, Sa changes, 5 minutes.",
+  "hi": "मंद्र नि पर लंबे स्वर, ऊपर के चार छेद बंद, 10 मिनट। फिर सा, मंद्र नि, सा, बदलने का अभ्यास, 5 मिनट।"
+ },
+ "L10 reading.": {
+  "en": "Reading, from lesson 10.",
+  "hi": "पाठ 10 से पढ़ने का अभ्यास।"
+ },
+ "Long tones, adding `.N`.": {
+  "en": "Long tones, now adding lower Ni.",
+  "hi": "लंबे स्वर, अब मंद्र नि भी जोड़िए।"
+ },
+ "`.D` (`XXX XXO`) long tones with a sealing check.": {
+  "en": "Long tones on lower Dha, with the top five holes closed, checking that every finger seals its hole.",
+  "hi": "मंद्र ध पर लंबे स्वर, ऊपर के पाँच छेद बंद, और देखिए कि हर उँगली अपना छेद पूरा ढक रही है।"
+ },
+ "EX-MEL Level 1 review.": {
+  "en": "Review the level 1 practice melodies.",
+  "hi": "अभ्यास धुनों के लेवल 1 का रिव्यू।"
+ },
+ "Long tones.": {
+  "en": "Long tones.",
+  "hi": "लंबे स्वर।"
+ },
+ "`G R S .N .D .N S` slowly.": {
+  "en": "Ga, Re, Sa, lower Ni, lower Dha, lower Ni, Sa, slowly.",
+  "hi": "ग, रे, सा, मंद्र नि, मंद्र ध, मंद्र नि, सा, धीरे-धीरे।"
+ },
+ "EX-MEL 2.1 Evening Lamp (uses `.N .D`; pieces with `.P` wait until Day 22).": {
+  "en": "Practice melody 2.1, Evening Lamp. It uses lower Ni and lower Dha. Pieces with lower Pa wait until day 22.",
+  "hi": "अभ्यास धुन 2.1, ईवनिंग लैंप। इसमें मंद्र नि और मंद्र ध हैं। मंद्र प वाली धुनें दिन 22 से शुरू होंगी।"
+ },
+ "L06: counting while playing.": {
+  "en": "Lesson 6: counting while playing.",
+  "hi": "पाठ 6: बजाते हुए गिनना।"
+ },
+ "Extend the EX-ALK S R G warm-ups downward to `.N` and `.D`. Write the extended pattern yourself first: a notation exercise.": {
+  "en": "Extend the Sa Re Ga alankar warm-ups downward, to lower Ni and lower Dha. First write the extended pattern yourself, as a notation exercise.",
+  "hi": "सा रे ग वाले वार्म-अप अलंकारों को नीचे, मंद्र नि और मंद्र ध तक बढ़ाइए। पहले यह बढ़ा हुआ पैटर्न खुद लिखिए, नोटेशन अभ्यास की तरह।"
+ },
+ "Repertoire: EX-MEL 2.1 Evening Lamp and Level 1 pieces.": {
+  "en": "Repertoire: practice melody 2.1, Evening Lamp, and the level 1 pieces.",
+  "hi": "आपकी धुनें: अभ्यास धुन 2.1, ईवनिंग लैंप, और लेवल 1 की धुनें।"
+ },
+ "EX-EAR Level 1 to Level 2 transition (Sa or Pa?).": {
+  "en": "Ear training, moving from level 1 to level 2: is it Sa or Pa?",
+  "hi": "ईयर ट्रेनिंग, लेवल 1 से लेवल 2 की ओर: यह सा है या प?"
+ },
+ "Long tones S R G .N .D.": {
+  "en": "Long tones on Sa, Re, Ga, lower Ni and lower Dha.",
+  "hi": "सा, रे, ग, मंद्र नि और मंद्र ध पर लंबे स्वर।"
+ },
+ "'Finger together' drill across all 5 notes.": {
+  "en": "The finger together drill, across all five notes.",
+  "hi": "उँगलियाँ एक साथ वाला अभ्यास, पाँचों स्वरों पर।"
+ },
+ "Repertoire: EX-MEL 2.1 and Level 1 pieces.": {
+  "en": "Repertoire: practice melody 2.1 and the level 1 pieces.",
+  "hi": "आपकी धुनें: अभ्यास धुन 2.1 और लेवल 1 की धुनें।"
+ },
+ "Write and play an 8-beat phrase (L10).": {
+  "en": "Write and play an eight-beat phrase, as in lesson 10.",
+  "hi": "आठ बीट का एक टुकड़ा लिखिए और बजाइए, पाठ 10 की तरह।"
+ },
+ "Record one melody, score it with the rubric (L08) and log.": {
+  "en": "Record one melody, score it with the rubric from lesson 8, and log it.",
+  "hi": "एक धुन रिकॉर्ड कीजिए, पाठ 8 के रूब्रिक से उसे स्कोर दीजिए, और लॉग कीजिए।"
+ },
+ "K/M free review: the alankar warm-ups and EX-MEL pieces you know.": {
+  "en": "Free review of technique and music: the alankar warm-ups and the practice melodies you know.",
+  "hi": "तकनीक और संगीत का खुला रिव्यू: वार्म-अप अलंकार, और जो अभ्यास धुनें आप जानते हैं।"
+ },
+ "Listening 10 min: note where the player breathes.": {
+  "en": "Listening, 10 minutes: notice where the player breathes.",
+  "hi": "सुनना, 10 मिनट: ध्यान दीजिए कि बजाने वाला कहाँ साँस लेता है।"
+ },
+ "Your best melody.": {
+  "en": "Play your best melody.",
+  "hi": "अपनी सबसे अच्छी धुन बजाइए।"
+ },
+ "Recording comparison with Day 13. Optional teacher check this week.": {
+  "en": "Compare your recording with the one from day 13. Optional: a teacher check this week.",
+  "hi": "अपनी रिकॉर्डिंग को दिन 13 वाली रिकॉर्डिंग से मिलाकर सुनिए। चाहें तो इस हफ्ते गुरु से जाँच करवाइए।"
+ },
+ "`.P` (`XXX XXX`) long tones: slow, warm air; check every finger seal (TS-03 if it fails).": {
+  "en": "Long tones on lower Pa, with all six holes closed. Use slow, warm air, and check that every finger seals its hole. If no sound comes, see the troubleshooting guide.",
+  "hi": "मंद्र प पर लंबे स्वर, छहों छेद बंद। धीमी, गर्म हवा दीजिए, और देखिए कि हर उँगली अपना छेद पूरा ढक रही है। अगर आवाज़ न निकले, तो समस्या सुलझाने वाली गाइड देखिए।"
+ },
+ "Repertoire: EX-MEL 2.1 Evening Lamp.": {
+  "en": "Repertoire: practice melody 2.1, Evening Lamp.",
+  "hi": "आपकी धुनें: अभ्यास धुन 2.1, ईवनिंग लैंप।"
+ },
+ "L06: 2-per-beat playing.": {
+  "en": "Lesson 6: playing two notes per beat.",
+  "hi": "पाठ 6: हर बीट पर दो स्वर बजाना।"
+ },
+ "Long tones, including `.P`.": {
+  "en": "Long tones, including lower Pa.",
+  "hi": "लंबे स्वर, मंद्र प के साथ।"
+ },
+ "`S .N .D .P .D .N S` at 50 BPM.": {
+  "en": "Sa, lower Ni, lower Dha, lower Pa, lower Dha, lower Ni, Sa, at 50 beats per minute.",
+  "hi": "सा, मंद्र नि, मंद्र ध, मंद्र प, मंद्र ध, मंद्र नि, सा, 50 बीट प्रति मिनट पर।"
+ },
+ "EX-EAR Level 2.": {
+  "en": "Ear training, level 2.",
+  "hi": "ईयर ट्रेनिंग, लेवल 2।"
+ },
+ "L12 Version A (`.P .D S R G`), then Version B (`.P .D .N S R G`), alankar 1.": {
+  "en": "Lesson 12, alankar 1. First version A, with lower Pa, lower Dha, Sa, Re and Ga. Then version B, with lower Pa, lower Dha, lower Ni, Sa, Re and Ga.",
+  "hi": "पाठ 12, अलंकार 1। पहले वर्ज़न A, मंद्र प, मंद्र ध, सा, रे और ग के साथ। फिर वर्ज़न B, मंद्र प, मंद्र ध, मंद्र नि, सा, रे और ग के साथ।"
+ },
+ "New: EX-MEL 2.2 Low Road.": {
+  "en": "New: practice melody 2.2, Low Road.",
+  "hi": "नई धुन: अभ्यास धुन 2.2, लो रोड।"
+ },
+ "EX-RHY Level 2.": {
+  "en": "Rhythm exercises, level 2.",
+  "hi": "ताल के अभ्यास, लेवल 2।"
+ },
+ "8-s long tones on all 6 notes.": {
+  "en": "Eight-second long tones on all six notes.",
+  "hi": "छहों स्वरों पर 8 सेकंड के लंबे स्वर।"
+ },
+ "Metronome ladder 50 -> 60 BPM on alankar 1 (L01).": {
+  "en": "Metronome ladder on alankar 1, from 50 up to 60 beats per minute, as in lesson 1.",
+  "hi": "अलंकार 1 पर मेट्रोनोम सीढ़ी, 50 से 60 बीट प्रति मिनट तक, पाठ 1 की तरह।"
+ },
+ "Repertoire: EX-MEL 2.2 Low Road.": {
+  "en": "Repertoire: practice melody 2.2, Low Road.",
+  "hi": "आपकी धुनें: अभ्यास धुन 2.2, लो रोड।"
+ },
+ "EX-MEL Level 2, 2 melodies: 2.1 Evening Lamp and 2.2 Low Road.": {
+  "en": "Practice melodies, level 2, two melodies: 2.1, Evening Lamp, and 2.2, Low Road.",
+  "hi": "अभ्यास धुनें, लेवल 2, दो धुनें: 2.1, ईवनिंग लैंप, और 2.2, लो रोड।"
+ },
+ "Write the rhythm of one melody with `-` and `_` (L10) 5 min. EX-EAR Level 2, 5 min.": {
+  "en": "Write the rhythm of one melody with dashes and underscores, as in lesson 10, 5 minutes. Then ear training level 2, 5 minutes.",
+  "hi": "एक धुन की लय डैश और अंडरस्कोर से लिखिए, पाठ 10 की तरह, 5 मिनट। फिर ईयर ट्रेनिंग लेवल 2, 5 मिनट।"
+ },
+ "K/M: alankars and melodies.": {
+  "en": "Technique and music: alankars and melodies.",
+  "hi": "तकनीक और संगीत: अलंकार और धुनें।"
+ },
+ "Theory quiz: EX-THY Quiz 1.": {
+  "en": "Theory quiz 1.",
+  "hi": "थ्योरी क्विज़ 1।"
+ },
+ "Record your full routine (5 min). Score with the rubric (L08). Weekly reflection.": {
+  "en": "Record your full routine, 5 minutes. Score it with the rubric from lesson 8. Then the weekly reflection.",
+  "hi": "अपना पूरा रूटीन रिकॉर्ड कीजिए, 5 मिनट। पाठ 8 के रूब्रिक से स्कोर दीजिए। फिर इस हफ्ते पर एक नज़र।"
+ },
+ "Warm-up (L01) and tension scan.": {
+  "en": "Warm-up from lesson 1, and tension scan.",
+  "hi": "पाठ 1 से वार्म-अप, और तनाव की जाँच।"
+ },
+ "Long tones on `.P .D .N S R G`, 8-10 s each, with the drone; one note per day gets a tuner check.": {
+  "en": "Long tones on lower Pa, lower Dha, lower Ni, Sa, Re and Ga, eight to ten seconds each, with the drone. Each day, check one note with the tuner.",
+  "hi": "तानपुरे के साथ मंद्र प, मंद्र ध, मंद्र नि, सा, रे और ग पर लंबे स्वर, हर एक 8 से 10 सेकंड। हर दिन एक स्वर को ट्यूनर से जाँचिए।"
+ },
+ "Alankar 2 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM.": {
+  "en": "Alankar 2 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute.",
+  "hi": "पाठ 12 से अलंकार 2, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर।"
+ },
+ "New: EX-MEL 2.3 Breath Study. Keep the old ones in rotation.": {
+  "en": "New: practice melody 2.3, Breath Study. Keep the old ones in rotation.",
+  "hi": "नई धुन: अभ्यास धुन 2.3, ब्रेथ स्टडी। पुरानी धुनें भी बारी-बारी से बजाते रहिए।"
+ },
+ "(a) EX-EAR Level 2 + 5 min singing sargam with the drone.": {
+  "en": "Ear training level 2, plus 5 minutes of singing sargam with the drone.",
+  "hi": "ईयर ट्रेनिंग लेवल 2, और तानपुरे के साथ 5 मिनट सरगम गाना।"
+ },
+ "Record one item; rubric score; log; listening for the evening.": {
+  "en": "Record one item, score it with the rubric, and log it. Listening in the evening.",
+  "hi": "एक चीज़ रिकॉर्ड कीजिए, रूब्रिक से स्कोर दीजिए, और लॉग कीजिए। शाम को सुनने का अभ्यास।"
+ },
+ "Alankar 3 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM.": {
+  "en": "Alankar 3 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute.",
+  "hi": "पाठ 12 से अलंकार 3, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर।"
+ },
+ "EX-MEL Level 2 melodies in rotation (one new melody every 3 days while new ones remain; then keep all of Level 2 in rotation and get two ready from memory for M2).": {
+  "en": "Practice melodies, level 2, in rotation. Add one new melody every three days while new ones remain. Then keep all of level 2 in rotation, and get two ready from memory for milestone 2.",
+  "hi": "अभ्यास धुनें, लेवल 2, बारी-बारी से। जब तक नई धुनें बाकी हैं, हर तीन दिन में एक नई धुन जोड़िए। फिर लेवल 2 की सारी धुनें बारी-बारी से बजाइए, और माइलस्टोन 2 के लिए दो धुनें बिना देखे तैयार कीजिए।"
+ },
+ "(b) EX-RHY + L10 writing drill.": {
+  "en": "Rhythm exercises, plus the writing drill from lesson 10.",
+  "hi": "ताल के अभ्यास, और पाठ 10 का लिखने का अभ्यास।"
+ },
+ "Alankar 4 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM. Spaced review: replace 6 minutes of K with the oldest melody or alankar you have not played for a week.": {
+  "en": "Alankar 4 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute. Spaced review: for six minutes of this technique time, play the oldest melody or alankar you have not played for a week.",
+  "hi": "पाठ 12 से अलंकार 4, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर। दोहराव: तकनीक के इस समय में से 6 मिनट वह सबसे पुरानी धुन या अलंकार बजाइए, जो आपने एक हफ्ते से नहीं बजाया।"
+ },
+ "Alankar 5 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM.": {
+  "en": "Alankar 5 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute.",
+  "hi": "पाठ 12 से अलंकार 5, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर।"
+ },
+ "New: EX-MEL 2.2b Happy Birthday, lines 1-2. Keep the old ones in rotation.": {
+  "en": "New: practice melody 2.2b, Happy Birthday, lines 1 and 2. Keep the old ones in rotation.",
+  "hi": "नई धुन: अभ्यास धुन 2.2b, हैप्पी बर्थडे, लाइन 1 और 2। पुरानी धुनें भी बारी-बारी से बजाते रहिए।"
+ },
+ "Alankar 6 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM.": {
+  "en": "Alankar 6 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute.",
+  "hi": "पाठ 12 से अलंकार 6, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर।"
+ },
+ "Alankar 7 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM. Spaced review: replace 6 minutes of K with the oldest melody or alankar you have not played for a week.": {
+  "en": "Alankar 7 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute. Spaced review: for six minutes of this technique time, play the oldest melody or alankar you have not played for a week.",
+  "hi": "पाठ 12 से अलंकार 7, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर। दोहराव: तकनीक के इस समय में से 6 मिनट वह सबसे पुरानी धुन या अलंकार बजाइए, जो आपने एक हफ्ते से नहीं बजाया।"
+ },
+ "Alankar 8 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM.": {
+  "en": "Alankar 8 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute.",
+  "hi": "पाठ 12 से अलंकार 8, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर।"
+ },
+ "Alankar 9 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM.": {
+  "en": "Alankar 9 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute.",
+  "hi": "पाठ 12 से अलंकार 9, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर।"
+ },
+ "Alankar 10 (L12), Versions A and B, on a metronome ladder: target 60 -> 72 BPM, 1 note per beat, then 2 notes per beat at 50 BPM. Spaced review: replace 6 minutes of K with the oldest melody or alankar you have not played for a week.": {
+  "en": "Alankar 10 from lesson 12, versions A and B, on a metronome ladder. Aim to go from 60 up to 72 beats per minute, one note per beat. Then two notes per beat at 50 beats per minute. Spaced review: for six minutes of this technique time, play the oldest melody or alankar you have not played for a week.",
+  "hi": "पाठ 12 से अलंकार 10, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक पहुँचने का लक्ष्य, हर बीट पर एक स्वर। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर। दोहराव: तकनीक के इस समय में से 6 मिनट वह सबसे पुरानी धुन या अलंकार बजाइए, जो आपने एक हफ्ते से नहीं बजाया।"
+ },
+ "Alankars 1-10 (L12, Versions A and B) review on the metronome ladder: target 60 -> 72 BPM; then 2 notes per beat at 50 BPM.": {
+  "en": "Review alankars 1 to 10 from lesson 12, versions A and B, on the metronome ladder. Aim to go from 60 up to 72 beats per minute. Then two notes per beat at 50 beats per minute.",
+  "hi": "पाठ 12 के अलंकार 1 से 10 का रिव्यू, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक का लक्ष्य। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर।"
+ },
+ "Alankars 1-10 (L12, Versions A and B) review on the metronome ladder: target 60 -> 72 BPM; then 2 notes per beat at 50 BPM. Spaced review: replace 6 minutes of K with the oldest melody or alankar you have not played for a week.": {
+  "en": "Review alankars 1 to 10 from lesson 12, versions A and B, on the metronome ladder. Aim to go from 60 up to 72 beats per minute. Then two notes per beat at 50 beats per minute. Spaced review: for six minutes of this technique time, play the oldest melody or alankar you have not played for a week.",
+  "hi": "पाठ 12 के अलंकार 1 से 10 का रिव्यू, वर्ज़न A और B, मेट्रोनोम सीढ़ी पर। 60 से 72 बीट प्रति मिनट तक का लक्ष्य। फिर 50 बीट प्रति मिनट पर, हर बीट पर दो स्वर। दोहराव: तकनीक के इस समय में से 6 मिनट वह सबसे पुरानी धुन या अलंकार बजाइए, जो आपने एक हफ्ते से नहीं बजाया।"
+ },
+ "Play the two EX-MEL Level 2 melodies you will use for M2, from memory.": {
+  "en": "Play the two level 2 practice melodies you will use for milestone 2, from memory.",
+  "hi": "लेवल 2 की वे दो अभ्यास धुनें, जो आप माइलस्टोन 2 के लिए बजाएँगे, बिना देखे बजाइए।"
+ },
+ "Rehearse M2 items and record them. Weekly reflection.": {
+  "en": "Rehearse the milestone 2 items, and record them. Then the weekly reflection.",
+  "hi": "माइलस्टोन 2 की चीज़ों की तैयारी कीजिए, और उन्हें रिकॉर्ड कीजिए। फिर इस हफ्ते पर एक नज़र।"
+ },
+ "M2 - First melody in time. If M2 fails, the M2 file tells you what to practise for the failed criterion; retest after 5-7 more practice days. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 2: a first melody in time. If you do not pass, the milestone 2 page tells you what to practise for the part you missed. Test again after five to seven more practice days. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 2: ताल में पहली धुन। अगर पास न हों, तो माइलस्टोन 2 का पेज बताएगा कि जो हिस्सा छूटा, उसके लिए क्या अभ्यास करना है। 5 से 7 दिन और अभ्यास करके फिर टेस्ट दीजिए। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M3 test. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 3 test. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 3 का टेस्ट। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M4 test. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 4 test. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 4 का टेस्ट। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M5 test. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 5 test. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 5 का टेस्ट। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M6 test. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 6 test. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 6 का टेस्ट। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M7 test. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 7 test. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 7 का टेस्ट। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M8 test. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 8 test. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 8 का टेस्ट। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M9 test. Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 9 test. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 9 का टेस्ट। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "M10 portfolio check (can be retaken). Record each item in one take (2 attempts allowed). Wait at least a day before scoring with the rubric.": {
+  "en": "Milestone 10, the portfolio check. You can retake it. Record each item in one take. Two attempts are allowed. Wait at least a day before scoring it with the rubric.",
+  "hi": "माइलस्टोन 10, पोर्टफ़ोलियो की जाँच। इसे दोबारा दिया जा सकता है। हर चीज़ एक ही टेक में रिकॉर्ड कीजिए। दो कोशिशें मिलती हैं। रूब्रिक से स्कोर देने से पहले कम से कम एक दिन रुकिए।"
+ },
+ "One item from each earlier module (spaced review first).": {
+  "en": "One item from each earlier module, with spaced review items first.",
+  "hi": "हर पिछले मॉड्यूल से एक चीज़, पहले दोहराव वाली चीज़ें।"
+ },
+ "Listening 10 min.": {
+  "en": "Listening, 10 minutes.",
+  "hi": "सुनना, 10 मिनट।"
+ },
+ "Weekly reflection. Every 4th week: a cumulative review (L01).": {
+  "en": "Weekly reflection. Every fourth week, a full review of everything so far, as in lesson 1.",
+  "hi": "इस हफ्ते पर एक नज़र। हर चौथे हफ्ते, अब तक की हर चीज़ का पूरा रिव्यू, पाठ 1 की तरह।"
+ },
+ "Long tones with the drone.": {
+  "en": "Long tones with the drone.",
+  "hi": "तानपुरे के साथ लंबे स्वर।"
+ },
+ "Module 2B: alankars over the full middle octave, EX-ALK Version C at 60 BPM. Module 2D starts: read L16; half-hole slide drill 5 min with a tuner.": {
+  "en": "Module 2B: alankars over the full middle octave, version C of the alankar exercises, at 60 beats per minute. Module 2D starts: read lesson 16, then the half-hole slide drill with a tuner, 5 minutes.",
+  "hi": "मॉड्यूल 2B: पूरे मध्य सप्तक पर अलंकार, अलंकार अभ्यास का वर्ज़न C, 60 बीट प्रति मिनट पर। मॉड्यूल 2D शुरू: पाठ 16 पढ़िए, फिर ट्यूनर के साथ आधा छेद खिसकाने का अभ्यास, 5 मिनट।"
+ },
+ "Melodies with a tabla loop. New: EX-MEL 3.3 and 3.4.": {
+  "en": "Melodies with a tabla loop. New: practice melodies 3.3 and 3.4.",
+  "hi": "तबले के लूप के साथ धुनें। नई: अभ्यास धुन 3.3 और 3.4।"
+ },
+ "Module 2C (L15): recite and clap keherwa, then dadra, then teentaal, with waves on khali (5 min). EX-EAR Level 3; EX-THY Quiz 2 (rhythm and tala) once this week.": {
+  "en": "Module 2C, lesson 15: recite and clap keherwa, then dadra, then teentaal, with a wave on khali, 5 minutes. Ear training level 3. Once this week, theory quiz 2, on rhythm and tala.",
+  "hi": "मॉड्यूल 2C, पाठ 15: केहरवा, फिर दादरा, फिर तीनताल, बोलकर ताली दीजिए, खाली पर हाथ हिलाइए, 5 मिनट। ईयर ट्रेनिंग लेवल 3। इस हफ्ते एक बार, थ्योरी क्विज़ 2, लय और ताल पर।"
+ },
+ "Record one item, score it with the rubric (L08) and log.": {
+  "en": "Record one item, score it with the rubric from lesson 8, and log it.",
+  "hi": "एक चीज़ रिकॉर्ड कीजिए, पाठ 8 के रूब्रिक से स्कोर दीजिए, और लॉग कीजिए।"
+ },
+ "Long tones. Tuner check: record the Bilawal scale (plan: middle octave, Bilawal).": {
+  "en": "Long tones. Tuner check: record the Bilawal scale, using the plan for the middle octave, Bilawal.",
+  "hi": "लंबे स्वर। ट्यूनर जाँच: बिलावल की सरगम रिकॉर्ड कीजिए, मध्य सप्तक बिलावल वाले प्लान से।"
+ },
+ "Module 2D: half-hole slide drill 5 min with a tuner; `G m G`, `m P m G`; `m` <-> `M` switching. Then the Bilawal (major) scale.": {
+  "en": "Module 2D: half-hole slide drill with a tuner, 5 minutes. Then Ga, Ma, Ga, and Ma, Pa, Ma, Ga. Switch from Ma to tivra Ma and back. Then the Bilawal scale, which is the major scale.",
+  "hi": "मॉड्यूल 2D: ट्यूनर के साथ आधा छेद खिसकाने का अभ्यास, 5 मिनट। फिर ग म ग, और म प म ग। म से तीव्र म पर जाइए और वापस आइए। फिर बिलावल की सरगम, यानी मेजर स्केल।"
+ },
+ "Reward melodies. New: EX-MEL 4.1 and 4.2.": {
+  "en": "Reward melodies. New: practice melodies 4.1 and 4.2.",
+  "hi": "इनाम वाली धुनें। नई: अभ्यास धुन 4.1 और 4.2।"
+ },
+ "Pass EX-EAR Level 3; start Level 4 (all shuddha swaras).": {
+  "en": "Pass ear training level 3, and start level 4, with all the shuddha notes.",
+  "hi": "ईयर ट्रेनिंग लेवल 3 पास कीजिए, और लेवल 4 शुरू कीजिए, सारे शुद्ध स्वरों के साथ।"
+ },
+ "Long tones with the drone; `m` with the tuner.": {
+  "en": "Long tones with the drone, and Ma with the tuner.",
+  "hi": "तानपुरे के साथ लंबे स्वर, और ट्यूनर के साथ म।"
+ },
+ "Module 2D: Bilawal alankars, EX-ALK Version D at 60 BPM; keep `m` within +/-20 cents.": {
+  "en": "Module 2D: Bilawal alankars, version D of the alankar exercises, at 60 beats per minute. Keep Ma within 20 cents.",
+  "hi": "मॉड्यूल 2D: बिलावल के अलंकार, अलंकार अभ्यास का वर्ज़न D, 60 बीट प्रति मिनट पर। म को 20 सेंट के अंदर रखिए।"
+ },
+ "New: EX-MEL 4.3 and 4.4.": {
+  "en": "New: practice melodies 4.3 and 4.4.",
+  "hi": "नई: अभ्यास धुन 4.3 और 4.4।"
+ },
+ "EX-EAR Level 4; 12 notes and intervals in semitones.": {
+  "en": "Ear training level 4. The 12 notes, and intervals counted in semitones.",
+  "hi": "ईयर ट्रेनिंग लेवल 4। 12 स्वर, और सेमीटोन में गिने गए अंतराल।"
+ },
+ "Module 2D gate: `G m P m G` with `m` within +/-20 cents, 5 clean repetitions. Module 2E starts: read L17.": {
+  "en": "Module 2D check: Ga, Ma, Pa, Ma, Ga, with Ma within 20 cents, five clean times. Module 2E starts: read lesson 17.",
+  "hi": "मॉड्यूल 2D की जाँच: ग म प म ग, म 20 सेंट के अंदर, पाँच बार साफ़। मॉड्यूल 2E शुरू: पाठ 17 पढ़िए।"
+ },
+ "New: EX-MEL 4.5. Rehearse the M3 items: alankars over a teentaal loop, melodies over keherwa.": {
+  "en": "New: practice melody 4.5. Rehearse the milestone 3 items: alankars over a teentaal loop, and melodies over keherwa.",
+  "hi": "नई: अभ्यास धुन 4.5। माइलस्टोन 3 की तैयारी: तीनताल के लूप पर अलंकार, और केहरवा पर धुनें।"
+ },
+ "Recite teentaal with claps and waves; count 2 cycles silently and land on sam. EX-EAR Level 4.": {
+  "en": "Recite teentaal with claps and waves. Count two cycles silently, and land on sam. Then ear training level 4.",
+  "hi": "तीनताल बोलिए, ताली और खाली के साथ। दो आवर्तन मन में गिनिए, और सम पर आइए। फिर ईयर ट्रेनिंग लेवल 4।"
+ },
+ "Drone-tuning: hold each note until it locks with the drone.": {
+  "en": "Tuning to the drone: hold each note until it locks in with the drone.",
+  "hi": "तानपुरे से सुर मिलाना: हर स्वर तब तक रोकिए, जब तक वह तानपुरे से पूरा न मिल जाए।"
+ },
+ "Module 2E: bend Sa 20 cents flat and sharp and return to centre; swells (soft-loud-soft) with steady pitch.": {
+  "en": "Module 2E: bend Sa 20 cents flat, then 20 cents sharp, and come back to the centre. Then swells, soft, loud, soft, with steady pitch.",
+  "hi": "मॉड्यूल 2E: सा को 20 सेंट नीचे, फिर 20 सेंट ऊपर ले जाइए, और वापस बीच में आइए। फिर आवाज़ धीमी, तेज़, फिर धीमी कीजिए, सुर स्थिर रखते हुए।"
+ },
+ "Repertoire over a tabla loop (spaced-review items first).": {
+  "en": "Repertoire over a tabla loop, spaced review items first.",
+  "hi": "तबले के लूप पर आपकी धुनें, पहले दोहराव वाली चीज़ें।"
+ },
+ "EX-EAR Level 4; EX-THY Quiz 3 (semitones and intervals).": {
+  "en": "Ear training level 4. Theory quiz 3, on semitones and intervals.",
+  "hi": "ईयर ट्रेनिंग लेवल 4। थ्योरी क्विज़ 3, सेमीटोन और अंतराल पर।"
+ },
+ "Drone-tuning and swells.": {
+  "en": "Tuning to the drone, and swells.",
+  "hi": "तानपुरे से सुर मिलाना, और आवाज़ बढ़ाना-घटाना।"
+ },
+ "Module 2E gate: an 8-s swell on Sa within +/-15 cents.": {
+  "en": "Module 2E check: an eight-second swell on Sa, within 15 cents.",
+  "hi": "मॉड्यूल 2E की जाँच: सा पर 8 सेकंड तक आवाज़ बढ़ाना-घटाना, 15 सेंट के अंदर।"
+ },
+ "Module 2F starts: read L18. Apply the 12 steps to song 1: a traditional bhajan or nursery melody you already know by voice. Use slow-down tools.": {
+  "en": "Module 2F starts: read lesson 18. Use the 12 steps on song 1, a traditional bhajan or nursery tune you already know by voice. Use slow-down tools.",
+  "hi": "मॉड्यूल 2F शुरू: पाठ 18 पढ़िए। गाना 1 पर 12 स्टेप अपनाइए, कोई पारंपरिक भजन या बच्चों का गीत, जो आप पहले से गा सकते हैं। धीमा करने वाले टूल इस्तेमाल कीजिए।"
+ },
+ "EX-EAR Level 4; phrase memory (EAR-09) with your old recordings.": {
+  "en": "Ear training level 4. Phrase memory, with your old recordings.",
+  "hi": "ईयर ट्रेनिंग लेवल 4। अपनी पुरानी रिकॉर्डिंग से टुकड़े याद रखने का अभ्यास।"
+ },
+ "Kalyan and Bilawal alankars (EX-ALK Versions C and D), keeping `m` in tune.": {
+  "en": "Kalyan and Bilawal alankars, versions C and D of the alankar exercises, keeping Ma in tune.",
+  "hi": "कल्याण और बिलावल के अलंकार, अलंकार अभ्यास के वर्ज़न C और D, म को सुर में रखते हुए।"
+ },
+ "Song 1: write out its notation and structure (THY-14). Start the repertoire list in the progress tracker (SNG-08).": {
+  "en": "Song 1: write out its notation and structure. Start the repertoire list in the progress tracker.",
+  "hi": "गाना 1: इसका नोटेशन और बनावट लिखिए। प्रोग्रेस ट्रैकर में अपनी धुनों की लिस्ट शुरू कीजिए।"
+ },
+ "EX-EAR Level 4; phrase memory.": {
+  "en": "Ear training level 4, and phrase memory.",
+  "hi": "ईयर ट्रेनिंग लेवल 4, और टुकड़े याद रखने का अभ्यास।"
+ },
+ "Kalyan and Bilawal alankars at 2 notes per beat.": {
+  "en": "Kalyan and Bilawal alankars, two notes per beat.",
+  "hi": "कल्याण और बिलावल के अलंकार, हर बीट पर दो स्वर।"
+ },
+ "Module 2F, song 2: a melody you have never seen notated, with the 12 steps; slow-down tools (R-A14, R-A17).": {
+  "en": "Module 2F, song 2: a melody you have never seen written down, learned with the 12 steps. Use slow-down tools.",
+  "hi": "मॉड्यूल 2F, गाना 2: ऐसी धुन जिसका नोटेशन आपने कभी नहीं देखा, 12 स्टेप से सीखिए। धीमा करने वाले टूल इस्तेमाल कीजिए।"
+ },
+ "EX-EAR Level 4; prepare M4 dictation material at least 2 days ahead (Method A).": {
+  "en": "Ear training level 4. Prepare the milestone 4 dictation material at least two days ahead, using method A.",
+  "hi": "ईयर ट्रेनिंग लेवल 4। माइलस्टोन 4 के डिक्टेशन की सामग्री कम से कम दो दिन पहले तैयार कीजिए, मेथड A से।"
+ },
+ "Alankars and scales in tala (warm-up for M4).": {
+  "en": "Alankars and scales in tala, as a warm-up for milestone 4.",
+  "hi": "ताल में अलंकार और सरगम, माइलस्टोन 4 के वार्म-अप के लिए।"
+ },
+ "Song 2: write and verify the notation. Rehearse M4 (ear and notation check).": {
+  "en": "Song 2: write the notation and check it. Rehearse milestone 4, the ear and notation check.",
+  "hi": "गाना 2: नोटेशन लिखिए और जाँचिए। माइलस्टोन 4 की तैयारी, सुनने और नोटेशन की जाँच।"
+ },
+ "EX-EAR Level 4 and rhythm dictation (EX-RHY Level 6).": {
+  "en": "Ear training level 4, and rhythm dictation, rhythm exercises level 6.",
+  "hi": "ईयर ट्रेनिंग लेवल 4, और लय का डिक्टेशन, ताल के अभ्यास लेवल 6।"
+ },
+ "Long tones with the drone; octave slurs `.P` <-> `P` (same fingers, faster, narrower air).": {
+  "en": "Long tones with the drone. Octave slurs from lower Pa to middle Pa and back: same fingers, with faster, narrower air.",
+  "hi": "तानपुरे के साथ लंबे स्वर। मंद्र प से मध्य प तक और वापस, जोड़कर: वही उँगलियाँ, हवा तेज़ और पतली।"
+ },
+ "Module 2B: tivra `M` (`OOO OOO`) long tones; `G M G R S`. Module 2A (5 min): repeated notes with breath attacks, then light tonguing, on S, R, G and `.N`; compare with slurred versions.": {
+  "en": "Module 2B: long tones on tivra Ma, with all holes open. Then Ga, tivra Ma, Ga, Re, Sa. Module 2A, 5 minutes: repeated notes with breath attacks, then light tonguing, on Sa, Re, Ga and lower Ni. Compare them with the slurred versions.",
+  "hi": "मॉड्यूल 2B: तीव्र म पर लंबे स्वर, सारे छेद खुले। फिर ग, तीव्र म, ग, रे, सा। मॉड्यूल 2A, 5 मिनट: एक ही स्वर बार-बार, पहले साँस के झटके से, फिर हल्की जीभ से, सा, रे, ग और मंद्र नि पर। इन्हें जोड़कर बजाए स्वरों से मिलाकर सुनिए।"
+ },
+ "Phase 1 melodies and alankars (Versions A and B) with the metronome; keep EX-MEL Levels 1-2 in rotation.": {
+  "en": "Phase 1 melodies and alankars, versions A and B, with the metronome. Keep practice melody levels 1 and 2 in rotation.",
+  "hi": "फ़ेज़ 1 की धुनें और अलंकार, वर्ज़न A और B, मेट्रोनोम के साथ। अभ्यास धुनों के लेवल 1 और 2 बारी-बारी से बजाते रहिए।"
+ },
+ "EX-EAR Level 2 (Sa or Pa against the drone); EX-NOT rhythmic sargam.": {
+  "en": "Ear training level 2, Sa or Pa against the drone. Then rhythmic sargam from the notation exercises.",
+  "hi": "ईयर ट्रेनिंग लेवल 2, तानपुरे के साथ, सा है या प। फिर नोटेशन अभ्यास से लय वाली सरगम।"
+ },
+ "Module 2B: madhya `P`, then `D` (`XXX XXO`, register 2), then `N`. Module 2A: 5 min of tonguing.": {
+  "en": "Module 2B: middle Pa, then Dha with the top five holes closed, in the second register, then Ni. Module 2A: 5 minutes of tonguing.",
+  "hi": "मॉड्यूल 2B: मध्य प, फिर ध, ऊपर के पाँच छेद बंद, दूसरे रजिस्टर में, फिर नि। मॉड्यूल 2A: 5 मिनट जीभ से स्वर अलग करने का अभ्यास।"
+ },
+ "Module 2C (L15): recite and clap keherwa, then dadra, then teentaal, with waves on khali (5 min). EX-EAR Level 2 (5 min).": {
+  "en": "Module 2C, lesson 15: recite and clap keherwa, then dadra, then teentaal, with a wave on khali, 5 minutes. Ear training level 2, 5 minutes.",
+  "hi": "मॉड्यूल 2C, पाठ 15: केहरवा, फिर दादरा, फिर तीनताल, बोलकर ताली दीजिए, खाली पर हाथ हिलाइए, 5 मिनट। ईयर ट्रेनिंग लेवल 2, 5 मिनट।"
+ },
+ "Long tones and octave slurs. Tuner check: record `S R G M P D N S'` and check it (plan: middle octave, Kalyan).": {
+  "en": "Long tones and octave slurs. Tuner check: record Sa, Re, Ga, tivra Ma, Pa, Dha, Ni, upper Sa, and check it, using the plan for the middle octave, Kalyan.",
+  "hi": "लंबे स्वर और सप्तक जोड़ना। ट्यूनर जाँच: सा, रे, ग, तीव्र म, प, ध, नि, तार सा रिकॉर्ड करके जाँचिए, मध्य सप्तक कल्याण वाले प्लान से।"
+ },
+ "Module 2B: `S'` (register 2). Full Kalyan scale `S R G M P D N S'` slowly at 50 BPM.": {
+  "en": "Module 2B: upper Sa, in the second register. Then the full Kalyan scale, Sa, Re, Ga, tivra Ma, Pa, Dha, Ni, upper Sa, slowly at 50 beats per minute.",
+  "hi": "मॉड्यूल 2B: तार सा, दूसरे रजिस्टर में। फिर कल्याण की पूरी सरगम, सा, रे, ग, तीव्र म, प, ध, नि, तार सा, धीरे से, 50 बीट प्रति मिनट पर।"
+ },
+ "From this week, play all melodies over a keherwa or teentaal loop. New: EX-MEL 3.1 and 3.2.": {
+  "en": "From this week, play all melodies over a keherwa or teentaal loop. New: practice melodies 3.1 and 3.2.",
+  "hi": "इस हफ्ते से, सारी धुनें केहरवा या तीनताल के लूप पर बजाइए। नई: अभ्यास धुन 3.1 और 3.2।"
+ },
+ "Module 2C (L15): recite and clap keherwa, then dadra, then teentaal, with waves on khali (5 min). EX-EAR Level 3 (S R G P).": {
+  "en": "Module 2C, lesson 15: recite and clap keherwa, then dadra, then teentaal, with a wave on khali, 5 minutes. Ear training level 3, with Sa, Re, Ga and Pa.",
+  "hi": "मॉड्यूल 2C, पाठ 15: केहरवा, फिर दादरा, फिर तीनताल, बोलकर ताली दीजिए, खाली पर हाथ हिलाइए, 5 मिनट। ईयर ट्रेनिंग लेवल 3, सा, रे, ग और प के साथ।"
+ },
+ "Repertoire rotation: spaced-review items first.": {
+  "en": "Repertoire rotation, spaced review items first.",
+  "hi": "आपकी धुनें बारी-बारी से, पहले दोहराव वाली चीज़ें।"
+ },
+ "Listening 15 min.": {
+  "en": "Listening, 15 minutes.",
+  "hi": "सुनना, 15 मिनट।"
+ },
+ "Weekly reflection.": {
+  "en": "Weekly reflection.",
+  "hi": "इस हफ्ते पर एक नज़र।"
+ },
+ "Long tones with the drone, mandra and madhya; swells twice a week.": {
+  "en": "Long tones with the drone, in the lower and middle octaves. Swells twice a week.",
+  "hi": "तानपुरे के साथ लंबे स्वर, मंद्र और मध्य सप्तक में। हफ्ते में दो बार आवाज़ बढ़ाना-घटाना।"
+ },
+ "Middle-octave consolidation: EX-ALK Versions C-penta and D at 60-72 BPM.": {
+  "en": "Middle octave consolidation: the pentatonic version C, and version D, of the alankar exercises, at 60 to 72 beats per minute.",
+  "hi": "मध्य सप्तक को पक्का करना: अलंकार अभ्यास का पाँच स्वरों वाला वर्ज़न C, और वर्ज़न D, 60 से 72 बीट प्रति मिनट पर।"
+ },
+ "Module 3A: what a raga is (L19). Listening: Bhupali recordings, short ones first.": {
+  "en": "Module 3A: what a raga is, lesson 19. Listening: Bhupali recordings, short ones first.",
+  "hi": "मॉड्यूल 3A: राग क्या है, पाठ 19। सुनना: भूपाली की रिकॉर्डिंग, पहले छोटी वाली।"
+ },
+ "EX-EAR Level 4 to pass, then Level 5 (intervals). Dadra and keherwa songs; identify the tala by ear (EX-RHY Level 7).": {
+  "en": "Pass ear training level 4, then level 5, intervals. Dadra and keherwa songs: name the tala by ear, rhythm exercises level 7.",
+  "hi": "ईयर ट्रेनिंग लेवल 4 पास कीजिए, फिर लेवल 5, अंतराल। दादरा और केहरवा के गाने: सुनकर ताल पहचानिए, ताल के अभ्यास लेवल 7।"
+ },
+ "Repertoire review: Phase 2 songs and EX-MEL Levels 3-4 from memory.": {
+  "en": "Repertoire review: phase 2 songs, and practice melody levels 3 and 4, from memory.",
+  "hi": "धुनों का रिव्यू: फ़ेज़ 2 के गाने, और अभ्यास धुनों के लेवल 3 और 4, बिना देखे।"
+ },
+ "Improvisation: EX-IMP Level 1 (call and response) and Level 2 (few notes over a drone).": {
+  "en": "Improvisation exercises: level 1, call and response, and level 2, a few notes over a drone.",
+  "hi": "इम्प्रोवाइज़ेशन अभ्यास: लेवल 1, सवाल-जवाब, और लेवल 2, तानपुरे पर कुछ ही स्वरों से बजाना।"
+ },
+ "Long tones with the drone, rotating mandra, madhya and taar; swells twice a week.": {
+  "en": "Long tones with the drone, rotating through the lower, middle and upper octaves. Swells twice a week.",
+  "hi": "तानपुरे के साथ लंबे स्वर, बारी-बारी से मंद्र, मध्य और तार सप्तक में। हफ्ते में दो बार आवाज़ बढ़ाना-घटाना।"
+ },
+ "Module 3B, taar saptak (L22): build your own verified upper-octave chart; octave leaps; two-octave alankars (EX-ALK Version E, formula 1) at 60 BPM.": {
+  "en": "Module 3B, the upper octave, lesson 22: build your own checked chart of upper octave fingerings. Octave leaps. Two-octave alankars, version E of the alankar exercises, formula 1, at 60 beats per minute.",
+  "hi": "मॉड्यूल 3B, तार सप्तक, पाठ 22: तार सप्तक की उँगलियों का अपना जाँचा हुआ चार्ट बनाइए। सप्तक की छलाँग। दो सप्तक के अलंकार, अलंकार अभ्यास का वर्ज़न E, फ़ॉर्मूला 1, 60 बीट प्रति मिनट पर।"
+ },
+ "Raga Bhupali (L20): aroh, avroh and pakad; swar vistar phrases slowly with the drone.": {
+  "en": "Raga Bhupali, lesson 20: aroh, avroh and pakad. Then swar vistar phrases, slowly, with the drone.",
+  "hi": "राग भूपाली, पाठ 20: आरोह, अवरोह और पकड़। फिर तानपुरे के साथ धीरे-धीरे स्वर विस्तार।"
+ },
+ "EX-MEL 5.1 (taar saptak) and repertoire review.": {
+  "en": "Practice melody 5.1, in the upper octave, and repertoire review.",
+  "hi": "अभ्यास धुन 5.1, तार सप्तक में, और धुनों का रिव्यू।"
+ },
+ "Module 3B, taar saptak (L22): build your own verified upper-octave chart; octave leaps; two-octave alankars (EX-ALK Version E, formula 2) at 60 BPM.": {
+  "en": "Module 3B, the upper octave, lesson 22: build your own checked chart of upper octave fingerings. Octave leaps. Two-octave alankars, version E of the alankar exercises, formula 2, at 60 beats per minute.",
+  "hi": "मॉड्यूल 3B, तार सप्तक, पाठ 22: तार सप्तक की उँगलियों का अपना जाँचा हुआ चार्ट बनाइए। सप्तक की छलाँग। दो सप्तक के अलंकार, अलंकार अभ्यास का वर्ज़न E, फ़ॉर्मूला 2, 60 बीट प्रति मिनट पर।"
+ },
+ "Long tones in three octaves; tuner check of the upper octave (plan: upper octave).": {
+  "en": "Long tones in three octaves. Tuner check of the upper octave, using the upper octave plan.",
+  "hi": "तीनों सप्तकों में लंबे स्वर। तार सप्तक की ट्यूनर जाँच, तार सप्तक वाले प्लान से।"
+ },
+ "Module 3B, taar saptak (L22): build your own verified upper-octave chart; octave leaps; two-octave alankars (EX-ALK Version E, formula 3) at 60 BPM.": {
+  "en": "Module 3B, the upper octave, lesson 22: build your own checked chart of upper octave fingerings. Octave leaps. Two-octave alankars, version E of the alankar exercises, formula 3, at 60 beats per minute.",
+  "hi": "मॉड्यूल 3B, तार सप्तक, पाठ 22: तार सप्तक की उँगलियों का अपना जाँचा हुआ चार्ट बनाइए। सप्तक की छलाँग। दो सप्तक के अलंकार, अलंकार अभ्यास का वर्ज़न E, फ़ॉर्मूला 3, 60 बीट प्रति मिनट पर।"
+ },
+ "Bhupali: the L20 practice composition in teentaal with a tabla loop.": {
+  "en": "Bhupali: the practice composition from lesson 20, in teentaal, with a tabla loop.",
+  "hi": "भूपाली: पाठ 20 की अभ्यास बंदिश, तीनताल में, तबले के लूप के साथ।"
+ },
+ "Module 3C: song A, a bhajan, learned by ear with the 12 steps; check its range first.": {
+  "en": "Module 3C: song A, a bhajan, learned by ear with the 12 steps. Check its range first.",
+  "hi": "मॉड्यूल 3C: गाना A, एक भजन, 12 स्टेप से सुनकर सीखिए। पहले देखिए कि यह कितना ऊपर और कितना नीचे जाता है।"
+ },
+ "Module 3B, taar saptak (L22): build your own verified upper-octave chart; octave leaps; two-octave alankars (EX-ALK Version E, formula 5) at 60 BPM.": {
+  "en": "Module 3B, the upper octave, lesson 22: build your own checked chart of upper octave fingerings. Octave leaps. Two-octave alankars, version E of the alankar exercises, formula 5, at 60 beats per minute.",
+  "hi": "मॉड्यूल 3B, तार सप्तक, पाठ 22: तार सप्तक की उँगलियों का अपना जाँचा हुआ चार्ट बनाइए। सप्तक की छलाँग। दो सप्तक के अलंकार, अलंकार अभ्यास का वर्ज़न E, फ़ॉर्मूला 5, 60 बीट प्रति मिनट पर।"
+ },
+ "M5 rehearsal: explain Bhupali, aroh/avroh, pakad, 3 min swar vistar, composition with the loop.": {
+  "en": "Milestone 5 rehearsal: explain Bhupali, its aroh and avroh, and its pakad. Then three minutes of swar vistar, and the composition with the loop.",
+  "hi": "माइलस्टोन 5 की तैयारी: भूपाली समझाइए, इसका आरोह, अवरोह और पकड़। फिर 3 मिनट स्वर विस्तार, और लूप के साथ बंदिश।"
+ },
+ "Module 3C: song B, a film song, by ear; write and verify the notation; play along with the recording (pitch-shift it if needed).": {
+  "en": "Module 3C: song B, a film song, by ear. Write the notation and check it. Play along with the recording, and shift its pitch if needed.",
+  "hi": "मॉड्यूल 3C: गाना B, एक फ़िल्मी गाना, सुनकर। नोटेशन लिखिए और जाँचिए। रिकॉर्डिंग के साथ बजाइए, ज़रूरत हो तो उसका सुर बदल लीजिए।"
+ },
+ "Module 3B (octave pairs within +/-15 cents) and Module 3D starts: meend (L23).": {
+  "en": "Module 3B: octave pairs within 15 cents. Module 3D starts: meend, lesson 23.",
+  "hi": "मॉड्यूल 3B: सप्तक के जोड़े, 15 सेंट के अंदर। मॉड्यूल 3D शुरू: मींड, पाठ 23।"
+ },
+ "Bhupali: swar vistar and the composition, adding meend where L23 allows.": {
+  "en": "Bhupali: swar vistar and the composition, adding meend where lesson 23 allows.",
+  "hi": "भूपाली: स्वर विस्तार और बंदिश, जहाँ पाठ 23 कहता है वहाँ मींड जोड़िए।"
+ },
+ "EX-EAR Level 5, then Level 7 with 8-note melodies; Rupak and Jhaptaal recitation (EX-RHY Level 5).": {
+  "en": "Ear training level 5, then level 7 with eight-note melodies. Rupak and Jhaptaal recitation, rhythm exercises level 5.",
+  "hi": "ईयर ट्रेनिंग लेवल 5, फिर लेवल 7, आठ स्वरों की धुनों के साथ। रूपक और झपताल बोलना, ताल के अभ्यास लेवल 5।"
+ },
+ "EX-EAR Level 5, then Level 7 with 8-note melodies; Rupak and Jhaptaal recitation (EX-RHY Level 5). Module 3F (L27): transcribe a printed bandish into ASCII; fix 3 errors in an online song notation.": {
+  "en": "Ear training level 5, then level 7 with eight-note melodies. Rupak and Jhaptaal recitation, rhythm exercises level 5. Module 3F, lesson 27: write out a printed bandish in plain text notation. Then fix three errors in a song notation from the internet.",
+  "hi": "ईयर ट्रेनिंग लेवल 5, फिर लेवल 7, आठ स्वरों की धुनों के साथ। रूपक और झपताल बोलना, ताल के अभ्यास लेवल 5। मॉड्यूल 3F, पाठ 27: किसी छपी हुई बंदिश को सादे टेक्स्ट नोटेशन में लिखिए। फिर इंटरनेट पर किसी गाने के नोटेशन की 3 गलतियाँ ठीक कीजिए।"
+ },
+ "Module 3D: meend (L23): descending, ascending, over two notes; add meend to your bhajans.": {
+  "en": "Module 3D, meend, lesson 23: falling, rising, and across two notes. Add meend to your bhajans.",
+  "hi": "मॉड्यूल 3D, मींड, पाठ 23: नीचे की ओर, ऊपर की ओर, और दो स्वरों के पार। अपने भजनों में मींड जोड़िए।"
+ },
+ "Module 3E, Raga Yaman (L21): characteristic movements `.N R G` and `M D N`; listening.": {
+  "en": "Module 3E, Raga Yaman, lesson 21: its typical movements, lower Ni, Re, Ga, and tivra Ma, Dha, Ni. Then listening.",
+  "hi": "मॉड्यूल 3E, राग यमन, पाठ 21: इसका खास चलन, मंद्र नि, रे, ग, और तीव्र म, ध, नि। फिर सुनना।"
+ },
+ "M6 song: a song you have never seen notated, learned by ear end to end, with the worksheet.": {
+  "en": "Milestone 6 song: a song you have never seen written down, learned by ear from start to end, with the worksheet.",
+  "hi": "माइलस्टोन 6 का गाना: ऐसा गाना जिसका नोटेशन आपने कभी नहीं देखा, शुरू से अंत तक सुनकर सीखिए, वर्कशीट के साथ।"
+ },
+ "Module 3D: kan, khatka and murki (L24). An ornament goes into a piece only after it passes its isolated drill.": {
+  "en": "Module 3D: kan, khatka and murki, lesson 24. An ornament goes into a piece only after it passes its own separate drill.",
+  "hi": "मॉड्यूल 3D: कण, खटका और मुरकी, पाठ 24। कोई भी सजावट किसी धुन में तभी डालिए, जब वह अपने अलग अभ्यास में पास हो जाए।"
+ },
+ "Yaman: swar vistar phrases (L21 section 5).": {
+  "en": "Yaman: swar vistar phrases, lesson 21, section 5.",
+  "hi": "यमन: स्वर विस्तार, पाठ 21, भाग 5।"
+ },
+ "Improvisation (L29) and composition (L30): improvise over the drone; write one 16-beat original melody every 2 weeks (EX-IMP C1, C2).": {
+  "en": "Improvisation, lesson 29, and composition, lesson 30: improvise over the drone. Write one original 16-beat melody every two weeks, composition prompts 1 and 2.",
+  "hi": "इम्प्रोवाइज़ेशन, पाठ 29, और रचना, पाठ 30: तानपुरे पर इम्प्रोवाइज़ कीजिए। हर दो हफ्ते में 16 बीट की अपनी एक धुन बनाइए, रचना के सुझाव 1 और 2 से।"
+ },
+ "Next songs from Stage 2: one every 2-3 weeks, alternating bhajan and film song; add meend and kan.": {
+  "en": "Next songs from stage 2: one every two to three weeks, switching between a bhajan and a film song. Add meend and kan.",
+  "hi": "स्टेज 2 के अगले गाने: हर 2 से 3 हफ्ते में एक, बारी-बारी से भजन और फ़िल्मी गाना। मींड और कण जोड़िए।"
+ },
+ "Yaman: the L21 practice composition with a tabla loop.": {
+  "en": "Yaman: the practice composition from lesson 21, with a tabla loop.",
+  "hi": "यमन: पाठ 21 की अभ्यास बंदिश, तबले के लूप के साथ।"
+ },
+ "EX-EAR Level 7 up to 16-note melodies; phrase memory with raga phrases; Western meters and syncopation (EX-RHY Level 4).": {
+  "en": "Ear training level 7, up to 16-note melodies. Phrase memory with raga phrases. Western time signatures and syncopation, rhythm exercises level 4.",
+  "hi": "ईयर ट्रेनिंग लेवल 7, 16 स्वरों तक की धुनें। राग के टुकड़ों से याद रखने का अभ्यास। पश्चिमी ताल और सिंकोपेशन, ताल के अभ्यास लेवल 4।"
+ },
+ "Ornaments in context: meend, kan and murki in Yaman and Bhupali phrases and in your songs; upper-octave intonation.": {
+  "en": "Ornaments in context: meend, kan and murki in Yaman and Bhupali phrases, and in your songs. Also upper octave tuning.",
+  "hi": "सजावट असली संगीत में: यमन और भूपाली के टुकड़ों में, और अपने गानों में, मींड, कण और मुरकी। साथ में तार सप्तक का सुर।"
+ },
+ "Yaman: 2-3 minutes of slow exploration with meend and kan in the right places.": {
+  "en": "Yaman: two to three minutes of slow exploration, with meend and kan in the right places.",
+  "hi": "यमन: 2 से 3 मिनट धीरे-धीरे राग खोलिए, सही जगहों पर मींड और कण के साथ।"
+ },
+ "Module 3H (optional): Raga Durga, if 3A-3E are on track: aroh, avroh, pakad, short composition.": {
+  "en": "Module 3H, optional: Raga Durga, if modules 3A to 3E are on track. Aroh, avroh, pakad, and a short composition.",
+  "hi": "मॉड्यूल 3H, चाहें तो: राग दुर्गा, अगर मॉड्यूल 3A से 3E ठीक चल रहे हैं। आरोह, अवरोह, पकड़, और एक छोटी बंदिश।"
+ },
+ "Recital programme (M7): Yaman (alap-style opening and composition) and the Bhupali composition; mock performances (L35).": {
+  "en": "Recital programme for milestone 7: Yaman, with an alap-style opening and the composition, and the Bhupali composition. Do mock performances, as in lesson 35.",
+  "hi": "माइलस्टोन 7 का कार्यक्रम: यमन, आलाप जैसी शुरुआत और बंदिश के साथ, और भूपाली की बंदिश। पाठ 35 की तरह प्रस्तुति का अभ्यास कीजिए।"
+ },
+ "Recital pieces: the bhajan with meend and the film song learned by ear, from memory.": {
+  "en": "Recital pieces, from memory: the bhajan with meend, and the film song you learned by ear.",
+  "hi": "कार्यक्रम की धुनें, बिना देखे: मींड वाला भजन, और सुनकर सीखा फ़िल्मी गाना।"
+ },
+ "Long tones in three octaves.": {
+  "en": "Long tones in three octaves.",
+  "hi": "तीनों सप्तकों में लंबे स्वर।"
+ },
+ "Spaced repertoire review: oldest items first.": {
+  "en": "Spaced repertoire review, oldest items first.",
+  "hi": "धुनों का दोहराव, पहले सबसे पुरानी।"
+ },
+ "Listening.": {
+  "en": "Listening.",
+  "hi": "सुनना।"
+ },
+ "Weekly reflection; a full rubric recording once a week.": {
+  "en": "Weekly reflection. Once a week, a full recording scored with the rubric.",
+  "hi": "इस हफ्ते पर एक नज़र। हफ्ते में एक बार, पूरी रिकॉर्डिंग, रूब्रिक से स्कोर के साथ।"
+ },
+ "Long tones and swells in all three octaves; komal notes against the drone. Tuner check of the half-holes (plan: half-holes).": {
+  "en": "Long tones and swells in all three octaves. Komal notes against the drone. Tuner check of the half-holes, using the half-holes plan.",
+  "hi": "तीनों सप्तकों में लंबे स्वर और आवाज़ बढ़ाना-घटाना। तानपुरे के साथ कोमल स्वर। आधे छेदों की ट्यूनर जाँच, आधे छेद वाले प्लान से।"
+ },
+ "Module 4A, komal swaras (L25): build your verified komal chart; chromatic scale `S r R g G m M P d D n N S'` and back down, 1 note per beat at 50 BPM, with the tuner.": {
+  "en": "Module 4A, komal notes, lesson 25: build your own checked chart of komal fingerings. Then the chromatic scale, Sa, komal Re, Re, komal Ga, Ga, Ma, tivra Ma, Pa, komal Dha, Dha, komal Ni, Ni, upper Sa, and back down. One note per beat at 50 beats per minute, with the tuner.",
+  "hi": "मॉड्यूल 4A, कोमल स्वर, पाठ 25: कोमल स्वरों की उँगलियों का अपना जाँचा हुआ चार्ट बनाइए। फिर बारहों स्वर: सा, कोमल रे, रे, कोमल ग, ग, म, तीव्र म, प, कोमल ध, ध, कोमल नि, नि, तार सा, और वापस नीचे। ट्यूनर के साथ, 50 बीट प्रति मिनट पर, हर बीट पर एक स्वर।"
+ },
+ "Module 4B, Raga Khamaj: aroh, avroh and pakad; listening; swar vistar; one composition.": {
+  "en": "Module 4B, Raga Khamaj: aroh, avroh and pakad. Listening, swar vistar, and one composition.",
+  "hi": "मॉड्यूल 4B, राग खमाज: आरोह, अवरोह और पकड़। सुनना, स्वर विस्तार, और एक बंदिश।"
+ },
+ "EX-EAR Level 6 (komal and tivra).": {
+  "en": "Ear training level 6, komal and tivra notes.",
+  "hi": "ईयर ट्रेनिंग लेवल 6, कोमल और तीव्र स्वर।"
+ },
+ "Record and log.": {
+  "en": "Record and log.",
+  "hi": "रिकॉर्ड कीजिए और लॉग कीजिए।"
+ },
+ "Khamaj: listening and swar vistar.": {
+  "en": "Khamaj: listening and swar vistar.",
+  "hi": "खमाज: सुनना और स्वर विस्तार।"
+ },
+ "Khamaj: a composition from the raga card's practice steps, with a tabla loop.": {
+  "en": "Khamaj: a composition from the practice steps on the raga card, with a tabla loop.",
+  "hi": "खमाज: राग कार्ड के अभ्यास स्टेप से एक बंदिश, तबले के लूप के साथ।"
+ },
+ "Song by ear (song suggestions, Stage 2 then Stage 3), with the 12 steps.": {
+  "en": "A song by ear, from the song suggestions, stage 2 then stage 3, with the 12 steps.",
+  "hi": "सुनकर एक गाना, गानों के सुझावों से, पहले स्टेज 2 फिर स्टेज 3, 12 स्टेप के साथ।"
+ },
+ "Song by ear: continue the current song; play along with the recording.": {
+  "en": "Song by ear: continue the current song, and play along with the recording.",
+  "hi": "सुनकर गाना: अभी वाला गाना जारी रखिए, और रिकॉर्डिंग के साथ बजाइए।"
+ },
+ "Composition and improvisation: EX-IMP Level 4 (raga-based) and composition prompts C2-C3 (L30).": {
+  "en": "Composition and improvisation: improvisation exercises level 4, based on raga, and composition prompts 2 and 3, from lesson 30.",
+  "hi": "रचना और इम्प्रोवाइज़ेशन: इम्प्रोवाइज़ेशन अभ्यास लेवल 4, राग पर आधारित, और रचना के सुझाव 2 और 3, पाठ 30 से।"
+ },
+ "Module 4B, Raga Kafi: aroh, avroh and pakad; listening; swar vistar; one composition.": {
+  "en": "Module 4B, Raga Kafi: aroh, avroh and pakad. Listening, swar vistar, and one composition.",
+  "hi": "मॉड्यूल 4B, राग काफ़ी: आरोह, अवरोह और पकड़। सुनना, स्वर विस्तार, और एक बंदिश।"
+ },
+ "Kafi: listening and swar vistar.": {
+  "en": "Kafi: listening and swar vistar.",
+  "hi": "काफ़ी: सुनना और स्वर विस्तार।"
+ },
+ "Kafi: a composition from the raga card's practice steps, with a tabla loop.": {
+  "en": "Kafi: a composition from the practice steps on the raga card, with a tabla loop.",
+  "hi": "काफ़ी: राग कार्ड के अभ्यास स्टेप से एक बंदिश, तबले के लूप के साथ।"
+ },
+ "Module 4D: Western notation and theory (L28); EX-NOT Levels 6-7; EX-THY Quiz 6.": {
+  "en": "Module 4D: Western notation and theory, lesson 28. Notation exercises levels 6 and 7. Theory quiz 6.",
+  "hi": "मॉड्यूल 4D: पश्चिमी नोटेशन और थ्योरी, पाठ 28। नोटेशन अभ्यास लेवल 6 और 7। थ्योरी क्विज़ 6।"
+ },
+ "Module 4C, keys and transposition (L26): play known melodies with Pa as Sa and with Ma as Sa; transpose a notation.": {
+  "en": "Module 4C, keys and transposition, lesson 26: play melodies you know with Pa as Sa, and with Ma as Sa. Transpose a notation.",
+  "hi": "मॉड्यूल 4C, स्केल बदलना, पाठ 26: जानी-पहचानी धुनें प को सा मानकर, और म को सा मानकर बजाइए। एक नोटेशन को दूसरे सुर में लिखिए।"
+ },
+ "Module 4B, Raga Bhimpalasi: aroh, avroh and pakad; listening; swar vistar; one composition.": {
+  "en": "Module 4B, Raga Bhimpalasi: aroh, avroh and pakad. Listening, swar vistar, and one composition.",
+  "hi": "मॉड्यूल 4B, राग भीमपलासी: आरोह, अवरोह और पकड़। सुनना, स्वर विस्तार, और एक बंदिश।"
+ },
+ "Bhimpalasi: listening and swar vistar.": {
+  "en": "Bhimpalasi: listening and swar vistar.",
+  "hi": "भीमपलासी: सुनना और स्वर विस्तार।"
+ },
+ "Bhimpalasi: a composition from the raga card's practice steps, with a tabla loop.": {
+  "en": "Bhimpalasi: a composition from the practice steps on the raga card, with a tabla loop.",
+  "hi": "भीमपलासी: राग कार्ड के अभ्यास स्टेप से एक बंदिश, तबले के लूप के साथ।"
+ },
+ "Long tones and swells in all three octaves; komal notes against the drone.": {
+  "en": "Long tones and swells in all three octaves. Komal notes against the drone.",
+  "hi": "तीनों सप्तकों में लंबे स्वर और आवाज़ बढ़ाना-घटाना। तानपुरे के साथ कोमल स्वर।"
+ },
+ "Speed and articulation: double tonguing for fast passages (L13, FNG-12); alankars at 2 and 4 notes per beat (layakari).": {
+  "en": "Speed and articulation: double tonguing for fast passages, lesson 13. Alankars at two and four notes per beat, which is layakari.",
+  "hi": "रफ़्तार और साफ़ बजाना: तेज़ हिस्सों के लिए डबल टंगिंग, पाठ 13। हर बीट पर दो और चार स्वरों में अलंकार, यानी लयकारी।"
+ },
+ "Module 4E, alap (L31): Yaman first, then Bhupali, then Bhimpalasi; build it in stages and check it against the raga rules checklist.": {
+  "en": "Module 4E, alap, lesson 31: Yaman first, then Bhupali, then Bhimpalasi. Build it in stages, and check it against the raga rules checklist.",
+  "hi": "मॉड्यूल 4E, आलाप, पाठ 31: पहले यमन, फिर भूपाली, फिर भीमपलासी। इसे धीरे-धीरे हिस्सों में बनाइए, और राग के नियमों की चेकलिस्ट से जाँचिए।"
+ },
+ "Module 4B, Raga Bageshri: aroh, avroh and pakad; listening; swar vistar; one composition.": {
+  "en": "Module 4B, Raga Bageshri: aroh, avroh and pakad. Listening, swar vistar, and one composition.",
+  "hi": "मॉड्यूल 4B, राग बागेश्री: आरोह, अवरोह और पकड़। सुनना, स्वर विस्तार, और एक बंदिश।"
+ },
+ "Module 4E, alap (L31): Yaman first, then Bhupali, then Bageshri; build it in stages and check it against the raga rules checklist.": {
+  "en": "Module 4E, alap, lesson 31: Yaman first, then Bhupali, then Bageshri. Build it in stages, and check it against the raga rules checklist.",
+  "hi": "मॉड्यूल 4E, आलाप, पाठ 31: पहले यमन, फिर भूपाली, फिर बागेश्री। इसे धीरे-धीरे हिस्सों में बनाइए, और राग के नियमों की चेकलिस्ट से जाँचिए।"
+ },
+ "Module 4F (L32): a published bandish, taans and tihais landing on sam with a teentaal loop; compose one bandish of your own (EX-IMP C3).": {
+  "en": "Module 4F, lesson 32: a published bandish, with taans and tihais that land on sam, over a teentaal loop. Compose one bandish of your own, composition prompt 3.",
+  "hi": "मॉड्यूल 4F, पाठ 32: एक छपी हुई बंदिश, ऐसी तानों और तिहाइयों के साथ जो सम पर आएँ, तीनताल के लूप पर। अपनी खुद की एक बंदिश बनाइए, रचना का सुझाव 3।"
+ },
+ "Module 4H, accompaniment (L34): accompany a singer (live or a recorded vocal) in a bhajan or film song; match their Sa; play only where nobody sings.": {
+  "en": "Module 4H, accompaniment, lesson 34: accompany a singer, live or recorded, in a bhajan or film song. Match their Sa, and play only where nobody is singing.",
+  "hi": "मॉड्यूल 4H, संगत, पाठ 34: किसी गायक के साथ संगत कीजिए, सामने या रिकॉर्डिंग में, किसी भजन या फ़िल्मी गाने में। उनका सा मिलाइए, और सिर्फ़ वहाँ बजाइए जहाँ कोई गा नहीं रहा।"
+ },
+ "Module 4H, style (L36) and performance (L35): a folk tune and a dhun in folk style; 3 mock performances before M9.": {
+  "en": "Module 4H, style, lesson 36, and performance, lesson 35: a folk tune, and a dhun in folk style. Three mock performances before milestone 9.",
+  "hi": "मॉड्यूल 4H, शैली, पाठ 36, और प्रस्तुति, पाठ 35: एक लोक धुन, और लोक शैली में एक धुन। माइलस्टोन 9 से पहले तीन बार प्रस्तुति का अभ्यास।"
+ },
+ "Composition and improvisation: EX-IMP Level 4 (raga-based) and composition prompts C2-C3 (L30). From month 15, EX-IMP Levels 5-6.": {
+  "en": "Composition and improvisation: improvisation exercises level 4, based on raga, and composition prompts 2 and 3, from lesson 30. From month 15, improvisation exercises levels 5 and 6.",
+  "hi": "रचना और इम्प्रोवाइज़ेशन: इम्प्रोवाइज़ेशन अभ्यास लेवल 4, राग पर आधारित, और रचना के सुझाव 2 और 3, पाठ 30 से। 15वें महीने से, इम्प्रोवाइज़ेशन अभ्यास लेवल 5 और 6।"
+ },
+ "Module 4B, Raga Shivranjani: aroh, avroh and pakad; listening; swar vistar; one composition.": {
+  "en": "Module 4B, Raga Shivranjani: aroh, avroh and pakad. Listening, swar vistar, and one composition.",
+  "hi": "मॉड्यूल 4B, राग शिवरंजनी: आरोह, अवरोह और पकड़। सुनना, स्वर विस्तार, और एक बंदिश।"
+ },
+ "Module 4E, alap (L31): Yaman first, then Bhupali, then Shivranjani; build it in stages and check it against the raga rules checklist.": {
+  "en": "Module 4E, alap, lesson 31: Yaman first, then Bhupali, then Shivranjani. Build it in stages, and check it against the raga rules checklist.",
+  "hi": "मॉड्यूल 4E, आलाप, पाठ 31: पहले यमन, फिर भूपाली, फिर शिवरंजनी। इसे धीरे-धीरे हिस्सों में बनाइए, और राग के नियमों की चेकलिस्ट से जाँचिए।"
+ },
+ "Module 4G: gamak, andolan and advanced ornaments (L33).": {
+  "en": "Module 4G: gamak, andolan and advanced ornaments, lesson 33.",
+  "hi": "मॉड्यूल 4G: गमक, आंदोलन और ऊँचे स्तर की सजावटें, पाठ 33।"
+ },
+ "EX-EAR Levels 8-9 (major or minor; raga recognition); EX-RHY Levels 8-9 (layakari, tihai).": {
+  "en": "Ear training levels 8 and 9, major or minor, and raga recognition. Rhythm exercises levels 8 and 9, layakari and tihai.",
+  "hi": "ईयर ट्रेनिंग लेवल 8 और 9, मेजर या माइनर, और राग पहचानना। ताल के अभ्यास लेवल 8 और 9, लयकारी और तिहाई।"
+ },
+ "Module 4B, Raga Pahadi: aroh, avroh and pakad; listening; swar vistar; one composition.": {
+  "en": "Module 4B, Raga Pahadi: aroh, avroh and pakad. Listening, swar vistar, and one composition.",
+  "hi": "मॉड्यूल 4B, राग पहाड़ी: आरोह, अवरोह और पकड़। सुनना, स्वर विस्तार, और एक बंदिश।"
+ },
+ "Module 4E, alap (L31): Yaman first, then Bhupali, then Pahadi; build it in stages and check it against the raga rules checklist.": {
+  "en": "Module 4E, alap, lesson 31: Yaman first, then Bhupali, then Pahadi. Build it in stages, and check it against the raga rules checklist.",
+  "hi": "मॉड्यूल 4E, आलाप, पाठ 31: पहले यमन, फिर भूपाली, फिर पहाड़ी। इसे धीरे-धीरे हिस्सों में बनाइए, और राग के नियमों की चेकलिस्ट से जाँचिए।"
+ },
+ "Module 4B, Raga Hamsadhwani: aroh, avroh and pakad; listening; swar vistar; one composition.": {
+  "en": "Module 4B, Raga Hamsadhwani: aroh, avroh and pakad. Listening, swar vistar, and one composition.",
+  "hi": "मॉड्यूल 4B, राग हंसध्वनि: आरोह, अवरोह और पकड़। सुनना, स्वर विस्तार, और एक बंदिश।"
+ },
+ "Module 4E, alap (L31): Yaman first, then Bhupali, then Hamsadhwani; build it in stages and check it against the raga rules checklist.": {
+  "en": "Module 4E, alap, lesson 31: Yaman first, then Bhupali, then Hamsadhwani. Build it in stages, and check it against the raga rules checklist.",
+  "hi": "मॉड्यूल 4E, आलाप, पाठ 31: पहले यमन, फिर भूपाली, फिर हंसध्वनि। इसे धीरे-धीरे हिस्सों में बनाइए, और राग के नियमों की चेकलिस्ट से जाँचिए।"
+ },
+ "M9 preparation: 15-minute raga presentation (alap, bandish with 5 taans and 2 tihais, ending); mock performances.": {
+  "en": "Milestone 9 preparation: a 15-minute raga presentation, with alap, a bandish with five taans and two tihais, and an ending. Mock performances.",
+  "hi": "माइलस्टोन 9 की तैयारी: 15 मिनट की राग प्रस्तुति, आलाप, 5 तानों और 2 तिहाइयों वाली बंदिश, और समापन के साथ। प्रस्तुति का अभ्यास।"
+ },
+ "Spaced repertoire review.": {
+  "en": "Spaced repertoire review.",
+  "hi": "धुनों का दोहराव।"
+ },
+ "Weekly reflection. Quarterly: a performance. Yearly: re-read the knowledge tree and mark weak domains.": {
+  "en": "Weekly reflection. Every three months, a performance. Every year, re-read the knowledge tree and mark your weak areas.",
+  "hi": "इस हफ्ते पर एक नज़र। हर तीन महीने में एक प्रस्तुति। हर साल, नॉलेज ट्री फिर से पढ़िए, और अपने कमज़ोर हिस्सों पर निशान लगाइए।"
+ },
+ "Daily constant: long tones in three octaves.": {
+  "en": "Every day: long tones in three octaves.",
+  "hi": "हर दिन: तीनों सप्तकों में लंबे स्वर।"
+ },
+ "Module 5A: full raga presentation in Yaman: alap and vilambit, building toward 20-30 minutes (L37). Module 5C: contrast similar ragas (D12 pairs).": {
+  "en": "Module 5A: a full raga presentation in Yaman, with alap and vilambit, building toward 20 to 30 minutes, lesson 37. Module 5C: compare pairs of similar ragas.",
+  "hi": "मॉड्यूल 5A: यमन में पूरी राग प्रस्तुति, आलाप और विलंबित के साथ, धीरे-धीरे 20 से 30 मिनट तक, पाठ 37। मॉड्यूल 5C: मिलते-जुलते रागों के जोड़ों की तुलना।"
+ },
+ "Daily constant: one ear-training item (EX-EAR Levels 7-10).": {
+  "en": "Every day: one ear training item, levels 7 to 10.",
+  "hi": "हर दिन: ईयर ट्रेनिंग की एक चीज़, लेवल 7 से 10।"
+ },
+ "Taans, layakari, tihais and gamak taans (L32, L33). Module 5D: vilambit laya with a slow ektaal or teentaal loop. Module 5E: map your 3rd-register fingerings (L22 4.4).": {
+  "en": "Taans, layakari, tihais and gamak taans, lessons 32 and 33. Module 5D: vilambit laya, with a slow ektaal or teentaal loop. Module 5E: map your third register fingerings, lesson 22, section 4.4.",
+  "hi": "तान, लयकारी, तिहाई और गमक की तानें, पाठ 32 और 33। मॉड्यूल 5D: विलंबित लय, धीमे एकताल या तीनताल के लूप के साथ। मॉड्यूल 5E: तीसरे रजिस्टर की अपनी उँगलियों का चार्ट बनाइए, पाठ 22, भाग 4.4।"
+ },
+ "Songs and accompaniment. Module 5F: rehearse with a live tabla player or a duet partner; microphone work (L34, L35).": {
+  "en": "Songs and accompaniment. Module 5F: rehearse with a live tabla player or a duet partner. Microphone technique, lessons 34 and 35.",
+  "hi": "गाने और संगत। मॉड्यूल 5F: किसी तबला वादक या जोड़ीदार के साथ रिहर्सल कीजिए। माइक्रोफ़ोन के साथ बजाना, पाठ 34 और 35।"
+ },
+ "Module 5G: original work (EX-IMP C5). Module 5H: design and run your own 4-week plan (L37). Recording project and monthly self-assessment: one full recording scored with the rubric, compared with last month's.": {
+  "en": "Module 5G: your own original work, composition prompt 5. Module 5H: design and run your own four-week plan, lesson 37. Recording project and monthly self-check: one full recording scored with the rubric, and compared with last month's.",
+  "hi": "मॉड्यूल 5G: आपकी अपनी रचना, रचना का सुझाव 5। मॉड्यूल 5H: अपना चार हफ्ते का प्लान खुद बनाइए और चलाइए, पाठ 37। रिकॉर्डिंग प्रोजेक्ट और महीने की खुद की जाँच: एक पूरी रिकॉर्डिंग, रूब्रिक से स्कोर करके, पिछले महीने वाली से मिलाइए।"
+ },
+ "Module 5A: full raga presentation in Bhairav: alap and vilambit, building toward 20-30 minutes (L37). Module 5B: an intonation-critical komal raga; teacher guidance strongly recommended. Module 5C: contrast similar ragas (D12 pairs).": {
+  "en": "Module 5A: a full raga presentation in Bhairav, with alap and vilambit, building toward 20 to 30 minutes, lesson 37. Module 5B: a komal raga where tuning is critical. Teacher guidance is strongly recommended. Module 5C: compare pairs of similar ragas.",
+  "hi": "मॉड्यूल 5A: भैरव में पूरी राग प्रस्तुति, आलाप और विलंबित के साथ, धीरे-धीरे 20 से 30 मिनट तक, पाठ 37। मॉड्यूल 5B: कोमल स्वरों वाला एक राग, जिसमें सुर बहुत सटीक चाहिए। गुरु से सीखना ज़रूर अच्छा रहेगा। मॉड्यूल 5C: मिलते-जुलते रागों के जोड़ों की तुलना।"
+ },
+ "Module 5A: full raga presentation in Malkauns: alap and vilambit, building toward 20-30 minutes (L37). Module 5B: an intonation-critical komal raga; teacher guidance strongly recommended. Module 5C: contrast similar ragas (D12 pairs).": {
+  "en": "Module 5A: a full raga presentation in Malkauns, with alap and vilambit, building toward 20 to 30 minutes, lesson 37. Module 5B: a komal raga where tuning is critical. Teacher guidance is strongly recommended. Module 5C: compare pairs of similar ragas.",
+  "hi": "मॉड्यूल 5A: मालकौंस में पूरी राग प्रस्तुति, आलाप और विलंबित के साथ, धीरे-धीरे 20 से 30 मिनट तक, पाठ 37। मॉड्यूल 5B: कोमल स्वरों वाला एक राग, जिसमें सुर बहुत सटीक चाहिए। गुरु से सीखना ज़रूर अच्छा रहेगा। मॉड्यूल 5C: मिलते-जुलते रागों के जोड़ों की तुलना।"
+ },
+ "Warm-up and tension scan (L01): shoulder rolls, wrist circles and finger stretches, then five slow, low breaths.": {
+  "en": "Warm-up and tension scan from lesson 1: roll your shoulders, circle your wrists and stretch your fingers. Then take five slow, low breaths.",
+  "hi": "पाठ 1 से वार्म-अप और तनाव की जाँच: कंधे घुमाइए, कलाइयाँ घुमाइए और उंगलियाँ खींचिए। फिर पाँच धीमी, गहरी साँसें लीजिए।"
+ },
+ "Warm-up (L01, L03): a tension scan from head to feet with the jaw loose, then three rounds of the hiss test: breathe in low, hiss out evenly for 10 s.": {
+  "en": "Warm-up from lessons 1 and 3: scan for tension from head to feet, with the jaw loose. Then three rounds of the hiss test: breathe in low, and hiss out evenly for ten seconds.",
+  "hi": "पाठ 1 और 3 से वार्म-अप: सिर से पैर तक तनाव की जाँच कीजिए, जबड़ा ढीला रखिए। फिर स्स्स वाले टेस्ट के तीन राउंड: गहरी साँस लीजिए, और दस सेकंड तक एक जैसी स्स्स की आवाज़ के साथ छोड़िए।"
+ },
+ "Warm-up (L01): shake out the hands and tap each finger to the thumb 10 times, then play Sa softly three times, 4 s each, to wake the lips.": {
+  "en": "Warm-up from lesson 1: shake out your hands, and tap each finger to the thumb ten times. Then play Sa softly three times, four seconds each, to wake up the lips.",
+  "hi": "पाठ 1 से वार्म-अप: हाथ झटकिए, और हर उंगली को अंगूठे से दस बार छुइए। फिर होंठों को जगाने के लिए सा को तीन बार धीरे से बजाइए, हर बार चार सेकंड।"
+ },
+ "Warm-up (L03): breathe in low for 4 counts and out on a steady hiss for 8, five times; then two soft long tones on your easiest note.": {
+  "en": "Warm-up from lesson 3: breathe in low for four counts, and out on a steady hiss for eight. Do this five times. Then play two soft long tones on your easiest note.",
+  "hi": "पाठ 3 से वार्म-अप: चार गिनती तक गहरी साँस लीजिए, और आठ गिनती तक स्थिर स्स्स के साथ छोड़िए। ऐसा पाँच बार कीजिए। फिर अपने सबसे आसान स्वर पर दो धीमे लंबे स्वर बजाइए।"
+ },
+ "Warm-up (L02): a posture check in a mirror (tall spine, shoulders down, flute level), then three relaxed long tones.": {
+  "en": "Warm-up from lesson 2: check your posture in a mirror. Spine tall, shoulders down, flute level. Then play three relaxed long tones.",
+  "hi": "पाठ 2 से वार्म-अप: आईने में अपना पोस्चर देखिए। रीढ़ सीधी, कंधे नीचे, बाँसुरी सीधी। फिर तीन आराम से लंबे स्वर बजाइए।"
+ }
+}

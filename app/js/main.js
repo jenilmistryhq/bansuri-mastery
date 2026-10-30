@@ -5,7 +5,14 @@ import { advanceQuests, celebrate } from "./fun.js";
 import { codeOf } from "./core/theory.js";
 import { installErrorLog, logError } from "./errors.js";
 import { h, icon, clear, toast } from "./util.js";
+import { getSettings, onSettings } from "./core/settings.js";
+import { setDict, observe } from "./core/i18n.js";
+import { setSpeaker } from "./core/live.js";
+import { onBeat } from "./core/audio.js";
+import { say } from "./voice.js";
 installErrorLog();
+// The shared widgets speak through the app's natural voice (when "Talk to me" is on).
+setSpeaker(say);
 // Results from the listening exercises (bench, sessions, milestones) are kept in the progress state.
 document.addEventListener("bansuri:live", e => {
   try {
@@ -14,9 +21,9 @@ document.addEventListener("bansuri:live", e => {
     recordLive(d);
     const done = advanceQuests(d);
     // Celebrate personal bests and finished quests.
-    if (d.type === "hold" && before >= 2 && d.seconds >= before + 0.5) celebrate("New best: " + (d.target === null || d.target === undefined ? "a note" : codeOf(d.target)) + " held " + d.seconds.toFixed(1) + " s!");
-    else if (d.type === "game" && d.best && d.score) celebrate("New best score: " + d.score + "!");
-    done.forEach(q => celebrate("Quest complete: " + q.text + " (+20)"));
+    if (d.type === "hold" && before >= 2 && d.seconds >= before + 0.5) { celebrate("New best: " + (d.target === null || d.target === undefined ? "a note" : codeOf(d.target)) + " held " + d.seconds.toFixed(1) + " s!"); say("new_best"); }
+    else if (d.type === "game" && d.best && d.score) { celebrate("New best score: " + d.score + "!"); say("new_best"); }
+    done.forEach(q => { celebrate("Quest complete: " + q.text + " (+20)"); say("quest_done"); });
   } catch (err) { logError(err && err.message ? err.message : String(err), "live result"); }
 });
 import { getState, onChange, isStorageOk } from "./state.js";
@@ -28,9 +35,11 @@ const ROUTES = [
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"],
-  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/teacher(\/coach)?$/, "coach"],
+  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
 const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Bench"], ["play", "#/play", "Play"], ["coach", "#/coach", "Coach"], ["journal", "#/journal", "Journal"], ["progress", "#/progress", "Progress"]];
+// Simple mode: three big choices, no reading needed.
+const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
 
 let mainEl, navEl, dayPill, cleanup = null, routeToken = 0, updateReady = false;
 
@@ -50,6 +59,28 @@ function applyTheme() {
   else document.documentElement.removeAttribute("data-theme");
 }
 
+// Reading and seeing: text size, an easy-to-read font, high contrast, bigger buttons, Simple mode.
+function applyAccess() {
+  const s = getSettings(), root = document.documentElement;
+  root.style.setProperty("--text-scale", String(s.textSize));
+  root.classList.toggle("easyfont", s.easyFont);
+  root.classList.toggle("contrast", s.contrast);
+  root.classList.toggle("bigtargets", s.bigTargets);
+  root.classList.toggle("simple", s.simple);
+  root.lang = s.lang === "hi" ? "hi" : "en";
+}
+
+// Beats seen and felt: a flash at the edge of the screen, and a buzz on phones that can.
+let flashEl = null;
+onBeat(kind => {
+  const s = getSettings();
+  if (s.beatFlash) {
+    if (!flashEl) { flashEl = h("div", { class: "beatflash", "aria-hidden": "true" }); document.body.append(flashEl); }
+    flashEl.classList.remove("on", "sam"); void flashEl.offsetWidth; flashEl.classList.add("on"); if (kind === "sam") flashEl.classList.add("sam");
+  }
+  if (s.vibrate && navigator.vibrate) { try { navigator.vibrate(kind === "sam" ? 60 : 25); } catch (e) { /* not supported */ } }
+});
+
 function shell() {
   const app = document.getElementById("app");
   dayPill = h("a", { class: "daypill", href: "#/today" }, "");
@@ -59,7 +90,7 @@ function shell() {
     dayPill,
     h("a", { class: "iconbtn", href: "#/library", title: "Course library" }, icon("library", "Course library")),
     h("a", { class: "iconbtn", href: "#/settings", title: "Settings" }, icon("settings", "Settings")));
-  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, NAV.map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(k), h("span", null, label))));
+  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(k), h("span", null, label))));
   mainEl = h("main", { id: "main", tabindex: "-1" });
   clear(app).append(top, h("div", { class: "layout" }, navEl, mainEl));
 }
@@ -134,6 +165,14 @@ function offerUpdate(worker) {
 
 async function boot() {
   applyTheme();
+  applyAccess();
+  // Hindi: the interface dictionary is loaded before anything renders, then every screen is translated as it appears.
+  if (getSettings().lang === "hi") {
+    try { setDict(await (await fetch("app/i18n/hi.json")).json()); } catch (e) { console.warn("Hindi dictionary not loaded", e); }
+  }
+  observe(document.body);
+  let wasSimple = getSettings().simple, wasLang = getSettings().lang;
+  onSettings(s => { applyAccess(); if (s.simple !== wasSimple || s.lang !== wasLang) { wasSimple = s.simple; wasLang = s.lang; location.reload(); } });
   shell();
   try { await loadPlan(); }
   catch (e) {

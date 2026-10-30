@@ -17,6 +17,9 @@ A static web app (no server, no account, no framework) that teaches the course o
 - **It listens to your real flute:** long-tone steps show a live meter (note, cents, a ring that fills while you hold steady); "Play it back" plays a phrase for you to echo and checks each note; play-along marks every note of a melody green or red as you play it; milestone items such as "hold Sa 8 s within 20 cents" can be checked with the microphone.
 - **701 practice days** across six phases, generated from the roadmaps. **11 milestone tests** gate progress: the checklist comes from each milestone file, with rubric scoring and the remedies shown when a test is not passed.
 - **Practice Bench:** fingering chart, play-along (loop a bar, step the tempo, count-in, bar accents), long tones, play it back, tanpura, tala metronome with a synthesised tabla theka, a tap-the-beat game with silent bars, ear quiz and pitch checker.
+- **Learn without reading:** the app can talk, in English or Hindi, with a natural human-sounding voice (Kokoro, made in advance, works offline): it says each session step, names the note you played and whether it was sharp, flat or airy, and plays a soft slide to the right note. **Simple mode** has three big buttons (Practice, Play, Listen) and sessions run hands-free: the app says the step, starts the timer or meter, and you play Sa to move on. **Listen** has real recordings and songs played on an animated flute that shows the fingers. Notes can be shown as **pictures of the fingering** instead of letters. Any lesson card can be **read aloud** (a natural reading voice, downloaded once when first used).
+- **Hindi:** the interface, the spoken prompts and every session step in Hindi (हिन्दी); the course pages stay in English.
+- **Accessibility:** text size, an easy-to-read font (Atkinson Hyperlegible), high contrast, bigger buttons, beats that flash and vibrate, captions for everything spoken, ticks and crosses as well as colours, game speed and no-timer options, game sounds for playing without looking, arrow keys in the melody grid, and an automated accessibility check (axe-core) in the tests.
 - **Play:** games played with the real flute: steer a bird through gates by pitch, blow up balloons by holding notes in tune, falling notes for any course song (perfect, good or miss, with stars), and a jam with tanpura and tabla in a raga that points out notes outside it. Daily quests with points and levels, a collection of songs and ragas that unlocks with the course, celebrations for new bests, and challenge links that replay the same course for a friend.
 - **Make a melody:** tap notes on a grid of beats in a raga's notes; play it, play along with it, save it or send it as a challenge.
 - **5-minute practice:** for busy days, a long tone, a balloon round and a play-back round, logged as practice so the streak continues.
@@ -132,7 +135,9 @@ The app has no server and no analytics. Progress, journal notes and recordings s
 browser (localStorage and IndexedDB). The microphone is used only when you press Record or start
 the tuner, and the camera only for the video self-check. A share link carries a small progress
 summary inside the link itself. Sharing a recording with a teacher uses your phone's own share
-sheet; the app never uploads anything.
+sheet; the app never uploads anything. The spoken prompts are recordings that come with the app.
+Reading a lesson aloud downloads a voice model from Hugging Face the first time (after you agree);
+the lesson text is turned into speech on your device and is never sent anywhere.
 
 Every project on `jenilmistryhq.github.io` shares one browser origin, so they could read each
 other's storage. A custom domain separates them:

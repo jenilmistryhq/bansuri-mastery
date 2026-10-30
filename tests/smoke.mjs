@@ -30,6 +30,14 @@ if (!executablePath) { console.error("No Chrome/Edge found; set CHROME_PATH."); 
 // Fake media devices give the tests a microphone (a generated tone) without a permission prompt.
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
 const page = await browser.newPage();
+// I18N_COLLECT=<file>: list every interface string the walk sees (for app/i18n/hi.json).
+const i18nSeen = new Set();
+const collectI18n = async pg => {
+  if (!process.env.I18N_COLLECT) return;
+  await pg.exposeFunction("__i18nSave", v => { i18nSeen.add(v); });
+  await pg.evaluateOnNewDocument(() => { window.__i18nCollect = true; });
+};
+await collectI18n(page);
 await page.setViewport({ width: 1280, height: 900 });
 const errors = [];
 page.on("console", m => { if (m.type() === "error") errors.push("console: " + m.text()); });
@@ -400,6 +408,7 @@ try {
   {
     // A page whose microphone is an oscillator the test tunes to any note.
     const lp = await browser.newPage();
+    await collectI18n(lp);
     lp.on("pageerror", e => errors.push("pageerror: " + e.message));
     lp.on("console", m => { if (m.type() === "error") errors.push("console: " + m.text()); });
     await lp.evaluateOnNewDocument(() => {
@@ -657,6 +666,86 @@ try {
     check(await lp.evaluate(() => (JSON.parse(localStorage.getItem("bansuri.progress") || "{}").log || []).some(e => e.note === "5-minute practice" && e.minutes >= 5)), "5-minute practice: finishing logs at least 5 minutes");
     check(await lp.evaluate(() => window.__openMics()) === 0, "the games leave no microphone open");
 
+    console.log("Voice, pictures, Simple mode and Hindi");
+    const setSet = patch => lp.evaluate(p => { const s = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); localStorage.setItem("bansuri.settings", JSON.stringify(Object.assign(s, p))); }, patch);
+    const voiceMod = () => lp.evaluate(async () => { window.__voice = await import(new URL("app/js/voice.js", location.href).href); });
+    // The natural voice: a clip plays and its words show as a caption.
+    await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+    await voiceMod();
+    check(await lp.evaluate(() => window.__voice.speak("good")) === true && /Good/.test(await lp.$eval(".caption", e => e.textContent)), "voice: a natural-voice clip plays, with a caption");
+    check(await lp.evaluate(async () => { const r = await fetch("app/voice/hi/index.json"); if (!r.ok) return false; const j = await r.json(); return Object.keys(j.phrases).length > 50 && Object.keys(j.notes).length > 100; }), "voice: Hindi clips are listed for phrases and every note");
+
+    // Talk to me: a wrong note held, then silence, is named out loud.
+    await setSet({ talk: true, hints: false });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector(".bb-bench [data-ref=toneNote]");
+    await tab("tones");
+    await lp.select(".bb-bench [data-ref=toneNote]", "0");
+    await lp.click(".lv-hold .lv-primary");
+    await sleep(4500); await tone(2); await sleep(1500); await tone(null);
+    await lp.waitForFunction(() => { const c = document.querySelector(".caption"); return c && !c.hidden && /That is Re/.test(c.textContent); }, { timeout: 6000 })
+      .then(() => check(true, "talk to me: a wrong note is named (\"That is Re. Play Sa.\")"), async () => check(false, "talk to me: caption " + await lp.$eval(".caption", e => e.textContent).catch(() => "none")));
+    await lp.click(".lv-hold .lv-primary");
+
+    // Notes as pictures of the fingering.
+    await setSet({ notesAs: "pictures", talk: false });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector(".bb-bench [data-ref=toneNote]");
+    await tab("tones");
+    await lp.select(".bb-bench [data-ref=toneNote]", "2");
+    check(await lp.$(".lv-hold .lv-chip .fingpic, .lv-hold .lv-goal ~ * .fingpic") !== null || await lp.$(".lv-hold .fingpic") !== null, "pictures: notes show as fingering pictures");
+    await setSet({ notesAs: "letters" });
+
+    // Listen: songs on the animated flute.
+    await lp.goto(BASE + "#/listen", { waitUntil: "networkidle0" });
+    await lp.waitForFunction(() => document.querySelectorAll("#main .listentile").length > 12, { timeout: 8000 }).catch(() => {});
+    check(await lp.$$eval("#main .listentile", x => x.length) > 12, "listen: recordings, tone levels and songs as big tiles");
+    await lp.evaluate(() => [...document.querySelectorAll("#main .card")].find(c => /Watch the fingers/.test(c.innerText)).querySelector(".listentile").click());
+    await lp.waitForFunction(() => document.querySelectorAll("#main .demo .df-finger.on").length > 0, { timeout: 5000 })
+      .then(() => check(true, "listen: a song plays on the animated flute, fingers on the holes"), () => check(false, "listen: a song plays on the animated flute, fingers on the holes"));
+    await lp.evaluate(() => [...document.querySelectorAll("#main button")].find(b => b.textContent === "Close").click());
+
+    // Beats seen and felt.
+    await setSet({ beatFlash: true });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.evaluate(async () => { const a = await import(new URL("app/js/core/audio.js", location.href).href); a.click(a.ac().currentTime + 0.05, "sam"); });
+    await sleep(200);
+    check(await lp.$(".beatflash") !== null, "beats: the screen edge flashes on a beat");
+    await setSet({ beatFlash: false });
+
+    // Simple mode: three big buttons, and a session that talks the learner through.
+    await setSet({ simple: true });
+    await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 2, startedAt: "2026-10-01", prefs: { howChosen: true } })));
+    await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .simpletile", { timeout: 5000 }).catch(() => {});
+    check(await lp.$$eval("#main .simpletile", x => x.length) === 4 && await lp.$$eval(".tabbar a", x => x.length) === 3, "simple mode: four big buttons and three tabs");
+    await lp.goto(BASE + "#/session/2", { waitUntil: "networkidle0" });
+    await lp.waitForSelector('#main .stepdot[data-id="K"]');
+    await lp.click('#main .stepdot[data-id="K"]');
+    // The step is spoken, then the meter starts by itself; hold Sa to meet the goal, then Sa again to go on.
+    await lp.waitForFunction(() => /Stop/.test((document.querySelector("#main .block.active .lv-hold .lv-primary") || {}).textContent || ""), { timeout: 25000 }).catch(() => {});
+    await tone(0);
+    await lp.waitForFunction(() => document.querySelector("#main .block.active label.check input[type=checkbox]").checked, { timeout: 15000 }).catch(() => {});
+    await tone(null);
+    await lp.waitForFunction(() => { const c = document.querySelector(".caption"); return c && /play Sa/i.test(c.textContent); }, { timeout: 12000 }).catch(() => {});
+    await sleep(800); await tone(0);
+    await lp.waitForFunction(() => { const d = document.querySelector("#main .stepdot.now"); return d && d.dataset.id !== "K"; }, { timeout: 12000 })
+      .then(() => check(true, "hands-free: the step is spoken, the meter starts itself, and playing Sa moves on"), async () => check(false, "hands-free: still on " + await lp.$eval("#main .stepdot.now", e => e.dataset.id).catch(() => "?")));
+    await tone(null);
+    await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    await setSet({ simple: false });
+
+    // Hindi: the interface, and a session step, in Hindi.
+    await setSet({ lang: "hi" });
+    await lp.goto(BASE + "#/session/2", { waitUntil: "networkidle0" });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .block .steptext");
+    await sleep(500);
+    check(await lp.evaluate(() => document.documentElement.lang === "hi" && /[\u0900-\u097F]/.test(document.querySelector(".tabbar").innerText)), "hindi: the tabs are in Hindi");
+    check(await lp.evaluate(() => [...document.querySelectorAll("#main .steptext")].some(p => /[\u0900-\u097F]/.test(p.textContent))), "hindi: session steps are shown in Hindi");
+    await setSet({ lang: "en" });
+
     await lp.evaluate(() => localStorage.clear());
     await lp.close();
   }
@@ -689,9 +778,32 @@ try {
     await sp.close();
   }
 
+  console.log("Standalone bench pages");
+  for (const f of ["interactive-flute.html", "practice-bench.html"]) {
+    await page.goto(BASE + "bansuri-mastery/tools/" + f, { waitUntil: "networkidle0" });
+    await page.evaluate(() => { const b = document.querySelector('.bb-tabs button[data-tab="tones"]'); if (b) b.click(); });
+    await sleep(300);
+    check(await page.$(".lv-hold") !== null, f + ": loads, and the long-tone meter (shared widgets) works");
+  }
+
+  console.log("Accessibility (axe-core: WCAG 2.1 A and AA rules)");
+  {
+    const axeSrc = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "node_modules", "axe-core", "axe.min.js"), "utf8");
+    for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
+      await go(route);
+      await sleep(400);
+      await page.evaluate(axeSrc);
+      const res = await page.evaluate(async () => {
+        const r = await window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] });
+        return r.violations.filter(v => v.impact === "serious" || v.impact === "critical").map(v => v.id + " (" + v.nodes.length + "): " + v.nodes.slice(0, 2).map(n => n.target.join(" ") + (v.id === "color-contrast" ? " [" + ((n.any[0] || {}).message || "") + "]" : "")).join(", "));
+      });
+      check(res.length === 0, route + ": no serious accessibility problems" + (res.length ? ":\n    " + res.join("\n    ") : ""));
+    }
+  }
+
   console.log("Phone layout (iPhone 13 emulation: size, touch, user agent; the engine is still Chromium)");
   await page.emulate(KnownDevices["iPhone 13"]);
-  for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"], ["/play", "15-phone-play"], ["/compose", "16-phone-compose"], ["/quick", "17-phone-quick"]]) {
+  for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"], ["/listen", "18-phone-listen"], ["/play", "15-phone-play"], ["/compose", "16-phone-compose"], ["/quick", "17-phone-quick"]]) {
     await go(route);
     const ov = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     check(ov <= 1, route + " fits an iPhone screen (" + ov + "px overflow)");
@@ -703,8 +815,9 @@ try {
 } finally {
   // The docs theme asks api.github.com for repo stats; that third-party call is not ours to test.
   // MediaPipe logs its normal start-up ("Created TensorFlow Lite XNNPACK delegate") as a console error.
-  const relevant = errors.filter((e, i, all) => !/AudioContext was not allowed to start/.test(e) && !/XNNPACK|TensorFlow Lite|Graph successfully started|gl_context|OpenGL error checking/.test(e) && !/api.github.com/.test(e) && !(/Failed to load resource/.test(e) && all.some(x => /api.github.com/.test(x))));
+  const relevant = errors.filter((e, i, all) => !/AudioContext was not allowed to start/.test(e) && !/XNNPACK|TensorFlow Lite|Graph successfully started|gl_context|OpenGL error checking/.test(e) && !/api.github.com/.test(e) && !/favicon\.ico/.test(e) && !(/Failed to load resource/.test(e) && all.some(x => /api.github.com|favicon.ico/.test(x))));
   check(relevant.length === 0, "no console errors, page errors or failed requests" + (relevant.length ? ":\n    " + relevant.slice(0, 10).join("\n    ") : ""));
+  if (process.env.I18N_COLLECT) fs.writeFileSync(process.env.I18N_COLLECT, JSON.stringify([...i18nSeen].sort(), null, 1));
   await browser.close();
   server.close();
 }

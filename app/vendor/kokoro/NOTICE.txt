@@ -1,0 +1,12 @@
+Natural reading voice (used only when the learner asks a lesson to be read aloud)
+
+kokoro.web.js   kokoro-js, the browser build of Kokoro-82M text-to-speech, bundled with
+                transformers.js and onnxruntime-web. Apache License 2.0 (KOKORO-LICENSE.txt).
+                The same file as in the Synapse project.
+ort-wasm-simd-threaded.jsep.mjs / .wasm
+                onnxruntime-web 1.22.0-dev.20250409-89f8206ba4, as published in
+                @huggingface/transformers@3.5.1/dist. MIT License, Microsoft Corporation.
+
+The model (onnx-community/Kokoro-82M-v1.0-ONNX, Apache 2.0, by hexgrad) is downloaded from
+Hugging Face the first time, after the learner agrees, and cached by the browser. These files are
+not part of the offline download; they load when a lesson is first read aloud.

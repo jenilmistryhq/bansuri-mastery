@@ -25,6 +25,8 @@ tuner without a real device. It also covers:
 - the microphone explainer, find my flute (an E5 tone is recognised and saved), "Your playing" on Progress, the song library and the raga tools;
 - updates and offline: a stale, incompatible module in the cache is never mixed in while online, and the app loads from the cache when offline;
 - the games with the synthetic microphone: a held note pops a balloon and offers a challenge link that opens the same game; steer by pitch runs a round; the jam points out a note outside the raga and turns the tanpura off when stopped; falling notes scores a right note and misses a wrong one; quests are tracked; make a melody turns tapped cells into notation; 5-minute practice logs at least 5 minutes; no microphone is left open;
+- voice and access: a natural-voice clip plays with a caption; "Talk to me" names a wrong note; notes shown as fingering pictures; Listen plays a song on the animated flute; the beat flash; Simple mode's big buttons and a hands-free session (the step is spoken, the meter starts itself, and playing Sa moves on); Hindi tabs and Hindi session steps;
+- an accessibility scan (axe-core, WCAG 2.1 A and AA) of the main screens: no serious or critical problems;
 - phone layouts with iPhone 13 emulation.
 
 What automation cannot check: real phone browsers (iOS Safari uses WebKit, not Chromium), a real
@@ -83,6 +85,16 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Play > Jam: the tabla and tanpura keep time; a note outside the raga is named with the nearby raga notes.
 - [ ] Bench > Long tones: the ring glows brighter for a clear tone than for an airy one; play-along shows the next fingering just before each note.
 - [ ] Note the phone, room and distance from the phone when anything misreads.
+
+### Voice, Hindi and access (with a real phone)
+- [ ] Settings > Language, voice and access > Hear the voice: it sounds like a natural person, in English and in हिन्दी. Ask a native Hindi speaker to listen to a session and read the Hindi screens (scripts/voice/*.json and app/i18n/hi.json are machine-drafted).
+- [ ] Talk to me on, Bench > Long tones: play a wrong note, then stop: the app names it, then plays a slide to the right note. It never talks while you hold a note, and does not hear itself.
+- [ ] Simple mode, Start practice: the session talks you through each step; playing Sa moves on after the goal or the time. Try it without looking at the screen.
+- [ ] A lesson card's speaker: the first time it asks before downloading (about 90 MB), then reads the card in a natural voice; next time it starts at once, also offline.
+- [ ] Keep the voice for offline use, then flight mode: the spoken prompts still play.
+- [ ] Screen readers: TalkBack (Android) and VoiceOver (iPhone) read the tabs, buttons, the meter's progress and the game status; the games can be played with Game sounds on and the screen covered.
+- [ ] Text size 160%, easy font and high contrast: nothing overlaps or is cut off on a phone.
+- [ ] Beat flash and vibrate (Android) follow the metronome and the tabla.
 
 ### Camera
 - [ ] Journal > Video self-check > Record: the camera permission prompt appears, the preview is mirrored like a mirror.

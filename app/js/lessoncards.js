@@ -9,6 +9,8 @@ import { listRecordings } from "./recorder.js";
 import { postureCheck } from "./posture.js";
 import { bestHold } from "./livestats.js";
 import { toneDemo } from "./core/audio.js";
+import { readButton, stopSpeaking } from "./voice.js";
+import { flutePlayer } from "./demo.js";
 
 function toneLevelsRow() {
   const words = { 1: "1: mostly air", 2: "2: some tone, much breath", 3: "3: clear, a little breath", 4: "4: full and clear" };
@@ -85,6 +87,9 @@ function practiceCard(node, path) {
       host.hidden = false;
     });
     buttons.push(b);
+    const show = h("button", { type: "button", class: "btn" }, "Show me");
+    show.addEventListener("click", () => { close(); const p = flutePlayer({ notation: notations[Number(pick.value)], bpm: 60 }); widget = p; host.append(p.el); host.hidden = false; p.play(); });
+    buttons.push(show);
   }
   // A reference recording for this lesson: the learner's teacher, or their own best take, marked in the Journal.
   const ref = h("div", { class: "small muted" }, "Reference sound: ask your teacher to play this lesson's sound, record it in the Journal and mark it \"Reference for " + id + "\". It will play here.");
@@ -233,8 +238,11 @@ export function cardDeck(cards, path, opts) {
     stage, h("div", { class: "row between deck-nav" }, back, next));
   function draw(dir) {
     const c = cards[i];
+    const body = h("div", { class: "reader lbody" }, c.body);
+    // Every card can be heard: a natural voice reads its title and text.
+    const speakIt = readButton(() => c.title + ". " + [...body.querySelectorAll("p, li, h3, td")].filter(n => !n.closest(".toolhost, .row, label")).map(n => n.textContent).join(" "), "Read aloud");
     const card = h("article", { class: "card lcard" + (dir ? " in-" + dir : "") },
-      c.kind ? h("span", { class: "eyebrow" }, c.kind) : null, h("h2", null, c.title), h("div", { class: "reader lbody" }, c.body));
+      h("div", { class: "row between" }, c.kind ? h("span", { class: "eyebrow" }, c.kind) : h("span"), speakIt), h("h2", null, c.title), body);
     makePlayable(card);
     stage.replaceChildren(card);
     bar.style.width = ((i + 1) / cards.length * 100) + "%";
@@ -252,8 +260,8 @@ export function cardDeck(cards, path, opts) {
     const y = el.getBoundingClientRect().top + window.scrollY - 76;
     if (y < window.scrollY) window.scrollTo({ top: y, behavior: "smooth" });
   }
-  back.addEventListener("click", () => go(-1));
-  next.addEventListener("click", () => go(1));
+  back.addEventListener("click", () => { stopSpeaking(); go(-1); });
+  next.addEventListener("click", () => { stopSpeaking(); go(1); });
   el.addEventListener("keydown", e => {
     if (/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName)) return;
     if (e.key === "ArrowRight") { e.preventDefault(); go(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }

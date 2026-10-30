@@ -102,7 +102,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-notebig { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; }
 .bb-notebig .bb-name { font-family: var(--display); font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1; }
 .bb-notebig .bb-tname { font-size: 2.4rem; }
-.bb-notebig .bb-deva { font-family: var(--display); font-size: 2rem; color: var(--bamboo-deep); }
+.bb-notebig .bb-deva { font-family: var(--display); font-size: 2rem; color: var(--ink); }
 .bb-facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.95rem; }
 .bb-facts b { font-family: var(--mono); font-weight: 600; }
 .bb-chip { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; border: 1px solid currentColor; }
@@ -196,7 +196,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .lv-btn { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 16px; font: inherit; font-weight: 500; color: var(--ink); cursor: pointer; }
 .lv-btn:hover { border-color: var(--accent); }
 .lv-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
-.lv-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.lv-primary, .bb-bench .lv-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .lv-select { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font: inherit; color: var(--ink); }
 .lv-field { display: grid; gap: 2px; font-size: 0.82rem; color: var(--muted); }
 .lv-check { display: inline-flex; gap: 6px; align-items: center; font-size: 0.9rem; color: var(--muted); }
@@ -272,6 +272,12 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .lv-glow { border-radius: 50%; box-shadow: 0 0 calc(4px + 26px * var(--glow, 0)) calc(1px + 6px * var(--glow, 0)) color-mix(in srgb, var(--accent) calc(25% + 55% * var(--glow, 0)), transparent); transition: box-shadow 120ms linear; }
 .lv-glowtxt { font-size: 0.85rem; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .lv-glow { transition: none; } }
+/* Right and wrong are never colour alone: a tick, a cross, an arrow for the wrong octave. */
+.lv-slot.lv-ok::after { content: " \2713"; }
+.lv-slot.lv-wrong::after { content: " \2717"; }
+.lv-slot.lv-octave::after { content: " \2195"; }
+.bb-score span.bb-hit::after { content: "\2713"; font-size: 0.6em; vertical-align: super; }
+.lv-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 </style>
 <main class="bb-page">
 <div id="bench-root"></div>
@@ -285,7 +291,14 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 // Stored in localStorage["bansuri.settings"]; always read and write through these functions.
 
 const SETTINGS_KEY = "bansuri.settings";
-const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false });
+// Accessibility and language settings live here too, because the shared widgets read them:
+// lang (en | hi), talk (speak prompts and feedback), notesAs (letters | pictures), simple (Simple mode),
+// textSize (1 = normal), easyFont, contrast, beatFlash, vibrate, gameSpeed (slow | normal | fast),
+// noTimer (games without a clock), bigTargets, cues (game sounds and spoken notes for blind players),
+// hints (a guide tone after an off note).
+const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
+  lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -296,7 +309,21 @@ function cleanSettings(s) {
     saOct: Number(s.saOct) === 4 ? 4 : 5,
     a4: n(s.a4, 400, 480, SETTINGS_DEFAULTS.a4),
     volume: n(s.volume, 0, 1, SETTINGS_DEFAULTS.volume),
-    deva: s.deva === true
+    deva: s.deva === true,
+    lang: s.lang === "hi" ? "hi" : "en",
+    talk: s.talk === true,
+    notesAs: s.notesAs === "pictures" ? "pictures" : "letters",
+    simple: s.simple === true,
+    textSize: n(s.textSize, 0.85, 1.6, 1),
+    easyFont: s.easyFont === true,
+    contrast: s.contrast === true,
+    beatFlash: s.beatFlash === true,
+    vibrate: s.vibrate === true,
+    gameSpeed: ["slow", "normal", "fast"].includes(s.gameSpeed) ? s.gameSpeed : "normal",
+    noTimer: s.noTimer === true,
+    bigTargets: s.bigTargets === true,
+    cues: s.cues === true,
+    hints: s.hints !== false
   };
 }
 
@@ -417,6 +444,91 @@ function hzOf(semi) { return saHz() * Math.pow(2, semi / 12); }
 function westOf(semi) {
   const m = saMidi() + semi;
   return WEST[((m % 12) + 12) % 12] + (Math.floor(m / 12) - 1);
+}
+
+// ---- core/fingers.js ----
+// Notes as pictures, for learners who do not read letters: a small flute with its six holes filled
+// (closed), half filled (half-hole) or empty (open), and a colour per note. The register is shown as
+// dots above (overblown) or below (lower octave). Used by the widgets, the games and the composer
+// when the setting notesAs is "pictures"; the letter stays underneath, small.
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+// One colour per swara; komal and tivra share their note's colour (drawn with a dashed ring).
+const HUE = { 0: "#d64541", 1: "#e8833a", 2: "#e8833a", 3: "#c9a227", 4: "#c9a227", 5: "#2f9e57", 6: "#2f9e57", 7: "#2f7bd6", 8: "#8a5cd1", 9: "#8a5cd1", 10: "#c2508f", 11: "#c2508f" };
+const noteColor = semi => HUE[pcOf(semi)];
+const variant = semi => [1, 3, 6, 8, 10].includes(pcOf(semi));
+const picturesOn = () => getSettings().notesAs === "pictures";
+
+function holesText(semi) {
+  const f = fingOf(semi).f;
+  if (!f) return "not playable on this flute";
+  const n = { X: 0, O: 0, H: 0 }; for (const c of f) n[c]++;
+  return [[n.X, "closed"], [n.H, "half"], [n.O, "open"]].filter(x => x[0]).map(x => x[0] + " " + x[1]).join(", ");
+}
+
+// An SVG picture of the fingering (holes 1-6 from the top, left to right).
+function fingSvg(semi, opts) {
+  const o = Object.assign({ size: 22 }, opts || {});
+  const { f, reg } = fingOf(semi);
+  const col = noteColor(semi), W = 6 * 10 + 8, H = 22;
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("class", "fingpic");
+  svg.setAttribute("width", String(Math.round(o.size * W / H)));
+  svg.setAttribute("height", String(o.size));
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", nameOf(semi) + ": " + holesText(semi));
+  const add = (tag, attrs) => { const e = document.createElementNS(SVG_NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v)); svg.append(e); return e; };
+  add("rect", { x: 1, y: 6, width: W - 2, height: 10, rx: 5, fill: "none", stroke: col, "stroke-width": 1.6, "stroke-dasharray": variant(semi) ? "3 2" : "none" });
+  for (let i = 0; i < 6; i++) {
+    const cx = 9 + i * 10 + (i >= 3 ? 2 : 0), c = f ? f[i] : "O";
+    add("circle", { cx, cy: 11, r: 3.6, fill: c === "X" ? col : "none", stroke: col, "stroke-width": 1.3 });
+    if (c === "H") add("path", { d: `M${cx} ${11 - 3.6}a3.6 3.6 0 0 0 0 7.2z`, fill: col });
+  }
+  // Register: one dot above for the second register, one below for the lower octave.
+  if (reg === 2) add("circle", { cx: W / 2, cy: 2.6, r: 1.8, fill: col });
+  if (semi < 0) add("circle", { cx: W / 2, cy: H - 2.4, r: 1.8, fill: col });
+  return svg;
+}
+
+// The note label used everywhere in the widgets: letters (and Devanagari when chosen), or the
+// picture with the letter small underneath.
+function noteLabel(semi) {
+  const s = getSettings();
+  const code = codeOf(semi);
+  if (s.notesAs !== "pictures") {
+    if (!s.deva) return code;
+    const sm = document.createElement("small"); sm.className = "lv-deva"; sm.textContent = devaOf(semi);
+    return [code, sm];
+  }
+  const wrap = document.createElement("span");
+  wrap.className = "notepic";
+  wrap.style.setProperty("--nc", noteColor(semi));
+  const sm = document.createElement("small");
+  sm.textContent = s.deva ? devaOf(semi) : code;
+  wrap.append(fingSvg(semi), sm);
+  return wrap;
+}
+
+// The same picture on a canvas (games). Draws centred on x, y.
+function drawFing(g, x, y, semi, size) {
+  const { f, reg } = fingOf(semi);
+  const col = noteColor(semi), k = (size || 22) / 22, W = 68 * k;
+  g.save();
+  g.translate(x - W / 2, y - 11 * k);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 1.5;
+  if (variant(semi)) g.setLineDash([3, 2]);
+  g.beginPath(); if (g.roundRect) g.roundRect(1 * k, 6 * k, W - 2 * k, 10 * k, 5 * k); else g.rect(1 * k, 6 * k, W - 2 * k, 10 * k); g.stroke();
+  g.setLineDash([]);
+  for (let i = 0; i < 6; i++) {
+    const cx = (9 + i * 10 + (i >= 3 ? 2 : 0)) * k, c = f ? f[i] : "O";
+    g.beginPath(); g.arc(cx, 11 * k, 3.6 * k, 0, Math.PI * 2);
+    if (c === "X") g.fill(); else g.stroke();
+    if (c === "H") { g.beginPath(); g.arc(cx, 11 * k, 3.6 * k, Math.PI / 2, Math.PI * 1.5); g.fill(); }
+  }
+  if (reg === 2) { g.beginPath(); g.arc(W / 2, 2.6 * k, 1.8 * k, 0, Math.PI * 2); g.fill(); }
+  if (semi < 0) { g.beginPath(); g.arc(W / 2, 19.6 * k, 1.8 * k, 0, Math.PI * 2); g.fill(); }
+  g.restore();
 }
 
 // ---- core/audio.js ----
@@ -596,8 +708,19 @@ const STROKES = {
   ti: (t, a) => dayan(t, 0.18 * a, 0.07, true), te: (t, a) => dayan(t, 0.18 * a, 0.07, true), ra: (t, a) => dayan(t, 0.15 * a, 0.06, true),
   ki: (t, a) => bayan(t, 0.35 * a, false), ka: (t, a) => bayan(t, 0.4 * a, false), ke: (t, a) => bayan(t, 0.4 * a, false), kat: (t, a) => bayan(t, 0.45 * a, false),
 };
+// Beats can also be seen and felt (for learners who cannot hear the click well): onBeat(fn) gets
+// "sam", "tali", "khali" or "tick" at the moment each beat sounds.
+const beatFns = new Set();
+function onBeat(fn) { beatFns.add(fn); return () => beatFns.delete(fn); }
+function beatAt(t, kind) {
+  if (!beatFns.size) return;
+  const c = ac(), ms = Math.max(0, (t - c.currentTime) * 1000);
+  setTimeout(() => beatFns.forEach(fn => { try { fn(kind); } catch (e) { /* ignore */ } }), ms);
+}
+
 // Play one bol (e.g. "Dha", "DhaGe", "TiRaKiTa") spread across one beat starting at time t.
 function tablaBol(t, bol, beatSeconds, accent) {
+  beatAt(t, accent ? "sam" : "tick");
   const syl = (bol || "").match(/[A-Z][a-z]*/g) || [];
   const step = beatSeconds / Math.max(1, syl.length);
   syl.forEach((s, i) => { const f = STROKES[s.toLowerCase()] || STROKES.na; f(t + i * step, accent ? 1.3 : 1); });
@@ -606,6 +729,7 @@ function tablaBol(t, bol, beatSeconds, accent) {
 // dest: optional node to play into (a sequence's own bus, so stopping it silences its clicks).
 function click(t, kind, dest) {
   const c = ac(), to = dest || masterGain;
+  beatAt(t, kind || "tick");
   const g = c.createGain(); g.connect(to);
   const o = c.createOscillator(); o.type = "triangle";
   // Every beat must be clearly audible on phone and laptop speakers; sam and tali stand out by
@@ -1354,14 +1478,46 @@ function pitchAdvice(cents) {
   return "In tune. Keep it steady.";
 }
 
+// The flute as a button: resolves true once the learner holds the target note (for "Play Sa to go
+// on"), or false when cancelled. Returns { promise, cancel }.
+function waitForNote(target, seconds) {
+  let cancelled = false, unsub = null, finish = null;
+  const promise = new Promise(resolve => {
+    finish = ok => { if (unsub) { unsub(); unsub = null; } resolve(ok); };
+    const tr = holdTracker({ target, seconds: seconds || 1.2, cents: 45 });
+    listenMic(r => { if (!cancelled && tr.feed(r).done) { cancelled = true; finish(true); } })
+      .then(u => { if (cancelled) u(); else unsub = u; }, () => finish(false));
+  });
+  return { promise, cancel() { if (cancelled) return; cancelled = true; finish(false); } };
+}
+
 // ---- core/live.js ----
 // Interactive exercises that listen to the real flute: a long-tone meter, a phrase check, an
 // echo game (the app plays, you play it back) and a beat-tapping game. Plain DOM, styled by the
 // lv- classes in bench.css, so the app and the standalone Practice Bench share them.
 
-// A note's label for the widgets: S R G, with Devanagari underneath when the learner chose it.
-function lvNote(semi) {
-  return getSettings().deva ? [codeOf(semi), lvEl("small", { class: "lv-deva" }, devaOf(semi))] : codeOf(semi);
+// A note's label for the widgets: S R G (with Devanagari underneath when chosen), or a picture of
+// the fingering for learners who prefer pictures to letters.
+function lvNote(semi) { return noteLabel(semi); }
+
+// The app plugs its voice in here (setSpeaker); the standalone bench has none and stays silent.
+// lvSay(...refs) speaks clip references such as "good" or ["note", 0, "is"]; resolves when done.
+let speaker = null;
+function setSpeaker(fn) { speaker = fn; }
+function lvSay(...refs) { if (!speaker) return Promise.resolve(false); try { return Promise.resolve(speaker(...refs)).catch(() => false); } catch (e) { return Promise.resolve(false); } }
+
+// A soft glide from the note played to the target, so the ear hears which way to go. Only for
+// learners who chose spoken feedback ("Talk to me") and kept the hints setting on.
+function lvGlide(from, to) {
+  const st = getSettings();
+  if (!st.hints || !st.talk || !speaker) return Promise.resolve();
+  const c = ac(), t0 = c.currentTime + 0.05, o = c.createOscillator(), g = c.createGain();
+  o.type = "sine"; o.connect(g); g.connect(master());
+  o.frequency.setValueAtTime(hzOf(from), t0); o.frequency.setValueAtTime(hzOf(from), t0 + 0.25); o.frequency.exponentialRampToValueAtTime(hzOf(to), t0 + 0.9);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.06); g.gain.setValueAtTime(0.18, t0 + 1.3); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 1.5);
+  o.start(t0); o.stop(t0 + 1.55);
+  muteListening(t0 + 1.8);
+  return new Promise(r => setTimeout(r, 1700));
 }
 
 function lvEl(tag, attrs, ...kids) {
@@ -1442,6 +1598,22 @@ function holdMeter(opts) {
   let idx = 0, tracker = null, unsub = null, finished = false, lastSound = 0, pauseUntil = 0, shownSec = -1;
   const life = { gen: 0, dead: false, starting: false };
   const bests = {}; // best hold per target this session, reported when listening stops
+  // The note being played now, judged when it ends (spoken feedback never talks over a held note).
+  let cur = null, talking = false;
+  function noteEnded(n) {
+    cur = null;
+    if (talking || finished || n.frames < 8) return;
+    const t = targets[idx], near = n.notes.sort((a, b) => b[1] - a[1])[0][0], cents = n.cents / n.frames, clear = n.clarity / n.frames;
+    let refs = null, glide = null;
+    if (t !== null && near !== t) { refs = [["note", near, "is"], ["note", t, "play"]]; glide = [near + cents / 100, t]; }
+    else if (cents > o.cents) { refs = ["sharp"]; glide = t !== null ? [t + cents / 100, t] : null; }
+    else if (cents < -o.cents) { refs = ["flat"]; glide = t !== null ? [t + cents / 100, t] : null; }
+    else if (clear < 0.86) refs = ["airy"];
+    else if (n.secs < 1.5) refs = ["too_short"];
+    else refs = ["breathe_again"];
+    talking = true;
+    lvSay(...refs).then(() => glide ? lvGlide(glide[0], glide[1]) : null).then(() => { talking = false; });
+  }
   const R = 52, C = 2 * Math.PI * R;
   const ring = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   ring.setAttribute("viewBox", "0 0 120 120"); ring.setAttribute("class", "lv-ring"); ring.setAttribute("aria-hidden", "true");
@@ -1462,6 +1634,8 @@ function holdMeter(opts) {
   const needle = lvEl("i", { class: "lv-needle" });
   const centsTxt = lvEl("span", { class: "lv-cents" }, "");
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play a long, steady note.");
+  // For screen readers: the seconds held, every 2 s (the ring itself is silent).
+  const srLive = lvEl("span", { class: "lv-sr", "aria-live": "polite" });
   const chips = targets[0] === null ? null : lvEl("div", { class: "lv-chips" }, targets.map((s, i) => lvEl("span", { class: "lv-chip", "data-i": String(i) }, lvNote(s))));
   const startBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start");
   const hearBtn = targets[0] === null ? null : lvEl("button", { type: "button", class: "lv-btn" }, "Hear the note");
@@ -1474,7 +1648,7 @@ function holdMeter(opts) {
       lvEl("div", { class: "lv-ringwrap lv-glow", role: "progressbar", "aria-label": "Seconds held", "aria-valuemin": "0", "aria-valuemax": String(o.seconds), "aria-valuenow": "0" }, ring, lvEl("div", { class: "lv-ringtxt" }, noteBig, secs)),
       lvEl("div", { class: "lv-tune" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle), lvEl("div", { class: "lv-scale" }, lvEl("span", null, "flat"), centsTxt, lvEl("span", null, "sharp")))),
     lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt),
-    msg,
+    msg, srLive,
     lvEl("div", { class: "lv-row" }, startBtn, hearBtn, drone.el));
 
   function mark() { if (chips) chips.querySelectorAll(".lv-chip").forEach((c, i) => { c.classList.toggle("lv-now", i === idx && !finished); }); }
@@ -1485,7 +1659,10 @@ function holdMeter(opts) {
     const s = tracker.feed(r);
     const frac = Math.min(1, s.held / o.seconds), key = String(targets[idx]);
     bests[key] = Math.max(bests[key] || 0, s.best);
-    if (Math.floor(s.held) !== shownSec) { shownSec = Math.floor(s.held); el.querySelector(".lv-ringwrap").setAttribute("aria-valuenow", String(Math.min(o.seconds, shownSec))); }
+    if (Math.floor(s.held) !== shownSec) {
+      shownSec = Math.floor(s.held); el.querySelector(".lv-ringwrap").setAttribute("aria-valuenow", String(Math.min(o.seconds, shownSec)));
+      if (shownSec > 0 && shownSec % 2 === 0) srLive.textContent = shownSec + " s";
+    }
     arcSvg.setAttribute("stroke-dashoffset", (C * (1 - frac)).toFixed(1));
     secs.textContent = s.held.toFixed(1) + " s" + (s.best > s.held + 0.5 ? " (best " + s.best.toFixed(1) + ")" : "");
     const wrap = el.querySelector(".lv-ringwrap");
@@ -1494,6 +1671,11 @@ function holdMeter(opts) {
     glowTxt.textContent = r.semi === null ? "" : glow > 0.93 ? "Tone: clear" : glow > 0.85 ? "Tone: fairly clear" : "Tone: airy";
     if (r.semi !== null && r.semi > -7.5) {
       lastSound = r.t;
+      if (!cur) cur = { start: r.t, frames: 0, cents: 0, clarity: 0, notes: [] };
+      cur.frames++; cur.secs = r.t - cur.start; cur.clarity += r.clarity || 0;
+      const t0 = targets[idx];
+      cur.cents += t0 === null ? r.cents : (r.semi - t0) * 100;
+      const e = cur.notes.find(x => x[0] === r.near); if (e) e[1]++; else cur.notes.push([r.near, 1]);
       noteBig.replaceChildren(...[].concat(lvNote(r.near)));
       const ok = Math.abs(r.cents) <= o.cents;
       needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
@@ -1502,15 +1684,19 @@ function holdMeter(opts) {
       const t = targets[idx];
       if (t !== null && r.near !== t) msg.textContent = `That is ${codeOf(r.near)} (${westOf(r.near)}). The target is ${codeOf(t)}.`;
       else msg.textContent = s.ok ? (s.held < 1.5 ? "Good start. Keep the air steady." : pitchAdvice(r.cents)) : pitchAdvice(r.cents);
-    } else if (r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; }
+    } else if (cur && r.t - lastSound > 0.6) noteEnded(cur);
+    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; }
     if (s.done) {
       lvChime();
       if (chips) chips.querySelector(`[data-i="${idx}"]`).classList.add("lv-ok");
+      cur = null;
       if (idx < targets.length - 1) {
         idx++; pauseUntil = r.t + 1.2; newTracker();
         msg.textContent = `Held. Rest, then ${codeOf(targets[idx])}.`;
+        talking = true; lvSay("held_well", ["note", targets[idx], "hold"]).then(() => { talking = false; });
       } else {
         finished = true; mark();
+        lvSay(targets.length > 1 ? "every_note_held" : "held_well");
         msg.textContent = targets[0] === null ? `Held ${o.seconds} s. Well done.` : "Every note held. Well done.";
         el.classList.add("lv-passed");
         if (o.onPass) { try { o.onPass({ targets, seconds: o.seconds }); } catch (e) { /* ignore */ } }
@@ -1532,6 +1718,7 @@ function holdMeter(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... play a long note.";
+      talking = true; lvSay(targets[idx] === null ? "hold_intro" : ["note", targets[idx], "hold"], ["secs", o.seconds]).then(() => { talking = false; });
     } catch (e) { msg.textContent = lvMicError(e); }
     finally { life.starting = false; }
   }
@@ -1543,6 +1730,11 @@ function holdMeter(opts) {
   startBtn.addEventListener("click", start);
   if (hearBtn) hearBtn.addEventListener("click", () => { const c = ac(); playNote(targets[idx], 1.6); muteListening(c.currentTime + 1.9); });
   return { el, start, stop, destroy() { life.dead = true; stop(); drone.stop(); } };
+}
+
+// A short rising two-tone after the app's phrase: "your turn", heard without reading.
+function lvTurnCue(after) {
+  try { const c = ac(), t = Math.max(c.currentTime, after) + 0.12; click(t, "tick"); click(t + 0.1, "tali"); muteListening(t + 0.35); } catch (e) { /* audio unavailable */ }
 }
 
 // ---------- Phrase check ----------
@@ -1682,6 +1874,7 @@ function echoGame(opts) {
     msg.textContent = "Listen...";
     clearTimeout(playTimer);
     playTimer = setTimeout(() => { playing = false; msg.textContent = "Your turn: play it back."; armQuiet(); }, Math.max(0, (end - ac().currentTime) * 1000 + 350));
+    lvTurnCue(end);
   }
   function armQuiet() { clearTimeout(quietTimer); quietTimer = setTimeout(() => finish(true), 7000); }
   function finish(timedOut) {
@@ -1703,12 +1896,13 @@ function echoGame(opts) {
     }
     if (clean) {
       streak++; misses = 0; lvChime();
-      if (streak >= 2 && len < 8) { len++; streak = 0; msg.textContent = `Correct. Next phrases have ${len} notes.`; }
-      else msg.textContent = "Correct.";
+      if (streak >= 2 && len < 8) { len++; streak = 0; msg.textContent = `Correct. Next phrases have ${len} notes.`; lvSay("correct", "level_up"); }
+      else { msg.textContent = "Correct."; lvSay("correct"); }
     } else {
       misses++; streak = 0;
       if (misses >= 2 && len > 1) { len--; misses = 0; msg.textContent = `Not quite. Back to ${len} notes. Press Hear it again to retry.`; }
       else msg.textContent = timedOut && !st.pos ? "No notes heard. Press Hear it again, then play it back." : "Not quite. Press Hear it again to retry, or play a new phrase.";
+      lvSay("not_quite");
     }
     save(); showLen();
     emitLive({ type: "echo", level: level[0], levelLabel: level[1], len, correct: clean });

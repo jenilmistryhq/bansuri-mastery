@@ -44,6 +44,11 @@ const ICONS = {
   share: "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13",
   check: "M5 12l5 5L20 7",
   coach: "M12 3l9 4.5-9 4.5-9-4.5zM6 10v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5M21 7.5V13",
+  speaker: "M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11",
+  listen: "M4 15v-3a8 8 0 0 1 16 0v3M4 15h3v5H5a1 1 0 0 1-1-1zM20 15h-3v5h2a1 1 0 0 0 1-1z",
+  hand: "M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V12M14 11.5V6a1.5 1.5 0 0 1 3 0v7c0 4-2.5 8-7 8-3 0-4.5-2-6-5l-1.2-2.4a1.5 1.5 0 0 1 2.6-1.4L8 15",
+  star: "M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9z",
+  read: "M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z",
 };
 export function icon(name, label) {
   const svg = document.createElementNS(SVG_NS, "svg");

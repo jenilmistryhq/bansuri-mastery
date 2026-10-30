@@ -117,6 +117,8 @@ export function renderMarkdown(md, path) {
     if (!img.getAttribute("alt")) img.setAttribute("alt", "");
   }
   const title = (root.querySelector("h1") || {}).textContent || path;
+  // Course text is English; the interface translator must not swap single words inside it.
+  root.setAttribute("translate", "no");
   return { node: document.importNode(root, true), title };
 }
 
@@ -179,6 +181,7 @@ export function renderInline(md, path) {
   const doc = new DOMParser().parseFromString("<span id=\"r\">" + html + "</span>", "text/html");
   const root = doc.getElementById("r");
   sanitize(root);
+  root.setAttribute("translate", "no");
   for (const a of root.querySelectorAll("a[href]")) {
     const href = a.getAttribute("href");
     if (/^https?:\/\//i.test(href)) { a.setAttribute("target", "_blank"); a.setAttribute("rel", "noopener noreferrer"); }

@@ -2,7 +2,14 @@
 // Stored in localStorage["bansuri.settings"]; always read and write through these functions.
 
 const SETTINGS_KEY = "bansuri.settings";
-export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false });
+// Accessibility and language settings live here too, because the shared widgets read them:
+// lang (en | hi), talk (speak prompts and feedback), notesAs (letters | pictures), simple (Simple mode),
+// textSize (1 = normal), easyFont, contrast, beatFlash, vibrate, gameSpeed (slow | normal | fast),
+// noTimer (games without a clock), bigTargets, cues (game sounds and spoken notes for blind players),
+// hints (a guide tone after an off note).
+export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
+  lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -13,7 +20,21 @@ function cleanSettings(s) {
     saOct: Number(s.saOct) === 4 ? 4 : 5,
     a4: n(s.a4, 400, 480, SETTINGS_DEFAULTS.a4),
     volume: n(s.volume, 0, 1, SETTINGS_DEFAULTS.volume),
-    deva: s.deva === true
+    deva: s.deva === true,
+    lang: s.lang === "hi" ? "hi" : "en",
+    talk: s.talk === true,
+    notesAs: s.notesAs === "pictures" ? "pictures" : "letters",
+    simple: s.simple === true,
+    textSize: n(s.textSize, 0.85, 1.6, 1),
+    easyFont: s.easyFont === true,
+    contrast: s.contrast === true,
+    beatFlash: s.beatFlash === true,
+    vibrate: s.vibrate === true,
+    gameSpeed: ["slow", "normal", "fast"].includes(s.gameSpeed) ? s.gameSpeed : "normal",
+    noTimer: s.noTimer === true,
+    bigTargets: s.bigTargets === true,
+    cues: s.cues === true,
+    hints: s.hints !== false
   };
 }
 

@@ -11,6 +11,8 @@ import { placementTest } from "../placement.js";
 import { listenMic, micStats } from "../core/listen.js";
 import { ac } from "../core/audio.js";
 import { listRecordings, saveRecording, clearRecordings, blobToDataUrl } from "../recorder.js";
+import { sayButton, saveVoiceOffline, modelReady, readAloud } from "../voice.js";
+import { fingSvg } from "../core/fingers.js";
 
 function b64ToBlob(dataUrl) {
   const m = /^data:([^;,]*)(;base64)?,(.*)$/s.exec(dataUrl || "");
@@ -55,11 +57,67 @@ function download(name, text, type) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
+// Language, voice and access: for learners who prefer listening to reading, and for anyone who
+// needs larger text, more contrast, pictures instead of letters, or beats they can see and feel.
+function accessSection() {
+  const set = getSettings();
+  const check = (key, label, extra) => {
+    const box = h("input", { type: "checkbox", id: "st-" + key });
+    box.checked = !!set[key];
+    box.addEventListener("change", () => setSettings({ [key]: box.checked }));
+    return h("label", { class: "check", for: "st-" + key }, box, label, extra || null);
+  };
+  const select = (key, label, options) => {
+    const sel = h("select", { id: "st-" + key }, options.map(([v, l]) => h("option", { value: v }, l)));
+    sel.value = String(set[key]);
+    sel.addEventListener("change", () => setSettings({ [key]: sel.value }));
+    return h("label", { class: "field", for: "st-" + key }, label, sel);
+  };
+  // The language choice is written in both languages, so it can be found without reading English.
+  const langSel = h("select", { id: "st-lang", translate: "no" }, h("option", { value: "en" }, "English"), h("option", { value: "hi" }, "हिन्दी (Hindi)"));
+  langSel.value = set.lang;
+  langSel.addEventListener("change", () => setSettings({ lang: langSel.value }));
+  const size = h("input", { id: "st-size", type: "range", min: "85", max: "160", step: "5", value: String(Math.round(set.textSize * 100)) });
+  const sizeTxt = h("span", { class: "mono small" }, Math.round(set.textSize * 100) + "%");
+  size.addEventListener("input", () => { sizeTxt.textContent = size.value + "%"; setSettings({ textSize: Number(size.value) / 100 }); });
+  const offline = h("button", { type: "button", class: "btn" }, "Keep the voice for offline use");
+  offline.addEventListener("click", async () => {
+    offline.disabled = true;
+    const n = await saveVoiceOffline(p => { offline.textContent = "Saving the voice... " + Math.round(p * 100) + "%"; });
+    offline.textContent = n ? "Voice saved for offline use" : "Could not save the voice now"; offline.disabled = false;
+  });
+  const model = h("p", { class: "small muted" }, modelReady() ? "The reading voice for lessons is on this device." : "Lessons can also be read aloud by a natural voice. It downloads once (about 90 MB) the first time you tap a speaker on a lesson card.");
+  const preview = h("span", { class: "row", "aria-hidden": "true" }, [0, 2, 4, 7].map(n => fingSvg(n, { size: 20 })));
+  return h("section", { class: "card", id: "access" }, h("h2", null, "Language, voice and access"),
+    h("label", { class: "field", for: "st-lang" }, h("span", { translate: "no" }, "Language / भाषा"), langSel),
+    h("p", { class: "small muted" }, "The app's buttons, messages and voice change language. The course pages stay in English, and the voice can read them aloud."),
+    h("h3", null, "Voice"),
+    check("talk", "Talk to me: say the steps, and how each note went", sayButton(["welcome"], "Hear the voice")),
+    h("p", { class: "small muted" }, "A natural human-sounding voice, made on this device's copy of the app; nothing is sent anywhere. The microphone does not listen while the app speaks."),
+    h("div", { class: "row" }, offline), model,
+    check("hints", "After an off note, play a soft slide from my note to the right one"),
+    h("h3", null, "Easier to use"),
+    check("simple", "Simple mode: three big buttons (Practice, Play, Listen), and the app talks you through each session"),
+    select("notesAs", "Show notes as", [["letters", "Letters (S R G)"], ["pictures", "Pictures of the fingering"]]), preview,
+    h("label", { class: "field", for: "st-size" }, "Text size", h("span", { class: "row" }, size, sizeTxt)),
+    check("easyFont", "Easy-to-read font"),
+    check("contrast", "High contrast"),
+    check("bigTargets", "Bigger buttons"),
+    h("h3", null, "Beats you can see and feel"),
+    check("beatFlash", "Flash the screen edge on every beat"),
+    check("vibrate", "Vibrate on every beat (phones that support it)"),
+    h("h3", null, "Games"),
+    select("gameSpeed", "Game speed", [["slow", "Slow"], ["normal", "Normal"], ["fast", "Fast"]]),
+    check("noTimer", "No time limit in the games"),
+    check("cues", "Game sounds for playing without looking: the next note is spoken, and progress is heard as ticks"));
+}
+
 export async function render(main) {
   const s = getState();
   const set = getSettings();
   const page = h("div", { class: "page" });
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Settings"), h("h1", null, "Settings")));
+  page.append(accessSection());
 
   // Flute: set by hand, or found by listening to the learner's Sa.
   const findHost = h("div", { class: "toolhost", hidden: true });
@@ -130,7 +188,7 @@ export async function render(main) {
 
   // Placement.
   const plan = getPlan();
-  const phaseSel = h("select", { id: "st-phase" }, plan.phases.map(p => h("option", { value: String(p.id) }, "Phase " + p.id + ": " + p.title + " (Day " + p.firstDay + ")")));
+  const phaseSel = h("select", { id: "st-phase", "aria-label": "Phase to start from" }, plan.phases.map(p => h("option", { value: String(p.id) }, "Phase " + p.id + ": " + p.title + " (Day " + p.firstDay + ")")));
   const placeBtn = h("button", { type: "button", class: "btn" }, "Start from this phase");
   placeBtn.addEventListener("click", () => {
     const ph = plan.phases.find(p => String(p.id) === phaseSel.value);

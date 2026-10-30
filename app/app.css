@@ -43,7 +43,8 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; -webkit-text-size-adjust: 100%; }
+html { font-size: calc(100% * var(--text-scale, 1)); }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1rem; line-height: 1.55; -webkit-text-size-adjust: 100%; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 [hidden] { display: none !important; }
@@ -228,7 +229,8 @@ canvas.plot { width: 100%; height: 220px; display: block; background: var(--bg);
 .badge { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; display: grid; gap: 4px; justify-items: start; background: var(--surface); }
 .badge .medal { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-size: 1.15rem; background: var(--sunken); color: var(--muted); }
 .badge.earned .medal { background: var(--bamboo); color: #2b1d0e; box-shadow: inset 0 -3px 0 var(--bamboo-deep); }
-.badge:not(.earned) { opacity: 0.6; }
+.badge:not(.earned) { border-style: dashed; }
+.badge:not(.earned) .medal { background: transparent; border: 2px dashed var(--line); }
 .badge b { font-size: 0.95rem; }
 
 /* Share card */
@@ -423,3 +425,62 @@ dialog.modal::backdrop { background: rgba(0,0,0,0.4); }
 .ccell.hold.on { background: var(--bamboo); border-color: var(--bamboo); }
 .cout { background: var(--sunken); padding: 8px 10px; border-radius: 8px; overflow-x: auto; margin: 0; }
 @media (max-width: 560px) { .tabbar a { font-size: 0.66rem; } }
+
+/* Language, voice and access */
+html.easyfont { --body: "Atkinson Hyperlegible", "Hind", system-ui, sans-serif; --display: "Atkinson Hyperlegible", "Hind", system-ui, sans-serif; }
+html.easyfont body { line-height: 1.7; letter-spacing: 0.01em; word-spacing: 0.06em; }
+html.contrast { --muted: var(--ink); --line: var(--ink); }
+html.contrast .card, html.contrast .btn, html.contrast .input { border-width: 2px; }
+html.contrast a { text-decoration: underline; }
+html.bigtargets .btn, html.bigtargets .iconbtn, html.bigtargets button, html.bigtargets select, html.bigtargets .input { min-height: 52px; font-size: 1.05rem; }
+html.bigtargets .check input[type=checkbox] { width: 26px; height: 26px; }
+html:lang(hi) body { line-height: 1.75; }
+.caption { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); max-width: min(92vw, 720px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 1.05rem; line-height: 1.4; z-index: 60; box-shadow: 0 6px 24px rgb(0 0 0 / 0.25); pointer-events: none; }
+.caption[hidden] { display: none; }
+.beatflash { position: fixed; inset: 0; pointer-events: none; z-index: 70; box-shadow: inset 0 0 0 0 var(--accent); }
+.beatflash.on { animation: beatflash 160ms ease-out; }
+.beatflash.on.sam { --accent: var(--bamboo); animation-duration: 260ms; }
+@keyframes beatflash { from { box-shadow: inset 0 0 0 14px var(--accent); } to { box-shadow: inset 0 0 0 0 var(--accent); } }
+@media (prefers-reduced-motion: reduce) { .beatflash.on { animation: none; box-shadow: inset 0 0 0 10px var(--accent); } }
+.speakbtn { gap: 6px; }
+.speakbtn.on { background: var(--accent); color: var(--accent-ink); }
+.readwrap { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 4px; max-width: 100%; }
+.readwrap p { text-align: right; margin: 0; }
+.fingpic { display: block; }
+.notepic { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1; vertical-align: middle; }
+.notepic small { font-size: 0.7em; color: var(--muted); }
+.lv-big .notepic .fingpic { width: 104px; height: 34px; }
+.cmark { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--accent-ink); overflow: hidden; }
+.cmark .fingpic { width: 26px; height: 9px; }
+.cmark .notepic small { display: none; }
+.ccell .cmark { pointer-events: none; }
+.clabel .fingpic { width: 40px; height: 13px; }
+/* First run and Simple mode */
+.howcard { border-left: 4px solid var(--accent); }
+.howtiles, .simpletiles, .listentiles { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.howtile, .simpletile, .listentile { display: grid; justify-items: center; gap: 8px; padding: 18px 12px; border-radius: var(--radius); border: 2px solid var(--line); background: var(--surface); color: var(--ink); text-align: center; text-decoration: none; cursor: pointer; font: inherit; }
+.howtile .icon, .simpletile .icon, .listentile .icon { width: 44px; height: 44px; }
+.howtile:hover, .simpletile:hover, .listentile:hover, .listentile.on { border-color: var(--accent); }
+.listentile.on { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+.simpletile { min-height: 150px; align-content: center; font-size: 1.25rem; }
+.simpletile.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); grid-column: 1 / -1; min-height: 170px; }
+.simpletile .icon { width: 64px; height: 64px; }
+.simplehero h1 { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+.langpick { margin: 4px 0 12px; }
+html.simple .topbar .iconbtn[href="#/library"] { display: none; }
+@media (max-width: 860px) { html.simple .tabbar { grid-template-columns: repeat(3, 1fr); } }
+/* The animated flute */
+.demo { --nc: var(--accent); display: grid; gap: 6px; justify-items: center; }
+.demoflute { width: 100%; max-width: 760px; height: auto; }
+.df-body { fill: var(--bamboo); opacity: 0.85; }
+.df-bind { fill: var(--ink); opacity: 0.35; }
+.df-hole { fill: var(--ink); opacity: 0.75; }
+.df-mouth { opacity: 0.9; }
+.df-finger { fill: var(--nc); opacity: 0; transform-box: fill-box; transform-origin: center; transform: translateY(-14px); transition: opacity 120ms, transform 160ms ease-out; }
+.df-finger.on { opacity: 0.92; transform: none; }
+.df-stream { fill: none; stroke: var(--nc); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 8 14; opacity: 0; }
+.demo.blowing .df-stream { opacity: 0.8; animation: dfair 600ms linear infinite; }
+@keyframes dfair { to { stroke-dashoffset: -44; } }
+.df-note { min-height: 3rem; font-size: 2rem; font-weight: 600; color: var(--nc); display: flex; align-items: center; }
+.df-note .fingpic { width: 120px; height: 39px; }
+@media (prefers-reduced-motion: reduce) { .demo.blowing .df-stream { animation: none; } .df-finger { transition: none; } }

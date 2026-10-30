@@ -7,6 +7,7 @@ import { mountBench } from "../bench/bench.js";
 import { fetchDoc } from "../content.js";
 import { ragaInfo } from "./reader.js";
 import { challengeLink } from "./play.js";
+import { noteLabel } from "../core/fingers.js";
 
 const SETS = [["Bilawal (major)", [0, 2, 4, 5, 7, 9, 11]], ["S R G P D (pentatonic)", [0, 2, 4, 7, 9]], ["Kalyan", [0, 2, 4, 6, 7, 9, 11]]];
 
@@ -24,7 +25,7 @@ export async function render(main) {
   const setSel = h("select", { class: "input", "aria-label": "Notes", style: { width: "auto" } }, SETS.map(([l], i) => h("option", { value: "set:" + i }, l)));
   const lenSel = h("select", { class: "input", "aria-label": "Length", style: { width: "auto" } }, [8, 16, 24, 32].map(n => h("option", { value: String(n) }, n + " beats")));
   lenSel.value = "16";
-  const grid = h("div", { class: "cgrid", role: "grid", "aria-label": "Melody grid: rows are notes, columns are beats" });
+  const grid = h("div", { class: "cgrid", role: "group", "aria-label": "Melody grid: rows are notes, columns are beats. Arrow keys move between cells." });
   const out = h("pre", { class: "mono small cout" });
   const benchHost = h("div", { class: "toolhost", hidden: true });
   const saved = h("div", { class: "stack" });
@@ -40,15 +41,29 @@ export async function render(main) {
   }).catch(() => {});
 
   const rows = () => { const pcs = notes; const r = []; for (const o of [12, 0, -12]) for (const p of pcs.slice().reverse()) { const s = p + o; if (s >= -5 && s <= 12) r.push(s); } return r; };
+  // After a redraw the same cell keeps the keyboard focus.
+  const refocus = (row, i) => { const r = grid.querySelector(`.crow[data-row="${row}"]`); const b = r && r.querySelectorAll(".ccell")[i]; if (b) b.focus(); };
+  // A chosen cell shows its note (letter or fingering picture), so colour is not the only sign.
+  const noteMark = (s, on) => on ? h("span", { class: "cmark" }, noteLabel(s)) : null;
   function draw() {
     const rs = rows();
     grid.style.setProperty("--beats", String(beats));
-    grid.replaceChildren(...rs.map(s => h("div", { class: "crow", role: "row" }, h("span", { class: "clabel mono" }, codeOf(s)),
+    grid.replaceChildren(...rs.map(s => h("div", { class: "crow", "data-row": String(s) }, h("span", { class: "clabel" }, noteLabel(s)),
       ...cells.map((c, i) => h("button", { type: "button", class: "ccell" + (c === s ? " on" : "") + (i % 4 === 0 ? " bar" : ""), "aria-label": codeOf(s) + " on beat " + (i + 1), "aria-pressed": String(c === s),
-        onclick: () => { cells[i] = cells[i] === s ? null : s; draw(); } })))),
-      h("div", { class: "crow", role: "row" }, h("span", { class: "clabel small" }, "hold"), ...cells.map((c, i) => h("button", { type: "button", class: "ccell hold" + (c === "hold" ? " on" : "") + (i % 4 === 0 ? " bar" : ""), "aria-label": "Hold on beat " + (i + 1), onclick: () => { cells[i] = cells[i] === "hold" ? null : "hold"; draw(); } }))));
+        onclick: () => { cells[i] = cells[i] === s ? null : s; draw(); refocus(String(s), i); } }, noteMark(s, c === s))))),
+      h("div", { class: "crow", "data-row": "hold" }, h("span", { class: "clabel small" }, "hold"), ...cells.map((c, i) => h("button", { type: "button", class: "ccell hold" + (c === "hold" ? " on" : "") + (i % 4 === 0 ? " bar" : ""), "aria-label": "Hold on beat " + (i + 1), onclick: () => { cells[i] = cells[i] === "hold" ? null : "hold"; draw(); refocus("hold", i); } }))));
     out.textContent = gridNotation(cells);
   }
+  // Arrow keys move between cells (one tab stop for the whole grid); Space or Enter toggles a cell.
+  grid.addEventListener("keydown", e => {
+    const cell = e.target.closest && e.target.closest(".ccell"); if (!cell) return;
+    const rowsEl = [...grid.querySelectorAll(".crow")], r = rowsEl.findIndex(x => x.contains(cell)), c = [...rowsEl[r].querySelectorAll(".ccell")].indexOf(cell);
+    const d = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const nr = Math.max(0, Math.min(rowsEl.length - 1, r + d[0])), nc = Math.max(0, Math.min(beats - 1, c + d[1]));
+    const next = rowsEl[nr].querySelectorAll(".ccell")[nc]; if (next) next.focus();
+  });
   const play = () => {
     if (stopPlay) { stopPlay(); stopPlay = null; return; }
     const b = buildEvents(parseNotation(gridNotation(cells)).tokens, 72);

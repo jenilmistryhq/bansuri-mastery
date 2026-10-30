@@ -4,10 +4,30 @@
 import { codeOf, nameOf, westOf, hzOf, WEST, devaOf } from "./theory.js";
 import { ac, master, makeVoice, playNote, tanpura, click } from "./audio.js";
 import { setSettings, getSettings } from "./settings.js";
+import { noteLabel } from "./fingers.js";
 
-// A note's label for the widgets: S R G, with Devanagari underneath when the learner chose it.
-function lvNote(semi) {
-  return getSettings().deva ? [codeOf(semi), lvEl("small", { class: "lv-deva" }, devaOf(semi))] : codeOf(semi);
+// A note's label for the widgets: S R G (with Devanagari underneath when chosen), or a picture of
+// the fingering for learners who prefer pictures to letters.
+function lvNote(semi) { return noteLabel(semi); }
+
+// The app plugs its voice in here (setSpeaker); the standalone bench has none and stays silent.
+// lvSay(...refs) speaks clip references such as "good" or ["note", 0, "is"]; resolves when done.
+let speaker = null;
+export function setSpeaker(fn) { speaker = fn; }
+function lvSay(...refs) { if (!speaker) return Promise.resolve(false); try { return Promise.resolve(speaker(...refs)).catch(() => false); } catch (e) { return Promise.resolve(false); } }
+
+// A soft glide from the note played to the target, so the ear hears which way to go. Only for
+// learners who chose spoken feedback ("Talk to me") and kept the hints setting on.
+function lvGlide(from, to) {
+  const st = getSettings();
+  if (!st.hints || !st.talk || !speaker) return Promise.resolve();
+  const c = ac(), t0 = c.currentTime + 0.05, o = c.createOscillator(), g = c.createGain();
+  o.type = "sine"; o.connect(g); g.connect(master());
+  o.frequency.setValueAtTime(hzOf(from), t0); o.frequency.setValueAtTime(hzOf(from), t0 + 0.25); o.frequency.exponentialRampToValueAtTime(hzOf(to), t0 + 0.9);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.06); g.gain.setValueAtTime(0.18, t0 + 1.3); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 1.5);
+  o.start(t0); o.stop(t0 + 1.55);
+  muteListening(t0 + 1.8);
+  return new Promise(r => setTimeout(r, 1700));
 }
 import { listenMic, muteListening, holdTracker, noteSequencer, phraseMatcher, tapStats, pitchAdvice, tapLatency, tapCalibrated, emitLive } from "./listen.js";
 
@@ -89,6 +109,22 @@ export function holdMeter(opts) {
   let idx = 0, tracker = null, unsub = null, finished = false, lastSound = 0, pauseUntil = 0, shownSec = -1;
   const life = { gen: 0, dead: false, starting: false };
   const bests = {}; // best hold per target this session, reported when listening stops
+  // The note being played now, judged when it ends (spoken feedback never talks over a held note).
+  let cur = null, talking = false;
+  function noteEnded(n) {
+    cur = null;
+    if (talking || finished || n.frames < 8) return;
+    const t = targets[idx], near = n.notes.sort((a, b) => b[1] - a[1])[0][0], cents = n.cents / n.frames, clear = n.clarity / n.frames;
+    let refs = null, glide = null;
+    if (t !== null && near !== t) { refs = [["note", near, "is"], ["note", t, "play"]]; glide = [near + cents / 100, t]; }
+    else if (cents > o.cents) { refs = ["sharp"]; glide = t !== null ? [t + cents / 100, t] : null; }
+    else if (cents < -o.cents) { refs = ["flat"]; glide = t !== null ? [t + cents / 100, t] : null; }
+    else if (clear < 0.86) refs = ["airy"];
+    else if (n.secs < 1.5) refs = ["too_short"];
+    else refs = ["breathe_again"];
+    talking = true;
+    lvSay(...refs).then(() => glide ? lvGlide(glide[0], glide[1]) : null).then(() => { talking = false; });
+  }
   const R = 52, C = 2 * Math.PI * R;
   const ring = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   ring.setAttribute("viewBox", "0 0 120 120"); ring.setAttribute("class", "lv-ring"); ring.setAttribute("aria-hidden", "true");
@@ -109,6 +145,8 @@ export function holdMeter(opts) {
   const needle = lvEl("i", { class: "lv-needle" });
   const centsTxt = lvEl("span", { class: "lv-cents" }, "");
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play a long, steady note.");
+  // For screen readers: the seconds held, every 2 s (the ring itself is silent).
+  const srLive = lvEl("span", { class: "lv-sr", "aria-live": "polite" });
   const chips = targets[0] === null ? null : lvEl("div", { class: "lv-chips" }, targets.map((s, i) => lvEl("span", { class: "lv-chip", "data-i": String(i) }, lvNote(s))));
   const startBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start");
   const hearBtn = targets[0] === null ? null : lvEl("button", { type: "button", class: "lv-btn" }, "Hear the note");
@@ -121,7 +159,7 @@ export function holdMeter(opts) {
       lvEl("div", { class: "lv-ringwrap lv-glow", role: "progressbar", "aria-label": "Seconds held", "aria-valuemin": "0", "aria-valuemax": String(o.seconds), "aria-valuenow": "0" }, ring, lvEl("div", { class: "lv-ringtxt" }, noteBig, secs)),
       lvEl("div", { class: "lv-tune" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle), lvEl("div", { class: "lv-scale" }, lvEl("span", null, "flat"), centsTxt, lvEl("span", null, "sharp")))),
     lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt),
-    msg,
+    msg, srLive,
     lvEl("div", { class: "lv-row" }, startBtn, hearBtn, drone.el));
 
   function mark() { if (chips) chips.querySelectorAll(".lv-chip").forEach((c, i) => { c.classList.toggle("lv-now", i === idx && !finished); }); }
@@ -132,7 +170,10 @@ export function holdMeter(opts) {
     const s = tracker.feed(r);
     const frac = Math.min(1, s.held / o.seconds), key = String(targets[idx]);
     bests[key] = Math.max(bests[key] || 0, s.best);
-    if (Math.floor(s.held) !== shownSec) { shownSec = Math.floor(s.held); el.querySelector(".lv-ringwrap").setAttribute("aria-valuenow", String(Math.min(o.seconds, shownSec))); }
+    if (Math.floor(s.held) !== shownSec) {
+      shownSec = Math.floor(s.held); el.querySelector(".lv-ringwrap").setAttribute("aria-valuenow", String(Math.min(o.seconds, shownSec)));
+      if (shownSec > 0 && shownSec % 2 === 0) srLive.textContent = shownSec + " s";
+    }
     arcSvg.setAttribute("stroke-dashoffset", (C * (1 - frac)).toFixed(1));
     secs.textContent = s.held.toFixed(1) + " s" + (s.best > s.held + 0.5 ? " (best " + s.best.toFixed(1) + ")" : "");
     const wrap = el.querySelector(".lv-ringwrap");
@@ -141,6 +182,11 @@ export function holdMeter(opts) {
     glowTxt.textContent = r.semi === null ? "" : glow > 0.93 ? "Tone: clear" : glow > 0.85 ? "Tone: fairly clear" : "Tone: airy";
     if (r.semi !== null && r.semi > -7.5) {
       lastSound = r.t;
+      if (!cur) cur = { start: r.t, frames: 0, cents: 0, clarity: 0, notes: [] };
+      cur.frames++; cur.secs = r.t - cur.start; cur.clarity += r.clarity || 0;
+      const t0 = targets[idx];
+      cur.cents += t0 === null ? r.cents : (r.semi - t0) * 100;
+      const e = cur.notes.find(x => x[0] === r.near); if (e) e[1]++; else cur.notes.push([r.near, 1]);
       noteBig.replaceChildren(...[].concat(lvNote(r.near)));
       const ok = Math.abs(r.cents) <= o.cents;
       needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
@@ -149,15 +195,19 @@ export function holdMeter(opts) {
       const t = targets[idx];
       if (t !== null && r.near !== t) msg.textContent = `That is ${codeOf(r.near)} (${westOf(r.near)}). The target is ${codeOf(t)}.`;
       else msg.textContent = s.ok ? (s.held < 1.5 ? "Good start. Keep the air steady." : pitchAdvice(r.cents)) : pitchAdvice(r.cents);
-    } else if (r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; }
+    } else if (cur && r.t - lastSound > 0.6) noteEnded(cur);
+    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; }
     if (s.done) {
       lvChime();
       if (chips) chips.querySelector(`[data-i="${idx}"]`).classList.add("lv-ok");
+      cur = null;
       if (idx < targets.length - 1) {
         idx++; pauseUntil = r.t + 1.2; newTracker();
         msg.textContent = `Held. Rest, then ${codeOf(targets[idx])}.`;
+        talking = true; lvSay("held_well", ["note", targets[idx], "hold"]).then(() => { talking = false; });
       } else {
         finished = true; mark();
+        lvSay(targets.length > 1 ? "every_note_held" : "held_well");
         msg.textContent = targets[0] === null ? `Held ${o.seconds} s. Well done.` : "Every note held. Well done.";
         el.classList.add("lv-passed");
         if (o.onPass) { try { o.onPass({ targets, seconds: o.seconds }); } catch (e) { /* ignore */ } }
@@ -179,6 +229,7 @@ export function holdMeter(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... play a long note.";
+      talking = true; lvSay(targets[idx] === null ? "hold_intro" : ["note", targets[idx], "hold"], ["secs", o.seconds]).then(() => { talking = false; });
     } catch (e) { msg.textContent = lvMicError(e); }
     finally { life.starting = false; }
   }
@@ -190,6 +241,11 @@ export function holdMeter(opts) {
   startBtn.addEventListener("click", start);
   if (hearBtn) hearBtn.addEventListener("click", () => { const c = ac(); playNote(targets[idx], 1.6); muteListening(c.currentTime + 1.9); });
   return { el, start, stop, destroy() { life.dead = true; stop(); drone.stop(); } };
+}
+
+// A short rising two-tone after the app's phrase: "your turn", heard without reading.
+function lvTurnCue(after) {
+  try { const c = ac(), t = Math.max(c.currentTime, after) + 0.12; click(t, "tick"); click(t + 0.1, "tali"); muteListening(t + 0.35); } catch (e) { /* audio unavailable */ }
 }
 
 // ---------- Phrase check ----------
@@ -329,6 +385,7 @@ export function echoGame(opts) {
     msg.textContent = "Listen...";
     clearTimeout(playTimer);
     playTimer = setTimeout(() => { playing = false; msg.textContent = "Your turn: play it back."; armQuiet(); }, Math.max(0, (end - ac().currentTime) * 1000 + 350));
+    lvTurnCue(end);
   }
   function armQuiet() { clearTimeout(quietTimer); quietTimer = setTimeout(() => finish(true), 7000); }
   function finish(timedOut) {
@@ -350,12 +407,13 @@ export function echoGame(opts) {
     }
     if (clean) {
       streak++; misses = 0; lvChime();
-      if (streak >= 2 && len < 8) { len++; streak = 0; msg.textContent = `Correct. Next phrases have ${len} notes.`; }
-      else msg.textContent = "Correct.";
+      if (streak >= 2 && len < 8) { len++; streak = 0; msg.textContent = `Correct. Next phrases have ${len} notes.`; lvSay("correct", "level_up"); }
+      else { msg.textContent = "Correct."; lvSay("correct"); }
     } else {
       misses++; streak = 0;
       if (misses >= 2 && len > 1) { len--; misses = 0; msg.textContent = `Not quite. Back to ${len} notes. Press Hear it again to retry.`; }
       else msg.textContent = timedOut && !st.pos ? "No notes heard. Press Hear it again, then play it back." : "Not quite. Press Hear it again to retry, or play a new phrase.";
+      lvSay("not_quite");
     }
     save(); showLen();
     emitLive({ type: "echo", level: level[0], levelLabel: level[1], len, correct: clean });

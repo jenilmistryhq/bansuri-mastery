@@ -6,6 +6,21 @@ import { ac, makeVoice, tanpura, tablaBol, click } from "./core/audio.js";
 import { listenMic, muteListening, noteSequencer, emitLive } from "./core/listen.js";
 import { micIntro } from "./core/live.js";
 import { parseNotation, buildEvents, playEvents } from "./core/notation.js";
+import { getSettings } from "./core/settings.js";
+import { drawFing, picturesOn, noteLabel } from "./core/fingers.js";
+import { speak } from "./voice.js";
+import { t as tr } from "./core/i18n.js";
+
+// Accessibility settings for the games: speed (slow, normal, fast), no clock, and cues for playing
+// without looking (the next note is spoken, progress is heard as ticks).
+const speedOf = () => ({ slow: 0.65, normal: 1, fast: 1.3 })[getSettings().gameSpeed] || 1;
+const cuesOn = () => getSettings().cues;
+function tick(high) { try { const c = ac(), t = c.currentTime + 0.01; click(t, high ? "tali" : "tick"); muteListening(t + 0.12); } catch (e) { /* audio unavailable */ } }
+// A note's label on a canvas: the fingering picture, or the letter.
+function canvasNote(g, x, y, semi, size, col) {
+  if (picturesOn()) drawFing(g, x, y, semi, size || 20);
+  else { g.fillStyle = col; const l = codeOf(semi); g.fillText(l, x - g.measureText(l).width / 2, y + 5); }
+}
 
 export const NOTE_SETS = [
   ["srg", "S R G", [0, 2, 4]],
@@ -89,14 +104,15 @@ export function pitchSteer(opts) {
       g.fillStyle = gt.state === "pass" ? col.good : gt.state === "miss" ? col.bad : col.bamboo;
       g.fillRect(gt.x - 10, 0, 20, y(gt.note) - gapH / 2);
       g.fillRect(gt.x - 10, y(gt.note) + gapH / 2, 20, H - y(gt.note) - gapH / 2);
-      g.fillStyle = col.ink; g.fillText(codeOf(gt.note), gt.x - 8, y(gt.note) - gapH / 2 - 6);
+      canvasNote(g, gt.x, y(gt.note) - gapH / 2 - 14, gt.note, 18, col.ink);
+      if (gt.state) { g.fillStyle = col.ink; g.font = "bold 16px " + getComputedStyle(document.body).fontFamily; g.fillText(gt.state === "pass" ? "\u2713" : "\u2717", gt.x - 5, H - 8); g.font = "13px " + getComputedStyle(document.body).fontFamily; }
     }
     const by = y(run.bird);
     g.fillStyle = run.flash > 0 ? col.bad : col.accent;
     g.beginPath(); g.arc(run.bx, by, 11, 0, Math.PI * 2); g.fill();
     g.fillStyle = col.surface; g.beginPath(); g.arc(run.bx + 4, by - 3, 3, 0, Math.PI * 2); g.fill();
     g.fillStyle = col.ink; g.font = "bold 15px " + getComputedStyle(document.body).fontFamily;
-    g.fillText(`Score ${run.score}   Lives ${"*".repeat(run.lives)}`, W - 170, 20);
+    g.fillText(tr("Score") + " " + run.score + (run.lives === Infinity ? "" : "   " + tr("Lives") + " " + "*".repeat(run.lives)), W - 170, 20);
   }
   function step(now) {
     if (!run) return;
@@ -108,8 +124,12 @@ export function pitchSteer(opts) {
     else run.bird = Math.max(Math.min(...run.set) - 1, run.bird - dt * 1.2);
     run.flash = Math.max(0, run.flash - dt);
     run.since += dt;
-    const speed = 110 + run.score * 6;
-    if (run.since >= run.every) { run.since = 0; run.note = nextNote(run.set, run.note, run.rnd); run.gates.push({ x: W + 20, note: run.note, state: "" }); run.every = Math.max(1.6, run.every * 0.97); }
+    const speed = (110 + run.score * 6) * speedOf();
+    if (run.since >= run.every / speedOf()) {
+      run.since = 0; run.note = nextNote(run.set, run.note, run.rnd); run.gates.push({ x: W + 20, note: run.note, state: "" }); run.every = Math.max(1.6, run.every * 0.97);
+      status.textContent = tr("Next gate:") + " " + codeOf(run.note);
+      if (cuesOn()) speak(["note", run.note, "next"]);
+    }
     for (const gt of run.gates) {
       const before = gt.x; gt.x -= speed * dt;
       if (!gt.state && before >= run.bx && gt.x < run.bx) {
@@ -138,7 +158,7 @@ export function pitchSteer(opts) {
     const seed = o.seed || Math.floor(Math.random() * 1e9), set = NOTE_SETS.find(s => s[0] === sel.value)[2];
     storeSet("bansuri.game.steer.level", sel.value);
     const rnd = seeded(seed);
-    run = { seed, level: sel.value, set, rnd, gates: [], note: set[0], bird: set[0], target: null, heardAt: -1e9, score: 0, lives: 3, since: 2, every: 2.6, tol: 0.75, flash: 0, bx: 120, last: performance.now() };
+    run = { seed, level: sel.value, set, rnd, gates: [], note: set[0], bird: set[0], target: null, heardAt: -1e9, score: 0, lives: getSettings().noTimer ? Infinity : 3, since: 2, every: 2.6, tol: 0.75, flash: 0, bx: 120, last: performance.now() };
     const ok = await m.start(r => { if (run && r.semi !== null && r.semi > -7.5 && r.semi < 26.5) { run.target = r.semi; run.heardAt = performance.now(); } });
     if (!ok || !run) { run = null; status.textContent = "The microphone is needed to steer. Allow it and press Start."; return; }
     btn.textContent = "Stop"; status.textContent = "Fly! Play each gate's note.";
@@ -170,10 +190,10 @@ export function balloon(opts) {
     g.fillStyle = run.inTune ? col.accent : col.sunken;
     g.beginPath(); g.ellipse(cx, cy, r * 0.88, r, 0, 0, Math.PI * 2); g.fill();
     g.strokeStyle = col.line; g.stroke();
-    g.fillStyle = run.inTune ? col.surface : col.ink; g.font = `bold ${Math.round(18 + r * 0.25)}px ${font}`;
-    const label = codeOf(run.target); g.fillText(label, cx - g.measureText(label).width / 2, cy + 8);
+    g.font = `bold ${Math.round(18 + r * 0.25)}px ${font}`;
+    canvasNote(g, cx, cy, run.target, Math.round(16 + r * 0.2), run.inTune ? col.surface : col.ink);
     g.font = "15px " + font; g.fillStyle = col.ink;
-    g.fillText(`Popped ${run.pops}   ${Math.max(0, Math.ceil(run.left))} s`, 12, 22);
+    g.fillText(tr("Popped") + " " + run.pops + (run.left === Infinity ? "" : "   " + Math.max(0, Math.ceil(run.left)) + " s"), 12, 22);
     if (run.cents !== null) g.fillText(`${run.heard} ${run.cents > 0 ? "+" : ""}${run.cents} cents`, 12, H - 12);
     if (run.burst > 0) { g.fillStyle = col.good; g.font = `bold 28px ${font}`; g.fillText("Pop!", cx - 30, cy - r - 12); }
   }
@@ -182,8 +202,16 @@ export function balloon(opts) {
     const dt = Math.min(0.05, (now - run.last) / 1000); run.last = now;
     run.left -= dt; run.burst = Math.max(0, run.burst - dt);
     run.inTune = now - run.heardAt < 250 && Math.abs(run.semi - run.target) * 100 <= 25;
-    run.size = Math.max(0, Math.min(1, run.size + (run.inTune ? 0.22 : -0.1) * dt));
-    if (run.size >= 1) { run.pops++; run.size = 0; run.burst = 0.6; chime(true); run.target = nextNote(run.set, run.target, run.rnd); }
+    const before = run.size;
+    run.size = Math.max(0, Math.min(1, run.size + (run.inTune ? 0.22 * (getSettings().gameSpeed === "slow" ? 1.4 : 1) : -0.1 * speedOf()) * dt));
+    // Heard without looking: a tick every tenth of the balloon.
+    if (cuesOn() && Math.floor(run.size * 10) > Math.floor(before * 10)) tick(false);
+    if (before < 0.5 && run.size >= 0.5) status.textContent = tr("Half way.");
+    if (run.size >= 1) {
+      run.pops++; run.size = 0; run.burst = 0.6; chime(true); run.target = nextNote(run.set, run.target, run.rnd);
+      status.textContent = tr("Pop! Next balloon:") + " " + codeOf(run.target);
+      if (cuesOn()) speak("pop", ["note", run.target, "next"]);
+    }
     draw();
     if (run.left <= 0) return end();
     raf = requestAnimationFrame(step);
@@ -203,10 +231,12 @@ export function balloon(opts) {
     ac();
     const seed = o.seed || Math.floor(Math.random() * 1e9), set = NOTE_SETS.find(s => s[0] === sel.value)[2];
     storeSet("bansuri.game.balloon.level", sel.value);
-    run = { seed, level: sel.value, set, rnd: seeded(seed), target: set[0], size: 0, pops: 0, left: o.seconds, semi: -99, cents: null, heard: "", heardAt: -1e9, inTune: false, burst: 0, last: performance.now() };
+    run = { seed, level: sel.value, set, rnd: seeded(seed), target: set[0], size: 0, pops: 0, left: getSettings().noTimer ? Infinity : o.seconds, semi: -99, cents: null, heard: "", heardAt: -1e9, inTune: false, burst: 0, last: performance.now() };
     const ok = await m.start(r => { if (run && r.semi !== null && r.semi > -7.5) { run.semi = r.semi; run.heardAt = performance.now(); run.cents = Math.round((r.semi - run.target) * 100); run.heard = codeOf(r.near); } });
     if (!ok || !run) { run = null; status.textContent = "The microphone is needed. Allow it and press Start."; return; }
     btn.textContent = "Stop"; raf = requestAnimationFrame(step);
+    status.textContent = tr("Balloon:") + " " + codeOf(run.target);
+    if (cuesOn()) speak("balloon_intro", ["note", run.target, "play"]);
   });
   requestAnimationFrame(draw);
   return { el, destroy() { if (run) { cancelAnimationFrame(raf); run = null; } m.stop(); } };
@@ -227,7 +257,7 @@ export function fallingNotes(opts) {
   const m = mic(el);
   let raf = 0, run = null;
   songSel.addEventListener("change", () => { const s = o.songs[Number(songSel.value)]; if (s) bpmIn.value = String(s.bpm || 60); });
-  if (o.songs[0]) bpmIn.value = String(o.songs[0].bpm || 60);
+  if (o.songs[0]) bpmIn.value = String(Math.round((o.songs[0].bpm || 60) * (getSettings().gameSpeed === "slow" ? 0.8 : 1)));
   const LAG = 0.09; // the detector hears a note about this long after it starts
   function judge(e) {
     const a = run.t0 + e.start + Math.min(LAG + 0.03, e.dur * 0.45), z = run.t0 + e.start + e.dur + LAG * 0.6;
@@ -244,7 +274,7 @@ export function fallingNotes(opts) {
     const lanes = run.lanes, lw = (W - 20) / lanes.length, hitY = H - 50, pps = 140, now = ac().currentTime;
     lanes.forEach((s, i) => {
       g.fillStyle = i % 2 ? col.surface : col.sunken; g.fillRect(10 + i * lw, 0, lw, H);
-      g.fillStyle = col.muted; g.font = "14px " + font; g.fillText(codeOf(s), 10 + i * lw + lw / 2 - 8, H - 12);
+      g.font = "14px " + font; canvasNote(g, 10 + i * lw + lw / 2, H - 16, s, 16, col.muted);
     });
     g.strokeStyle = col.accent; g.lineWidth = 3; g.beginPath(); g.moveTo(10, hitY); g.lineTo(W - 10, hitY); g.stroke(); g.lineWidth = 1;
     for (const e of run.ev) {
@@ -253,6 +283,8 @@ export function fallingNotes(opts) {
       const i = lanes.indexOf(e.semi), res = run.results.get(e);
       g.fillStyle = res === "perfect" ? col.good : res === "good" ? col.accent : res === "miss" ? col.bad : col.bamboo;
       g.beginPath(); g.roundRect ? g.roundRect(14 + i * lw, yStart - len, lw - 8, len, 6) : g.rect(14 + i * lw, yStart - len, lw - 8, len); g.fill();
+      // Shapes as well as colours: a tick for right, a cross for missed.
+      if (res) { g.fillStyle = col.surface; g.font = "bold 16px " + font; g.fillText(res === "miss" ? "\u2717" : res === "perfect" ? "\u2713\u2713" : "\u2713", 14 + i * lw + 6, yStart - 6); }
     }
     g.fillStyle = col.ink; g.font = "bold 15px " + font;
     g.fillText(`Score ${run.score}   Streak ${run.streak}`, 14, 22);
@@ -338,7 +370,7 @@ export function jam(opts) {
   function drawKeys(hit, outside) {
     const r = raga(); if (!r) return;
     const span = []; for (let s = -5; s <= 12; s++) if (r.notes.some(n => ((n - s) % 12 + 12) % 12 === 0)) span.push(s);
-    keys.replaceChildren(...span.map(s => h("span", { class: "jam-key" + (hit === s ? " on" : "") }, codeOf(s))), outside !== undefined ? h("span", { class: "jam-key out" }, codeOf(outside)) : null);
+    keys.replaceChildren(...span.map(s => h("span", { class: "jam-key" + (hit === s ? " on" : "") }, noteLabel(s))), outside !== undefined ? h("span", { class: "jam-key out", "aria-label": codeOf(outside) + " is outside the raga" }, "! ", noteLabel(outside)) : null);
   }
   ragaSel.addEventListener("change", () => drawKeys());
   function tick() {
@@ -362,6 +394,7 @@ export function jam(opts) {
         const pc = ((n.semi % 12) + 12) % 12, dist = x => { const d = ((x - pc) % 12 + 12) % 12; return Math.min(d, 12 - d); };
         const near = [...new Set(r.notes.map(x => ((x % 12) + 12) % 12))].sort((a, b) => dist(a) - dist(b)).slice(0, 2);
         status.textContent = `${codeOf(n.semi)} is not in ${r.name}. Nearby raga notes: ${near.map(x => codeOf(x)).join(" or ")}.`;
+        if (cuesOn()) speak("out_of_raga");
       }
       run.last.push(codeOf(n.semi) + (inRaga ? "" : "!")); if (run.last.length > 16) run.last.shift();
       trail.textContent = run.last.join(" ");

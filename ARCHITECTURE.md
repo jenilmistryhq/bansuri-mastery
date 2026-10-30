@@ -27,6 +27,8 @@ app/
     lessoncards.js         lessons as cards; playable.js: play buttons on notation
     games.js               games played with the mic: pitchSteer, balloon, fallingNotes, jam
     fun.js                 daily quests, points and levels, celebrate() (toast, chime, confetti)
+    voice.js               the natural voice: pre-made clips (say, speak), captions, lesson read-aloud (tts-worker.js, Kokoro)
+    demo.js                the animated flute (fingers, air) that plays a melody
     views/                 today, session, plan, reader, milestones, journal, progress, share, settings, bench, coach, play, compose, quick
     core/                  shared with the standalone Practice Bench (see below)
     bench/                 Practice Bench UI module
@@ -55,6 +57,7 @@ tests/                     browser smoke tests (puppeteer-core + local Chrome/Ed
 | `#/challenge/<payload>` | A friend's challenge (base64url JSON: game, note set, seed, score, or a phrase), opened in Play |
 | `#/compose` | Make a melody: a grid of beats in a raga's notes |
 | `#/quick` | 5-minute practice: three short steps, logged as practice |
+| `#/listen` | Listen: real recordings, tone levels, songs and raga scales on the animated flute |
 | `#/library` | Every course page, grouped, with full-text search |
 | `#/settings` | Flute Sa, A4, sound, theme, daily reminder (.ics), placement, backup, reset |
 
@@ -78,6 +81,15 @@ tests/                     browser smoke tests (puppeteer-core + local Chrome/Ed
 - Play-along timing is judged against a fixed detector delay (`DETECT_LAG`, 0.09 s), so a learner who is always early or late is told so. If every note arrives very late (over 0.3 s), the summary points at Bluetooth audio. The tap game's device delay comes from its calibration (`tapLatency`).
 - Widgets open the microphone through `lvListen`, which closes a subscription that arrives after the widget was stopped, started twice or destroyed. Views return cleanups that destroy their widgets.
 - Songs (`views/songs.js`, `#/songs`) are parsed from `exercises/EX-MEL-practice-melodies.md`; raga tools (`ragaInfo` in `views/reader.js`) read the Aroh, Avroh and Notes rows of a raga card.
+
+## Voice, language and access (voice.js, core/i18n.js, core/fingers.js)
+
+- **Voice clips.** `scripts/build_voice.py` turns everything known in advance into MP3 clips with Kokoro-82M (kokoro-onnx; English `af_heart`, Hindi `hf_alpha`): the phrases in `scripts/voice/phrases.json`, every session step in `scripts/voice/steps.json` (spoken English and Hindi), note names with "Hold", "That is", "Next", "Play", and numbers. Output: `app/voice/<lang>/<hash>.mp3` plus `index.json`. CI runs `--check` (no model needed). Clips are not precached; the service worker keeps each one in `voice-clips-v1` (never cleared by updates) when it is first played, or all at once from Settings.
+- `speak(...refs)` plays clips back to back through the app's audio graph, mutes the microphone while it talks (`muteListening`) and shows a caption. `say()` does the same only when "Talk to me" is on. The shared widgets speak through `setSpeaker()` (the standalone bench has none): `holdMeter` judges each note when it ends (wrong note, sharp, flat, airy, short) and can play a guide glide to the target (`hints`).
+- **Free text** (lesson cards): `readAloud(text)` runs Kokoro in a worker (`tts-worker.js`, vendored `app/vendor/kokoro`, not precached). The model is fetched from Hugging Face only after the learner agrees; the device's own speech synthesis is never used.
+- **Hands-free sessions** (`views/session.js`): the step is spoken, its meter or timer starts, and `waitForNote(0)` (`core/listen.js`) moves on when the learner plays Sa after the goal or the time.
+- **Hindi**: `core/i18n.js` translates every text node and label as it appears (`observe(document.body)`) from `app/i18n/hi.json` (exact strings and `{placeholder}` patterns). Course content is marked `translate="no"`. Session steps use the Hindi text from the voice index.
+- **Settings** (`core/settings.js`): `lang`, `talk`, `notesAs` (letters or fingering pictures, `core/fingers.js`), `simple`, `textSize`, `easyFont`, `contrast`, `bigTargets`, `beatFlash` and `vibrate` (`audio.js` `onBeat`), `gameSpeed`, `noTimer`, `cues`, `hints`.
 
 ## Games, quests and challenges (games.js, fun.js, views/play.js)
 
@@ -204,7 +216,7 @@ export can include them (base64) or not.
 
 ## Security
 
-- CSP: `default-src 'self'`; scripts only from this site; no `eval`; `connect-src 'self'` (the app talks to no other server).
+- CSP: `default-src 'self'`; scripts only from this site; no `eval`; `connect-src` is this site plus Hugging Face, used only to download the reading-voice model after the learner agrees (the text read never leaves the device).
 - Markdown is rendered with marked, then sanitized with an allowlist (no script, iframe, form,
   `on*` attributes, `javascript:` URLs). Text from the learner (notes, labels) is always inserted as text.
 - Microphone is used only after the learner presses Record or Start microphone; the camera only for

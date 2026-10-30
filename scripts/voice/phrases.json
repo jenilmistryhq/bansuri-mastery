@@ -1,0 +1,346 @@
+{
+ "welcome": {
+  "en": "Welcome. Tap the big button to start today's practice.",
+  "hi": "नमस्ते। आज का अभ्यास शुरू करने के लिए बड़ा बटन दबाइए।"
+ },
+ "session_start": {
+  "en": "Let's begin today's practice.",
+  "hi": "चलिए, आज का अभ्यास शुरू करते हैं।"
+ },
+ "session_done": {
+  "en": "That is the end of today's session. Well done!",
+  "hi": "आज का सेशन यहीं पूरा हुआ। बहुत बढ़िया!"
+ },
+ "next_step": {
+  "en": "Next step.",
+  "hi": "अगला स्टेप।"
+ },
+ "last_step": {
+  "en": "This is the last step.",
+  "hi": "यह आखिरी स्टेप है।"
+ },
+ "step_done": {
+  "en": "Step done.",
+  "hi": "स्टेप पूरा हुआ।"
+ },
+ "goal_reached": {
+  "en": "Goal reached! Keep going, or move on.",
+  "hi": "लक्ष्य पूरा! चाहें तो जारी रखिए, या आगे बढ़िए।"
+ },
+ "time_up": {
+  "en": "Time is up for this step.",
+  "hi": "इस स्टेप का समय पूरा हो गया।"
+ },
+ "rest": {
+  "en": "Rest for a moment, and breathe.",
+  "hi": "थोड़ा आराम कीजिए, और साँस लीजिए।"
+ },
+ "play_sa_continue": {
+  "en": "When you are ready, play Sa to go on.",
+  "hi": "जब तैयार हों, आगे बढ़ने के लिए सा बजाइए।"
+ },
+ "tap_continue": {
+  "en": "Tap the big button to go on.",
+  "hi": "आगे बढ़ने के लिए बड़ा बटन दबाइए।"
+ },
+ "paused": {
+  "en": "Paused.",
+  "hi": "रुका हुआ है।"
+ },
+ "resumed": {
+  "en": "Let's continue.",
+  "hi": "चलिए, आगे बढ़ते हैं।"
+ },
+ "mic_needed": {
+  "en": "Please allow the microphone, so I can hear your flute.",
+  "hi": "कृपया माइक्रोफ़ोन की अनुमति दीजिए, ताकि मैं आपकी बाँसुरी सुन सकूँ।"
+ },
+ "mic_why": {
+  "en": "The app listens to your flute to help you. Nothing is recorded or sent anywhere.",
+  "hi": "ऐप आपकी मदद के लिए आपकी बाँसुरी सुनता है। कुछ भी रिकॉर्ड नहीं होता, और कहीं भेजा नहीं जाता।"
+ },
+ "watch_fingers": {
+  "en": "Watch the fingers, and listen.",
+  "hi": "उँगलियों को देखिए, और सुनिए।"
+ },
+ "listen_first": {
+  "en": "Listen first.",
+  "hi": "पहले सुनिए।"
+ },
+ "now_you": {
+  "en": "Now you play it.",
+  "hi": "अब आप बजाइए।"
+ },
+ "your_turn": {
+  "en": "Your turn.",
+  "hi": "अब आपकी बारी।"
+ },
+ "play_along": {
+  "en": "Play along with me.",
+  "hi": "मेरे साथ-साथ बजाइए।"
+ },
+ "count_in": {
+  "en": "Ready? One, two, three, four.",
+  "hi": "तैयार? एक, दो, तीन, चार।"
+ },
+ "read_lesson": {
+  "en": "This step has a lesson to look at. Ask someone to read it with you, or tap the speaker to hear it.",
+  "hi": "इस स्टेप में एक पाठ देखना है। किसी से साथ में पढ़ने को कहिए, या सुनने के लिए स्पीकर बटन दबाइए।"
+ },
+ "log_practice": {
+  "en": "Last step: tell the app how long you practised today.",
+  "hi": "आखिरी स्टेप: ऐप को बताइए कि आज आपने कितनी देर अभ्यास किया।"
+ },
+ "open_tool": {
+  "en": "The tool for this step is open.",
+  "hi": "इस स्टेप का टूल खुल गया है।"
+ },
+ "hold_intro": {
+  "en": "Play a long, steady note.",
+  "hi": "एक लंबा, स्थिर स्वर बजाइए।"
+ },
+ "listening": {
+  "en": "I am listening. Play a long note.",
+  "hi": "मैं सुन रहा हूँ। एक लंबा स्वर बजाइए।"
+ },
+ "keep_steady": {
+  "en": "Keep the air steady.",
+  "hi": "हवा एक जैसी रखिए।"
+ },
+ "good_start": {
+  "en": "Good start. Keep the air steady.",
+  "hi": "अच्छी शुरुआत। हवा एक जैसी रखिए।"
+ },
+ "in_tune": {
+  "en": "In tune.",
+  "hi": "सुर में है।"
+ },
+ "sharp": {
+  "en": "A little sharp. Blow a little softer, or roll the flute in slightly.",
+  "hi": "थोड़ा ऊँचा है। थोड़ा धीरे फूँकिए, या बाँसुरी को थोड़ा अंदर की ओर घुमाइए।"
+ },
+ "flat": {
+  "en": "A little flat. Blow a little faster, or roll the flute out slightly.",
+  "hi": "थोड़ा नीचा है। थोड़ा तेज़ फूँकिए, या बाँसुरी को थोड़ा बाहर की ओर घुमाइए।"
+ },
+ "very_sharp": {
+  "en": "Too sharp. Blow softer.",
+  "hi": "बहुत ऊँचा है। धीरे फूँकिए।"
+ },
+ "very_flat": {
+  "en": "Too flat. Blow a little harder.",
+  "hi": "बहुत नीचा है। थोड़ा ज़ोर से फूँकिए।"
+ },
+ "airy": {
+  "en": "The sound is airy. Make the lip opening smaller, and use a little less air.",
+  "hi": "आवाज़ में हवा ज़्यादा है। होंठों का छेद छोटा कीजिए, और हवा थोड़ी कम दीजिए।"
+ },
+ "clear": {
+  "en": "Clear tone. Lovely.",
+  "hi": "साफ़ आवाज़। बहुत सुंदर।"
+ },
+ "wavering": {
+  "en": "The note is wavering. Keep the air pressure even.",
+  "hi": "स्वर काँप रहा है। हवा का दबाव एक जैसा रखिए।"
+ },
+ "too_short": {
+  "en": "That was short. Take a full breath, and hold it longer.",
+  "hi": "यह छोटा था। पूरी साँस लीजिए, और देर तक रोकिए।"
+ },
+ "wrong_note": {
+  "en": "That is a different note. Check your fingers.",
+  "hi": "यह दूसरा स्वर है। अपनी उँगलियाँ देखिए।"
+ },
+ "held_well": {
+  "en": "Held! Well done.",
+  "hi": "बढ़िया रोका! शाबाश।"
+ },
+ "every_note_held": {
+  "en": "Every note held. Well done!",
+  "hi": "हर स्वर अच्छे से रोका। शाबाश!"
+ },
+ "breathe_again": {
+  "en": "Breathe, then play again.",
+  "hi": "साँस लीजिए, फिर से बजाइए।"
+ },
+ "try_again": {
+  "en": "Try again.",
+  "hi": "फिर से कोशिश कीजिए।"
+ },
+ "keep_going": {
+  "en": "Keep going.",
+  "hi": "जारी रखिए।"
+ },
+ "good": {
+  "en": "Good!",
+  "hi": "अच्छा!"
+ },
+ "great": {
+  "en": "Great!",
+  "hi": "बहुत बढ़िया!"
+ },
+ "new_best": {
+  "en": "New best!",
+  "hi": "नया रिकॉर्ड!"
+ },
+ "hear_target": {
+  "en": "This is the note.",
+  "hi": "यह है स्वर।"
+ },
+ "slide_to_target": {
+  "en": "Listen: from your note, to the target.",
+  "hi": "सुनिए: आपके स्वर से, लक्ष्य स्वर तक।"
+ },
+ "echo_intro": {
+  "en": "Listen to the phrase, then play it back.",
+  "hi": "यह टुकड़ा सुनिए, फिर वैसा ही बजाइए।"
+ },
+ "correct": {
+  "en": "Correct!",
+  "hi": "सही!"
+ },
+ "not_quite": {
+  "en": "Not quite. Listen again.",
+  "hi": "पूरा सही नहीं। फिर से सुनिए।"
+ },
+ "level_up": {
+  "en": "Level up! A longer phrase now.",
+  "hi": "लेवल अप! अब थोड़ा लंबा टुकड़ा।"
+ },
+ "all_right": {
+  "en": "Every note right!",
+  "hi": "हर स्वर सही!"
+ },
+ "some_wrong": {
+  "en": "Some notes were wrong. Try it slower.",
+  "hi": "कुछ स्वर गलत थे। थोड़ा धीरे बजाइए।"
+ },
+ "early": {
+  "en": "You are a little early. Wait for the beat.",
+  "hi": "आप थोड़ा जल्दी हैं। बीट का इंतज़ार कीजिए।"
+ },
+ "late": {
+  "en": "You are a little late. Play right on the beat.",
+  "hi": "आप थोड़ा देर से हैं। ठीक बीट पर बजाइए।"
+ },
+ "steer_intro": {
+  "en": "Play the note on each gate to fly through it. Stay silent to glide down.",
+  "hi": "हर गेट पर उसका स्वर बजाइए, ताकि आप उसके बीच से उड़ सकें। नीचे आने के लिए चुप रहिए।"
+ },
+ "balloon_intro": {
+  "en": "Hold the note in tune to blow up the balloon.",
+  "hi": "गुब्बारा फुलाने के लिए स्वर सुर में रोकिए।"
+ },
+ "falling_intro": {
+  "en": "Play each note as it reaches the line.",
+  "hi": "हर स्वर जब लाइन तक पहुँचे, तब उसे बजाइए।"
+ },
+ "jam_intro": {
+  "en": "Play freely with the band, using the raga's notes. Start on Sa.",
+  "hi": "राग के स्वरों से बैंड के साथ खुलकर बजाइए। सा से शुरू कीजिए।"
+ },
+ "pop": {
+  "en": "Pop!",
+  "hi": "फट!"
+ },
+ "miss": {
+  "en": "Missed.",
+  "hi": "छूट गया।"
+ },
+ "perfect": {
+  "en": "Perfect!",
+  "hi": "एकदम सही!"
+ },
+ "game_over": {
+  "en": "Round over.",
+  "hi": "राउंड खत्म।"
+ },
+ "out_of_raga": {
+  "en": "That note is not in this raga.",
+  "hi": "यह स्वर इस राग में नहीं है।"
+ },
+ "next_balloon": {
+  "en": "Next balloon.",
+  "hi": "अगला गुब्बारा।"
+ },
+ "half_full": {
+  "en": "Half way.",
+  "hi": "आधा हो गया।"
+ },
+ "almost": {
+  "en": "Almost there!",
+  "hi": "बस थोड़ा और!"
+ },
+ "time_left_10": {
+  "en": "Ten seconds left.",
+  "hi": "दस सेकंड बाकी हैं।"
+ },
+ "quest_done": {
+  "en": "Quest complete!",
+  "hi": "क्वेस्ट पूरा!"
+ },
+ "milestone_passed": {
+  "en": "Milestone passed! Congratulations!",
+  "hi": "माइलस्टोन पास! बहुत-बहुत बधाई!"
+ },
+ "level_reached": {
+  "en": "You reached a new level!",
+  "hi": "आप नए लेवल पर पहुँच गए!"
+ },
+ "quick_intro": {
+  "en": "Five minutes of practice. First, wake up the tone with a long note.",
+  "hi": "पाँच मिनट का अभ्यास। पहले, एक लंबे स्वर से आवाज़ को जगाइए।"
+ },
+ "quick_done": {
+  "en": "Five minutes done. That counts!",
+  "hi": "पाँच मिनट पूरे। यह भी गिना जाता है!"
+ },
+ "listen_intro": {
+  "en": "Sit back and listen. Watch the fingers on the flute.",
+  "hi": "आराम से बैठिए और सुनिए। बाँसुरी पर उँगलियाँ देखिए।"
+ },
+ "stars_3": {
+  "en": "Three stars! Excellent.",
+  "hi": "तीन स्टार! बहुत शानदार।"
+ },
+ "stars_2": {
+  "en": "Two stars. Very good.",
+  "hi": "दो स्टार। बहुत अच्छा।"
+ },
+ "stars_1": {
+  "en": "One star. Keep practising.",
+  "hi": "एक स्टार। अभ्यास जारी रखिए।"
+ },
+ "stars_0": {
+  "en": "No stars this time. Try it slower.",
+  "hi": "इस बार कोई स्टार नहीं। थोड़ा धीरे बजाकर देखिए।"
+ },
+ "w_hold": {
+  "en": "Hold",
+  "hi": "रोकिए:"
+ },
+ "w_seconds": {
+  "en": "seconds.",
+  "hi": "सेकंड।"
+ },
+ "w_then": {
+  "en": "Then",
+  "hi": "फिर"
+ },
+ "w_next": {
+  "en": "Next:",
+  "hi": "अगला:"
+ },
+ "w_score": {
+  "en": "Score:",
+  "hi": "स्कोर:"
+ },
+ "w_that_is": {
+  "en": "That is",
+  "hi": "यह है"
+ },
+ "w_target_is": {
+  "en": "The target is",
+  "hi": "लक्ष्य है"
+ }
+}

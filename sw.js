@@ -1,7 +1,8 @@
 // Service worker: keeps the app and the whole course available offline.
 // VERSION is rewritten by scripts/build_app.py whenever any app or course file changes.
-const VERSION = "174b2331a75e";
+const VERSION = "8a82b07f0e0c";
 const CACHE = "bansuri-" + VERSION;
+const VOICE_CACHE = "voice-clips-v1";
 
 // Online, every file comes from the network (and refreshes the cache); offline, from the cache.
 // So a page is built either all from the new files or all from the saved ones, never a mix of
@@ -44,6 +45,19 @@ self.addEventListener("fetch", event => {
   if (url.origin !== self.location.origin) return;
   const scope = new URL(self.registration.scope);
   const rel = url.pathname.slice(scope.pathname.length);
+  // Voice clips never change (their names are hashes of their text), so they are kept across
+  // updates in their own cache: from the cache when saved, otherwise fetched and saved.
+  if (rel.startsWith("app/voice/") && rel.endsWith(".mp3")) {
+    event.respondWith((async () => {
+      const cache = await caches.open(VOICE_CACHE);
+      const hit = await cache.match(req);
+      if (hit) return hit;
+      const res = await fetch(req);
+      if (res.ok) await cache.put(req, res.clone());
+      return res;
+    })());
+    return;
+  }
   event.respondWith((async () => {
     try {
       const res = await fetchSoon(req, rel.startsWith("docs/") ? 8000 : 4000);
