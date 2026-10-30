@@ -102,7 +102,7 @@ export async function render(main) {
   const cleanups = [];
   const tt = totals(), st = streaks();
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Journal"), h("h1", null, "Practice journal"),
-    h("p", { class: "muted" }, fmtMinutes(tt.minutes) + " logged across " + tt.practiceDays + " days. Current streak " + st.current + ", best " + st.best + ".")));
+    h("div", { class: "row summarychips" }, h("span", { class: "chip mutedc" }, fmtMinutes(tt.minutes) + " logged"), h("span", { class: "chip mutedc" }, tt.practiceDays + " days practised"), h("span", { class: "chip mutedc" }, "Streak " + st.current + " (best " + st.best + ")"))));
 
   // New recording.
   const labelIn = h("input", { class: "input", id: "j-label", value: "Free practice", "aria-label": "Recording label" });

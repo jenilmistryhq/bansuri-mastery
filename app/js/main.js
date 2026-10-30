@@ -45,7 +45,17 @@ const ROUTES = [
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"],
   [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
-const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Bench"], ["play", "#/play", "Play"], ["coach", "#/coach", "Coach"], ["journal", "#/journal", "Journal"], ["progress", "#/progress", "Progress"]];
+// Five tabs; related screens sit together under one tab, with a small menu at the top of each.
+const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["play", "#/play", "Play"], ["progress", "#/progress", "Me"]];
+const NAV_ICON = { today: "today", plan: "plan", bench: "bench", play: "play", progress: "me", listen: "listen" };
+const GROUPS = {
+  plan: [["plan", "#/plan", "Course map"], ["library", "#/library", "Library"]],
+  bench: [["bench", "#/bench", "Bench"], ["coach", "#/coach", "Coach"], ["listen", "#/listen", "Listen"], ["songs", "#/songs", "Songs"]],
+  play: [["play", "#/play", "Games"], ["compose", "#/compose", "Make a melody"], ["quick", "#/quick", "5 minutes"]],
+  progress: [["progress", "#/progress", "Progress"], ["journal", "#/journal", "Journal"], ["settings", "#/settings", "Settings"]],
+};
+// Which tab a screen belongs to.
+const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress" };
 // Simple mode: three big choices, no reading needed.
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
 
@@ -110,11 +120,9 @@ function shell() {
   const top = h("header", { class: "topbar" },
     h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", null, "Bansuri Mastery")),
     h("span", { class: "spacer" }),
-    dayPill,
-    (levelPill = h("a", { class: "levelpill", href: "#/progress#level" }, "")),
-    h("a", { class: "iconbtn", href: "#/library", title: "Course library" }, icon("library", "Course library")),
+    h("span", { class: "statuspills" }, dayPill, (levelPill = h("a", { class: "levelpill", href: "#/progress#level" }, ""))),
     h("a", { class: "iconbtn", href: "#/settings", title: "Settings" }, icon("settings", "Settings")));
-  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(k), h("span", null, label))));
+  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(NAV_ICON[k] || k), h("span", null, label))));
   mainEl = h("main", { id: "main", tabindex: "-1" });
   clear(app).append(top, h("div", { class: "layout" }, navEl, mainEl));
 }
@@ -124,7 +132,7 @@ function updateChrome(viewName) {
   const d = getDay(n);
   dayPill.textContent = d ? (d.kind === "milestone" ? "Milestone " + d.milestone : "Day " + n) : "Day " + n;
   for (const a of navEl.querySelectorAll("a")) {
-    const on = a.dataset.k === viewName || (viewName === "session" && a.dataset.k === "today") || ((viewName === "reader" || viewName === "library" || viewName === "milestone") && a.dataset.k === "plan");
+    const on = a.dataset.k === viewName || a.dataset.k === TAB_OF[viewName];
     if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   }
 }
@@ -156,6 +164,9 @@ async function route() {
     const ret = await mod.render(mainEl, { params, anchor, view });
     if (token !== routeToken) { if (typeof ret === "function") ret(); return; }
     cleanup = typeof ret === "function" ? ret : null;
+    // The small menu of the tab's other screens.
+    const group = !getSettings().simple && GROUPS[TAB_OF[view]];
+    if (group) mainEl.prepend(h("nav", { class: "subnav", "aria-label": "In this section" }, group.map(([k, href, label]) => h("a", { href, "aria-current": k === view || (view === "challenge" && k === "play") || (view === "reader" && k === "library") ? "page" : null }, label))));
     if (document.activeElement && document.activeElement.closest && document.activeElement.closest(".tabbar, .topbar")) mainEl.focus({ preventScroll: true });
     if (anchor) {
       const target = document.getElementById(anchor);

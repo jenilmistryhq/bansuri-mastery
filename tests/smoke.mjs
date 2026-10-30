@@ -76,7 +76,7 @@ try {
   await page.evaluate(() => localStorage.clear());
   await go("/today");
   let t = await text();
-  check(t.includes("learn the bansuri one day at a time"), "welcome card on first run");
+  check(t.includes("learn the bansuri, one day at a time") && await page.$("#main .firstrun .btn.primary.big") !== null, "first run: a short welcome with one big Start Day 0 button");
   check(t.includes("start day 0"), "Day 0 call to action");
   check(t.includes("hear a real bansuri"), "real bansuri samples offered in Phase 1");
   check(await page.evaluate(async () => (await fetch("app/audio/bansuri-small-e-sample.ogg")).ok), "bundled bansuri sample is served");
@@ -142,7 +142,7 @@ try {
   await go("/settings");
   await page.select("#st-pace", "short");
   await go("/session/0");
-  check(/^18:00$/.test(await page.$eval("#main .block .timer", e => e.textContent.trim())), "a short daily time scales a 30-minute block to 18 minutes");
+  check(/^9:00$/.test(await page.$eval("#main .block .timer", e => e.textContent.trim())), "a short daily time scales a 15-minute block to 9 minutes");
   await go("/settings");
   await page.select("#st-pace", "standard");
   await page.click("#st-deva");
@@ -674,7 +674,7 @@ try {
     await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
     await lp.reload({ waitUntil: "networkidle0" });
     await lp.waitForSelector(".levelpill");
-    check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .levelcard", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
+    check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .sidecard", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
     await lp.evaluate(async () => { const x = await import(new URL("app/js/xp.js", location.href).href); x.award("lesson", { key: "smoke" }); x.award("lesson", { key: "smoke2" }); });
     await lp.waitForFunction(() => document.querySelector(".levelpill").textContent === "Lv 2", { timeout: 3000 })
       .then(() => check(true, "levels: earning XP moves the learner up to Level 2, celebrated"), () => check(false, "levels: earning XP moves the learner up to Level 2, celebrated"));

@@ -151,9 +151,10 @@ export async function render(main, { params }) {
     const same = files.docs.filter(d => (d.path.includes("/") ? d.path.split("/")[0] : "") === folder && !/README\.md$/.test(d.path));
     const i = same.findIndex(d => d.path === path);
     if (i >= 0) {
-      page.append(h("nav", { class: "pager" },
-        i > 0 ? h("a", { class: "btn ghost", href: "#/read/" + same[i - 1].path }, "Previous: " + same[i - 1].title) : h("span"),
-        i < same.length - 1 ? h("a", { class: "btn ghost", href: "#/read/" + same[i + 1].path }, "Next: " + same[i + 1].title) : h("span")));
+      // Moving between lessons is a quiet block of its own, so it is not confused with the cards' Back and Next.
+      page.append(h("nav", { class: "morelessons", "aria-label": "More lessons" },
+        i > 0 ? h("a", { href: "#/read/" + same[i - 1].path }, h("span", { class: "small muted" }, "Previous lesson"), h("b", null, same[i - 1].title)) : h("span"),
+        i < same.length - 1 ? h("a", { class: "next", href: "#/read/" + same[i + 1].path }, h("span", { class: "small muted" }, "Next lesson"), h("b", null, same[i + 1].title)) : h("span")));
     }
   } catch (e) { /* the pager is optional */ }
   return () => { stopPlayable(); cleanups.forEach(f => f()); document.title = "Bansuri Mastery"; };

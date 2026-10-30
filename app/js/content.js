@@ -1,5 +1,6 @@
 // Fetches curriculum Markdown, renders it with marked, sanitizes it with an allowlist,
 // gives headings GitHub-style ids, and rewrites links into app routes.
+import { patternSvg } from "./core/fingers.js";
 import { marked } from "../vendor/marked.esm.js";
 
 const ROOT = "bansuri-mastery/";
@@ -117,6 +118,11 @@ export function renderMarkdown(md, path) {
     if (!img.getAttribute("alt")) img.setAttribute("alt", "");
   }
   const title = (root.querySelector("h1") || {}).textContent || path;
+  // A written fingering ("XXX OOO") gets a small picture of the holes beside it.
+  for (const code of root.querySelectorAll("code")) {
+    const pic = /^[XOH]{3} ?[XOH]{3}$/i.test(code.textContent.trim()) ? patternSvg(code.textContent) : null;
+    if (pic) code.before(pic);
+  }
   // Course text is English; the interface translator must not swap single words inside it.
   root.setAttribute("translate", "no");
   return { node: document.importNode(root, true), title };

@@ -83,11 +83,11 @@ export async function render(main) {
       // A plain-text preview of the first line; the play button belongs to the full melody (hidden code).
       const code = h("span", { class: "songpreview" }, s.notation.split("\n")[0] + (s.notation.includes("\n") ? " ..." : ""));
       const card = h("article", { class: "card song" + (done.checked ? " learned" : "") },
-        h("div", { class: "row between" },
+        h("div", { class: "songhead" },
           h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, s.id + " " + s.title), h("span", { class: "small muted" }, s.meta)),
           ready(s) ? h("span", { class: "chip good" }, "Ready") : h("span", { class: "chip mutedc" }, "After L" + String(s.lesson).padStart(2, "0"))),
         h("div", { class: "small mono songline" }, h("code", { hidden: true }, s.notation), code),
-        h("div", { class: "row" }, playBtn, h("label", { class: "check small" }, done, "I can play it")), host);
+        h("div", { class: "row between" }, playBtn, h("label", { class: "check small" }, done, "I can play it")), host);
       makePlayable(card);
       list.append(card);
     }

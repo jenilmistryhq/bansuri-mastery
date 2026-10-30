@@ -13,12 +13,12 @@ export async function render(main) {
 
   // Milestones strip.
   page.append(h("section", { class: "card" }, h("h2", null, "Milestones"),
-    h("div", { class: "stack" }, plan.milestones.map(m => {
+    h("div", { class: "mslist" }, plan.milestones.map(m => {
       const st = milestoneState(m.id).status;
-      return h("div", { class: "row between" },
-        h("a", { href: "#/milestone/" + m.id }, m.id + " - " + m.title),
-        h("div", { class: "row" }, h("span", { class: "small muted" }, "Day " + m.day),
-          h("span", { class: "chip " + (st === "passed" ? "good" : st === "failed" ? "warn" : m.day <= cur ? "info" : "mutedc") }, st === "passed" ? "Passed" : st === "failed" ? "Not yet" : m.day <= cur ? "Ready" : "Ahead")));
+      // A steady grid: the milestone's name wraps on its own line; day and status stay in their columns.
+      return h("a", { class: "msrow " + st, href: "#/milestone/" + m.id },
+        h("span", { class: "msid" }, m.id), h("span", { class: "mstitle" }, m.title), h("span", { class: "small muted" }, "Day " + m.day),
+        h("span", { class: "chip " + (st === "passed" ? "good" : st === "failed" ? "warn" : m.day <= cur ? "info" : "mutedc") }, st === "passed" ? "Passed" : st === "failed" ? "Not yet" : m.day <= cur ? "Ready" : "Ahead"));
     }))));
 
   const curPhase = (getDay(cur) || {}).phase;

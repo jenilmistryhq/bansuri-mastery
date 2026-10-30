@@ -15,6 +15,7 @@ import { makePlayable } from "../playable.js";
 import { icon } from "../util.js";
 import { getSettings, setSettings } from "../core/settings.js";
 import { speak, sayButton } from "../voice.js";
+import { stepMeta, plainText } from "../steps.js";
 
 // First run: how the learner likes to learn, in pictures and both languages, so it works without
 // reading English. Each choice can be changed later in Settings.
@@ -22,7 +23,7 @@ function howCard() {
   const tile = (ic, label, sub, onClick) => h("button", { type: "button", class: "howtile", onclick: onClick }, icon(ic), h("b", null, label), sub ? h("span", { class: "small" }, sub) : null);
   const done = patch => { setSettings(patch); update(st => { st.prefs.howChosen = true; }); };
   return h("section", { class: "card howcard", "aria-label": "How do you like to learn?" },
-    h("div", { class: "row between" }, h("h2", null, "How do you like to learn?"), sayButton(["welcome"], "Listen")),
+    h("div", { class: "row between" }, h("h2", null, "How do you like to learn?"), sayButton(["welcome"], "Hear this")),
     h("div", { class: "row langpick", translate: "no" },
       h("button", { type: "button", class: "btn" + (getSettings().lang === "en" ? " primary" : ""), onclick: () => setSettings({ lang: "en" }) }, "English"),
       h("button", { type: "button", class: "btn" + (getSettings().lang === "hi" ? " primary" : ""), onclick: () => setSettings({ lang: "hi" }) }, "हिन्दी")),
@@ -49,22 +50,33 @@ function simpleToday(page, cur, day) {
 
 const KIND_LABEL = { setup: "Setup day", review: "Review day", milestone: "Milestone", practice: "Practice day" };
 
+// The session at a glance: one row per step (icon, name, minutes), with the instruction in plain
+// words and the readings one tap away.
 export function blockLines(day) {
-  const list = h("div", { class: "blocklist" }, day.blocks.map(b => h("div", { class: "blockline" },
-    h("span", { class: "tag " + b.id }, b.id === "READ" ? "Read" : b.id === "TEST" ? "Test" : b.id),
-    h("div", { class: "stack", style: { gap: "4px" } },
-      h("b", null, b.label),
-      h("span", { class: "small" }, renderInline(b.text || "", "phases/README.md")),
-      b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : "") }, r.label))) : null),
-    h("span", { class: "small muted mono" }, b.minutes ? b.minutes + " min" : ""))));
+  const list = h("div", { class: "blocklist" }, day.blocks.map(b => {
+    const m = stepMeta(b), text = h("p", { class: "small", translate: "no" }, renderInline(b.text || "", "phases/README.md"));
+    plainText(b).then(t => { if (t) text.replaceWith(h("p", { class: "small" }, t)); });
+    return h("details", { class: "blockline" },
+      h("summary", null, h("span", { class: "stepicon " + b.id, "aria-hidden": "true" }, icon(m.icon)), h("b", null, b.label || m.name), h("span", { class: "small muted" }, b.minutes ? b.minutes + " min" : "")),
+      h("div", { class: "blockbody" }, text,
+        b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : "") }, r.label))) : null));
+  }));
   makePlayable(list);
   return list;
 }
 
+// The first screen a new learner sees: what this is, one big button, and the language.
+function firstRun(day) {
+  return h("section", { class: "hero firstrun" },
+    h("h1", null, "Learn the bansuri, one day at a time"),
+    h("p", { class: "muted" }, "A short guided session each day. The app listens to your flute and tells you how it went."),
+    h("a", { class: "btn primary big", href: "#/session/0" }, "Start Day 0"),
+    h("p", { class: "small muted" }, "About " + (day.minutes || 45) + " minutes: get to know your flute and find its Sa. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), "."));
+}
+
 function welcome() {
-  return h("section", { class: "card" },
-    h("span", { class: "eyebrow" }, "Welcome"),
-    h("h2", null, "Learn the bansuri one day at a time"),
+  return h("details", { class: "card" },
+    h("summary", null, h("b", null, "How the course works")),
     h("ol", { class: "welcome-steps" },
       h("li", null, h("span", null, h("b", null, "Day 0 sets you up: "), "check your flute, find Sa, and get the tanpura, metronome and tuner ready.")),
       h("li", null, h("span", null, h("b", null, "Each day is a guided session "), "of about 45-60 minutes: warm-up, tone, technique, music, ear training and a short log. Timers and tools are built in.")),
@@ -251,8 +263,12 @@ export async function render(main, { params, view }) {
   const page = h("div", { class: "page" });
 
   if (isToday && getSettings().simple) { simpleToday(page, cur, day); main.append(page); return; }
-  if (isToday && !s.prefs.howChosen) page.append(howCard());
-  if (isToday && !s.startedAt && cur === 0) page.append(welcome());
+  const firstTime = isToday && !s.startedAt && cur === 0;
+  if (firstTime) {
+    page.append(firstRun(day));
+    if (!s.prefs.howChosen) page.append(howCard());
+    page.append(realBansuriCard(), welcome());
+  } else if (isToday && !s.prefs.howChosen) page.append(howCard());
 
   // Status and primary action.
   let statusChip, action;
@@ -284,7 +300,7 @@ export async function render(main, { params, view }) {
     action = h("p", { class: "notice info" }, "This day unlocks after Day " + (n - 1) + ". You can read ahead, but practise in order: each day builds on the last.");
   }
 
-  page.append(h("section", { class: "hero" },
+  if (!firstTime) page.append(h("section", { class: "hero" },
     h("span", { class: "eyebrow" }, (phase ? "Phase " + phase.id + ": " + phase.title : "") + (day.week ? " - Week " + day.week : "") + " - Day " + n + (day.repeatOf !== null ? " (repeats Day " + day.repeatOf + ")" : "")),
     h("h1", { class: "title" }, day.title || ("Day " + n)),
     h("div", { class: "row" }, statusChip, h("span", { class: "chip mutedc" }, KIND_LABEL[day.kind] || "Practice"), day.minutes ? h("span", { class: "chip mutedc" }, "About " + day.minutes + " min") : null,
@@ -292,46 +308,53 @@ export async function render(main, { params, view }) {
     action,
     isToday ? journey(n, phase) : null));
 
-  if (isToday) {
-    const nudge = backupNudge();
-    if (nudge) page.append(nudge);
-    page.append(statsRow());
-    // Today's quests, at a glance.
-    page.append(h("a", { class: "card levelcard", href: "#/progress#level" }, levelBar()));
-    const qs = questState(), left = qs.list.filter(q => !q.done);
-    page.append(h("a", { class: "card questcard", href: "#/play" },
-      h("div", { class: "row between" }, h("b", null, left.length ? "Today's quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done" : "All of today's quests done!")),
-      left.length ? h("span", { class: "small muted" }, "Next: " + left[0].text + ". Games, quests and your collection are in Play.") : h("span", { class: "small muted" }, "Come back tomorrow for new ones, or play a game for fun."),
-      h("span", { class: "small" }, "Short on time? ", h("span", { class: "linklike" }, "Try the 5-minute practice in Play."))));
+  // Two columns on a wide screen: the practice itself, and everything around it.
+  const mainCol = h("div", { class: "todaymain" }), side = h("aside", { class: "todayside", "aria-label": "Your progress and extras" });
+  page.append(h("div", { class: "todaygrid" }, mainCol, side));
+  if (isToday && !firstTime) {
     const help = adaptiveCard(cur);
-    if (help) page.append(help);
-    const songHost = h("div");
-    page.append(songHost);
-    songOfWeekCard().then(c => songHost.replaceWith(c || h("a", { class: "card songlink", href: "#/songs" }, h("b", null, "Songs"), h("span", { class: "small muted" }, "Play along with a melody; the microphone checks every note."))));
-    const lastCard = lastSessionCard();
-    if (lastCard) page.append(lastCard);
-    if (cur <= 42) page.append(realBansuriCard());
+    if (help) mainCol.append(help);
     const rc = reviewsCard(cleanups);
-    if (rc) page.append(rc);
+    if (rc) mainCol.append(rc);
   }
+
+  mainCol.append(h("section", { class: "card" },
+    h("div", { class: "row between" }, h("h2", null, firstTime ? "Day 0 at a glance" : "The session"), h("span", { class: "small muted" }, day.blocks.reduce((a, b) => a + (b.minutes || 0), 0) + " min planned")),
+    blockLines(day),
+    day.pass ? h("p", { class: "small passline" }, h("b", null, "To pass: "), day.pass) : null));
 
   // Lessons to read.
   const lessons = (day.lessons || []).map(id => [id, lessonInfo(id)]).filter(([, l]) => l);
   if (lessons.length) {
-    page.append(h("section", { class: "card" }, h("h2", null, "Read for this day"),
-      h("div", { class: "stack" }, lessons.map(([id, l]) => h("a", { href: "#/read/" + l.path }, id + " - " + l.title)))));
+    mainCol.append(h("section", { class: "card" }, h("h2", null, "Read for this day"),
+      h("div", { class: "lessonlinks" }, lessons.map(([id, l]) => h("a", { class: "lessonlink", href: "#/read/" + l.path }, icon("read"), h("span", null, h("span", { class: "small muted" }, id), " ", l.title))))));
   }
 
-  page.append(h("section", { class: "card" },
-    h("div", { class: "row between" }, h("h2", null, "The session"), h("span", { class: "small muted" }, day.blocks.reduce((a, b) => a + (b.minutes || 0), 0) + " min planned")),
-    blockLines(day),
-    day.pass ? h("div", { class: "notice good" }, h("b", null, "Pass check: "), day.pass) : null));
+  if (isToday && !firstTime) {
+    // Level and quests together: where you stand, and what to do for XP today.
+    const qs = questState(), left = qs.list.filter(q => !q.done);
+    side.append(h("section", { class: "card sidecard" },
+      h("a", { class: "levellink", href: "#/progress#level" }, levelBar({ compact: true })),
+      h("a", { class: "questline", href: "#/play" }, h("b", null, left.length ? "Quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done" : "All quests done!"),
+        h("span", { class: "small muted" }, left.length ? "Next: " + left[0].text : "New ones tomorrow."))));
+    // Numbers only once there is practice to count.
+    if (totals().minutes > 0) side.append(statsRow());
+    const lastCard = lastSessionCard();
+    if (lastCard) side.append(lastCard);
+    const songHost = h("div");
+    side.append(songHost);
+    songOfWeekCard().then(c => songHost.replaceWith(c || h("a", { class: "card songlink", href: "#/songs" }, h("b", null, "Songs"), h("span", { class: "small muted" }, "Play along with a melody; the microphone checks every note."))));
+    side.append(h("a", { class: "card songlink", href: "#/quick" }, h("b", null, "Short on time?"), h("span", { class: "small muted" }, "A 5-minute practice still counts.")));
+    if (cur <= 42) side.append(realBansuriCard());
+    const nudge = backupNudge();
+    if (nudge) side.append(nudge);
+  }
 
   // Milestone summary.
   if (day.milestone) {
     const info = milestoneInfo(day.milestone);
     const ms = milestoneState(day.milestone);
-    page.append(h("section", { class: "card" }, h("h2", null, "Milestone " + day.milestone + ": " + (info ? info.title : "")),
+    mainCol.append(h("section", { class: "card" }, h("h2", null, "Milestone " + day.milestone + ": " + (info ? info.title : "")),
       h("p", null, "Milestones are the only proof of progress in this course. Pass every required item to unlock the next day."),
       h("div", { class: "row" }, h("span", { class: "chip " + (ms.status === "passed" ? "good" : ms.status === "failed" ? "warn" : "mutedc") }, ms.status === "passed" ? "Passed" : ms.status === "failed" ? "Not passed yet" : "Not taken"),
         h("span", { class: "small muted" }, ms.attempts.length + " attempt" + (ms.attempts.length === 1 ? "" : "s")),

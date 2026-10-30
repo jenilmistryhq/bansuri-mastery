@@ -47,6 +47,11 @@ const ICONS = {
   speaker: "M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11",
   listen: "M4 15v-3a8 8 0 0 1 16 0v3M4 15h3v5H5a1 1 0 0 1-1-1zM20 15h-3v5h2a1 1 0 0 0 1-1z",
   hand: "M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V12M14 11.5V6a1.5 1.5 0 0 1 3 0v7c0 4-2.5 8-7 8-3 0-4.5-2-6-5l-1.2-2.4a1.5 1.5 0 0 1 2.6-1.4L8 15",
+  warmup: "M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z",
+  wave: "M2 12c1.5-4 3-4 4.5 0s3 4 4.5 0 3-4 4.5 0 3 4 4.5 0",
+  note: "M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z",
+  ear: "M7 9a5 5 0 0 1 10 0c0 3-3 4-3 7a3 3 0 0 1-6 0M10 9a2 2 0 0 1 4 0c0 1.5-2 2-2 3.5",
+  me: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0",
   star: "M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9z",
   read: "M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z",
 };
@@ -94,14 +99,17 @@ export function toast(msg, ms) {
   toastBatch = { lines: [msg], ms: ms || 0 };
   setTimeout(() => {
     // The main event (a milestone passed, a day complete) leads; badges follow it.
-    const lines = toastBatch.lines.slice().sort((a, b) => /^Badge earned/.test(String(a)) - /^Badge earned/.test(String(b)));
+    // Badges are merged into one line, so a burst of them never covers the screen.
+    const all = toastBatch.lines.slice(), badges = all.filter(l => /^Badge earned: /.test(String(l))).map(l => String(l).slice(14));
+    const lines = all.filter(l => !/^Badge earned: /.test(String(l)));
+    if (badges.length) lines.push((badges.length > 1 ? "Badges earned: " : "Badge earned: ") + badges.join(", "));
     const wait = Math.max(toastBatch.ms, 3500 + 1200 * (lines.length - 1));
     toastBatch = null;
     const t = h("div", { class: "toast" + (lines.length > 1 ? " multi" : "") }, lines.length > 1 ? lines.map(l => h("div", null, l)) : lines[0]);
     const close = () => { t.classList.add("leaving"); setTimeout(() => t.remove(), 180); };
     t.addEventListener("click", close);
     toastHost.appendChild(t);
-    while (toastHost.children.length > 3) toastHost.firstChild.remove();
+    while (toastHost.children.length > 1) toastHost.firstChild.remove();
     setTimeout(close, wait);
   }, 350);
 }

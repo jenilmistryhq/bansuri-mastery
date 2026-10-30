@@ -80,7 +80,7 @@ main { grid-column: 2; min-width: 0; padding-left: max(16px, env(safe-area-inset
 .page.wide { max-width: 1120px; }
 
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
-  display: grid; grid-template-columns: repeat(7, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px);
+  display: grid; grid-template-columns: repeat(5, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px);
   padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
 .tabbar a { display: grid; justify-items: center; gap: 2px; padding: 8px 2px 6px; font-size: 0.72rem; color: var(--muted); text-decoration: none; }
 .tabbar a[aria-current="page"] { color: var(--accent); font-weight: 600; }
@@ -505,3 +505,114 @@ html.simple .topbar .iconbtn[href="#/library"] { display: none; }
 @keyframes xpfloat { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, 26px); } }
 @media (max-width: 560px) { .levelpill { padding: 3px 7px; font-size: 0.78rem; } }
 @media (max-width: 480px) { .brand b { display: none; } }
+
+/* ---------- Design system pass: spacing, type, card levels, colour roles ---------- */
+:root { --s1: 4px; --s2: 8px; --s3: 16px; --s4: 24px; --s5: 32px; --link: #0b5c60; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --link: #7fcbc6; } }
+:root[data-theme="dark"] { --link: #7fcbc6; }
+a { color: var(--link); text-decoration-thickness: 1px; }
+/* The decorative serif is for page titles; section and card headings use the body face, bold. */
+h2, h3, h4 { font-family: var(--body); font-weight: 700; line-height: 1.25; letter-spacing: -0.005em; }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 1.02rem; }
+.page { gap: var(--s4); }
+.card { padding: var(--s3) 18px; gap: 12px; }
+.hero p.muted { max-width: 60ch; }
+.btn.primary.big { box-shadow: 0 2px 0 color-mix(in srgb, var(--accent) 55%, #000); }
+.btn.ghost { border-color: transparent; }
+.btn.ghost:hover { border-color: var(--line); }
+
+/* Top bar: the day and the level as one joined chip. */
+.statuspills { display: inline-flex; align-items: stretch; }
+.statuspills .daypill { border-radius: 999px 0 0 999px; padding-right: 8px; display: inline-flex; align-items: center; }
+.statuspills .levelpill { border-radius: 0 999px 999px 0; border-left-width: 0; padding-left: 8px; background: color-mix(in srgb, var(--bamboo) 14%, transparent); }
+
+/* A small menu of the screens that share a tab. */
+.subnav { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; max-width: 920px; margin: 0 auto 14px; padding: 2px; }
+.subnav::-webkit-scrollbar { display: none; }
+.subnav a { white-space: nowrap; padding: 7px 14px; border-radius: 999px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.92rem; border: 1px solid transparent; }
+.subnav a:hover { border-color: var(--line); }
+.subnav a[aria-current="page"] { background: var(--accent-soft); color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+/* Today: the first run, one big action, then two columns on wide screens. */
+.firstrun { padding: var(--s3) 0; gap: 14px; }
+.firstrun h1 { font-size: clamp(2rem, 7vw, 2.8rem); max-width: 18ch; }
+.howtiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.howtile { padding: 14px 8px; gap: 6px; }
+.howtile .icon { width: 34px; height: 34px; }
+.howtile .small { display: none; }
+@media (min-width: 640px) { .howtile .small { display: block; } }
+.todaygrid { display: grid; gap: var(--s4); align-items: start; }
+.todaymain, .todayside { display: grid; gap: var(--s3); min-width: 0; }
+@media (min-width: 1100px) {
+  .page:has(.todaygrid) { max-width: 1180px; }
+  .todaygrid { grid-template-columns: minmax(0, 1fr) 340px; }
+  .todayside { position: sticky; top: 76px; }
+}
+.todaymain > .card:has(.blocklist) { border-top: 3px solid var(--accent); }
+.sidecard { gap: 10px; }
+.questline { display: grid; gap: 2px; text-decoration: none; color: var(--ink); padding-top: 10px; border-top: 1px solid var(--line); }
+.passline { padding-top: 10px; border-top: 1px dashed var(--line); }
+.lessonlinks { display: grid; gap: 6px; }
+.lessonlink { display: flex; gap: 10px; align-items: center; text-decoration: none; color: var(--ink); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); }
+.lessonlink:hover { border-color: var(--accent); }
+.lessonlink .icon { color: var(--accent); flex: none; }
+/* The session preview: one row per step, details on tap. */
+.blocklist { gap: 0; }
+details.blockline { display: block; padding: 0; border-bottom: 1px solid var(--line); }
+details.blockline > summary { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; cursor: pointer; list-style: none; }
+details.blockline > summary::-webkit-details-marker { display: none; }
+details.blockline[open] > summary b { color: var(--accent); }
+.blockbody { display: grid; gap: 6px; padding: 0 0 12px 48px; }
+.stepicon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--sunken); color: var(--ink); flex: none; }
+.stepicon .icon { width: 20px; height: 20px; }
+.stepicon.W { background: #e9dcbc; color: #4a3510; } .stepicon.T { background: #cde6e3; color: #0b3a3c; } .stepicon.K { background: #e4d6ea; color: #3a1d45; }
+.stepicon.M { background: #d9e8cd; color: #1f3a10; } .stepicon.E { background: #ecdccb; color: #4a2c10; } .stepicon.R { background: #d6dfeb; color: #182a45; }
+.stepicon.READ, .stepicon.TEST { background: var(--accent); color: var(--accent-ink); }
+
+/* Sessions: steps named with icons; ending early sits at the end. */
+.stepdot { display: inline-flex; align-items: center; gap: 6px; font-family: var(--body); font-size: 0.85rem; padding: 6px 12px 6px 9px; }
+.stepdot .icon { width: 16px; height: 16px; }
+@media (max-width: 560px) { .stepdot span { display: none; } .stepdot { padding: 7px; } .stepdot.now span { display: inline; } .stepdot.now { padding-right: 12px; } }
+.block > header .stepicon { width: 30px; height: 30px; border-radius: 8px; }
+.origtext summary { cursor: pointer; }
+.sessend { margin-top: var(--s2); }
+
+/* Course map milestones: a steady grid at any width. */
+.mslist { display: grid; }
+.msrow { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.msrow:last-child { border-bottom: 0; }
+.msrow:hover .mstitle { color: var(--accent); }
+.msrow .msid { font-family: var(--mono); font-weight: 600; color: var(--muted); }
+.msrow.passed .msid { color: var(--good); }
+@media (max-width: 480px) { .msrow { grid-template-columns: 2.4rem minmax(0, 1fr) auto; } .msrow > .small { display: none; } }
+
+/* Lessons: the card bar covers the gap above the tab bar; moving between lessons is a quiet block. */
+.deck-nav { box-shadow: 0 18px 0 0 var(--bg); }
+.morelessons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: var(--s4); }
+.morelessons a { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink); }
+.morelessons a.next { text-align: right; }
+.morelessons a:hover { border-color: var(--accent); }
+.reader .fingpic { display: inline-block; vertical-align: middle; margin-right: 6px; }
+
+/* Games fill the screen while they are played. */
+.game-card.game-full { position: fixed; inset: 0; z-index: 90; border-radius: 0; border: 0; overflow-y: auto; align-content: start;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+html.noscroll, html.noscroll body { overflow: hidden; }
+
+/* Songs: the status chip always sits top right. */
+.songhead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+
+/* Settings: grouped, with jump links. */
+.jumpnav { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; position: sticky; top: 58px; z-index: 6; background: var(--bg); padding: 8px 0; }
+.jumpnav::-webkit-scrollbar { display: none; }
+.jumpnav a { white-space: nowrap; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: var(--ink); font-size: 0.9rem; }
+.grouphead { font-family: var(--display); font-weight: 400; font-size: 1.5rem; margin-top: var(--s3); scroll-margin-top: 120px; }
+
+/* Progress: one headline of three numbers. */
+.headline .bigstats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.headline .stat { background: transparent; border: 0; padding: 0; }
+.headline .stat b { font-size: clamp(1.4rem, 5vw, 2rem); }
+.summarychips { gap: 6px; }
+/* With the section menu shown, the small label above a page title only repeats it. */
+.subnav + .page > .hero > .eyebrow:first-child { display: none; }

@@ -64,7 +64,8 @@ export function weeklyMinutes(dates, t, n) {
 // opts: { what: "Minutes practised" | "XP earned", fmt(v), floor (the smallest scale) }
 function weeksChart(weeks, opts) {
   const o = Object.assign({ what: "Minutes practised", fmt: fmtMinutes, floor: 60 }, opts || {});
-  const W = 600, H = 170, padL = 40, padB = 22, padT = 10, max = Math.max(o.floor, ...weeks.map(w => w.mins));
+  // Drawn at about the size it is shown, so the labels stay readable on a phone.
+  const W = typeof window !== "undefined" && window.innerWidth < 600 ? Math.max(300, window.innerWidth - 70) : 600, H = W < 600 ? 190 : 170, padL = 40, padB = 22, padT = 10, max = Math.max(o.floor, ...weeks.map(w => w.mins));
   const step = (W - padL) / weeks.length, bw = Math.max(6, step - 6), y = v => padT + (H - padT - padB) * (1 - v / max);
   const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "wkchart", role: "img", "aria-label": o.what + " per week, last 12 weeks" });
   const nice = [60, 100, 200, 300, 500, 1000, 2000, 5000].find(n => max / n <= 4) || 10000;
@@ -127,9 +128,13 @@ export async function render(main) {
   const stat = (v, l) => h("div", { class: "stat" }, h("b", null, String(v)), h("span", null, l));
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Progress"), h("h1", null, "How far you have come"),
     s.startedAt ? h("p", { class: "muted" }, "Learning since " + s.startedAt + ".") : h("p", { class: "muted" }, "Start Day 0 to begin tracking.")));
-  page.append(h("div", { class: "stats" },
-    stat("Day " + current(), "current day"), stat(tt.practiceDays, "days practised"), stat(fmtMinutes(tt.minutes), "total practice"),
-    stat(st.current, "current streak"), stat(st.best, "best streak"), stat(tt.msPassed + "/" + getPlan().milestones.length, "milestones passed")));
+  // One headline (three numbers that matter), then the details in a line.
+  page.append(h("section", { class: "card headline" },
+    h("div", { class: "bigstats" },
+      stat(st.current + (st.current === 1 ? " day" : " days"), "current streak"),
+      stat(tt.msPassed + " of " + getPlan().milestones.length, "milestones passed"),
+      stat(fmtMinutes(tt.minutes), "total practice")),
+    h("p", { class: "small muted" }, "Day " + current() + " of the course - " + tt.practiceDays + " days practised - best streak " + st.best + " days")));
 
   page.append(levelSection());
   page.append(h("section", { class: "card" }, h("h2", null, "Milestones"), milestonePath()));

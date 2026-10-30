@@ -37,6 +37,12 @@ scripts/                   validate.py, gen_nav.py, build_bench.py, build_plan.p
 tests/                     browser smoke tests (puppeteer-core + local Chrome/Edge)
 ```
 
+## Navigation
+
+Five tabs (`main.js` `NAV`): Today, Course, Practice, Play and Me. Related screens share a tab and get a small menu at the top (`GROUPS`): Course map and Library; Bench, Coach, Listen and Songs; Games, Make a melody and 5 minutes; Progress, Journal and Settings. `TAB_OF` maps every route to its tab. Simple mode has its own three tabs. The top bar shows the day and the level as one chip, and Settings.
+
+Session steps are shown by name and icon (`steps.js` `STEP_META`) with their instruction in plain words (the spoken text from the voice index, in the learner's language); the plan's original wording is one tap away. Today puts the day's main action first, then the session at a glance; on wide screens a second column holds the level, quests and extras.
+
 ## Routes (hash-based, work on GitHub Pages)
 
 | Route | View |

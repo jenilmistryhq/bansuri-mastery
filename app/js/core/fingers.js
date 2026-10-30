@@ -63,6 +63,23 @@ export function noteLabel(semi) {
   return wrap;
 }
 
+// A picture for a written fingering such as "XXX OOO" or "XXH OOO" (no note needed).
+export function patternSvg(pattern) {
+  const f = String(pattern).replace(/\s+/g, "").toUpperCase();
+  if (!/^[XOH]{6}$/.test(f)) return null;
+  const col = "var(--accent)", W = 68, H = 22;
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("class", "fingpic"); svg.setAttribute("width", "58"); svg.setAttribute("height", "19"); svg.setAttribute("aria-hidden", "true");
+  const add = (tag, attrs) => { const e = document.createElementNS(SVG_NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v)); svg.append(e); };
+  add("rect", { x: 1, y: 6, width: W - 2, height: 10, rx: 5, fill: "none", stroke: col, "stroke-width": 1.6 });
+  for (let i = 0; i < 6; i++) {
+    const cx = 9 + i * 10 + (i >= 3 ? 2 : 0), c = f[i];
+    add("circle", { cx, cy: 11, r: 3.6, fill: c === "X" ? col : "none", stroke: col, "stroke-width": 1.3 });
+    if (c === "H") add("path", { d: `M${cx} ${11 - 3.6}a3.6 3.6 0 0 0 0 7.2z`, fill: col });
+  }
+  return svg;
+}
+
 // The same picture on a canvas (games). Draws centred on x, y.
 export function drawFing(g, x, y, semi, size) {
   const { f, reg } = fingOf(semi);

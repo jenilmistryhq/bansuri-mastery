@@ -50,14 +50,16 @@ export async function render(main, { params, view }) {
   const cleanups = [];
   let game = null;
   const stage = h("div", { class: "card game-card", hidden: true });
-  const closeGame = () => { if (game) { game.destroy(); game = null; } stage.hidden = true; stage.replaceChildren(); };
+  const onKey = e => { if (e.key === "Escape" && game) closeGame(); };
+  const closeGame = () => { if (game) { game.destroy(); game = null; } stage.hidden = true; stage.replaceChildren(); stage.classList.remove("game-full"); document.documentElement.classList.remove("noscroll"); document.removeEventListener("keydown", onKey); };
   cleanups.push(closeGame);
   function open(title, make, note) {
     closeGame();
     game = make();
-    stage.append(h("div", { class: "row between" }, h("h2", null, title), h("button", { type: "button", class: "btn ghost small", onclick: closeGame }, "Close")), note || null, game.el);
-    stage.hidden = false;
-    stage.scrollIntoView({ behavior: "smooth", block: "start" });
+    stage.append(...[h("div", { class: "row between" }, h("h2", null, title), h("button", { type: "button", class: "btn ghost small", onclick: closeGame }, "Close")), note, game.el].filter(Boolean));
+    // Full screen while playing: a bigger playing field and nothing else to scroll past.
+    stage.hidden = false; stage.classList.add("game-full"); stage.scrollTop = 0;
+    document.documentElement.classList.add("noscroll"); document.addEventListener("keydown", onKey);
   }
   // A finished round offers a link that replays the same course for a friend.
   const shareBox = (g, l, seed, score) => {

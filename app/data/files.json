@@ -1,5 +1,5 @@
 {
- "version": "024714901c3c",
+ "version": "f8a28e82b8c3",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -58,6 +58,7 @@
   "app/js/posture.js",
   "app/js/recorder.js",
   "app/js/state.js",
+  "app/js/steps.js",
   "app/js/tts-worker.js",
   "app/js/util.js",
   "app/js/views/bench.js",

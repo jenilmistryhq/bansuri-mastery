@@ -283,8 +283,15 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-flute .bb-holehit { outline: none; }
 .bb-flute .bb-holehit:focus-visible .bb-holering { opacity: 1; }
 .bb-howto { border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--surface); }
+.bb-howto summary { cursor: pointer; }
 .bb-howto ol { margin: 8px 0; padding-left: 1.3rem; display: grid; gap: 6px; }
 .bb-howto li::marker { color: var(--accent); font-weight: 700; }
+.bb-flute.bb-narrow text { font-size: 28px; }
+.bb-flute.bb-narrow .bb-num { font-size: 22px; }
+.bb-flute.bb-narrow .bb-numdot { r: 17px; }
+@media (max-width: 620px) { .bb-instrument { padding-left: 8px; padding-right: 8px; } }
+/* Tabs wrap onto two rows on a phone instead of running off the edge. */
+@media (max-width: 620px) { .bb-tabs { flex-wrap: wrap; overflow: visible; row-gap: 2px; } .bb-tabs button { flex: 1 1 auto; padding-left: 10px; padding-right: 10px; } }
 </style>
 <main class="bb-page">
 <div id="bench-root"></div>
@@ -517,6 +524,23 @@ function noteLabel(semi) {
   sm.textContent = s.deva ? devaOf(semi) : code;
   wrap.append(fingSvg(semi), sm);
   return wrap;
+}
+
+// A picture for a written fingering such as "XXX OOO" or "XXH OOO" (no note needed).
+function patternSvg(pattern) {
+  const f = String(pattern).replace(/\s+/g, "").toUpperCase();
+  if (!/^[XOH]{6}$/.test(f)) return null;
+  const col = "var(--accent)", W = 68, H = 22;
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("class", "fingpic"); svg.setAttribute("width", "58"); svg.setAttribute("height", "19"); svg.setAttribute("aria-hidden", "true");
+  const add = (tag, attrs) => { const e = document.createElementNS(SVG_NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v)); svg.append(e); };
+  add("rect", { x: 1, y: 6, width: W - 2, height: 10, rx: 5, fill: "none", stroke: col, "stroke-width": 1.6 });
+  for (let i = 0; i < 6; i++) {
+    const cx = 9 + i * 10 + (i >= 3 ? 2 : 0), c = f[i];
+    add("circle", { cx, cy: 11, r: 3.6, fill: c === "X" ? col : "none", stroke: col, "stroke-width": 1.3 });
+    if (c === "H") add("path", { d: `M${cx} ${11 - 3.6}a3.6 3.6 0 0 0 0 7.2z`, fill: col });
+  }
+  return svg;
 }
 
 // The same picture on a canvas (games). Draws centred on x, y.
@@ -2315,8 +2339,8 @@ function benchTemplate(uid, o) {
         <button type="button" class="bb-btn bb-primary bb-blow" data-ref="blowBtn">Hold to blow</button>
       </div>
     </div>
-    ${o.compact ? `<p class="bb-small bb-muted">Tap a hole on the flute to cover it (tap again: half, again: open), then press and hold <b>Hold to blow</b>.</p>` : `<div class="bb-howto">
-      <b>How to play this flute</b>
+    ${o.compact ? `<p class="bb-small bb-muted">Tap a hole on the flute to cover it (tap again: half, again: open), then press and hold <b>Hold to blow</b>.</p>` : `<details class="bb-howto" data-ref="howto" open>
+      <summary><b>How to play this flute</b></summary>
       <ol>
         <li><b>Cover the holes.</b> Tap a hole on the flute to put a finger on it. Tap it again to half-cover it, and once more to open it. Hole 1 is the one nearest the blowing hole; the top hand covers holes 1-3 and the bottom hand holes 4-6.</li>
         <li><b>Choose your breath.</b> <i>Gentle air</i> plays the lower register; <i>Faster air</i> overblows into the upper register with the same fingers.</li>
@@ -2324,7 +2348,7 @@ function benchTemplate(uid, o) {
         <li><b>Read the note.</b> Its name, sargam, pitch and the lesson that teaches it appear below the flute. Start with Sa: cover holes 1, 2 and 3 with gentle air.</li>
       </ol>
       <p class="bb-small bb-muted">Keyboard: Tab to a hole and press Enter or Space, or use keys <span class="bb-mono">1-6</span> for the holes, <span class="bb-mono">Q</span>/<span class="bb-mono">W</span> for the breath, and hold <span class="bb-mono">Space</span> to blow. The flute is shown with the blowing hole on the left (pointing right).</p>
-    </div>`}
+    </details>`}
   </section>` : "";
   const panels = [];
   if (has("chart")) panels.push(`
@@ -2576,13 +2600,24 @@ function mountBench(container, opts) {
       s.push(`<path d="M${x - 15} ${Y - 26} q 15 4 30 0" fill="none" stroke="var(--finger-edge)" stroke-width="1" opacity="0.5"/></g></g></g>`);
     });
     // Labels below: the blowing hole, hole numbers, and which hand covers which holes.
-    s.push(`<text x="150" y="${bot + 34}" text-anchor="middle">blowing hole</text>`);
+    s.push(`<text class="bb-blowlab" x="150" y="${bot + 34}" text-anchor="middle">blowing hole</text>`);
     BENCH_HOLE_X.forEach((x, i) => s.push(`<circle cx="${x}" cy="${bot + 29}" r="11" class="bb-numdot"/><text x="${x}" y="${bot + 34}" text-anchor="middle" class="bb-num">${i + 1}</text>`));
     [[BENCH_HOLE_X[0], BENCH_HOLE_X[2], "top hand"], [BENCH_HOLE_X[3], BENCH_HOLE_X[5], "bottom hand"]].forEach(([a, b, t]) => {
-      s.push(`<path d="M${a - 12} ${bot + 46} v 6 H ${b + 12} v -6" fill="none" class="bb-bracket"/><text x="${(a + b) / 2}" y="${bot + 68}" text-anchor="middle">${t}</text>`);
+      s.push(`<path d="M${a - 12} ${bot + 46} v 6 H ${b + 12} v -6" fill="none" class="bb-bracket"/><text class="bb-handlab" x="${(a + b) / 2}" y="${bot + 68}" text-anchor="middle">${t}</text>`);
     });
     q("fluteSvg").innerHTML = s.join("");
     q("fluteSvg").querySelectorAll(".bb-holehit").forEach(g => listen(g, "click", () => cycleHole(Number(g.dataset.i))));
+    // On a phone the flute zooms in on the part that is played (blowing hole to hole 6), with
+    // larger labels, so the holes are bigger to tap and the numbers can be read.
+    const fit = () => { const svg = q("fluteSvg"); if (!svg) return; const narrow = root.clientWidth > 0 && root.clientWidth < 620; svg.setAttribute("viewBox", narrow ? "100 0 790 152" : "0 0 1000 145"); svg.classList.toggle("bb-narrow", narrow);
+      // Larger phone labels: the first one starts at the edge, the hand labels sit clear of their brackets.
+      const bl = svg.querySelector(".bb-blowlab"); if (bl) { bl.setAttribute("x", narrow ? "104" : "150"); bl.setAttribute("text-anchor", narrow ? "start" : "middle"); }
+      svg.querySelectorAll(".bb-handlab").forEach(t => t.setAttribute("y", narrow ? "147" : "139"));
+    };
+    fit(); requestAnimationFrame(fit); listen(window, "resize", fit);
+    // The guide is open on the first visit, then folded away (one tap to open it again).
+    const howto = q("howto");
+    if (howto) { try { if (localStorage.getItem("bansuri.bench.howtoSeen")) howto.open = false; else localStorage.setItem("bansuri.bench.howtoSeen", "1"); } catch (e) { /* storage unavailable */ } }
     // Keyboard: Enter or Space on a focused hole changes it (and does not start blowing).
     q("fluteSvg").querySelectorAll(".bb-holehit").forEach(g => listen(g, "keydown", e => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); cycleHole(Number(g.dataset.i)); }

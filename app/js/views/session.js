@@ -17,7 +17,8 @@ import { sessionQuestPoints } from "../fun.js";
 import { parseNotation } from "../core/notation.js";
 import { renderInline } from "../content.js";
 import { makePlayable } from "../playable.js";
-import { speak, stopSpeaking, textOf, lang } from "../voice.js";
+import { speak, stopSpeaking } from "../voice.js";
+import { stepMeta, plainText } from "../steps.js";
 import { waitForNote } from "../core/listen.js";
 import { getSettings, setSettings } from "../core/settings.js";
 
@@ -70,7 +71,7 @@ export async function render(main, { params }) {
   const progressEl = h("div", { class: "progressbar", role: "progressbar", "aria-label": "Blocks done", "aria-valuemin": "0", "aria-valuemax": String(day.blocks.length), "aria-valuenow": "0" }, progress);
   const totalClock = h("span", { class: "mono" }, "0:00"), blocksEl = h("span", { class: "small muted" });
   const planned = day.blocks.reduce((a, b) => a + (b.minutes || 0), 0);
-  const finishBtn = h("button", { type: "button", class: "btn" }, "Finish session");
+  const finishBtn = h("button", { type: "button", class: "btn ghost" }, "End the session here");
   // One step at a time (default) or the whole list; the choice is remembered.
   let focus = (getState().prefs.sessionView || "focus") === "focus";
   const stepStrip = h("div", { class: "stepstrip", role: "list", "aria-label": "Steps" });
@@ -130,13 +131,14 @@ export async function render(main, { params }) {
     progressEl.setAttribute("aria-valuenow", String(done));
     // Finishing is the main action only once the blocks are done; before that it stays available but quiet.
     finishBtn.classList.toggle("primary", done === day.blocks.length);
+    finishBtn.textContent = done === day.blocks.length ? "Finish the session" : "End the session here";
     stepStrip.querySelectorAll("button").forEach(btn => { btn.classList.toggle("done", !!doneMap[btn.dataset.id]); btn.classList.toggle("now", btn.dataset.id === activeId); });
   }
 
   page.append(h("div", { class: "session-head" },
     h("div", { class: "row between" },
       h("div", { class: "stack", style: { gap: "0" } }, h("span", { class: "eyebrow" }, "Day " + n + (n < cur ? " - practising again" : "")), h("h2", null, day.title || "Session")),
-      h("div", { class: "row" }, h("div", { class: "stack", style: { gap: "0" } }, totalClock, blocksEl), finishBtn)),
+      h("div", { class: "stack sessclock", style: { gap: "0" } }, totalClock, blocksEl)),
     stepStrip, progressEl, h("div", { class: "row between" }, hfBtn, viewBtn)));
 
   if (day.milestone) {
@@ -279,7 +281,7 @@ export async function render(main, { params }) {
     });
     const parts = [
       h("header", null,
-        h("span", { class: "tag " + b.id }, b.id === "READ" ? "Read" : b.id === "TEST" ? "Test" : b.id),
+        h("span", { class: "stepicon " + b.id, "aria-hidden": "true" }, icon(stepMeta(b).icon)),
         h("h3", null, b.label, b.minutes ? h("span", { class: "muted small" }, " " + b.minutes + " min") : null),
         total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null),
       b.text ? h("p", { class: "steptext", translate: "no" }, renderInline(b.text, "phases/README.md")) : null,
@@ -317,18 +319,21 @@ export async function render(main, { params }) {
       else if (activeId === b.id) { const nb = day.blocks[idx + 1]; setActive(nb.id); window.scrollTo({ top: 0, behavior: "smooth" }); }
     });
     parts.push(h("div", { class: "row between stepnav" }, backBtn, nextBtn));
-    stepStrip.append(h("button", { type: "button", role: "listitem", class: "stepdot", "data-id": b.id, title: b.label, onclick: () => setActive(b.id) }, b.id === "READ" ? "Rd" : b.id === "TEST" ? "Test" : b.id));
-    // In Hindi, the step's instruction is shown (and spoken) in Hindi; the original stays a tap away.
-    if (b.text && lang() === "hi") textOf(["step", b.text]).then(hi => {
-      const p = card.querySelector(".steptext"); if (!hi || !p) return;
-      const orig = h("details", { class: "small muted" }, h("summary", null, "English"), p.cloneNode(true));
-      p.replaceWith(h("p", { class: "steptext", lang: "hi" }, hi), orig);
+    stepStrip.append(h("button", { type: "button", role: "listitem", class: "stepdot", "data-id": b.id, title: b.label, "aria-label": b.label, onclick: () => setActive(b.id) }, icon(stepMeta(b).icon), h("span", null, stepMeta(b).name)));
+    // The instruction in plain words (in Hindi when chosen), as the app speaks it; the course's
+    // original wording, with its lesson codes, stays a tap away.
+    if (b.text) plainText(b).then(t => {
+      const p = card.querySelector(".steptext"); if (!t || !p) return;
+      const orig = h("details", { class: "small muted origtext" }, h("summary", null, "Original wording"), p.cloneNode(true));
+      p.replaceWith(h("p", { class: "steptext" }, t), orig);
     });
     card.append(...parts);
     makePlayable(card);
     cards[b.id] = card;
     page.append(card);
   }
+  // Ending early is possible, but it is not the main action: it sits at the end, under the steps.
+  page.append(h("div", { class: "row end sessend" }, finishBtn));
   const first = day.blocks.find(b => !doneMap[b.id]) || day.blocks[day.blocks.length - 1];
   applyHandsFree();
   applyView();

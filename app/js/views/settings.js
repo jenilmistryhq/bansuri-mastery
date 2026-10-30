@@ -100,16 +100,14 @@ function accessSection() {
   });
   const model = h("p", { class: "small muted" }, modelReady() ? "The reading voice for lessons is on this device." : "Lessons can also be read aloud by a natural voice. It downloads once (about 90 MB) the first time you tap a speaker on a lesson card.");
   const preview = h("span", { class: "row", "aria-hidden": "true" }, [0, 2, 4, 7].map(n => fingSvg(n, { size: 20 })));
-  return h("section", { class: "card", id: "access" }, h("h2", null, "Language, voice and access"),
+  return [h("section", { class: "card", id: "voice" }, h("h2", null, "Voice and language"),
     h("label", { class: "field", for: "st-lang" }, h("span", { translate: "no" }, "Language / भाषा"), langSel),
     h("p", { class: "small muted" }, "The app's buttons, messages and voice change language. The course pages stay in English, and the voice can read them aloud."),
-    countdownField(set),
-    h("h3", null, "Voice"),
-    check("talk", "Talk to me: say the steps, and how each note went", sayButton(["welcome"], "Hear the voice")),
+    h("div", { class: "row between" }, check("talk", "Talk to me: say the steps, and how each note went"), sayButton(["welcome"], "Hear the voice")),
     h("p", { class: "small muted" }, "A natural human-sounding voice, made on this device's copy of the app; nothing is sent anywhere. The microphone does not listen while the app speaks."),
     h("div", { class: "row" }, offline), model,
-    check("hints", "After an off note, play a soft slide from my note to the right one"),
-    h("h3", null, "Easier to use"),
+    check("hints", "After an off note, play a soft slide from my note to the right one")),
+  h("section", { class: "card", id: "access" }, h("h2", null, "Easier to use"),
     check("simple", "Simple mode: three big buttons (Practice, Play, Listen), and the app talks you through each session"),
     select("notesAs", "Show notes as", [["letters", "Letters (S R G)"], ["pictures", "Pictures of the fingering"]]), preview,
     h("label", { class: "field", for: "st-size" }, "Text size", h("span", { class: "row" }, size, sizeTxt)),
@@ -122,7 +120,7 @@ function accessSection() {
     h("h3", null, "Games"),
     select("gameSpeed", "Game speed", [["slow", "Slow"], ["normal", "Normal"], ["fast", "Fast"]]),
     check("noTimer", "No time limit in the games"),
-    check("cues", "Game sounds for playing without looking: the next note is spoken, and progress is heard as ticks"));
+    check("cues", "Game sounds for playing without looking: the next note is spoken, and progress is heard as ticks"))];
 }
 
 export async function render(main) {
@@ -130,7 +128,7 @@ export async function render(main) {
   const set = getSettings();
   const page = h("div", { class: "page" });
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Settings"), h("h1", null, "Settings")));
-  page.append(accessSection());
+  const access = accessSection();
 
   // Flute: set by hand, or found by listening to the learner's Sa.
   const findHost = h("div", { class: "toolhost", hidden: true });
@@ -171,6 +169,7 @@ export async function render(main) {
   const paceSel = h("select", { id: "st-pace" }, h("option", { value: "short" }, "Short: about 25-35 min a day"), h("option", { value: "standard" }, "Standard: 45-60 min a day (as written)"), h("option", { value: "long" }, "Long: 60-80 min a day"));
   paceSel.value = s.prefs.pace || "standard";
   paceSel.addEventListener("change", () => { update(st => { st.prefs.pace = paceSel.value; }); toast("Session blocks now fit your daily time."); });
+  page.append(h("section", { class: "card", id: "countdown" }, h("h2", null, "Countdown"), countdownField(getSettings())));
   page.append(h("section", { class: "card" }, h("h2", null, "Daily practice time"),
     h("p", { class: "small muted" }, "Every block keeps its place; only its minutes change. Short practice every day beats long practice now and then. Milestones still decide when you move on."),
     h("label", { class: "field", for: "st-pace" }, "How long you practise", paceSel)));
@@ -368,6 +367,20 @@ export async function render(main) {
     h("p", null, "Bansuri Mastery teaches the bansuri day by day from the open curriculum. Read it all as a ", h("a", { href: "docs/" }, "website"), " or in the ", h("a", { href: "#/library" }, "library"), "."),
     h("p", { class: "small muted" }, "Course content: CC BY-NC-SA 4.0. Code: MIT. Fonts: Hind, Rozha One (Indian Type Foundry) and JetBrains Mono, SIL Open Font License. Markdown rendering: marked (MIT). Everything runs in your browser; nothing you do here is sent anywhere."),
     h("p", { class: "small muted" }, "Limits: the app cannot hear your tone, see your posture or judge raga intonation. Use recordings, a tuner and, when you can, a teacher. ", h("a", { href: "#/read/07-QUALITY-REPORT.md" }, "Quality report"), ".")));
+  // Groups, in this order, each with its heading; a row of links jumps to each group.
+  const GROUPS = [["g-flute", "Flute", ["Your flute"]], ["g-practice", "Practice", ["Daily practice time", "Countdown", "Daily practice reminder", "Already play?"]],
+    ["g-voice", "Voice and language", ["Voice and language"]], ["g-access", "Accessibility", ["Easier to use", "Display and sound"]],
+    ["g-data", "Your data", ["Your data", "Start over"]], ["g-help", "Help", ["Microphone check", "Problem report", "About"]]];
+  const cards = [...page.querySelectorAll(":scope > section.card")].concat(access);
+  const byTitle = new Map(cards.map(c => [(c.querySelector("h2") || {}).textContent, c]));
+  const hero = page.querySelector(":scope > .hero");
+  const jump = h("nav", { class: "jumpnav", "aria-label": "Settings groups" }, GROUPS.map(([id, label]) => h("a", { href: "#/settings#" + id }, label)));
+  page.replaceChildren(hero, jump);
+  for (const [id, label, titles] of GROUPS) {
+    page.append(h("h2", { class: "grouphead", id }, label));
+    for (const t of titles) if (byTitle.has(t)) { page.append(byTitle.get(t)); byTitle.delete(t); }
+  }
+  byTitle.forEach(c => page.append(c)); // anything not grouped stays, at the end
   main.append(page);
   return () => { if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
 }

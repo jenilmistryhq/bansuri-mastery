@@ -200,7 +200,16 @@ function splitLong(card) {
   return parts.map((body, i) => Object.assign({}, card, { title: card.title + (parts.length > 1 ? ` (${i + 1} of ${parts.length})` : ""), body }));
 }
 
+// The course labels claims (Fact, Recommendation) for its research audit; in the cards a learner
+// does not need them. Disputed and Uncertain stay: they tell the learner something.
+function dropClaimLabels(root) {
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const re = /\s?\((?:Fact|Recommendation)(?: [a-z][^)]{0,40})?\)/g;
+  for (let n = w.nextNode(); n; n = w.nextNode()) if (re.test(n.nodeValue)) { re.lastIndex = 0; n.nodeValue = n.nodeValue.replace(re, ""); }
+}
+
 export function lessonCards(node, path) {
+  dropClaimLabels(node);
   const secs = sections(node), cards = [];
   const steps = secs.filter(s => s.level === "H3" && /step-by-step/i.test(s.parent) && /^step\b/i.test(s.title)).length;
   let step = 0;
