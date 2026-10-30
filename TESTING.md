@@ -23,6 +23,7 @@ tuner without a real device. It also covers:
 - the listening exercises, with a synthetic microphone (an oscillator the test tunes to any note): the long-tone meter (a wrong note must not pass), play it back, play-along marking right and wrong notes, and a milestone item passed by microphone;
 - sessions one step at a time (a met goal ticks the step), lesson cards with flashcards, and play buttons on notation;
 - the microphone explainer, find my flute (an E5 tone is recognised and saved), "Your playing" on Progress, the song library and the raga tools;
+- updates and offline: a stale, incompatible module in the cache is never mixed in while online, and the app loads from the cache when offline;
 - phone layouts with iPhone 13 emulation.
 
 What automation cannot check: real phone browsers (iOS Safari uses WebKit, not Chromium), a real
@@ -36,7 +37,7 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 ### Install and offline
 - [ ] Add to Home Screen (iOS: Share > Add to Home Screen; Android: menu > Install app). It opens full screen.
 - [ ] Turn on airplane mode, open the app: Today, a lesson and the Bench still work.
-- [ ] After a new deploy, the "A new version is ready" banner appears; "Update now" reloads cleanly.
+- [ ] After a new deploy, keep a page open: it switches to the new version at the next screen change (not during a session), with no "Something went wrong".
 
 ### Sound
 - [ ] Bench: tap holes and hold "blow". The note sounds while you hold and stops when you let go.

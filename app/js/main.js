@@ -18,7 +18,17 @@ const ROUTES = [
 ];
 const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Bench"], ["coach", "#/coach", "Coach"], ["journal", "#/journal", "Journal"], ["progress", "#/progress", "Progress"]];
 
-let mainEl, navEl, dayPill, cleanup = null, routeToken = 0;
+let mainEl, navEl, dayPill, cleanup = null, routeToken = 0, updateReady = false;
+
+// Clears the saved copies of the app and reloads from the network: the way out when an update left
+// mismatched files (an ES module importing something an older module does not have).
+async function freshReload() {
+  try {
+    if (navigator.serviceWorker) for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister();
+    if (window.caches) for (const k of await caches.keys()) if (k.startsWith("bansuri-")) await caches.delete(k);
+  } catch (e) { /* reload anyway */ }
+  location.reload();
+}
 
 function applyTheme() {
   const t = getState().prefs.theme;
@@ -59,6 +69,9 @@ function parseHash() {
 }
 
 async function route() {
+  // A new version took over while this page was open: load it now, between screens, so the old code
+  // in memory never meets newer modules (and an active session is never interrupted).
+  if (updateReady) { location.reload(); return; }
   const token = ++routeToken;
   const { path, anchor } = parseHash();
   let view = "today", params = [];
@@ -82,7 +95,10 @@ async function route() {
   } catch (e) {
     console.error(e);
     logError(e && e.message ? e.message : String(e), "route " + path);
-    clear(mainEl).append(h("div", { class: "page" }, h("div", { class: "card" }, h("h2", null, "Something went wrong"), h("p", null, String(e.message || e)), h("p", null, h("a", { href: "#/today" }, "Back to today")))));
+    const mismatch = /does not provide an export|dynamically imported module|Importing a module script failed/i.test(String(e && e.message));
+    clear(mainEl).append(h("div", { class: "page" }, h("div", { class: "card" }, h("h2", null, "Something went wrong"), h("p", null, String(e.message || e)),
+      mismatch ? h("p", null, "This usually means an update was only half loaded. Updating fixes it; your progress is kept.") : null,
+      h("div", { class: "row" }, mismatch ? h("button", { type: "button", class: "btn primary", onclick: freshReload }, "Update and reload") : null, h("a", { href: "#/today" }, "Back to today")))));
   }
 }
 
@@ -116,8 +132,10 @@ async function boot() {
   try { evaluateBadges(); } catch (e) { console.warn("Badge check failed", e); }
   if (!isStorageOk()) toast("This browser is not saving progress (private mode?). Export a backup in Settings.", 6000);
   if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
-    let reloading = false;
-    navigator.serviceWorker.addEventListener("controllerchange", () => { if (!reloading) { reloading = true; location.reload(); } });
+    // A new service worker takes over at once (see sw.js). Reload at the next screen change; reloading
+    // right away could cut off a running session or recording.
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadController) updateReady = true; });
     navigator.serviceWorker.register("sw.js").then(reg => {
       if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
       reg.addEventListener("updatefound", () => {

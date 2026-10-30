@@ -179,3 +179,12 @@ export can include them (base64) or not.
   the video self-check.
 - Shared origin: all `jenilmistryhq.github.io` projects share one origin, so they could read each
   other's localStorage. Use a custom domain if that matters.
+
+## Offline and updates (sw.js)
+
+- Network first for every file, with a short timeout, and the cache as the fallback. Online, a page is
+  built entirely from fresh files; offline, entirely from the saved copy. A page never mixes versions,
+  which matters because ES modules import each other by name.
+- A new worker installs, saves every file listed in `files.json`, and takes over at once. An open page
+  reloads at its next screen change (never mid-session). If a mismatch still happens, the error screen
+  offers "Update and reload", which clears the saved copies.

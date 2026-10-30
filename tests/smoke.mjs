@@ -478,6 +478,34 @@ try {
     await lp.close();
   }
 
+  console.log("Offline and updates (service worker)");
+  {
+    const sp = await browser.newPage();
+    sp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    await sp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    await sp.waitForFunction(() => navigator.serviceWorker && navigator.serviceWorker.controller, { timeout: 15000 }).catch(() => {});
+    if (!(await sp.evaluate(() => !!(navigator.serviceWorker && navigator.serviceWorker.controller)))) { await sp.reload({ waitUntil: "networkidle0" }); }
+    const controlled = await sp.evaluate(() => !!(navigator.serviceWorker && navigator.serviceWorker.controller));
+    check(controlled, "the service worker controls the app");
+    // An old, incompatible copy of a module in the cache (what a half-applied update looks like)...
+    await sp.evaluate(async () => {
+      for (const k of await caches.keys()) {
+        const c = await caches.open(k);
+        await c.put(new Request(new URL("app/js/core/listen.js", location.href)), new Response("export const old = 1;", { headers: { "Content-Type": "text/javascript" } }));
+      }
+    });
+    await sp.reload({ waitUntil: "networkidle0" });
+    await sp.waitForFunction(() => { const m = document.querySelector("#main"); return m && !m.querySelector(":scope > .boot"); }, { timeout: 10000 }).catch(() => {});
+    check(!/Something went wrong/.test(await sp.$eval("#main", e => e.innerText)), "online, a stale cached module is never mixed in (the app loads fresh files)");
+    // ...and offline, the whole app comes from the saved copy (restore the real module first).
+    await sp.evaluate(async () => { for (const k of await caches.keys()) { const c = await caches.open(k); await c.put(new Request(new URL("app/js/core/listen.js", location.href)), await fetch("app/js/core/listen.js", { cache: "no-store" })); } });
+    await sp.setOfflineMode(true);
+    await sp.goto(BASE + "#/bench", { waitUntil: "load" }).catch(() => {});
+    await sp.waitForSelector(".bb-bench", { timeout: 10000 }).then(() => check(true, "offline, the app and the Practice Bench load from the saved copy"), () => check(false, "offline, the app and the Practice Bench load from the saved copy"));
+    await sp.setOfflineMode(false);
+    await sp.close();
+  }
+
   console.log("Phone layout (iPhone 13 emulation: size, touch, user agent; the engine is still Chromium)");
   await page.emulate(KnownDevices["iPhone 13"]);
   for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"]]) {
