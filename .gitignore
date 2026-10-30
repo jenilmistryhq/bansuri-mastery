@@ -22,3 +22,5 @@ node_modules/
 
 # Assembled site (CI)
 _site/
+tests/visual/
+hindi-review.csv

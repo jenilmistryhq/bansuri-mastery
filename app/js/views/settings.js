@@ -11,8 +11,12 @@ import { placementTest } from "../placement.js";
 import { listenMic, micStats } from "../core/listen.js";
 import { ac } from "../core/audio.js";
 import { listRecordings, saveRecording, clearRecordings, blobToDataUrl } from "../recorder.js";
-import { sayButton, saveVoiceOffline, modelReady, readAloud } from "../voice.js";
+import { sayButton, saveVoiceOffline, modelReady, readAloud, voiceSizeMB, removeSavedVoice } from "../voice.js";
 import { fingSvg } from "../core/fingers.js";
+import { enableReminder, disableReminder, remindersSupported } from "../reminder.js";
+import { saveBackup } from "../backup.js";
+import { calibrationWidget } from "../calibrate.js";
+import { encodeMove, moveLink, QR_LIMIT } from "../move.js";
 
 function b64ToBlob(dataUrl) {
   const m = /^data:([^;,]*)(;base64)?,(.*)$/s.exec(dataUrl || "");
@@ -93,6 +97,8 @@ function accessSection() {
   const sizeTxt = h("span", { class: "mono small" }, Math.round(set.textSize * 100) + "%");
   size.addEventListener("input", () => { sizeTxt.textContent = size.value + "%"; setSettings({ textSize: Number(size.value) / 100 }); });
   const offline = h("button", { type: "button", class: "btn" }, "Keep the voice for offline use");
+  const removeVoice = h("button", { type: "button", class: "btn ghost", onclick: async () => { await removeSavedVoice(null); removeVoice.textContent = "Saved voice removed"; } }, "Remove the saved voice");
+  voiceSizeMB().then(mb => { if (mb) offline.textContent = "Keep the voice for offline use (" + mb + " MB, this language only)"; });
   offline.addEventListener("click", async () => {
     offline.disabled = true;
     const n = await saveVoiceOffline(p => { offline.textContent = "Saving the voice... " + Math.round(p * 100) + "%"; });
@@ -105,7 +111,7 @@ function accessSection() {
     h("p", { class: "small muted" }, "The app's buttons, messages and voice change language. The course pages stay in English, and the voice can read them aloud."),
     h("div", { class: "row between" }, check("talk", "Talk to me: say the steps, and how each note went"), sayButton(["welcome"], "Hear the voice")),
     h("p", { class: "small muted" }, "A natural human-sounding voice, made on this device's copy of the app; nothing is sent anywhere. The microphone does not listen while the app speaks."),
-    h("div", { class: "row" }, offline), model,
+    h("div", { class: "row" }, offline, removeVoice), model,
     check("hints", "After an off note, play a soft slide from my note to the right one")),
   h("section", { class: "card", id: "access" }, h("h2", null, "Easier to use"),
     check("simple", "Simple mode: three big buttons (Practice, Play, Listen), and the app talks you through each session"),
@@ -186,6 +192,16 @@ export async function render(main) {
   const timeIn = h("input", { id: "st-rtime", type: "time", value: s.prefs.reminderTime || "18:00" });
   const lenIn = h("input", { id: "st-rlen", type: "number", min: "15", max: "180", value: String(s.prefs.reminderMinutes || 50) });
   const icsBtn = h("button", { type: "button", class: "btn primary" }, "Add to my calendar");
+  // Or a notification from the app itself (installed app, browsers that support it).
+  const notifyMsg = h("p", { class: "small muted", "aria-live": "polite" }, remindersSupported() ? "" : "Notifications from the app need an installed app in Chrome (Android or desktop); the calendar reminder works everywhere.");
+  const notifyOn = !!s.prefs.notifyReminder;
+  const notifyBtn = h("button", { type: "button", class: "btn" }, notifyOn ? "Turn off the notification" : "Remind me with a notification");
+  notifyBtn.addEventListener("click", async () => {
+    if (getState().prefs.notifyReminder) { await disableReminder(); update(st => { st.prefs.notifyReminder = false; }); notifyBtn.textContent = "Remind me with a notification"; notifyMsg.textContent = "Notification reminder off."; return; }
+    const msg = await enableReminder(timeIn.value || "18:00");
+    notifyMsg.textContent = msg;
+    if (/^Reminder on|^Saved/.test(msg)) { update(st => { st.prefs.notifyReminder = true; st.prefs.reminderTime = timeIn.value || "18:00"; }); notifyBtn.textContent = "Turn off the notification"; }
+  });
   icsBtn.addEventListener("click", () => {
     const [hh, mm] = (timeIn.value || "18:00").split(":");
     const mins = Math.min(180, Math.max(15, Number(lenIn.value) || 50));
@@ -196,7 +212,7 @@ export async function render(main) {
   page.append(h("section", { class: "card" }, h("h2", null, "Daily practice reminder"),
     h("p", { class: "small muted" }, "Practice at the same time every day builds the habit. This creates a repeating calendar event with an alert; your phone's calendar does the reminding, so it works even when the app is closed."),
     h("div", { class: "grid3" }, h("label", { class: "field", for: "st-rtime" }, "Time", timeIn), h("label", { class: "field", for: "st-rlen" }, "Minutes", lenIn)),
-    h("div", { class: "row" }, icsBtn)));
+    h("div", { class: "row" }, icsBtn, notifyBtn), notifyMsg));
 
   // Placement.
   const plan = getPlan();
@@ -242,6 +258,26 @@ export async function render(main) {
     update(st => { st.lastBackup = today(); });
     toast("Backup downloaded.");
   });
+  // Move to another device: a link (and a QR code when small enough) carrying the progress.
+  const moveOut = h("div", { class: "stack", hidden: true });
+  const moveBtn = h("button", { type: "button", class: "btn" }, "Make a transfer link");
+  moveBtn.addEventListener("click", async () => {
+    const data = await encodeMove(), link = moveLink(data);
+    const input = h("input", { class: "input", readonly: true, value: link, "aria-label": "Transfer link", onfocus: e => e.target.select() });
+    const send = h("button", { type: "button", class: "btn primary", onclick: async () => { try { if (navigator.share) await navigator.share({ title: "My bansuri progress", url: link }); else { await navigator.clipboard.writeText(link); toast("Link copied."); } } catch (e) { /* cancelled */ } } }, "Send the link");
+    let qr = null;
+    if (link.length <= QR_LIMIT) {
+      const { default: qrcode } = await import("../../vendor/qrcode/qrcode.mjs");
+      const q = qrcode(0, "L"); q.addData(link); q.make();
+      qr = h("img", { class: "qrimg", src: q.createDataURL(4, 8), alt: "QR code of the transfer link: scan it with the other device's camera" });
+    }
+    moveOut.replaceChildren(h("div", { class: "row" }, input, send), qr || h("p", { class: "small muted" }, "Your progress is too large for a QR code now; send the link to yourself instead (WhatsApp, email)."),
+      h("p", { class: "small muted" }, "Open the link on the other device; it shows what it holds and asks before replacing anything. Recordings are not included."));
+    moveOut.hidden = false;
+  });
+  // One tap to the phone's share sheet: save the backup to Files, Drive or mail.
+  const shareBtn = h("button", { type: "button", class: "btn" }, "Save to Files or Drive");
+  shareBtn.addEventListener("click", async () => { const how = await saveBackup({ withRecordings: withRec.checked }); if (how !== "cancelled") toast(how === "shared" ? "Backup saved." : "Backup downloaded."); });
   // Practice log as CSV, for a spreadsheet or a teacher.
   const csvBtn = h("button", { type: "button", class: "btn" }, "Download practice log (CSV)");
   csvBtn.addEventListener("click", () => {
@@ -282,7 +318,8 @@ export async function render(main) {
   page.append(h("section", { class: "card" }, h("h2", null, "Your data"),
     h("p", { class: "small muted" }, "Progress and recordings live only in this browser. Back up regularly, and to move to another device, download a backup here and restore it there."),
     h("label", { class: "check", for: "st-withrec" }, withRec, "Include recordings (larger file)"),
-    h("div", { class: "row" }, exportBtn, csvBtn),
+    h("div", { class: "row" }, exportBtn, shareBtn, csvBtn),
+    h("h3", null, "Move to another device"), h("p", { class: "small muted" }, "No account needed: a link carries your progress to your other phone or computer."), h("div", { class: "row" }, moveBtn), moveOut,
     h("label", { class: "field", for: "st-import" }, "Restore from a backup file (replaces current progress)", fileIn)));
 
   // Storage + reset.
@@ -367,10 +404,17 @@ export async function render(main) {
     h("p", null, "Bansuri Mastery teaches the bansuri day by day from the open curriculum. Read it all as a ", h("a", { href: "docs/" }, "website"), " or in the ", h("a", { href: "#/library" }, "library"), "."),
     h("p", { class: "small muted" }, "Course content: CC BY-NC-SA 4.0. Code: MIT. Fonts: Hind, Rozha One (Indian Type Foundry) and JetBrains Mono, SIL Open Font License. Markdown rendering: marked (MIT). Everything runs in your browser; nothing you do here is sent anywhere."),
     h("p", { class: "small muted" }, "Limits: the app cannot hear your tone, see your posture or judge raga intonation. Use recordings, a tuner and, when you can, a teacher. ", h("a", { href: "#/read/07-QUALITY-REPORT.md" }, "Quality report"), ".")));
+  // Calibration with a real flute (Help): helps set the app's tolerances from real players.
+  let calib = null;
+  const calibHost = h("div");
+  const calibBtn = h("button", { type: "button", class: "btn" }, "Help tune the app to real flutes");
+  calibBtn.addEventListener("click", () => { if (calib) return; calib = calibrationWidget(); calibHost.append(calib.el); calibBtn.hidden = true; });
+  page.append(h("section", { class: "card" }, h("h2", null, "Calibrate with your flute"),
+    h("p", { class: "small muted" }, "Four 10-second tasks with your flute. The app saves what its pitch detector measured (no sound) as a file you can send to the course author, so the in-tune, airy and steady thresholds can be set from real players."), calibBtn, calibHost));
   // Groups, in this order, each with its heading; a row of links jumps to each group.
   const GROUPS = [["g-flute", "Flute", ["Your flute"]], ["g-practice", "Practice", ["Daily practice time", "Countdown", "Daily practice reminder", "Already play?"]],
     ["g-voice", "Voice and language", ["Voice and language"]], ["g-access", "Accessibility", ["Easier to use", "Display and sound"]],
-    ["g-data", "Your data", ["Your data", "Start over"]], ["g-help", "Help", ["Microphone check", "Problem report", "About"]]];
+    ["g-data", "Your data", ["Your data", "Start over"]], ["g-help", "Help", ["Microphone check", "Calibrate with your flute", "Problem report", "About"]]];
   const cards = [...page.querySelectorAll(":scope > section.card")].concat(access);
   const byTitle = new Map(cards.map(c => [(c.querySelector("h2") || {}).textContent, c]));
   const hero = page.querySelector(":scope > .hero");
@@ -382,5 +426,5 @@ export async function render(main) {
   }
   byTitle.forEach(c => page.append(c)); // anything not grouped stays, at the end
   main.append(page);
-  return () => { if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
+  return () => { if (calib) calib.destroy(); if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
 }

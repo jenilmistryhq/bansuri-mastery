@@ -811,6 +811,13 @@ try {
     await sp.setOfflineMode(true);
     await sp.goto(BASE + "#/bench", { waitUntil: "load" }).catch(() => {});
     await sp.waitForSelector(".bb-bench", { timeout: 10000 }).then(() => check(true, "offline, the app and the Practice Bench load from the saved copy"), () => check(false, "offline, the app and the Practice Bench load from the saved copy"));
+    // The rest of the course is saved in the background after the first load: a lesson opens offline too.
+    await sp.setOfflineMode(false);
+    await sp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    await sp.waitForFunction(async () => { for (const k of await caches.keys()) if (await (await caches.open(k)).match("bansuri-mastery/lessons/L12-alankars.md")) return true; return false; }, { timeout: 30000, polling: 500 }).catch(() => {});
+    await sp.setOfflineMode(true);
+    await sp.goto(BASE + "#/read/lessons/L12-alankars.md", { waitUntil: "load" }).catch(() => {});
+    await sp.waitForSelector("#main .lcard", { timeout: 10000 }).then(() => check(true, "offline: a lesson saved in the background opens"), () => check(false, "offline: a lesson saved in the background opens"));
     await sp.setOfflineMode(false);
     await sp.close();
   }
@@ -830,6 +837,44 @@ try {
   await page.keyboard.press("Enter");
   await sleep(800);
   check(/#\/read\/.*yaman/i.test(await page.evaluate(() => location.hash)) && await page.$(".palette") === null, "search: Enter opens it and closes the search");
+
+  console.log("Weak spots, stuck check, moving devices, teacher link, Hindi lessons");
+  await page.evaluate(() => {
+    const today = new Date(), d = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" + String(today.getDate()).padStart(2, "0");
+    localStorage.setItem("bansuri.progress", JSON.stringify({ current: 20, startedAt: "2026-09-20", prefs: { howChosen: true },
+      log: [{ date: d, minutes: 30, day: 19 }], milestones: { M1: { status: "failed", attempts: [{ date: d, passed: false }, { date: d, passed: false }] } },
+      live: { holds: { "4": [{ d, s: 2.4 }] }, echo: {}, taps: [], plays: [{ d, piece: "Morning Steps", bpm: 60, ok: 4, n: 10, onTime: 3, timed: 10 }] } }));
+  });
+  await page.reload({ waitUntil: "networkidle0" });
+  await go("/today");
+  const weakTxt = await page.$eval("#main .weakcard", e => e.innerText).catch(() => "");
+  check(/Hold G longer/.test(weakTxt) && /Morning Steps: 40%/.test(weakTxt), "weak spots: a short Ga hold and a 40% play-along are suggested, with one tap each");
+  await go("/milestone/M1");
+  check(await page.$("#main .stuckcard .btn.primary") !== null, "stuck: after two failed tries a milestone offers the three-minute check");
+  // Move to another device: make the link, open it, see what it holds.
+  await go("/settings");
+  await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Make a transfer link/.test(b.textContent)).click());
+  await page.waitForSelector("#main input[aria-label='Transfer link']", { timeout: 5000 }).catch(() => {});
+  const moveUrl = await page.$eval("#main input[aria-label='Transfer link']", e => e.value).catch(() => "");
+  check(/#\/move\/[zj]/.test(moveUrl) && await page.$("#main .qrimg") !== null, "move: a transfer link (and a QR code while small) is made");
+  if (moveUrl) {
+    await page.goto(moveUrl, { waitUntil: "networkidle0" });
+    await page.waitForSelector("#main table", { timeout: 5000 }).catch(() => {});
+    check(/Day 20/.test(await page.$eval("#main", e => e.innerText)), "move: opening the link shows what it holds before replacing anything");
+  }
+  // A teacher link carries the measured practice.
+  await go("/progress");
+  await page.evaluate(() => { document.querySelector("#sh-teacher").click(); [...document.querySelectorAll("#main button")].find(b => /Create link/.test(b.textContent)).click(); });
+  const shareUrl = await page.$eval("#main input[aria-label='Share link']", e => e.value).catch(() => "");
+  await page.goto(shareUrl, { waitUntil: "networkidle0" }); await sleep(400);
+  check(/Practice details for a teacher/.test(await page.$eval("#main", e => e.innerText)) && /Morning Steps/.test(await page.$eval("#main", e => e.innerText)), "teacher link: the shared page shows the measured practice");
+  // Hindi lessons.
+  await page.evaluate(() => { localStorage.setItem("bansuri.settings", JSON.stringify({ lang: "hi" })); localStorage.removeItem("bansuri.cardpos.lessons/L09-fingering-sa-re-ga.md"); localStorage.setItem("bansuri.readerMode", JSON.stringify("cards")); });
+  await page.goto(BASE + "#/read/lessons/L09-fingering-sa-re-ga.md", { waitUntil: "networkidle0" }); await page.reload({ waitUntil: "networkidle0" }); await sleep(600);
+  const hiCard = await page.evaluate(() => { const c = document.querySelector("#main .lcard .lbody"); return { ok: !!c && (c.innerText.match(/[\u0900-\u097F]/g) || []).length > 40 && !!document.querySelector("#main .lcard .origtext"), text: ((document.querySelector("#main .lcard") || document.querySelector("#main") || {}).innerText || "").slice(0, 200), lang: localStorage.getItem("bansuri.settings") }; });
+  check(hiCard.ok, "hindi: lesson cards show the Hindi text, with the English a tap away" + (hiCard.ok ? "" : " [" + JSON.stringify(hiCard) + "]"));
+  await page.evaluate(() => localStorage.removeItem("bansuri.settings"));
+  await page.reload({ waitUntil: "networkidle0" });
 
   console.log("Standalone bench pages");
   for (const f of ["interactive-flute.html", "practice-bench.html"]) {

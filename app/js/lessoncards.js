@@ -5,11 +5,12 @@ import { h, store, storeSet } from "./util.js";
 import { makePlayable, isNotation } from "./playable.js";
 import { mountBench } from "./bench/bench.js";
 import { holdMeter } from "./core/live.js";
-import { listRecordings } from "./recorder.js";
+import { listRecordings, recordWidget } from "./recorder.js";
 import { postureCheck } from "./posture.js";
 import { bestHold } from "./livestats.js";
 import { toneDemo } from "./core/audio.js";
-import { readButton, stopSpeaking } from "./voice.js";
+import { readButton, stopSpeaking, sayButton } from "./voice.js";
+import { renderMarkdown } from "./content.js";
 import { flutePlayer } from "./demo.js";
 import { award } from "./xp.js";
 
@@ -103,9 +104,28 @@ function practiceCard(node, path) {
     refUrl = URL.createObjectURL(r.blob);
     ref.replaceChildren(h("b", null, "Reference: " + (r.label || id) + " "), h("audio", { controls: true, src: refUrl, preload: "none" }));
   }).catch(() => {});
+  // Record yourself, then hear the reference and your take side by side (or one after the other).
+  const compare = h("div", { class: "compare", hidden: true });
+  let mineUrl = null;
+  const rw = recordWidget({ label: id + " practice", onSaved: item => {
+    if (mineUrl) URL.revokeObjectURL(mineUrl);
+    mineUrl = URL.createObjectURL(item.blob);
+    const refAudio = ref.querySelector("audio"), mine = h("audio", { controls: true, src: mineUrl, preload: "auto" });
+    const both = h("button", { type: "button", class: "btn primary", onclick: () => {
+      if (!refAudio) { mine.play(); return; }
+      refAudio.currentTime = 0; refAudio.play();
+      refAudio.onended = () => { refAudio.onended = null; mine.currentTime = 0; mine.play(); };
+    } }, refAudio ? "Play the reference, then me" : "Play my take");
+    compare.replaceChildren(h("h3", null, "Compare"), h("div", { class: "comparegrid" },
+      h("div", { class: "stack" }, h("span", { class: "small muted" }, "Reference"), refAudio ? refAudio.cloneNode(true) : h("span", { class: "small muted" }, "No reference yet")),
+      h("div", { class: "stack" }, h("span", { class: "small muted" }, "You, just now"), mine)), both,
+      h("p", { class: "small muted" }, "Listen for the same pitch, a steady sound and clean changes. It is also saved in your Journal."));
+    compare.hidden = false;
+  } });
   const body = [h("p", null, "Do it now, with the microphone listening. Short and focused beats long and distracted."),
-    pick ? h("label", { class: "field" }, "Exercise from this lesson", pick) : null, h("div", { class: "row" }, buttons), host, ref];
-  return { kind: "Practise it now", title: "Your turn", body, cleanup: () => { close(); if (refUrl) URL.revokeObjectURL(refUrl); } };
+    pick ? h("label", { class: "field" }, "Exercise from this lesson", pick) : null, h("div", { class: "row" }, buttons), host, ref,
+    h("details", { class: "recordme" }, h("summary", null, h("b", null, "Record yourself and compare")), rw, compare)];
+  return { kind: "Practise it now", title: "Your turn", body, cleanup: () => { close(); if (refUrl) URL.revokeObjectURL(refUrl); if (mineUrl) URL.revokeObjectURL(mineUrl); if (rw.cleanup) rw.cleanup(); } };
 }
 
 const SKIP = /learning objectives|prerequisites|watch and listen|next lesson|independent exercises/i;
@@ -208,8 +228,13 @@ function dropClaimLabels(root) {
   for (let n = w.nextNode(); n; n = w.nextNode()) if (re.test(n.nodeValue)) { re.lastIndex = 0; n.nodeValue = n.nodeValue.replace(re, ""); }
 }
 
-export function lessonCards(node, path) {
+// "## 3. Simple explanation" or "Step 1. Review [L21](...)" -> the heading as the card sees it.
+export const headingKey = t => String(t).replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[*`]/g, "").replace(/^\s*\d+\.\s*/, "").replace(/\s+/g, " ").trim().toLowerCase();
+
+// hi: the lesson's Hindi sections ({ heading: markdown }) when the app is in Hindi, or null.
+export function lessonCards(node, path, hi) {
   dropClaimLabels(node);
+  const hiMap = new Map(Object.entries((hi && hi.sections) || {}).map(([k, v]) => [headingKey(k), v]));
   const secs = sections(node), cards = [];
   const steps = secs.filter(s => s.level === "H3" && /step-by-step/i.test(s.parent) && /^step\b/i.test(s.title)).length;
   let step = 0;
@@ -227,7 +252,19 @@ export function lessonCards(node, path) {
       else kind = "Steps";
     }
     if (/simple explanation/i.test(s.title)) title = "In short";
-    cards.push(...splitLong({ kind, title: title.charAt(0).toUpperCase() + title.slice(1), body: s.nodes.map(n => n.cloneNode(true)) }));
+    const hiText = hiMap.get(headingKey(s.title));
+    let body = s.nodes.map(n => n.cloneNode(true)), english = null;
+    if (hiText) {
+      // The Hindi text; the original English is a tap away on the first card of the section.
+      const hiNode = renderMarkdown(hiText.replace(/\s?\((?:तथ्य|सुझाव)[^)]{0,40}\)/g, ""), path).node;
+      hiNode.setAttribute("lang", "hi");
+      english = h("details", { class: "small origtext" }, h("summary", null, "English"), h("div", { translate: "no" }, body));
+      body = [...hiNode.childNodes];
+    }
+    const parts = splitLong({ kind, title: title.charAt(0).toUpperCase() + title.slice(1), body, hindi: !!hiText, path, intro: /simple explanation/i.test(s.title) });
+    if (english) parts[0].body = parts[0].body.concat(english);
+    parts.slice(1).forEach(c => { c.intro = false; });
+    cards.push(...parts);
   }
   const practice = practiceCard(node, path);
   if (practice) cards.push(practice);
@@ -250,7 +287,8 @@ export function cardDeck(cards, path, opts) {
     const c = cards[i];
     const body = h("div", { class: "reader lbody" }, c.body);
     // Every card can be heard: a natural voice reads its title and text.
-    const speakIt = readButton(() => c.title + ". " + [...body.querySelectorAll("p, li, h3, td")].filter(n => !n.closest(".toolhost, .row, label")).map(n => n.textContent).join(" "), "Read aloud");
+    const speakIt = c.hindi ? (c.intro ? sayButton([["lesson", c.path]], "Listen") : null)
+      : readButton(() => c.title + ". " + [...body.querySelectorAll("p, li, h3, td")].filter(n => !n.closest(".toolhost, .row, label, .origtext")).map(n => n.textContent).join(" "), "Read aloud");
     const card = h("article", { class: "card lcard" + (dir ? " in-" + dir : "") },
       h("div", { class: "row between" }, c.kind ? h("span", { class: "eyebrow" }, c.kind) : h("span"), speakIt), h("h2", null, c.title), body);
     makePlayable(card);

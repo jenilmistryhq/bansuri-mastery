@@ -130,6 +130,8 @@ export function playEvents(ev, beats, opts) {
     // A prompt shortly before each note (opts.lead seconds), like karaoke: the next fingering appears in time to place it.
     if (opts.onPreview) timers.push(setTimeout(() => opts.onPreview(e), Math.max(0, (at - (opts.lead || 0.3) - c.currentTime) * 1000)));
     if (opts.mute) return;
+    // Duet: a second, quieter flute plays the same line opts.duet semitones away (an octave below).
+    if (opts.duet) { const d = makeVoice(hzOf(e.semi + opts.duet), at, { level: 0.14 }); d.stop(at + e.dur - 0.01); voices.push(d); }
     let v;
     if (e.kan !== null && e.kan !== undefined) {
       const k = Math.min(0.08, e.dur * 0.3);

@@ -68,6 +68,41 @@ function checklist(md) {
   return items;
 }
 
+// Three short checks (a steady Sa, a clean phrase, playing back by ear), then the lessons that fix
+// whichever one did not pass.
+function stuckCheck(cleanups) {
+  const CHECKS = [
+    { name: "A steady Sa for 6 seconds", make: done => holdMeter({ targets: [0], seconds: 6, cents: 25, onPass: done }), fix: ["L07 long tones", "lessons/L07-long-tones-tuner-and-drone.md"] },
+    { name: "S R G R S, clean", make: done => phraseCheck({ phrase: [0, 2, 4, 2, 0], reps: 1, onPass: done }), fix: ["L09 fingering and clean changes", "lessons/L09-fingering-sa-re-ga.md"] },
+    { name: "Play back a phrase by ear", make: done => echoGame({ level: "srg", test: { rounds: 3, pass: 2, len: 3 }, onPass: done }), fix: ["L05 pitch and Sa", "lessons/L05-what-is-music-pitch-sa-sargam.md"] },
+  ];
+  const results = CHECKS.map(() => null);
+  let i = 0, widget = null;
+  const host = h("div"), title = h("h3"), out = h("div", { class: "stack" });
+  const skip = h("button", { type: "button", class: "btn" }, "I cannot do this yet");
+  const show = () => {
+    if (widget) { widget.destroy(); widget = null; }
+    if (i >= CHECKS.length) {
+      host.replaceChildren(); title.textContent = "What to practise"; skip.hidden = true;
+      const weak = CHECKS.filter((c, k) => !results[k]);
+      out.replaceChildren(weak.length ? h("p", null, "These basics need work before the milestone can pass. Spend 5-7 practice days on them:") : h("p", null, "Your basics are fine: the trouble is in this milestone's own items. Practise the remedies below for the items that failed, then retest only those."),
+        weak.length ? h("ul", null, weak.map(c => h("li", null, c.name + ": ", h("a", { href: "#/read/" + c.fix[1] }, c.fix[0])))) : null);
+      return;
+    }
+    const c = CHECKS[i];
+    title.textContent = "Check " + (i + 1) + " of " + CHECKS.length + ": " + c.name;
+    widget = c.make(() => { results[i] = true; i++; setTimeout(show, 900); });
+    host.replaceChildren(widget.el);
+  };
+  skip.addEventListener("click", () => { results[i] = false; i++; show(); });
+  cleanups.push(() => widget && widget.destroy());
+  const start = h("button", { type: "button", class: "btn primary" }, "Find out what is holding me back");
+  const body = h("div", { class: "stack", hidden: true }, title, host, h("div", { class: "row" }, skip), out);
+  start.addEventListener("click", () => { start.hidden = true; body.hidden = false; show(); });
+  return h("section", { class: "card stuckcard" }, h("h2", null, "Stuck on this milestone?"),
+    h("p", { class: "small muted" }, "Two tries have not passed yet. Three short checks (about 3 minutes) show which basic skill to work on."), start, body);
+}
+
 export async function render(main, { params }) {
   const id = params[0];
   const info = milestoneInfo(id);
@@ -87,6 +122,8 @@ export async function render(main, { params }) {
     h("div", { class: "row" }, chip, h("span", { class: "small muted" }, state.attempts.length + " attempt" + (state.attempts.length === 1 ? "" : "s")), h("a", { href: "#/read/" + info.path }, "Read the full test"))));
 
   if (!unlocked) page.append(h("div", { class: "notice info" }, "This milestone is ahead of you (Day " + info.day + "). You can read it now; the test opens when you reach that day."));
+  // Two tries without passing: a three-minute check finds which basic skill is holding things back.
+  if (state.status !== "passed" && state.attempts.filter(x => !x.passed).length >= 2) page.append(stuckCheck(cleanups));
 
   page.append(h("section", { class: "card" }, h("h2", null, "How to take it"),
     h("ol", { class: "stack", style: { paddingLeft: "1.2em", margin: "0" } },

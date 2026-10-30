@@ -1,6 +1,6 @@
 // Service worker: keeps the app and the whole course available offline.
 // VERSION is rewritten by scripts/build_app.py whenever any app or course file changes.
-const VERSION = "8717cb978277";
+const VERSION = "a7a7dc2e0f22";
 const CACHE = "bansuri-" + VERSION;
 const VOICE_CACHE = "voice-clips-v1";
 
@@ -12,7 +12,10 @@ self.addEventListener("install", event => {
     const cache = await caches.open(CACHE);
     const res = await fetch("app/data/files.json", { cache: "no-cache" });
     const list = await res.json();
-    const urls = ["./", "index.html", "manifest.webmanifest", "app/data/files.json"].concat(list.assets, list.docs.map(d => "bansuri-mastery/" + d.path));
+    // First the app itself and the pages every screen needs; the rest of the course follows in the
+    // background once the app is open (see "CACHE_REST"), so the first visit is quick.
+    const core = list.docs.filter(d => /^(README|05-|06-)/.test(d.path) || d.path === "ragas/README.md" || d.path === "exercises/EX-MEL-practice-melodies.md");
+    const urls = ["./", "index.html", "manifest.webmanifest", "app/data/files.json"].concat(list.assets, core.map(d => "bansuri-mastery/" + d.path));
     await cache.addAll(urls.map(u => new Request(u, { cache: "reload" })));
     // Network-first pages never depend on this worker's cache while online, so it can take over at once.
     await self.skipWaiting();
@@ -21,7 +24,57 @@ self.addEventListener("install", event => {
 
 self.addEventListener("message", event => {
   if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+  // The rest of the course, a few pages at a time, without slowing the app down.
+  if (event.data && event.data.type === "CACHE_REST") event.waitUntil(cacheRest());
 });
+
+// Daily reminder (see app/js/reminder.js): woken by the browser now and then; reminds once a day,
+// after the chosen time, only if there is no practice logged for today.
+function metaGet(key) {
+  return new Promise(resolve => {
+    const r = indexedDB.open("bansuri-meta", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onerror = () => resolve(undefined);
+    r.onsuccess = () => { const d = r.result, g = d.transaction("kv").objectStore("kv").get(key); g.onsuccess = () => { resolve(g.result); d.close(); }; g.onerror = () => { resolve(undefined); d.close(); }; };
+  });
+}
+function metaPut(key, value) {
+  return new Promise(resolve => {
+    const r = indexedDB.open("bansuri-meta", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onerror = () => resolve();
+    r.onsuccess = () => { const d = r.result, t = d.transaction("kv", "readwrite"); t.objectStore("kv").put(value, key); t.oncomplete = () => { d.close(); resolve(); }; };
+  });
+}
+async function maybeRemind() {
+  const rem = await metaGet("reminder");
+  if (!rem || !rem.on) return;
+  const now = new Date(), day = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+  const [hh, mm] = String(rem.time || "18:00").split(":").map(Number);
+  if (now.getHours() * 60 + now.getMinutes() < hh * 60 + mm) return;
+  if ((await metaGet("lastPractice")) === day || (await metaGet("lastReminded")) === day) return;
+  await metaPut("lastReminded", day);
+  await self.registration.showNotification("Time to practise", { body: "Your bansuri is waiting: even 5 minutes keeps the streak going.", icon: "app/icon.svg", badge: "app/icon.svg", tag: "practice-reminder" });
+}
+self.addEventListener("periodicsync", event => { if (event.tag === "practice-reminder") event.waitUntil(maybeRemind()); });
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+  event.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: "window" });
+    if (all.length) { all[0].focus(); all[0].navigate(self.registration.scope + "#/today").catch(() => {}); }
+    else await self.clients.openWindow(self.registration.scope + "#/today");
+  })());
+});
+
+async function cacheRest() {
+  const cache = await caches.open(CACHE);
+  const list = await (await fetch("app/data/files.json")).json();
+  const todo = [];
+  for (const d of list.docs) { const u = "bansuri-mastery/" + d.path; if (!(await cache.match(u))) todo.push(u); }
+  for (let i = 0; i < todo.length; i += 6) {
+    await Promise.all(todo.slice(i, i + 6).map(u => fetch(u, { cache: "no-cache" }).then(r => r.ok ? cache.put(u, r) : null).catch(() => null)));
+  }
+}
 
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {

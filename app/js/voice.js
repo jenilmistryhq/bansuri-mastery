@@ -42,6 +42,7 @@ function lookup(idx, ref) {
   if (kind === "secs") return idx.secs[String(Math.max(1, Math.min(60, Math.round(a))))] || null;
   if (kind === "num") return idx.nums[String(Math.max(0, Math.min(100, Math.round(a))))] || null;
   if (kind === "step") return idx.steps[a] || null;
+  if (kind === "lesson") return (idx.lessons || {})[a] || null;
   return null;
 }
 
@@ -177,7 +178,7 @@ export function readButton(getText, label) {
     if (modelReady() || busy) { go(); return; }
     if (note.querySelector("button")) return;
     note.hidden = false;
-    note.replaceChildren("A natural reading voice is downloaded once (about 90 MB, from Hugging Face), then works on this device. ",
+    note.replaceChildren("A natural reading voice is downloaded once (about 115 MB: the voice from Hugging Face and its player from this site), then works on this device. ",
       h("button", { type: "button", class: "btn small primary", onclick: () => { note.hidden = true; note.replaceChildren(); go(); } }, "Download and read"),
       " ", h("button", { type: "button", class: "btn small ghost", onclick: () => { note.hidden = true; note.replaceChildren(); } }, "Not now"));
   });
@@ -189,12 +190,23 @@ export function sayButton(refs, label) {
   return h("button", { type: "button", class: "btn small ghost speakbtn", "aria-label": label || "Hear it", onclick: () => speak(...refs) }, icon("speaker"), label || null);
 }
 
+// The size of the current language's clips, in MB (for Settings).
+export async function voiceSizeMB() { const idx = await index(lang()); return idx && idx.bytes ? Math.round(idx.bytes / 1e6) : null; }
+
+// Removes saved clips: all of them, or only those of languages other than keep.
+export async function removeSavedVoice(keep) {
+  try {
+    const c = await caches.open("voice-clips-v1");
+    for (const req of await c.keys()) { const m = /\/app\/voice\/(\w+)\//.exec(new URL(req.url).pathname); if (m && m[1] !== keep) await c.delete(req); }
+  } catch (e) { /* no cache storage */ }
+}
+
 // Saves every clip of the current language for offline use (the service worker keeps them).
 export async function saveVoiceOffline(progress) {
   const idx = await index(lang());
   if (!idx) return 0;
   const files = new Set();
-  for (const k of ["phrases", "steps", "notes", "nums", "secs"]) for (const v of Object.values(idx[k])) files.add(v[0]);
+  for (const k of ["phrases", "steps", "notes", "nums", "secs", "lessons"]) for (const v of Object.values(idx[k])) files.add(v[0]);
   let n = 0;
   for (const f of files) { try { await fetch("app/voice/" + lang() + "/" + f); } catch (e) { /* offline: try later */ } n++; if (progress && n % 20 === 0) progress(n / files.size); }
   return files.size;

@@ -176,6 +176,7 @@ test("interface translation: exact strings, spacing kept, patterns with values",
   assert.equal(tr("Score 5."), "Score 5.", "an empty translation keeps the English");
   assert.equal(tr("Something new"), "Something new");
   assert.equal(tf("Day {n}", { n: 7 }), "दिन 7");
+  assert.equal(tr("In short (1 of 3)"), "In short (1 of 3)", "a numeric placeholder never swallows words");
   setDict(null);
   assert.equal(tr("Start"), "Start");
 });
@@ -205,6 +206,26 @@ test("Hindi dictionary: every translation keeps its placeholders, no dashes or c
     assert.ok(!/[\u2013\u2014\u2018\u2019\u201C\u201D\u2026]/.test(hi), en);
   }
   assert.ok(Object.keys(d).length > 1000);
+});
+
+const { streakRun } = await import("../app/js/course.js");
+test("streaks: one rest day a week keeps the streak; two misses in a week break it", () => {
+  const set = (...ds) => new Set(ds);
+  assert.deepEqual(streakRun(set("2026-10-28", "2026-10-29", "2026-10-30"), "2026-10-30"), { days: 3, rests: [] });
+  assert.deepEqual(streakRun(set("2026-10-26", "2026-10-27", "2026-10-29", "2026-10-30"), "2026-10-30"), { days: 4, rests: ["2026-10-28"] });
+  assert.equal(streakRun(set("2026-10-24", "2026-10-26", "2026-10-28", "2026-10-29"), "2026-10-29").days, 3, "a second rest day within 7 days ends the streak");
+  assert.equal(streakRun(set("2026-10-10", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-20"), "2026-10-20").days, 9, "rest days 8 days apart are both fine");
+  assert.equal(streakRun(set("2026-10-26", "2026-10-29"), "2026-10-29").days, 1, "two missed days in a row end the streak");
+});
+
+globalThis.location = globalThis.location || { origin: "https://x.test", pathname: "/" };
+const { encodeMove, decodeMove } = await import("../app/js/move.js");
+test("a transfer link carries the progress, compressed, and rejects junk", async () => {
+  const data = await encodeMove();
+  assert.ok(/^[zj][A-Za-z0-9_-]+$/.test(data));
+  const back = await decodeMove(data);
+  assert.equal(back.kind, "move"); assert.ok(back.progress && typeof back.progress.current === "number");
+  await assert.rejects(decodeMove("j" + Buffer.from(JSON.stringify({ app: "other" })).toString("base64url")));
 });
 
 console.log(`core tests: ${passed} passed`);

@@ -8,6 +8,8 @@ let dict = null;
 let patterns = [];
 let templates = new Map();
 const ATTRS = ["aria-label", "title", "placeholder", "alt"];
+// Placeholders named n, m, k, j, p or q stand for numbers and match only numbers; {x} and others match any text.
+const NUMERIC = new Set(["n", "m", "k", "j", "p", "q"]);
 
 export function setDict(d) {
   dict = new Map();
@@ -17,7 +19,7 @@ export function setDict(d) {
     if (!hi) continue;
     if (/\{[a-z]\w*\}/.test(en)) {
       const names = [];
-      const re = new RegExp("^" + en.replace(/[.*+?^$()|[\]\\]/g, "\\$&").replace(/\\?\{([a-z]\w*)\\?\}/g, (_, n) => { names.push(n); return "(.+?)"; }) + "$");
+      const re = new RegExp("^" + en.replace(/[.*+?^$()|[\]\\]/g, "\\$&").replace(/\\?\{([a-z]\w*)\\?\}/g, (_, n) => { names.push(n); return NUMERIC.has(n) ? "([-+]?\\d[\\d.,:]*)" : "(.+?)"; }) + "$");
       patterns.push({ re, names, hi });
       templates.set(en, hi);
     } else dict.set(en, hi);

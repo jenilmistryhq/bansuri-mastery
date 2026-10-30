@@ -107,6 +107,16 @@ Today is a home base: a profile strip (level, XP, streak, this week's practice d
 - Sources: `course.js` (sessions, minutes, milestones, reviews), `lessoncards.js` and `views/reader.js` (flashcards, mastery items, finished lessons), `recorder.js`, `views/journal.js` and `views/quick.js` (minutes), quests (`fun.js`), and the `bansuri:live` results in main.js (bests, play back, play-along, tapping, every game round).
 - Learners from before levels existed get XP rebuilt from their history (`xpFromHistory`), announced once.
 
+## Habits, devices and help (reminder.js, backup.js, move.js, calibrate.js)
+
+- `streakRun(dates, end)` (course.js): one missed day in any 7 is a rest day that keeps the streak; tested in core tests.
+- `reminder.js`: the reminder time and the last practice day are kept in IndexedDB (`bansuri-meta`) so the service worker can read them; `periodicsync` ("practice-reminder") shows one notification a day after the time if nothing is logged. Chrome only, installed app; the calendar file is the fallback.
+- `backup.js` `saveBackup()`: Web Share with the file where supported, else a download. `move.js`: progress and settings, gzip-compressed (CompressionStream) into `#/move/<z...>`; `views/move.js` compares and replaces on a second tap; Settings shows a QR code (vendored qrcode-generator, MIT) while the link is under 2,300 characters.
+- Teacher link: `sharePayload(name, true)` adds minutes per week, longest holds, recent play-along and play-back; `views/share.js` shows them as a report.
+- Lessons in Hindi: `app/i18n/lessons-hi.json` (sections keyed by their English heading); `lessonCards(node, path, hi)` swaps in the Hindi text with the English in a toggle; each lesson's explanation has a Hindi clip (`build_voice.py` "lessons").
+- `calibrate.js`: four guided tasks record the detector's readings (no audio) to a JSON file for setting thresholds from real players. `scripts/hindi_review.py`: a CSV of every Hindi text for a native speaker, and `--apply` to write corrections back.
+- The service worker precaches the app and a few core pages, then saves the rest of the course in the background ("CACHE_REST") once the app is open.
+
 ## Games, quests and challenges (games.js, fun.js, views/play.js)
 
 - Games return `{ el, destroy }` and open the microphone through a helper with the same late-subscription guard as `lvListen`. Results go out as `bansuri:live` events with `type: "game"` (`game`: steer, balloon, falling, jam); falling notes also emits a `play` result.

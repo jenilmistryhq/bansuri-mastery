@@ -6,6 +6,8 @@
 npm ci
 npm test        # unit tests, plan test, headless-browser smoke test
 SITE_ROOT=_site node tests/smoke.mjs   # the same smoke test against the assembled site (CI does this)
+node tests/webkit.mjs   # Safari's engine (WebKit), iPhone 13 size (CI does this; first: npx playwright-core install webkit)
+node tests/visual.mjs   # local only: screenshots compared with tests/visual/ baselines (--update after an intended change)
 ```
 
 The smoke test drives the app in headless Chrome or Edge with a **fake microphone**
@@ -94,6 +96,10 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Keep the voice for offline use, then flight mode: the spoken prompts still play.
 - [ ] Screen readers: TalkBack (Android) and VoiceOver (iPhone) read the tabs, buttons, the meter's progress and the game status; the games can be played with Game sounds on and the screen covered.
 - [ ] Text size 160%, easy font and high contrast: nothing overlaps or is cut off on a phone.
+- [ ] Calibration: two or three players run Settings > Help > Calibrate with your flute and send the files; set the thresholds from them.
+- [ ] Hindi: a native speaker reviews hindi-review.csv (python scripts/hindi_review.py) and the corrections are applied with --apply.
+- [ ] Reminder notification on an installed Android app: arrives once after the chosen time on a day without practice.
+- [ ] Move to another device: the link and the QR code open on a second phone and bring the progress over.
 - [ ] Use the app as a new learner on a phone: the first screen has one obvious button; Today, a session and a lesson can be followed without the course codes; the five tabs and the menus at the top of each section make every screen easy to find.
 - [ ] Levels: a normal day of practice earns roughly 150-250 XP; Level 2 takes a few days; the level badge, "+XP" and the level-up celebration appear; Progress lists every level in English and Hindi.
 - [ ] The countdown (Settings, default 5 s) gives enough time to pick up the flute after tapping Start or Record; 0 turns it off; pressing Start again cancels it.

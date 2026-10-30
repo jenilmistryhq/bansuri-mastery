@@ -17,6 +17,7 @@ Usage:
   python scripts/build_voice.py --check    CI: every clip the inputs need exists (no model needed)
 """
 import hashlib
+import re
 import json
 import os
 import sys
@@ -64,7 +65,34 @@ def items(lang):
         out.append(("nums", str(n), plain.format(n=n)))
     for n in range(1, 61):
         out.append(("secs", str(n), secs.format(n=n)))
+    # Hindi: each lesson's "simple explanation", spoken (the lesson cards' "In short").
+    if lang == "hi":
+        lessons = json.loads((ROOT / "app" / "i18n" / "lessons-hi.json").read_text(encoding="utf-8"))
+        for path, entry in sorted(lessons.items()):
+            for heading, text in entry.get("sections", {}).items():
+                if re.search(r"simple explanation", heading, re.I):
+                    out.append(("lessons", path, speakable(text)))
     return out
+
+
+def speakable(md):
+    """Markdown to plain text for the voice: no tables, code blocks, links or emphasis marks."""
+    lines, fence = [], False
+    for line in md.splitlines():
+        if line.strip().startswith("```"):
+            fence = not fence
+            continue
+        if fence or line.strip().startswith("|") or line.strip().startswith("<"):
+            continue
+        line = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", line)
+        line = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", line)
+        line = re.sub(r"[*_`#>]", "", line).strip()
+        line = re.sub(r"\s?\((?:तथ्य|सुझाव)[^)]{0,40}\)", "", line)
+        if line.startswith("- "):
+            line = line[2:]
+        if line:
+            lines.append(line if re.search(r"[.!?।:]$", line) else line + "।")
+    return " ".join(lines)
 
 
 def clip_name(lang, text):
@@ -73,9 +101,12 @@ def clip_name(lang, text):
 
 
 def index_for(lang):
-    idx = {"voice": VOICES[lang][0], "phrases": {}, "steps": {}, "notes": {}, "nums": {}, "secs": {}}
+    idx = {"voice": VOICES[lang][0], "phrases": {}, "steps": {}, "notes": {}, "nums": {}, "secs": {}, "lessons": {}}
     for kind, key, text in items(lang):
         idx[kind][key] = [clip_name(lang, text), text]
+    # The total size of the clips, shown in Settings before saving them for offline use.
+    files = {v[0] for k in ("phrases", "steps", "notes", "nums", "secs", "lessons") for v in idx[k].values()}
+    idx["bytes"] = sum((OUT / lang / f).stat().st_size for f in files if (OUT / lang / f).exists())
     return idx
 
 
@@ -111,8 +142,8 @@ def main():
     for lang in VOICES:
         d = OUT / lang
         idx = index_for(lang)
-        need = {f for kind in ("phrases", "steps", "notes", "nums", "secs") for f, _ in idx[kind].values()}
-        texts = {f: t for kind in ("phrases", "steps", "notes", "nums", "secs") for f, t in idx[kind].values()}
+        need = {f for kind in ("phrases", "steps", "notes", "nums", "secs", "lessons") for f, _ in idx[kind].values()}
+        texts = {f: t for kind in ("phrases", "steps", "notes", "nums", "secs", "lessons") for f, t in idx[kind].values()}
         if check:
             missing = [f for f in need if not (d / f).exists()]
             if missing:

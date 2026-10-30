@@ -71,6 +71,7 @@ export async function startRecording({ onLevel, video, preview } = {}) {
   const chunks = [];
   mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
   const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) throw new Error("audio unavailable: this browser cannot record sound");
   const actx = new AC();
   const src = actx.createMediaStreamSource(stream);
   const an = actx.createAnalyser(); an.fftSize = 1024; src.connect(an);

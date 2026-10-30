@@ -1,4 +1,5 @@
 // Reader (#/read/<path>): renders a curriculum Markdown file inside the app.
+import { getSettings } from "../core/settings.js";
 import { h, store, storeSet } from "../util.js";
 import { fetchDoc, renderMarkdown, filesList } from "../content.js";
 import { makePlayable, stopPlayable } from "../playable.js";
@@ -70,7 +71,13 @@ export async function render(main, { params }) {
   const full = h("article", { class: "card" }, node);
   page.append(crumbs);
   // Lessons open as cards (one idea at a time); the full text is one tap away.
-  const cards = /^lessons\/L\d\d/.test(path) ? lessonCards(node, path) : [];
+  // In Hindi, lessons show their Hindi text (title, objectives, explanation, steps) where it exists.
+  let hiLesson = null;
+  if (getSettings().lang === "hi" && /^lessons\/L\d\d/.test(path)) {
+    try { hiLesson = ((await (await fetch("app/i18n/lessons-hi.json")).json()) || {})[path] || null; } catch (e) { /* English only */ }
+  }
+  const cards = /^lessons\/L\d\d/.test(path) ? lessonCards(node, path, hiLesson) : [];
+  if (hiLesson && hiLesson.title) { const h1 = node.querySelector("h1"); if (h1) h1.after(h("p", { class: "hititle", lang: "hi" }, hiLesson.title)); }
   if (cards.length >= 3) {
     let mode = store("bansuri.readerMode", "cards");
     const cardsBtn = h("button", { type: "button", class: "seg-btn" }, "Cards");

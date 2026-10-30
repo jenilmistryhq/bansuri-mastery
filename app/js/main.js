@@ -9,12 +9,20 @@ import { getSettings, onSettings } from "./core/settings.js";
 import { setDict, observe } from "./core/i18n.js";
 import { setSpeaker } from "./core/live.js";
 import { onBeat } from "./core/audio.js";
-import { say } from "./voice.js";
+import { say, removeSavedVoice } from "./voice.js";
 import { award, onXp, levelOf, xpState, markLevelSeen } from "./xp.js";
 import { floatXp } from "./levelui.js";
 import { openPalette, installPaletteKey } from "./palette.js";
+import { notePractice } from "./reminder.js";
 installPaletteKey();
+// The browser's install offer is kept so Today can show it at a good moment (after a few days).
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window.__installEvent = e; });
 installErrorLog();
+// No Web Audio in this browser: say so once, instead of buttons that silently do nothing.
+let noAudioSaid = false;
+const noAudio = msg => { if (!noAudioSaid && /audio unavailable/.test(String(msg))) { noAudioSaid = true; toast("This browser cannot play sound. Open the app in Safari, Chrome or Edge to hear the flute.", 6000); } };
+window.addEventListener("error", e => noAudio(e.message));
+window.addEventListener("unhandledrejection", e => noAudio(e.reason && e.reason.message));
 // The shared widgets speak through the app's natural voice (when "Talk to me" is on).
 setSpeaker(say);
 // Results from the listening exercises (bench, sessions, milestones) are kept in the progress state.
@@ -45,7 +53,7 @@ const ROUTES = [
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"],
-  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/teacher(\/coach)?$/, "coach"],
+  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
 // Five tabs; related screens sit together under one tab, with a small menu at the top of each.
 const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["play", "#/play", "Play"], ["progress", "#/progress", "Me"]];
@@ -57,7 +65,7 @@ const GROUPS = {
   progress: [["progress", "#/progress", "Progress"], ["journal", "#/journal", "Journal"], ["settings", "#/settings", "Settings"]],
 };
 // Which tab a screen belongs to.
-const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress" };
+const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress", move: "progress" };
 // Simple mode: three big choices, no reading needed.
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
 
@@ -211,14 +219,22 @@ async function boot() {
   }
   observe(document.body);
   let wasSimple = getSettings().simple, wasLang = getSettings().lang;
-  onSettings(s => { applyAccess(); if (s.simple !== wasSimple || s.lang !== wasLang) { wasSimple = s.simple; wasLang = s.lang; location.reload(); } });
+  onSettings(s => {
+    applyAccess();
+    if (s.simple !== wasSimple || s.lang !== wasLang) {
+      const langChanged = s.lang !== wasLang;
+      wasSimple = s.simple; wasLang = s.lang;
+      // A new language: the other language's saved voice clips are no longer needed.
+      (langChanged ? removeSavedVoice(s.lang) : Promise.resolve()).finally(() => location.reload());
+    }
+  });
   shell();
   try { await loadPlan(); }
   catch (e) {
     clear(mainEl).append(h("div", { class: "page" }, h("div", { class: "card" }, h("h2", null, "The course plan could not be loaded"), h("p", null, String(e.message)), h("p", null, "If you opened index.html straight from a folder, serve it instead: run ", h("code", null, "python -m http.server"), " in the project folder and open http://localhost:8000."))));
     return;
   }
-  onChange(() => { applyTheme(); afterChange(); });
+  onChange(s => { applyTheme(); afterChange(); const last = s.log.length ? s.log[s.log.length - 1].date : null; if (last) notePractice(last); });
   window.addEventListener("hashchange", route);
   await route();
   showLevel();
@@ -233,6 +249,8 @@ async function boot() {
     const hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadController) updateReady = true; });
     navigator.serviceWorker.register("sw.js").then(reg => {
+      // Once the app is showing, the rest of the course is saved for offline use in the background.
+      navigator.serviceWorker.ready.then(r => { if (r.active) r.active.postMessage({ type: "CACHE_REST" }); }).catch(() => {});
       if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
       reg.addEventListener("updatefound", () => {
         const w = reg.installing;

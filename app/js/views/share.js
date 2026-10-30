@@ -1,6 +1,7 @@
 // Shared progress card (#/share/<payload>). The payload lives in the link; it is self-reported.
 import { h, fmtMinutes, fmtDate, toast } from "../util.js";
 import { getPlan } from "../course.js";
+import { codeOf } from "../core/theory.js";
 
 function decode(p) {
   try {
@@ -14,6 +15,12 @@ function decode(p) {
     const out = { name: typeof o.n === "string" ? o.n.slice(0, 40) : "", day: int(o.d, 100000), phase: int(o.p, 9), streak: int(o.s, 100000), best: int(o.b, 100000), minutes: int(o.m, 10000000),
       ms: Array.isArray(o.ms) ? o.ms.filter(x => typeof x === "string" && /^M\d{1,2}$/.test(x)).slice(0, 20) : [], date: date(o.t), since: date(o.since) };
     if (out.day === null) return null;
+    // Teacher details, when included: checked and trimmed like the rest.
+    const num = (x, lo, hi) => Number.isFinite(x) && x >= lo && x <= hi;
+    if (Array.isArray(o.w)) out.weeks = o.w.slice(0, 8).filter(x => num(x, 0, 10000));
+    if (Array.isArray(o.hb)) out.holds = o.hb.slice(0, 10).filter(x => Array.isArray(x) && (x[0] === "any" || /^-?\d+$/.test(String(x[0]))) && num(x[1], 0, 600));
+    if (Array.isArray(o.pl)) out.plays = o.pl.slice(0, 6).filter(x => Array.isArray(x) && typeof x[0] === "string" && num(x[1], 0, 100) && num(x[2], 0, 400)).map(x => [x[0].slice(0, 40), x[1], x[2]]);
+    if (Array.isArray(o.ea)) out.echo = o.ea.slice(0, 6).filter(x => Array.isArray(x) && typeof x[0] === "string" && num(x[1], 0, 1e6) && num(x[2], 0, 1e6)).map(x => [x[0].slice(0, 30), x[1], x[2]]);
     return out;
   } catch (e) { return null; }
 }
@@ -49,6 +56,16 @@ export async function render(main, { params }) {
     h("div", { class: "kv" }, h("span", null, "Phase ", h("b", null, String(c.phase))), h("span", null, "Streak ", h("b", null, String(c.streak))), h("span", null, "Best ", h("b", null, String(c.best))), h("span", null, "Practice ", h("b", null, fmtMinutes(c.minutes)))),
     h("span", null, "Milestones passed: " + (c.ms.length ? c.ms.join(", ") : "none yet") + " (" + c.ms.length + " of " + total + ")"),
     h("span", { class: "small muted" }, (c.since ? "Learning since " + fmtDate(c.since) + ". " : "") + "Self-reported progress" + (c.date ? ", shared " + fmtDate(c.date) : "") + ".")));
+  // The teacher's view: what was practised and what the microphone measured.
+  if (c.weeks || c.holds || c.plays || c.echo) {
+    const rows = (head, list) => h("div", { class: "tablewrap" }, h("table", null, h("thead", null, h("tr", null, head.map(x => h("th", null, x)))), h("tbody", null, list.map(r => h("tr", null, r.map(x => h("td", null, String(x))))))));
+    page.append(h("section", { class: "card" }, h("h2", null, "Practice details for a teacher"),
+      h("p", { class: "small muted" }, "Measured by the app's microphone checks; a guide to listen for, not a grade."),
+      c.weeks && c.weeks.length ? [h("h3", null, "Minutes per week (oldest first)"), h("p", { class: "mono" }, c.weeks.join("  "))] : null,
+      c.holds && c.holds.length ? [h("h3", null, "Longest steady hold per note"), rows(["Note", "Seconds"], c.holds.map(([k, v]) => [k === "any" ? "any note" : codeOf(Number(k)), v]))] : null,
+      c.plays && c.plays.length ? [h("h3", null, "Recent play-along"), rows(["Piece", "Notes right", "BPM"], c.plays.map(([p, pct, bpm]) => [p, pct + "%", bpm]))] : null,
+      c.echo && c.echo.length ? [h("h3", null, "Play back by ear"), rows(["Level", "Right", "Tried"], c.echo)] : null));
+  }
   const dl = h("button", { type: "button", class: "btn" }, "Download as image");
   dl.addEventListener("click", () => {
     const cv = drawImage(c);

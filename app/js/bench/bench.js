@@ -1,7 +1,7 @@
 // Practice Bench UI. mountBench(container, opts) -> { destroy, setTab, loadNotation, stopAll }
 import { getSettings, setSettings, onSettings } from "../core/settings.js";
 import { LETTERS, NAME, DEVA, WEST, BASE, DIFF, codeOf, octName, fingOf, lessonFor, hzOf, westOf, letterOf, devaNotation } from "../core/theory.js";
-import { ac, makeVoice, playNote, tanpura, click, tablaBol } from "../core/audio.js";
+import { ac, makeVoice, playNote, tanpura, click, tablaBol, setTablaLevel } from "../core/audio.js";
 import { parseNotation, buildEvents, analyzeRange, playEvents, PRESETS } from "../core/notation.js";
 import { analyzeAudioBuffer, decodeAudioFile, compareToExpected, drawPitchPlot, tuningOffset, CHECK_PLANS, startMicTuner } from "../core/pitch.js";
 import { listenMic, emitLive } from "../core/listen.js";
@@ -99,6 +99,7 @@ function benchTemplate(uid, o) {
         <div class="bb-row">
           <label class="bb-field">Repeat <select data-ref="loopSel"><option value="once">Play once</option><option value="all">Loop the piece</option></select></label>
           <label class="bb-check"><input type="checkbox" data-ref="checkMe"> I play, the mic checks</label>
+          <label class="bb-check" title="A second flute plays the tune an octave lower, as company (not while the mic checks)"><input type="checkbox" data-ref="duetOn"> Duet: a second flute below</label>
         </div>
         <label class="bb-field" for="${uid}-notation">Notation</label>
         <details class="bb-help">
@@ -161,6 +162,7 @@ function benchTemplate(uid, o) {
         <h2>Tanpura</h2>
         <p class="bb-muted bb-small">A synthesised four-string tanpura tuned to your Sa (two octaves below the flute). Use it for long tones and intonation (L07, L17).</p>
         <div class="bb-row">
+          <label class="bb-field">Tune for a raga <select data-ref="tanRaga"><option value="">Choose a raga</option><option value="pa">Pa: Yaman, Bhupali, Kafi, Khamaj, Bhimpalasi, Durga, Shivranjani</option><option value="ma">Ma: Malkauns, Hindol (no Pa); often Bageshri</option><option value="ni">Ni: Marwa, Puriya (no Pa)</option></select></label>
           <label class="bb-field">First string <select data-ref="tanFirst"><option value="pa">Pa (most ragas)</option><option value="ma">Ma (ragas without Pa)</option><option value="ni">Ni</option></select></label>
           <label class="bb-field">Speed <input data-ref="tanSpeed" type="range" min="60" max="140" value="100"></label>
           <label class="bb-field">Level <input data-ref="tanVol" type="range" min="0" max="100" value="55"></label>
@@ -173,6 +175,7 @@ function benchTemplate(uid, o) {
           <label class="bb-field">Tala <select data-ref="talaSel"></select></label>
           <label class="bb-field">Tempo (BPM) <input data-ref="talaBpm" type="number" min="20" max="300" value="80"></label>
           <label class="bb-field">Sound <select data-ref="talaSound"><option value="tabla">Tabla theka</option><option value="click">Clicks</option></select></label>
+          <label class="bb-field">Tabla volume <input data-ref="tablaVol" type="range" min="0" max="100" value="85"></label>
           <button type="button" class="bb-btn bb-primary" data-ref="talaBtn">Start tala</button>
         </div>
         <div class="bb-beats" data-ref="beats"></div>
@@ -622,7 +625,7 @@ export function mountBench(container, opts) {
       const counting = pass === 0 && q("clickOn").checked && q("countIn").checked;
       if (pass === 0) seqUi(true, counting ? "Count-in..." : checking ? "Your turn: play" : "Playing");
       const stop = playEvents(b.ev, b.beats, {
-        bpm: r.bpm, at, click: q("clickOn").checked, countIn: counting ? b.barLen : 0, mute: checking,
+        bpm: r.bpm, at, click: q("clickOn").checked, countIn: counting ? b.barLen : 0, mute: checking, duet: q("duetOn") && q("duetOn").checked ? -12 : 0,
         onCount: k => { q("seqStatus").textContent = "Count-in: " + k; },
         onNote: e => {
           const label = (checking ? "Your turn: play" : "Playing") + (lv === "once" ? "" : ` (pass ${passNow + 1})`);
@@ -680,7 +683,7 @@ export function mountBench(container, opts) {
     });
     listen(q("stopBtn"), "click", () => seqStop());
     // Remember the player options; the beat click can be switched on or off while playing.
-    ["clickOn", "countIn", "droneWithPlay", "checkMe"].forEach(k => {
+    ["clickOn", "countIn", "droneWithPlay", "checkMe", "duetOn"].forEach(k => {
       const box = q(k), saved = benchGet("opt." + k, null);
       if (saved !== null) box.checked = !!saved;
       if (k === "checkMe" && opts.checkMe !== undefined) box.checked = !!opts.checkMe;
@@ -707,9 +710,13 @@ export function mountBench(container, opts) {
       if (tanpura.isOn()) tanpura.stop();
       else { tanpura.setFirst(q("tanFirst").value); tanpura.setSpeed(Number(q("tanSpeed").value) / 100); tanpura.setLevel(Number(q("tanVol").value) / 100); tanpura.start(); startedTan = true; }
     });
-    listen(q("tanFirst"), "change", () => tanpura.setFirst(q("tanFirst").value));
+    listen(q("tanFirst"), "change", () => { tanpura.setFirst(q("tanFirst").value); benchSet("tanFirst", q("tanFirst").value); });
+    // A raga preset sets the first string (Pa for most ragas; Ma when the raga omits Pa; Ni for a few).
+    listen(q("tanRaga"), "change", () => { if (!q("tanRaga").value) return; q("tanFirst").value = q("tanRaga").value; q("tanFirst").dispatchEvent(new Event("change")); });
+    { const f = benchGet("tanFirst", null); if (f && [...q("tanFirst").options].some(o => o.value === f)) q("tanFirst").value = f; const v = benchGet("tanVol", null); if (v !== null) q("tanVol").value = String(v); }
     listen(q("tanSpeed"), "input", () => tanpura.setSpeed(Number(q("tanSpeed").value) / 100));
-    listen(q("tanVol"), "input", () => tanpura.setLevel(Number(q("tanVol").value) / 100));
+    listen(q("tanVol"), "input", () => { tanpura.setLevel(Number(q("tanVol").value) / 100); benchSet("tanVol", Number(q("tanVol").value)); });
+    if (q("tablaVol")) { const tv = benchGet("tablaVol", null); if (tv !== null) q("tablaVol").value = String(tv); setTablaLevel(Number(q("tablaVol").value) / 100); listen(q("tablaVol"), "input", () => { setTablaLevel(Number(q("tablaVol").value) / 100); benchSet("tablaVol", Number(q("tablaVol").value)); }); }
     cleanups.push(tanpura.onChange(syncTan));
     syncTan();
   }

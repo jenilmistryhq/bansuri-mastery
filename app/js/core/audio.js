@@ -8,6 +8,8 @@ const liveVoices = new Set();
 export function ac() {
   if (!audioCtx) {
     const AC = window.AudioContext || window.webkitAudioContext;
+    // A browser without Web Audio: a clear error the app turns into one message, not a crash.
+    if (!AC) throw new Error("audio unavailable: this browser cannot play sound");
     audioCtx = new AC();
     masterGain = audioCtx.createGain();
     masterGain.gain.value = getSettings().volume;
@@ -112,12 +114,16 @@ function tablaNoise(c) {
 }
 let tablaNoiseBuf = null, tablaOut = null;
 // All strokes go through one bus with a limiter, so an accented sam (both drums at once) cannot clip.
+// The tabla's own volume (0-1), so it can sit under the flute and the tanpura.
+let tablaLevel = 0.85;
+export function setTablaLevel(x) { tablaLevel = Math.max(0, Math.min(1, Number(x))); if (tablaOut) tablaOut.gain.value = tablaLevel; }
+
 function tablaBus() {
   const c = ac();
   if (!tablaOut) {
     const lim = c.createDynamicsCompressor();
     lim.threshold.value = -3; lim.knee.value = 2; lim.ratio.value = 20; lim.attack.value = 0.001; lim.release.value = 0.1;
-    tablaOut = c.createGain(); tablaOut.gain.value = 0.85;
+    tablaOut = c.createGain(); tablaOut.gain.value = tablaLevel;
     tablaOut.connect(lim); lim.connect(masterGain);
   }
   return tablaOut;

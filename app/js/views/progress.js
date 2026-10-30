@@ -16,11 +16,21 @@ export function encodePayload(obj) {
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-export function sharePayload(name) {
+export function sharePayload(name, forTeacher) {
   const s = getState(), tt = totals(), st = streaks();
   const d = getDay(current());
   const passed = getPlan().milestones.filter(m => milestoneState(m.id).status === "passed").map(m => m.id);
-  return { v: 1, n: (name || "").slice(0, 40), d: current(), p: d ? d.phase : 0, s: st.current, b: st.best, m: Math.round(tt.minutes), ms: passed, t: today(), since: s.startedAt || today() };
+  const out = { v: 1, n: (name || "").slice(0, 40), d: current(), p: d ? d.phase : 0, s: st.current, b: st.best, m: Math.round(tt.minutes), ms: passed, t: today(), since: s.startedAt || today() };
+  if (forTeacher) {
+    // For a teacher: minutes per week (8 weeks), the longest steady hold per note, recent play-along
+    // accuracy and play-back results, all as the microphone measured them.
+    out.w = weeklyMinutes(practiceDates(), today(), 8).map(w => Math.round(w.mins));
+    const L = s.live || {};
+    out.hb = Object.entries(L.holds || {}).map(([k, list]) => [k, Math.max(...list.map(x => x.s))]).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => [k, Math.round(v * 10) / 10]);
+    out.pl = (L.plays || []).slice(-6).map(p => [String(p.piece).slice(0, 40), p.n ? Math.round(p.ok / p.n * 100) : 0, p.bpm]);
+    out.ea = Object.values(L.echo || {}).slice(0, 6).map(e => [String(e.label).slice(0, 30), e.right, e.total]);
+  }
+  return out;
 }
 
 function heatmap() {
@@ -190,9 +200,10 @@ export async function render(main) {
   // Share.
   const nameIn = h("input", { class: "input", id: "sh-name", maxlength: "40", placeholder: "Your first name (optional)", value: store("bansuri.shareName", "") });
   const out = h("div", { class: "stack" });
+  const teacherBox = h("input", { type: "checkbox", id: "sh-teacher" });
   const make = () => {
     storeSet("bansuri.shareName", nameIn.value.trim());
-    const url = location.href.split("#")[0] + "#/share/" + encodePayload(sharePayload(nameIn.value.trim()));
+    const url = location.href.split("#")[0] + "#/share/" + encodePayload(sharePayload(nameIn.value.trim(), teacherBox.checked));
     const linkBox = h("input", { class: "input", readonly: true, value: url, "aria-label": "Share link" });
     const copy = h("button", { type: "button", class: "btn" }, "Copy link");
     copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(url); toast("Link copied."); } catch (e) { linkBox.select(); toast("Select the link and copy it."); } });
@@ -201,6 +212,7 @@ export async function render(main) {
   };
   page.append(h("section", { class: "card" }, h("h2", null, "Share your progress"),
     h("p", { class: "small muted" }, "Creates a link to a progress card. The data travels inside the link itself; nothing is uploaded. Anyone with the link sees your day, streak, practice time and milestones."),
+    h("label", { class: "check", for: "sh-teacher" }, teacherBox, "For my teacher: add practice per week and what the microphone measured (long tones, play-along, play back)"),
     h("div", { class: "row" }, h("div", { style: { flex: "1 1 220px" } }, nameIn), h("button", { type: "button", class: "btn primary", onclick: make }, "Create link")), out));
   main.append(page);
 }

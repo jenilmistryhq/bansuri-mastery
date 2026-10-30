@@ -164,16 +164,31 @@ export function practiceDates() {
   for (const e of getState().log) m.set(e.date, (m.get(e.date) || 0) + (e.minutes || 0));
   return m;
 }
+// A streak counts the practice days in a row ending at `end`. One missed day in any 7 days is a
+// rest day: it does not count, but it does not break the streak either (a second miss within a
+// week does). Returns { days, rests } (rests: the rest days used, newest first).
+export function streakRun(dates, end) {
+  let days = 0, d = end;
+  const rests = [];
+  for (;;) {
+    if (dates.has(d)) { days++; d = addDays(d, -1); continue; }
+    const before = addDays(d, -1);
+    if (!days || !dates.has(before) || (rests.length && daysBetween(d, rests[rests.length - 1]) < 7)) break;
+    rests.push(d); d = before;
+  }
+  return { days, rests };
+}
+
 export function streaks() {
   const dates = practiceDates();
   const t = today();
-  let cur = 0;
-  let d = dates.has(t) ? t : addDays(t, -1);
-  while (dates.has(d)) { cur++; d = addDays(d, -1); }
-  const sorted = [...dates.keys()].sort();
-  let best = 0, run = 0, prev = null;
-  for (const s of sorted) { run = prev && daysBetween(prev, s) === 1 ? run + 1 : 1; best = Math.max(best, run); prev = s; }
-  return { current: cur, best, practisedToday: dates.has(t) };
+  // Today counts once practised; until then the streak runs to yesterday (or a rest day yesterday).
+  const end = dates.has(t) ? t : dates.has(addDays(t, -1)) ? addDays(t, -1) : addDays(t, -2);
+  const run = dates.has(end) ? streakRun(dates, end) : { days: 0, rests: [] };
+  let best = run.days;
+  for (const s of dates.keys()) best = Math.max(best, streakRun(dates, s).days);
+  const restThisWeek = run.rests.some(r => daysBetween(r, t) < 7);
+  return { current: run.days, best, practisedToday: dates.has(t), restThisWeek };
 }
 export function totals() {
   const s = getState();

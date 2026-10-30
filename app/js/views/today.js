@@ -17,7 +17,9 @@ import { getSettings, setSettings } from "../core/settings.js";
 import { speak, sayButton } from "../voice.js";
 import { stepMeta, plainText } from "../steps.js";
 import { ring, weekStrip } from "../ui.js";
+import { saveBackup } from "../backup.js";
 import { levelOf, xpState } from "../xp.js";
+import { profileStrip, weakSpots, weekSummary, installCard, resumeCard, quickActions, reviewsCard, adaptiveCard, songOfWeekCard, lastSessionCard, backupNudge, realBansuriCard, journey } from "./today-cards.js";
 
 // First run: how the learner likes to learn, in pictures and both languages, so it works without
 // reading English. Each choice can be changed later in Settings.
@@ -67,43 +69,6 @@ export function blockLines(day) {
   return list;
 }
 
-// Who you are in the course at a glance: level and XP, the streak, and this week's practice days.
-function profileStrip() {
-  const lv = levelOf(xpState().total), st = streaks(), dates = practiceDates();
-  return h("section", { class: "profile" },
-    h("a", { class: "profile-level", href: "#/progress#level" },
-      h("span", { class: "levelbadge", "aria-hidden": "true" }, String(lv.level)),
-      h("span", { class: "profile-text" }, h("b", null, "Level " + lv.level + " "), h("span", { class: "leveltitle" }, lv.name),
-        h("span", { class: "progressbar levelbar thin", role: "progressbar", "aria-label": "XP toward the next level", "aria-valuemin": "0", "aria-valuemax": String(lv.need || 1), "aria-valuenow": String(lv.into) }, h("i", { style: { width: lv.pct + "%" } })),
-        h("span", { class: "small muted mono" }, lv.next ? lv.xp.toLocaleString() + " / " + lv.to.toLocaleString() + " XP" : lv.xp.toLocaleString() + " XP"))),
-    h("a", { class: "profile-streak" + (st.current ? " lit" : ""), href: "#/journal", title: "Practice streak" },
-      h("span", { class: "flame", "aria-hidden": "true" }, icon("flame")), h("b", null, String(st.current)), h("span", { class: "small muted" }, st.current === 1 ? "day streak" : "day streak")),
-    weekStrip(new Set(dates.keys())));
-}
-
-// "Resume": the day, how far into it you are, the next step, and one button that goes straight there.
-function resumeCard(n, day, ds, phase, action) {
-  const done = Object.values(ds.blocks || {}).filter(Boolean).length, total = day.blocks.length;
-  const next = day.blocks.find(b => !(ds.blocks || {})[b.id]);
-  const pct = total ? done / total * 100 : 0;
-  return h("section", { class: "resume" },
-    ring(pct, done + "/" + total, { size: 76, stroke: 8, cls: "resume-ring" }),
-    h("div", { class: "resume-body" },
-      h("span", { class: "small muted" }, (phase ? "Phase " + phase.id + ": " + phase.title : "") + (day.week ? " - Week " + day.week : "")),
-      h("h1", { class: "title" }, "Day " + n + ": " + (day.title || "")),
-      h("span", { class: "small muted" }, (done ? "Next: " : "First: ") + (next ? (next.label || stepMeta(next).name) + (next.minutes ? ", " + next.minutes + " min" : "") : "all steps done") + " - about " + (day.minutes || 0) + " min in all"),
-      action),
-    journey(n, phase));
-}
-
-// One tap to the tools used most.
-function quickActions() {
-  const a = (href, ic, label) => h("a", { class: "quickact", href }, h("span", { class: "quickicon", "aria-hidden": "true" }, icon(ic)), h("span", null, label));
-  return h("nav", { class: "quickacts", "aria-label": "Quick actions" },
-    a("#/bench", "bench", "Flute and tuner"), a("#/coach", "coach", "Check my tone"), a("#/play", "star", "Play a game"),
-    a("#/songs", "note", "Songs"), a("#/listen", "listen", "Listen"), a("#/quick", "today", "5 minutes"));
-}
-
 // The first screen a new learner sees: what this is, one big button, and the language.
 function firstRun(day) {
   return h("section", { class: "hero firstrun" },
@@ -122,171 +87,6 @@ function welcome() {
       h("li", null, h("span", null, h("b", null, "Milestones prove progress. "), "You move on by passing practical tests, not by the calendar. A failed test tells you exactly what to practise.")),
       h("li", null, h("span", null, h("b", null, "Your progress stays on this device. "), "Export a backup in Settings to move it to another device."))),
     h("p", { class: "small muted" }, "Built for a 6-hole C natural medium bansuri (Sa = C5). Another flute? Day 0 finds its Sa for you. Already play? ", h("a", { href: "#/settings" }, "Take the playing test"), " to start at the right phase."));
-}
-
-function reviewsCard(cleanups) {
-  const due = dueReviews();
-  const up = upcomingReviews(3);
-  if (!due.length && !up.length) return null;
-  const list = h("div", { class: "stack" });
-  const refTargets = [];
-  for (const r of due) {
-    const host = h("div", { class: "toolhost", hidden: true });
-    let bench = null;
-    const toggle = h("button", { type: "button", class: "btn" }, "Practise it");
-    toggle.addEventListener("click", () => {
-      if (bench) { bench.destroy(); bench = null; host.hidden = true; toggle.textContent = "Practise it"; return; }
-      host.hidden = false; toggle.textContent = "Close";
-      // Reviews are played from memory: the mic checks each note while the app keeps the beat.
-      bench = mountBench(host, Object.assign({ compact: true, tabs: ["play", "chart"], tab: "play", checkMe: true, title: r.label }, r.bench || {}));
-    });
-    cleanups.push(() => bench && bench.destroy());
-    const row = h("div", { class: "card flat", style: { padding: "12px" } },
-      h("div", { class: "row between" },
-        h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, r.label), h("span", { class: "small muted" }, "Learned " + fmtDate(r.learned) + " - review " + (r.stage + 1) + " of 6")),
-        h("div", { class: "row" },
-          r.bench ? toggle : (r.read ? h("a", { class: "btn", href: "#/read/" + r.read.path + (r.read.anchor ? "#" + r.read.anchor : "") }, "Open") : null),
-          h("button", { type: "button", class: "btn primary", onclick: () => { markReview(r.id, true); row.remove(); } }, "Played it well"),
-          h("button", { type: "button", class: "btn", onclick: () => { markReview(r.id, false); row.remove(); } }, "Needs work"))),
-      r.bench ? host : null);
-    refTargets.push([r.id, row]);
-    list.append(row);
-  }
-  referencePlayers(refTargets, cleanups);
-  return h("section", { class: "card" },
-    h("div", { class: "row between" }, h("h2", null, "Spaced review"), h("span", { class: "chip info" }, due.length + " due")),
-    due.length ? h("p", { class: "small muted" }, "Play each piece once from memory. Mark how it went; the next review is scheduled for you.") : h("p", { class: "small muted" }, "Nothing due today."),
-    list,
-    up.length ? h("p", { class: "small muted" }, "Coming up: " + up.map(u => u.label + " (" + fmtDate(u.next) + ")").join(", ")) : null);
-}
-
-// Help when a day keeps not passing, and a gentle restart after a break.
-function adaptiveCard(cur) {
-  const s = getState(), log = s.log;
-  if (!s.startedAt) return null;
-  const tries = log.filter(e => e.day === cur && !e.passed).length;
-  const dates = [...new Set(log.map(e => e.date))].sort();
-  const last = dates[dates.length - 1];
-  const away = last ? daysBetween(last, today()) : 0;
-  if (away >= 4 && cur > 1) {
-    return h("section", { class: "card notice-card" }, h("h2", null, "Welcome back"),
-      h("p", null, "It has been " + away + " days. Fingers and lips forget quickly but return quickly too: start with a short review of the last day you did, then carry on."),
-      h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/session/" + (cur - 1) }, "Review Day " + (cur - 1) + " first"), h("a", { class: "btn", href: "#/session/" + cur }, "Go straight to Day " + cur)));
-  }
-  if (tries >= 2) {
-    const day = getDay(cur);
-    const bench = day && day.blocks.find(b => b.bench && b.bench.bpm);
-    return h("section", { class: "card notice-card" }, h("h2", null, "This day is taking a few tries"),
-      h("p", null, "That is normal: " + tries + " sessions on Day " + cur + " so far. Three things usually help:"),
-      h("ul", { class: "stack", style: { margin: "0", paddingLeft: "1.2em" } },
-        h("li", null, bench ? "Slow down: play the exercises 10 BPM slower (" + Math.max(30, bench.bench.bpm - 10) + " BPM), then build back up." : "Slow down: play everything at a slower tempo, then build back up."),
-        h("li", null, "Find the exact problem: ", h("a", { href: "#/coach" }, "let the Coach listen"), " to a long note, or loop the hard bar in the Bench."),
-        h("li", null, "Rest a day if your lips or hands are tired; it often clicks the day after.")),
-      h("div", { class: "row" }, h("a", { class: "btn", href: "#/coach" }, "Open the Coach"), h("a", { class: "btn", href: "#/session/" + Math.max(0, cur - 1) }, "Practise Day " + Math.max(0, cur - 1) + " again")));
-  }
-  return null;
-}
-
-// One playable melody a week, picked from the songs the learner can already play.
-async function songOfWeekCard() {
-  try {
-    const { parseSongs } = await import("./songs.js");
-    const songs = parseSongs(await fetchDoc("exercises/EX-MEL-practice-melodies.md"));
-    let reached = 0;
-    for (let n = 0; n <= current(); n++) { const d = getDay(n); if (d && d.lessons) for (const id of d.lessons) reached = Math.max(reached, Number(String(id).replace(/\D/g, "")) || 0); }
-    const ready = songs.filter(x => x.lesson <= reached);
-    if (!ready.length) return null;
-    const week = Math.floor(daysBetween("2026-01-05", today()) / 7);
-    const song = ready[((week % ready.length) + ready.length) % ready.length];
-    return h("a", { class: "card songlink", href: "#/songs" }, h("span", { class: "eyebrow" }, "Song of the week"), h("b", null, song.id + " " + song.title), h("span", { class: "small muted" }, "A fun extra: play it along with the app; the microphone checks every note."));
-  } catch (e) { return null; }
-}
-
-// "Last time" from the microphone: something concrete to beat today.
-function lastSessionCard() {
-  const day = lastPlayedDay();
-  if (!day) return null;
-  const r = dayResults(day), bits = [];
-  for (const x of r.holds.slice(0, 4)) bits.push(h("li", null, "Longest steady " + (x.key === "any" ? "note" : codeOf(Number(x.key))) + ": ", h("b", null, x.s.toFixed(1) + " s")));
-  for (const p of r.plays.slice(-2)) bits.push(h("li", null, p.piece + ": ", h("b", null, p.ok + " of " + p.n + " notes"), " at " + p.bpm + " BPM"));
-  for (const e of r.echo.slice(0, 2)) bits.push(h("li", null, "Play back (" + e.label + "): phrases of ", h("b", null, String(e.len)), " notes"));
-  for (const t of r.taps.slice(-1)) bits.push(h("li", null, "Tapping: ", h("b", null, Math.round(t.within * 100) + "%"), " within 50 ms"));
-  if (!bits.length) return null;
-  return h("section", { class: "card lastcard" }, h("div", { class: "row between" }, h("h2", null, "Last time"), h("span", { class: "small muted" }, fmtDate(day))),
-    h("ul", { class: "stack", style: { margin: "0", paddingLeft: "1.2em" } }, bits), h("p", { class: "small muted" }, "Try to beat one of these today."));
-}
-
-// Everything lives in this browser, so remind the learner to export a backup about once a week.
-function backupNudge() {
-  const s = getState();
-  if (!s.startedAt) return null;
-  const t = today();
-  const since = s.lastBackup || s.startedAt;
-  if (daysBetween(since, t) < 7) return null;
-  if (s.prefs.backupSnooze && s.prefs.backupSnooze > t) return null;
-  const box = h("div", { class: "notice row between" },
-    h("span", null, h("b", null, "Back up your progress. "), s.lastBackup ? "Your last backup was " + daysBetween(s.lastBackup, t) + " days ago." : "You have not made a backup yet. Your progress lives only in this browser."),
-    h("span", { class: "row" }, h("a", { class: "btn primary", href: "#/settings" }, "Back up now"),
-      h("button", { type: "button", class: "btn ghost", onclick: () => { update(st => { st.prefs.backupSnooze = addDays(t, 7); }); box.remove(); } }, "Remind me in a week")));
-  return box;
-}
-
-// The learner's own reference recordings for review items (set in the Journal), if any.
-// Reads the recordings once; object URLs are released when the view closes.
-async function referencePlayers(targets, cleanups) {
-  if (!targets.length) return;
-  let recs = [];
-  try { recs = await listRecordings(); } catch (e) { return; }
-  for (const [itemId, host] of targets) {
-    const rec = recs.find(r => r.ref === itemId);
-    if (!rec) continue;
-    const url = URL.createObjectURL(rec.blob);
-    cleanups.push(() => URL.revokeObjectURL(url));
-    host.append(h("div", { class: "stack", style: { gap: "2px" } }, h("span", { class: "small muted" }, "Your reference: " + rec.label), h("audio", { controls: true, src: url, preload: "none" })));
-  }
-}
-
-// The Bench's flute is synthesised; in the first weeks, let the learner hear the real instrument.
-function realBansuriCard() {
-  // AAC (.m4a) plays everywhere including iPhones; the original Ogg is the fallback.
-  const clip = (src, label) => h("div", { class: "stack", style: { gap: "2px" } }, h("span", { class: "small" }, label),
-    h("audio", { controls: true, preload: "none" }, h("source", { src: src.replace(/\.ogg$/, ".m4a"), type: "audio/mp4" }), h("source", { src, type: "audio/ogg" })));
-  return h("details", { class: "card" },
-    h("summary", null, h("b", null, "Hear a real bansuri"), h("span", { class: "small muted" }, " - what a bamboo flute actually sounds like")),
-    h("p", { class: "small muted" }, "The flute sound in the Practice Bench is synthesised: it gets the pitches right, not the breathy bamboo tone. These short, openly licensed recordings are by amateur players (credits in app/audio/CREDITS.txt); some are in other keys than your C flute. For professional tone, listen to the short \"start here\" tracks in the ",
-      h("a", { href: "#/read/08-LISTENING-LIBRARY.md" }, "listening library"), "."),
-    h("div", { class: "stack", style: { gap: "2px" } }, h("span", { class: "small" }, "A held Sa, then Sa up to upper Sa and back (sankalp, CC BY 4.0; roguentropy, CC0; Freesound)"),
-      h("audio", { controls: true, preload: "none", src: "app/audio/bansuri-sa-middle-octave-sankalp.mp3" }),
-      h("audio", { controls: true, preload: "none", src: "app/audio/bansuri-sargam-sa-to-taar-sa-roguentropy.mp3" })),
-    clip("app/audio/bansuri-e-bass-sample.ogg", "Bass bansuri in E (1:39)"),
-    clip("app/audio/bansuri-small-e-sample.ogg", "Small bansuri in E (0:54)"));
-}
-
-function statsRow() {
-  const st = streaks(), tt = totals();
-  const todayMin = practiceDates().get(today()) || 0;
-  const stat = (v, l) => h("div", { class: "stat" }, h("b", null, String(v)), h("span", null, l));
-  return h("div", { class: "stats" },
-    stat(st.current, st.current === 1 ? "day streak" : "day streak"),
-    stat(fmtMinutes(todayMin), "practised today"),
-    stat(tt.daysDone, "days completed"),
-    stat(fmtMinutes(tt.minutes), "total practice"));
-}
-
-// Where the learner is: progress through the current phase, and the next milestone.
-function journey(n, phase) {
-  const plan = getPlan();
-  if (!phase) return null;
-  const next = plan.phases.find(p => p.firstDay > phase.firstDay);
-  const first = phase.firstDay, last = next ? next.firstDay - 1 : lastIndex();
-  const len = last - first + 1, done = Math.min(len, Math.max(0, n - first));
-  const ms = plan.milestones.find(m => m.day >= n && milestoneState(m.id).status !== "passed");
-  return h("div", { class: "journey" },
-    h("div", { class: "row between small" },
-      h("span", null, h("b", null, "Phase " + phase.id + ": "), "day " + (done + 1) + " of " + len),
-      ms ? h("a", { href: "#/milestone/" + ms.id, class: "muted" }, ms.day === n ? ms.id + " " + ms.title + ": today" : ms.id + " " + ms.title + " in " + (ms.day - n) + " day" + (ms.day - n === 1 ? "" : "s")) : null),
-    h("div", { class: "progressbar", role: "progressbar", "aria-label": "Progress through phase " + phase.id, "aria-valuemin": "0", "aria-valuemax": String(len), "aria-valuenow": String(done) },
-      h("i", { style: { width: (len ? done / len * 100 : 0) + "%" } })));
 }
 
 export async function render(main, { params, view }) {
@@ -356,6 +156,8 @@ export async function render(main, { params, view }) {
     if (help) mainCol.append(help);
     const rc = reviewsCard(cleanups);
     if (rc) mainCol.append(rc);
+    const weak = weakSpots();
+    if (weak) mainCol.append(weak);
   }
 
   mainCol.append(h("section", { class: "card" },
@@ -377,6 +179,10 @@ export async function render(main, { params, view }) {
       h("h2", null, "Daily quests"),
       h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "\u2713" : ""), h("span", null, q.text)))),
       h("a", { class: "questline small", href: "#/play" }, left.length ? (qs.list.length - left.length) + " of " + qs.list.length + " done - games and quests are in Play" : "All done! New quests tomorrow.")));
+    const week = weekSummary();
+    if (week) side.prepend(week);
+    const inst = installCard();
+    if (inst) side.append(inst);
     const lastCard = lastSessionCard();
     if (lastCard) side.append(lastCard);
     const songHost = h("div");
