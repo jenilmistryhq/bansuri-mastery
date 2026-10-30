@@ -69,7 +69,8 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Session, a long-tone step: the meter appears; Done, next step moves on and starts the next timer.
 - [ ] Milestone M1 (or any unlocked milestone): "Check with mic" on "Long tone Sa" ticks the item when you pass.
 - [ ] Settings > Detect from my flute: play your Sa for 3 s; it names your flute's key correctly.
-- [ ] Bench > Tala & drone > Tap the beat > Calibrate, then a normal run: results are near "on the beat" when you tap well.
+- [ ] Bench > Tala & drone > Tap the beat: the first Start calibrates (8 clicks), then plays a round; the lights flash with the click you hear; tapping well reads "on the beat", also with Bluetooth headphones.
+- [ ] Coach > Let the coach listen: play a long Sa; a deliberately airy or flat note is named as such.
 - [ ] Play a tongued `G G G` in Play back or a milestone phrase: each repeat is counted.
 - [ ] Settings > Microphone check: run it, copy the report, and send it along with any problem.
 - [ ] Note the phone, room and distance from the phone when anything misreads.

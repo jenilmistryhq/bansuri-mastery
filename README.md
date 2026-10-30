@@ -22,9 +22,9 @@ A static web app (no server, no account, no framework) that teaches the course o
 - **Your playing:** best long tones per note, play-back level, play-along and tapping results on Progress, and "Last time" on Today to beat.
 - **Find my flute:** play Sa and the app sets your flute's key, octave and tuning (Day 0 and Settings). Settings also has a 15-second microphone check with a copyable report.
 - **Lessons as cards:** each lesson opens as short cards (the idea, each step, common mistakes to tap and reveal, the quiz as flashcards, a mastery checklist), with the full text one tap away. Any notation in the course has a play button.
-- **Journal:** practice log, recordings kept on the device, pitch analysis, before/after comparison, and a **video self-check** (record yourself with the camera to check posture and embouchure).
-- **Progress:** streak calendar, statistics, badges and a shareable progress card (the data travels inside the link).
-- **Coach:** an offline problem solver. Pick a symptom ("airy tone", "low notes will not sound") and it shows the likely causes, fixes and drills from the troubleshooting guides.
+- **Journal:** one-tap logging (minutes and how it went), a day-by-day timeline of practice, recordings and measured results, recordings kept on the device with pitch analysis and before/after comparison, and a **video self-check** (record yourself with the camera to check posture and embouchure).
+- **Progress:** the M0-M10 milestone path, minutes per week, a streak calendar, long-tone trends per note, statistics, badges and a shareable progress card (the data travels inside the link).
+- **Coach:** an offline problem solver. It can listen to a held Sa and name the likely problem (airy, squeaky, flat or sharp, wavering, too short, wrong fingering), or you pick a symptom. It shows the causes, quick checks to tick, a live drill that shows when the fix works, and remembers what helped.
 - **Hear a real bansuri:** public-domain recordings of a real flute on the first weeks' Today screen, so the synthesised sound is not your only model.
 - **Send to a teacher:** share a recording and its pitch summary with a human teacher through the phone's share sheet. Save a teacher's (or your best) take as the **reference** for a piece; it plays next to that piece in spaced review.
 - **Library and reader:** every course page rendered in the app, with full-text search.

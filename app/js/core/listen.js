@@ -177,6 +177,11 @@ export function tapLatency(v) {
   return v || 0;
 }
 
+// Whether the tap delay has been measured on this device (a measured 0 ms counts).
+export function tapCalibrated() {
+  try { return localStorage.getItem("bansuri.live.latency") !== null; } catch (e) { return false; }
+}
+
 // Results of the listening exercises go out as a "bansuri:live" event; the app records them, the
 // standalone bench simply has no listener.
 export function emitLive(detail) {

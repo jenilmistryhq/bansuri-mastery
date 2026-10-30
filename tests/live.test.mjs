@@ -7,6 +7,8 @@ const { holdTracker, noteSequencer, phraseMatcher, judgeNote, tapStats, distinct
 const { echoPhrase } = await import("../app/js/core/live.js");
 const { holdSpec } = await import("../app/js/views/session.js");
 const { micSpec } = await import("../app/js/views/milestone.js");
+const { diagnose } = await import("../app/js/views/coach.js");
+const { weeklyMinutes } = await import("../app/js/views/progress.js");
 
 let passed = 0;
 const test = (name, fn) => { fn(); passed++; };
@@ -130,6 +132,25 @@ test("milestone items the microphone can judge", () => {
   assert.deepEqual(micSpec("`S R G R S` at 50 BPM, 1 note per beat", "3 clean repetitions in a row, no blips between notes"), { kind: "phrase", phrase: [0, 2, 4, 2, 0], reps: 3 });
   assert.deepEqual(micSpec("Kalyan scale `S R G M P D N S'` and back, 60 BPM", "No missed notes").phrase, [0, 2, 4, 6, 7, 9, 11, 12, 11, 9, 7, 6, 4, 2, 0]);
   assert.equal(micSpec("Posture video (30 s, side view)", "Tall relaxed spine"), null);
+});
+
+test("the coach hears common problems in a held Sa", () => {
+  const hold = (secs, f) => { const out = []; for (let t = 0; t < secs; t += 1 / 30) out.push(f(t)); return out; };
+  const tone = (t, semi, level) => Object.assign(reading(t, semi), { level: level === undefined ? 0.2 : level });
+  assert.deepEqual(diagnose(hold(6, t => tone(t, 0.03))), [], "a clear, steady, in-tune Sa: nothing to fix");
+  assert.equal(diagnose(hold(6, t => tone(t, null, 0.002)))[0].ts, "TS-01", "silence");
+  assert.ok(diagnose(hold(6, t => tone(t, t % 1 < 0.5 ? null : 0, 0.2))).some(f => f.ts === "TS-01"), "half the sound is air");
+  assert.ok(diagnose(hold(6, t => tone(t, Math.floor(t * 2) % 3 === 0 ? 12 : 0))).some(f => f.ts === "TS-02"), "octave jumps are squeaks");
+  assert.ok(diagnose(hold(6, t => tone(t, -0.35))).some(f => f.ts === "TS-05" && /flat/.test(f.text)), "35 cents flat");
+  assert.ok(diagnose(hold(6, t => tone(t, 2))).some(f => f.ts === "TS-06"), "Re instead of Sa: a fingering problem");
+  assert.ok(diagnose(hold(2.5, t => tone(t, 0))).some(f => f.ts === "TS-07"), "a short hold: breath");
+});
+
+test("minutes per week", () => {
+  const dates = new Map([["2026-10-26", 30], ["2026-10-30", 15], ["2026-10-25", 40], ["2026-10-12", 20]]);
+  const w = weeklyMinutes(dates, "2026-10-30", 3);
+  assert.deepEqual(w.map(x => x.start), ["2026-10-12", "2026-10-19", "2026-10-26"]);
+  assert.deepEqual(w.map(x => x.mins), [20, 40, 45]);
 });
 
 console.log(`live tests: ${passed} passed`);

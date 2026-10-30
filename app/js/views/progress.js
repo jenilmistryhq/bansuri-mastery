@@ -35,6 +35,76 @@ function heatmap() {
   return h("div", { class: "heat", role: "img", "aria-label": "Practice calendar for the last 26 weeks" }, cells);
 }
 
+const SVG = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, ...kids) {
+  const el = document.createElementNS(SVG, tag);
+  for (const [k, v] of Object.entries(attrs || {})) el.setAttribute(k, String(v));
+  kids.forEach(c => c && el.append(c));
+  return el;
+}
+
+// Minutes practised per week for the last 12 weeks (Monday to Sunday), oldest first.
+export function weeklyMinutes(dates, t, n) {
+  const d0 = new Date(t + "T00:00:00"), monday = new Date(d0); monday.setDate(d0.getDate() - ((d0.getDay() + 6) % 7));
+  const iso = x => x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0");
+  const weeks = [];
+  for (let w = n - 1; w >= 0; w--) {
+    const start = new Date(monday); start.setDate(monday.getDate() - 7 * w);
+    let mins = 0;
+    for (let i = 0; i < 7; i++) { const d = new Date(start); d.setDate(start.getDate() + i); mins += dates.get(iso(d)) || 0; }
+    weeks.push({ start: iso(start), mins });
+  }
+  return weeks;
+}
+
+// A bar per week: one series, thin bars with a gap between, rounded tops on the baseline, a value
+// on hover (title) and a table for screen readers.
+function weeksChart(weeks) {
+  const W = 600, H = 170, padL = 34, padB = 22, padT = 10, max = Math.max(60, ...weeks.map(w => w.mins));
+  const step = (W - padL) / weeks.length, bw = Math.max(6, step - 6), y = v => padT + (H - padT - padB) * (1 - v / max);
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "wkchart", role: "img", "aria-label": "Minutes practised per week, last 12 weeks" });
+  const nice = max <= 120 ? 60 : max <= 300 ? 100 : max <= 600 ? 200 : 300;
+  for (let v = 0; v <= max; v += nice) {
+    svg.append(svgEl("line", { x1: padL, x2: W, y1: y(v), y2: y(v), class: "wk-grid" }));
+    svg.append(svgEl("text", { x: padL - 6, y: y(v) + 4, class: "wk-tick", "text-anchor": "end" }, document.createTextNode(String(v))));
+  }
+  weeks.forEach((w, i) => {
+    const x = padL + i * step + (step - bw) / 2, top = y(w.mins), base = y(0), hgt = Math.max(0, base - top), r = Math.min(4, hgt);
+    const g = svgEl("g", { class: "wk-bar" + (i === weeks.length - 1 ? " now" : "") });
+    // A bar with rounded top corners, square on the baseline.
+    if (hgt > 0) g.append(svgEl("path", { d: `M${x},${base} V${top + r} Q${x},${top} ${x + r},${top} H${x + bw - r} Q${x + bw},${top} ${x + bw},${top + r} V${base} Z` }));
+    g.append(svgEl("rect", { x: x - 2, y: padT, width: bw + 4, height: H - padT - padB, class: "wk-hit" }));
+    g.append(svgEl("title", null, document.createTextNode("Week of " + w.start + ": " + fmtMinutes(w.mins))));
+    if (i % 3 === 2 || i === weeks.length - 1) g.append(svgEl("text", { x: x + bw / 2, y: H - 6, class: "wk-tick", "text-anchor": "middle" }, document.createTextNode(i === weeks.length - 1 ? "this week" : w.start.slice(5).replace("-", "/"))));
+    svg.append(g);
+  });
+  const table = h("table", { class: "sr-only" }, h("caption", null, "Minutes per week"), h("tbody", null, weeks.map(w => h("tr", null, h("td", null, w.start), h("td", null, String(Math.round(w.mins)))))));
+  return h("div", null, svg, table);
+}
+
+// A small line of one note's daily best holds, with the latest value labelled.
+function sparkline(list) {
+  const W = 120, H = 28, pts = list.slice(-20), max = Math.max(...pts.map(p => p.s), 1);
+  if (pts.length < 2) return null;
+  const x = i => 2 + (W - 8) * i / (pts.length - 1), y = v => H - 3 - (H - 6) * v / max;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "spark", role: "img", "aria-label": "Daily best: " + pts.map(p => p.s.toFixed(1) + " s").join(", ") });
+  svg.append(svgEl("polyline", { points: pts.map((p, i) => x(i) + "," + y(p.s)).join(" "), class: "spark-line" }));
+  svg.append(svgEl("circle", { cx: x(pts.length - 1), cy: y(pts[pts.length - 1].s), r: 3, class: "spark-dot" }));
+  return svg;
+}
+
+// M0 to M10 as a path: passed, the next one, and those ahead.
+function milestonePath() {
+  const ms = getPlan().milestones, cur = current();
+  const next = ms.find(m => milestoneState(m.id).status !== "passed");
+  return h("ol", { class: "mspath" }, ms.map(m => {
+    const st = milestoneState(m.id).status;
+    const cls = st === "passed" ? "done" : m === next ? "next" : "ahead";
+    return h("li", { class: cls }, h("a", { href: "#/milestone/" + m.id, title: m.title }, h("span", { class: "msdot" }, m.id),
+      h("span", { class: "small" }, st === "passed" ? "passed" : m === next ? (m.day <= cur ? "ready" : "in " + (m.day - cur) + " d") : "Day " + m.day)));
+  }));
+}
+
 export async function render(main) {
   const s = getState(), tt = totals(), st = streaks();
   const page = h("div", { class: "page" });
@@ -45,6 +115,8 @@ export async function render(main) {
     stat("Day " + current(), "current day"), stat(tt.practiceDays, "days practised"), stat(fmtMinutes(tt.minutes), "total practice"),
     stat(st.current, "current streak"), stat(st.best, "best streak"), stat(tt.msPassed + "/" + getPlan().milestones.length, "milestones passed")));
 
+  page.append(h("section", { class: "card" }, h("h2", null, "Milestones"), milestonePath()));
+  page.append(h("section", { class: "card" }, h("h2", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12))));
   page.append(h("section", { class: "card" }, h("h2", null, "Practice calendar"), heatmap(),
     h("p", { class: "small muted" }, "Darker = longer practice (under 20, under 45, 45+ minutes). Regular short practice beats occasional long practice.")));
 
@@ -67,8 +139,8 @@ export async function render(main) {
       holds.length ? h("div", { class: "stack" }, h("h3", null, "Longest steady hold"),
         holds.map(x => h("div", { class: "liverow" },
           h("b", { class: "mono" }, x.key === "any" ? "any" : codeOf(Number(x.key))),
-          bar(x.best, maxHold),
-          h("span", { class: "small" }, x.best.toFixed(1) + " s" + (x.days > 1 && x.last > x.first ? "  (from " + x.first.toFixed(1) + " s)" : ""))))) : null,
+          sparkline(s.live.holds[x.key]) || bar(x.best, maxHold),
+          h("span", { class: "small" }, "best " + x.best.toFixed(1) + " s" + (x.days > 1 && x.last > x.first ? ", up from " + x.first.toFixed(1) : ""))))) : null,
       echo.length ? h("div", { class: "stack" }, h("h3", null, "Play back"),
         echo.map(([, e]) => h("div", { class: "row between" }, h("span", null, e.label), h("span", { class: "small mono" }, "longest phrase " + e.best + " - " + e.right + "/" + e.total + " right")))) : null,
       plays.length ? h("div", { class: "stack" }, h("h3", null, "Play along (latest)"),

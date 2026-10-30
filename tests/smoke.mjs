@@ -275,6 +275,24 @@ try {
   await clickText("#main button", "Low notes");
   await page.waitForFunction(() => /Fixes and drills|How to verify/i.test(document.querySelector("#main").innerText), { timeout: 8000 });
   check(true, "coach shows the troubleshooting guide for a symptom");
+  check(await page.$$eval("#main .checkli input", x => x.length) > 0, "the quick checks are a checklist");
+  await clickText("#main button", "Try the drill now");
+  check(await page.$("#main .drillcard .lv-hold") !== null, "the coach opens a live drill (hold low Pa)");
+  await clickText("#main button", "Yes, it helped");
+  check(/What you worked on/.test(await page.$eval("#main", e => e.innerText)), "the coach remembers what helped");
+
+  console.log("Journal and progress");
+  await go("/journal");
+  await clickText("#main .chipbtn", "45 min");
+  await clickText("#main .chipbtn", "Went well");
+  await page.type("#j-note", "Long tones");
+  await clickText("#main button", "Log it");
+  await sleep(300);
+  check(await page.evaluate(() => { const e = JSON.parse(localStorage.getItem("bansuri.progress")).log.pop(); return e.minutes === 45 && e.feel === "great" && e.note === "Long tones"; }), "one-tap log saves minutes, how it went and the note");
+  check(/Went well/.test(await page.$eval("#main .timeline", e => e.innerText)), "the day-by-day timeline shows the entry");
+  await go("/progress");
+  check(await page.$$eval("#main .wkchart .wk-bar", x => x.length) === 12 && await page.$("#main .wkchart path") !== null, "progress charts 12 weeks of practice");
+  check(await page.$$eval("#main .mspath li", x => x.length) === 11, "progress shows the M0-M10 milestone path");
 
   console.log("Tala with tabla theka");
   await go("/bench");
@@ -439,6 +457,15 @@ try {
     check(await lp.evaluate(() => { const rows = [...document.querySelectorAll("#main .mrow")].filter(r => r.querySelector(".micpanel")); const r = rows[rows.length - 1]; return !r.querySelector("input[type=checkbox]").checked && /1 of 3 clean/.test(r.innerText); }),
       "milestone phrase: one clean pass counts once (1 of 3), not more");
     await lp.evaluate(() => [...document.querySelectorAll("#main .micpanel .lv-primary")].pop().click());
+
+    // The coach listens: a held Sa 35 cents flat is diagnosed as flat.
+    await lp.goto(BASE + "#/coach", { waitUntil: "networkidle0" });
+    await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Start listening/.test(b.textContent)), { timeout: 5000 });
+    await clickTextOn(lp, "#main button", "Start listening");
+    await sleep(300); await tone(-0.35);
+    await lp.waitForFunction(() => /cents flat/.test(document.querySelector("#main").innerText), { timeout: 12000 })
+      .then(() => check(true, "the coach hears that a held Sa is flat"), async () => check(false, "coach: " + (await lp.$eval("#main", e => e.innerText)).slice(0, 300)));
+    await tone(null);
 
     // A session step with a listening goal ticks itself when the goal is met.
     await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 2, startedAt: "2026-10-01" })));

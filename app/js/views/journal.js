@@ -5,6 +5,7 @@ import { totals, streaks } from "../course.js";
 import { listRecordings, deleteRecording, patchRecording, recordWidget } from "../recorder.js";
 import { ac } from "../core/audio.js";
 import { analyzeAudioBuffer, compareToExpected, drawPitchPlot } from "../core/pitch.js";
+import { dayResults } from "../livestats.js";
 import { codeOf, westOf } from "../core/theory.js";
 
 async function analyse(rec, host) {
@@ -92,7 +93,7 @@ export async function render(main) {
   // New recording.
   const labelIn = h("input", { class: "input", id: "j-label", value: "Free practice", "aria-label": "Recording label" });
   const host = h("div");
-  const widget = recordWidget({ day: s.current, label: () => labelIn.value.trim() || "Free practice", onSaved: () => drawRecs() });
+  const widget = recordWidget({ day: s.current, label: () => labelIn.value.trim() || "Free practice", onSaved: () => { drawRecs(); drawTimeline(); } });
   cleanups.push(() => widget.cleanup && widget.cleanup());
   host.append(widget);
   page.append(h("section", { class: "card" }, h("h2", null, "Record"), h("label", { class: "field", for: "j-label" }, "What are you recording?", labelIn), host,
@@ -112,13 +113,15 @@ export async function render(main) {
   const recHost = h("div");
   const compareHost = h("div", { class: "grid2" });
   const selected = new Set();
+  let showAll = false;
   async function drawRecs() {
     urls.splice(0).forEach(u => URL.revokeObjectURL(u));
     let recs = [];
     try { recs = await listRecordings(); } catch (e) { clear(recHost).append(h("p", { class: "small" }, String(e.message))); return; }
     clear(recHost);
     if (!recs.length) { recHost.append(h("p", { class: "muted" }, "No recordings yet. Record in a session or above.")); return; }
-    for (const rec of recs) {
+    const shown = showAll ? recs : recs.slice(0, 8);
+    for (const rec of shown) {
       const url = URL.createObjectURL(rec.blob); urls.push(url);
       const name = h("input", { class: "input", value: rec.label, "aria-label": "Recording name" });
       name.addEventListener("change", () => patchRecording(rec.id, { label: name.value.trim() || rec.label }));
@@ -141,6 +144,7 @@ export async function render(main) {
           refControl(rec, drawRecs), del),
         aHost));
     }
+    if (recs.length > shown.length) recHost.append(h("button", { type: "button", class: "btn ghost", onclick: () => { showAll = true; drawRecs(); } }, "Show all " + recs.length + " recordings"));
   }
   const cmpBtn = h("button", { type: "button", class: "btn" }, "Compare selected");
   cmpBtn.addEventListener("click", async () => {
@@ -156,26 +160,71 @@ export async function render(main) {
   });
   page.append(h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Recordings"), cmpBtn), compareHost, recHost));
 
-  // Log.
-  const minIn = h("input", { class: "input", type: "number", min: "1", max: "600", value: "20", id: "j-min" });
-  const noteIn = h("input", { class: "input", id: "j-note", placeholder: "What did you practise?" });
-  const logHost = h("div");
-  function drawLog() {
-    clear(logHost);
-    const log = getState().log.slice().reverse().slice(0, 200);
-    if (!log.length) { logHost.append(h("p", { class: "muted" }, "Your sessions will appear here.")); return; }
-    for (const e of log) {
-      logHost.append(h("div", { class: "logline" }, h("span", null, fmtDate(e.date)),
-        h("span", null, e.day !== undefined && e.day !== null ? h("a", { href: "#/day/" + e.day }, "Day " + e.day + " ") : "Extra practice ", e.note ? h("span", { class: "muted" }, "- " + e.note) : null),
-        h("span", { class: "row" }, h("span", { class: "mono small" }, fmtMinutes(e.minutes)), e.passed ? h("span", { class: "chip good" }, "Day done") : null)));
+  // Log: one tap for the minutes and how it went, an optional note.
+  const FEELS = [["great", "Went well"], ["ok", "OK"], ["hard", "Hard"]];
+  let minutes = 20, feel = "";
+  const minIn = h("input", { class: "input", type: "number", min: "1", max: "600", value: "20", id: "j-min", "aria-label": "Minutes", style: { width: "5.5rem" } });
+  const minChips = h("div", { class: "chips", role: "group", "aria-label": "Minutes" }, [10, 15, 20, 30, 45, 60].map(m => {
+    const b = h("button", { type: "button", class: "chipbtn", "aria-pressed": String(m === minutes) }, m + " min");
+    b.addEventListener("click", () => { minutes = m; minIn.value = String(m); minChips.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); });
+    return b;
+  }));
+  minIn.addEventListener("input", () => { minutes = Math.max(1, Math.min(600, Number(minIn.value) || 0)); minChips.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.textContent === minutes + " min"))); });
+  const feelChips = h("div", { class: "chips", role: "group", "aria-label": "How did it go?" }, FEELS.map(([k, label]) => {
+    const b = h("button", { type: "button", class: "chipbtn", "aria-pressed": "false" }, label);
+    b.addEventListener("click", () => { feel = feel === k ? "" : k; feelChips.querySelectorAll("button").forEach((x, i) => x.setAttribute("aria-pressed", String(FEELS[i][0] === feel))); });
+    return b;
+  }));
+  const noteIn = h("input", { class: "input", id: "j-note", placeholder: "What did you practise? (optional)" });
+  const saveLog = h("button", { type: "button", class: "btn primary" }, "Log it");
+  saveLog.addEventListener("click", () => {
+    const m = Math.max(1, Math.min(600, Number(minIn.value) || minutes));
+    addLog({ minutes: m, note: noteIn.value.trim(), day: null, feel: feel || undefined });
+    noteIn.value = ""; feel = ""; feelChips.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+    drawTimeline(); toast("Logged " + m + " min.");
+  });
+  page.append(h("section", { class: "card" }, h("h2", null, "Log extra practice"),
+    h("p", { class: "small muted" }, "Sessions log themselves. Use this for practice outside a session."),
+    h("div", { class: "row" }, minChips, minIn), h("div", { class: "row" }, h("span", { class: "small muted" }, "How did it go?"), feelChips),
+    h("div", { class: "row" }, h("div", { style: { flex: "1 1 220px" } }, noteIn), saveLog)));
+
+  // Timeline: each day's practice, recordings and what the microphone measured, newest first.
+  const timeHost = h("div", { class: "timeline" });
+  const FEEL_LABEL = { great: ["Went well", "good"], ok: ["OK", "mutedc"], hard: ["Hard", "warn"] };
+  async function drawTimeline() {
+    clear(timeHost);
+    const log = getState().log;
+    let recs = [];
+    try { recs = await listRecordings(); } catch (e) { /* recordings unavailable */ }
+    const days = new Map();
+    const day = d => { if (!days.has(d)) days.set(d, { log: [], recs: 0 }); return days.get(d); };
+    log.forEach(e => day(e.date).log.push(e));
+    recs.forEach(r => { if (r.date) day(r.date).recs++; });
+    const L = getState().live;
+    for (const list of Object.values(L.holds)) list.forEach(x => day(x.d));
+    L.plays.forEach(x => day(x.d)); L.taps.forEach(x => day(x.d)); Object.values(L.echo).forEach(x => day(x.d));
+    const dates = [...days.keys()].sort().reverse().slice(0, 21);
+    if (!dates.length) { timeHost.append(h("p", { class: "muted" }, "Your practice will appear here, day by day: sessions, recordings and what the microphone measured.")); return; }
+    for (const d of dates) {
+      const x = days.get(d), mins = x.log.reduce((a, e) => a + (e.minutes || 0), 0), res = dayResults(d);
+      const bits = [];
+      for (const e of x.log) bits.push(h("li", null, e.day !== undefined && e.day !== null ? h("a", { href: "#/day/" + e.day }, "Day " + e.day) : "Extra practice",
+        " - " + fmtMinutes(e.minutes), e.passed ? h("span", { class: "chip good" }, "Day done") : null,
+        FEEL_LABEL[e.feel] ? h("span", { class: "chip " + FEEL_LABEL[e.feel][1] }, FEEL_LABEL[e.feel][0]) : null,
+        e.note ? h("span", { class: "muted" }, " " + e.note) : null));
+      if (x.recs) bits.push(h("li", null, x.recs + " recording" + (x.recs === 1 ? "" : "s")));
+      for (const hd of res.holds) bits.push(h("li", null, "Longest steady " + (hd.key === "any" ? "note" : codeOf(Number(hd.key))) + ": ", h("b", null, hd.s.toFixed(1) + " s")));
+      for (const p of res.plays.slice(-3)) bits.push(h("li", null, p.piece + ": " + p.ok + "/" + p.n + " notes at " + p.bpm + " BPM"));
+      for (const e of res.echo) bits.push(h("li", null, "Play back (" + e.label + "): " + e.len + "-note phrases"));
+      for (const t of res.taps.slice(-1)) bits.push(h("li", null, "Tapping: " + Math.round(t.within * 100) + "% within 50 ms"));
+      timeHost.append(h("article", { class: "tday" },
+        h("div", { class: "row between" }, h("b", null, fmtDate(d)), mins ? h("span", { class: "mono small" }, fmtMinutes(mins)) : null),
+        h("ul", { class: "tlist" }, bits)));
     }
   }
-  page.append(h("section", { class: "card" }, h("h2", null, "Log"),
-    h("div", { class: "row" }, h("label", { class: "field", for: "j-min", style: { width: "7rem" } }, "Minutes", minIn), h("label", { class: "field", for: "j-note", style: { flex: "1 1 220px" } }, "Note", noteIn),
-      h("button", { type: "button", class: "btn primary", style: { alignSelf: "end" }, onclick: () => { const m = Math.max(1, Math.min(600, Number(minIn.value) || 0)); addLog({ minutes: m, note: noteIn.value.trim(), day: null }); noteIn.value = ""; drawLog(); toast("Logged " + m + " min."); } }, "Add extra practice")),
-    logHost));
+  page.append(h("section", { class: "card" }, h("h2", null, "Day by day"), timeHost));
 
   main.append(page);
-  drawRecs(); drawLog();
+  drawRecs(); drawTimeline();
   return () => { urls.forEach(u => URL.revokeObjectURL(u)); cleanups.forEach(f => f()); };
 }

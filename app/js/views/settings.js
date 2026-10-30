@@ -157,8 +157,8 @@ export async function render(main) {
       if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // stop spreadsheets treating a note as a formula
       return /[",\r\n]/.test(s) ? "\"" + s.replace(/"/g, "\"\"") + "\"" : s;
     };
-    const rows = [["date", "day", "minutes", "day_completed", "note"]];
-    for (const e of getState().log) rows.push([e.date, e.day === null || e.day === undefined ? "" : e.day, e.minutes || 0, e.passed ? "yes" : "", e.note || ""]);
+    const rows = [["date", "day", "minutes", "day_completed", "how_it_went", "note"]];
+    for (const e of getState().log) rows.push([e.date, e.day === null || e.day === undefined ? "" : e.day, e.minutes || 0, e.passed ? "yes" : "", ["great", "ok", "hard"].includes(e.feel) ? e.feel : "", e.note || ""]);
     const ms = getPlan().milestones.map(m => [m.id, m.title, (getState().milestones[m.id] || {}).status || "open", ((getState().milestones[m.id] || {}).attempts || []).length]);
     const text = rows.map(r => r.map(q).join(",")).join("\r\n") + "\r\n\r\nmilestone,title,status,attempts\r\n" + ms.map(r => r.map(q).join(",")).join("\r\n") + "\r\n";
     download("bansuri-practice-log-" + today() + ".csv", "\ufeff" + text, "text/csv");

@@ -255,6 +255,12 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .lv-dronebox { display: inline-grid; gap: 2px; }
 .lv-tip { margin: 0; max-width: 34ch; }
 .lv-finder .lv-big { min-width: 3.5em; }
+.lv-lights { display: flex; gap: 10px; justify-content: center; }
+.lv-lights i { width: 18px; height: 18px; border-radius: 50%; background: var(--sunken); border: 2px solid var(--line); transition: background 60ms; }
+.lv-lights i[data-i="0"] { width: 22px; height: 22px; }
+.lv-lights i.lv-on { background: var(--accent); border-color: var(--accent); }
+.lv-lights i.lv-on.lv-quiet { background: transparent; border-color: var(--accent); }
+.lv-padtxt { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
 </style>
 <main class="bb-page">
 <div id="bench-root"></div>
@@ -1205,6 +1211,11 @@ function tapLatency(v) {
   return v || 0;
 }
 
+// Whether the tap delay has been measured on this device (a measured 0 ms counts).
+function tapCalibrated() {
+  try { return localStorage.getItem("bansuri.live.latency") !== null; } catch (e) { return false; }
+}
+
 // Results of the listening exercises go out as a "bansuri:live" event; the app records them, the
 // standalone bench simply has no listener.
 function emitLive(detail) {
@@ -1582,86 +1593,111 @@ function echoGame(opts) {
 // test the inner pulse. Offsets are measured against when the click reaches the speaker.
 function tapGame(opts) {
   const o = Object.assign({ bpm: 72 }, opts || {});
-  let beats = [], offsets = [], running = false, endTimer = 0, bus = null;
+  let beats = [], offsets = [], running = false, endTimer = 0, bus = null, flashTimers = [], calibrating = false, thenPlay = false, nextTimer = 0;
   const bpmSel = lvEl("select", { class: "lv-select", "aria-label": "Tempo" }, [60, 72, 90, 108, 120].map(b => lvEl("option", { value: String(b) }, b + " BPM")));
   bpmSel.value = String([60, 72, 90, 108, 120].includes(o.bpm) ? o.bpm : 72);
   const modeSel = lvEl("select", { class: "lv-select", "aria-label": "Mode" }, lvEl("option", { value: "click" }, "Click on every beat"), lvEl("option", { value: "silent" }, "Then two silent bars"));
-  const pad = lvEl("button", { type: "button", class: "lv-pad", disabled: true }, "Tap");
+  // Four beat lights flash in time with the click as it is heard, so the beat can be seen as well.
+  const lights = lvEl("div", { class: "lv-lights", "aria-hidden": "true" }, [0, 1, 2, 3].map(i => lvEl("i", { "data-i": String(i) })));
+  const padTxt = lvEl("span", { class: "lv-padtxt" }, "Tap");
+  const pad = lvEl("button", { type: "button", class: "lv-pad", disabled: true }, padTxt);
   const lane = lvEl("div", { class: "lv-lane" }, lvEl("i", { class: "lv-zero" }), lvEl("span", { class: "lv-l" }, "early"), lvEl("span", { class: "lv-r" }, "late"));
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start. After four count-in clicks, tap on every beat: on the pad, the space bar or any key.");
   const startBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start");
   const calBtn = lvEl("button", { type: "button", class: "lv-btn" }, "Calibrate");
   const calTxt = lvEl("span", { class: "lv-count" });
-  const showCal = () => { const l = tapLatency(); calTxt.textContent = l ? `Device delay: ${l} ms (subtracted)` : "Not calibrated: tap delay of this device is included"; };
-  let calibrating = false;
-  const el = lvEl("div", { class: "lv lv-tap" }, lvEl("div", { class: "lv-row" }, bpmSel, modeSel, startBtn, calBtn), pad, lane, msg, calTxt);
+  const showCal = () => { const l = tapLatency(); calTxt.textContent = tapCalibrated() ? `This device's delay (${l} ms) is left out of the results. Recalibrate after changing speakers or headphones.` : "Not calibrated yet."; };
+  const el = lvEl("div", { class: "lv lv-tap" }, lvEl("div", { class: "lv-row" }, bpmSel, modeSel, startBtn, calBtn), lights, pad, lane, msg, calTxt);
+  const RANGE = 250; // the lane shows +/- 250 ms
+
   function tap() {
     if (!running) return;
     const c = ac(), t = c.currentTime - (c.outputLatency || 0);
     let best = null;
     for (const b of beats) if (best === null || Math.abs(t - b.t) < Math.abs(t - best.t)) best = b;
-    const beatS = 60 / Number(bpmSel.value);
+    const beatS = 60 / (calibrating ? 90 : Number(bpmSel.value));
     pad.classList.remove("lv-hit"); void pad.offsetWidth; pad.classList.add("lv-hit");
     if (!best || Math.abs(t - best.t) > beatS / 2 || best.used) return;
     best.used = true;
     const off = (t - best.t) * 1000 - (calibrating ? 0 : tapLatency());
     offsets.push({ off, silent: best.silent });
-    const x = 50 + Math.max(-50, Math.min(50, off / 3));
-    lane.append(lvEl("b", { class: "lv-dot" + (best.silent ? " lv-silent" : "") + (Math.abs(off) <= 50 ? " lv-good" : ""), style: `left:${x}%` }));
+    const x = 50 + Math.max(-50, Math.min(50, off / RANGE * 50));
+    lane.append(lvEl("b", { class: "lv-dot" + (best.silent ? " lv-silent" : "") + (Math.abs(off) <= 50 ? " lv-good" : ""), style: `left:${x}%`, title: `${Math.round(off)} ms ${off < 0 ? "early" : "late"}` }));
   }
   function describe(st) {
     if (!st) return "";
     const side = Math.abs(st.mean) <= 15 ? "right on the beat" : `${Math.abs(st.mean)} ms ${st.mean < 0 ? "early (rushing)" : "late (dragging)"}`;
     return `on average ${side}, spread ${st.spread} ms, ${Math.round(st.within * 100)}% within 50 ms`;
   }
+  function clearRun() {
+    clearTimeout(endTimer); flashTimers.forEach(clearTimeout); flashTimers = [];
+    if (bus) { bus.disconnect(); bus = null; }
+    lights.querySelectorAll("i").forEach(i => i.className = "");
+    running = false; pad.disabled = true; startBtn.textContent = "Start"; padTxt.textContent = "Tap";
+  }
   function finish(complete) {
-    running = false; pad.disabled = true; startBtn.textContent = "Start";
+    const tapped = offsets.length;
+    clearRun();
     if (calibrating) {
       calibrating = false;
       const v = offsets.map(x => x.off).sort((a, b) => a - b);
-      if (v.length < 5) { msg.textContent = "Calibration needs at least 5 taps. Try again."; return; }
+      if (v.length < 5) { msg.textContent = "Calibration needs at least 5 taps, exactly with the clicks. Press Calibrate to try again."; thenPlay = false; return; }
       const med = v[v.length >> 1], spread = v[v.length - 2] - v[1];
-      if (spread > 160) { msg.textContent = "The taps were too uneven to calibrate. Try again, tapping exactly with the click."; return; }
-      tapLatency(Math.max(-40, Math.min(250, med)));
-      showCal(); msg.textContent = "Calibrated. Your results now leave out this device's delay.";
+      if (spread > 160) { msg.textContent = "The taps were too uneven to calibrate. Press Calibrate and tap exactly with the click."; thenPlay = false; return; }
+      tapLatency(Math.max(-40, Math.min(350, med)));
+      showCal();
+      if (thenPlay) { thenPlay = false; msg.textContent = "Calibrated. Now the real round: count-in, then tap."; nextTimer = setTimeout(() => start(false), 1200); }
+      else msg.textContent = "Calibrated. Your results now leave out this device's delay.";
       return;
     }
+    if (complete !== true) { msg.textContent = tapped ? `Stopped after ${tapped} tap${tapped === 1 ? "" : "s"}. Press Start for a full round of 16 beats.` : "Stopped."; return; }
     const all = tapStats(offsets.map(x => x.off)), heard = tapStats(offsets.filter(x => !x.silent).map(x => x.off)), quiet = tapStats(offsets.filter(x => x.silent).map(x => x.off));
-    if (!all) { msg.textContent = "No taps landed near the beats. Try a slower tempo."; return; }
+    if (!all) { msg.textContent = "No taps landed near the beats. Tap on the pad, the space bar or any key, with each click."; return; }
     let text = `${all.n} of ${beats.length} beats tapped: ` + (quiet ? `with the click ${describe(heard)}; in the silent bars ${describe(quiet)}.` : describe(all) + ".");
-    if (quiet && heard && Math.abs(quiet.mean - heard.mean) > 40) text += " Your pulse drifted without the click: count the beats aloud, then in your head.";
+    // Every tap late (or early) by about the same amount is the device, not the player.
+    if (!tapCalibrated() && Math.abs(all.mean) > 90 && all.spread < 90) text += ` All your taps are off by about the same ${Math.abs(all.mean)} ms: that is usually the audio device's delay (Bluetooth adds 150-250 ms). Press Calibrate once and this disappears.`;
+    else if (all.n < beats.length * 0.6) text += " Many beats had no tap: keep tapping through the whole round, even when unsure.";
+    else if (quiet && heard && Math.abs(quiet.mean - heard.mean) > 40) text += " Your pulse drifted without the click: count the beats aloud, then in your head.";
     else if (all.spread > 60) text += " Aim for a steadier tap before going faster.";
     else if (all.within >= 0.8) text += " Excellent. Try a faster tempo or the silent bars.";
     msg.textContent = text;
-    if (complete === true) emitLive({ type: "tap", bpm: Number(bpmSel.value), silent: !!quiet, mean: all.mean, spread: all.spread, within: Math.round(all.within * 100) / 100 });
+    emitLive({ type: "tap", bpm: Number(bpmSel.value), silent: !!quiet, mean: all.mean, spread: all.spread, within: Math.round(all.within * 100) / 100 });
   }
   function start(cal) {
-    if (running) { clearTimeout(endTimer); if (bus) { bus.disconnect(); bus = null; } finish(false); return; }
+    if (running) { finish(false); return; }
+    // The first round on a device calibrates first, so its delay is not reported as dragging.
+    if (cal !== true && !tapCalibrated()) { thenPlay = true; cal = true; }
     calibrating = cal === true;
     const c = ac(), beatS = 60 / (calibrating ? 90 : Number(bpmSel.value)), t0 = c.currentTime + 0.3;
     beats = []; offsets = []; lane.querySelectorAll(".lv-dot").forEach(d => d.remove());
-    const silent = modeSel.value === "silent";
+    const silent = !calibrating && modeSel.value === "silent";
     // The clicks go through their own bus, so Stop silences the ones already scheduled.
     bus = c.createGain(); bus.connect(master());
-    for (let i = 0; i < 4; i++) click(t0 + i * beatS, i === 0 ? "sam" : "tick", bus);
+    const heardDelay = (tapLatency() || (c.outputLatency || 0) * 1000) / 1000;
+    const flash = (t, i, label, quiet) => flashTimers.push(setTimeout(() => {
+      lights.querySelectorAll("i").forEach((x, k) => { x.className = k === i ? (quiet ? "lv-on lv-quiet" : "lv-on") : ""; });
+      padTxt.textContent = label;
+    }, Math.max(0, (t + heardDelay - c.currentTime) * 1000)));
+    for (let i = 0; i < 4; i++) { click(t0 + i * beatS, i === 0 ? "sam" : "tick", bus); flash(t0 + i * beatS, i, String(4 - i), false); }
     const n = calibrating ? 8 : 16;
     for (let i = 0; i < n; i++) {
-      const t = t0 + (4 + i) * beatS, quiet = !calibrating && silent && i >= 8;
+      const t = t0 + (4 + i) * beatS, quiet = silent && i >= 8;
       if (!quiet) click(t, i % 4 === 0 ? "sam" : "tick", bus);
+      flash(t, i % 4, quiet ? "keep going" : "Tap", quiet);
       beats.push({ t, silent: quiet, used: false });
     }
     running = true; pad.disabled = false; startBtn.textContent = "Stop";
-    msg.textContent = calibrating ? "Calibrating: after the count-in, tap exactly with the 8 clicks." : silent ? "Count-in, then tap. The click stops after two bars: keep tapping." : "Count-in, then tap on every beat.";
-    endTimer = setTimeout(() => finish(true), ((t0 + (4 + n) * beatS) - c.currentTime + 0.5) * 1000);
+    msg.textContent = calibrating ? (thenPlay ? "First, a quick calibration for this device: after the count-in, tap exactly with the 8 clicks." : "Calibrating: after the count-in, tap exactly with the 8 clicks.") : silent ? "Count-in, then tap. The click stops after two bars: keep tapping." : "Count-in, then tap on every beat.";
+    endTimer = setTimeout(() => finish(true), ((t0 + (4 + n) * beatS) - c.currentTime + 0.6) * 1000);
   }
   startBtn.addEventListener("click", () => start(false));
-  calBtn.addEventListener("click", () => start(true));
+  calBtn.addEventListener("click", () => { clearTimeout(nextTimer); if (running) finish(false); thenPlay = false; start(true); });
   showCal();
   pad.addEventListener("pointerdown", e => { e.preventDefault(); tap(); });
   const onKey = e => { if (!running || e.repeat || /^(INPUT|TEXTAREA|SELECT)$/.test((e.target || {}).tagName || "")) return; e.preventDefault(); tap(); };
   document.addEventListener("keydown", onKey);
-  const abort = () => { if (!running) return; clearTimeout(endTimer); if (bus) { bus.disconnect(); bus = null; } running = false; calibrating = false; pad.disabled = true; startBtn.textContent = "Start"; msg.textContent = "Stopped."; };
-  return { el, stop: abort, destroy() { clearTimeout(endTimer); running = false; if (bus) { bus.disconnect(); bus = null; } document.removeEventListener("keydown", onKey); } };
+  const abort = () => { clearTimeout(nextTimer); if (!running) return; calibrating = false; thenPlay = false; clearRun(); msg.textContent = "Stopped."; };
+  return { el, stop: abort, destroy() { clearTimeout(nextTimer); calibrating = false; thenPlay = false; clearRun(); document.removeEventListener("keydown", onKey); } };
 }
 
 // ---------- Find my flute ----------
