@@ -39,6 +39,12 @@
 .bb-flute { width: 100%; height: auto; display: block; }
 .bb-flute .bb-holehit { cursor: pointer; }
 .bb-flute text { font-family: var(--body); fill: var(--muted); font-size: 15px; }
+.bb-flute .bb-num { fill: var(--ink); font-weight: 600; font-size: 13px; }
+.bb-flute .bb-numdot { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+.bb-flute .bb-bracket { stroke: var(--muted); stroke-width: 1.5; }
+.bb-flute .bb-holering { opacity: 0; transition: opacity 120ms; }
+.bb-flute .bb-holehit:hover .bb-holering { opacity: 0.8; }
+.bb-flute [data-ref^="pad"] { transition: opacity 120ms; }
 .bb-holes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 10px repeat(3, minmax(0, 1fr)); gap: 8px; }
 .bb-holebtn { min-width: 0; display: grid; justify-items: center; gap: 2px; padding: 8px 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
 .bb-holebtn .bb-dot { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--hole); background: var(--hole); }

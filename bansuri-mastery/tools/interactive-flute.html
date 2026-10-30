@@ -90,6 +90,12 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-flute { width: 100%; height: auto; display: block; }
 .bb-flute .bb-holehit { cursor: pointer; }
 .bb-flute text { font-family: var(--body); fill: var(--muted); font-size: 15px; }
+.bb-flute .bb-num { fill: var(--ink); font-weight: 600; font-size: 13px; }
+.bb-flute .bb-numdot { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+.bb-flute .bb-bracket { stroke: var(--muted); stroke-width: 1.5; }
+.bb-flute .bb-holering { opacity: 0; transition: opacity 120ms; }
+.bb-flute .bb-holehit:hover .bb-holering { opacity: 0.8; }
+.bb-flute [data-ref^="pad"] { transition: opacity 120ms; }
 .bb-holes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 10px repeat(3, minmax(0, 1fr)); gap: 8px; }
 .bb-holebtn { min-width: 0; display: grid; justify-items: center; gap: 2px; padding: 8px 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
 .bb-holebtn .bb-dot { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--hole); background: var(--hole); }
@@ -2300,7 +2306,7 @@ function benchTemplate(uid, o) {
   const header = lede || settingsHtml ? `<header class="bb-top">${lede}${settingsHtml}</header>` : "";
   const flute = o.flute ? `
   <section class="bb-instrument" aria-label="Flute">
-    <svg class="bb-flute" data-ref="fluteSvg" viewBox="0 0 1000 130" role="img" aria-label="Bansuri with blowing hole on the left and six finger holes"></svg>
+    <svg class="bb-flute" data-ref="fluteSvg" viewBox="0 0 1000 145" role="img" aria-label="Bansuri with blowing hole on the left and six finger holes"></svg>
     <div class="bb-holes" data-ref="holesStrip" aria-label="Finger holes (tap to change: open, closed, half)"></div>
     <div class="bb-readout">
       <div class="bb-readmain">
@@ -2527,21 +2533,51 @@ function mountBench(container, opts) {
   let holes = ["X", "X", "X", "O", "O", "O"], reg = 1, liveVoice = null;
   function buildSvg() {
     if (!o.flute) return;
-    const s = [];
-    s.push(`<defs><linearGradient id="${uid}-bam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--bamboo)"/><stop offset="0.55" style="stop-color:var(--bamboo)"/><stop offset="1" style="stop-color:var(--bamboo-deep)"/></linearGradient>`);
-    BENCH_HOLE_X.forEach((x, i) => s.push(`<clipPath id="${uid}-half${i}"><rect x="${x - 20}" y="40" width="20" height="40"/></clipPath>`));
+    // A bamboo flute seen from above: a rounded cylinder (highlight on top, shade below, faint grain),
+    // raised nodes, silk thread bindings at the ends, holes with depth, and fingertips that come down
+    // onto the holes they close (a half-holed finger slides off half the hole). Holes are numbered below,
+    // with the hand that covers them.
+    const s = [], id = k => uid + "-" + k, Y = 50, R = 21, top = Y - R, bot = Y + R;
+    s.push("<defs>");
+    s.push(`<linearGradient id="${id("bam")}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--bamboo-deep)"/><stop offset="0.12" style="stop-color:var(--bamboo)"/><stop offset="0.3" style="stop-color:#f3dc9a"/><stop offset="0.45" style="stop-color:var(--bamboo)"/><stop offset="0.85" style="stop-color:var(--bamboo-deep)"/><stop offset="1" style="stop-color:#4a3511"/></linearGradient>`);
+    s.push(`<radialGradient id="${id("hole")}" cx="0.45" cy="0.4" r="0.6"><stop offset="0" style="stop-color:#000"/><stop offset="0.7" style="stop-color:var(--hole)"/><stop offset="1" style="stop-color:#5a3d15"/></radialGradient>`);
+    s.push(`<linearGradient id="${id("skin")}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--finger-edge)"/><stop offset="0.3" style="stop-color:var(--finger)"/><stop offset="0.55" style="stop-color:#e2ab8c"/><stop offset="1" style="stop-color:var(--finger-edge)"/></linearGradient>`);
+    s.push(`<linearGradient id="${id("cord")}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#5c1a1a"/><stop offset="0.35" style="stop-color:#b03a3a"/><stop offset="1" style="stop-color:#4a1212"/></linearGradient>`);
+    // Fingers fade in from above, so they read as hands reaching down rather than posts.
+    s.push(`<linearGradient id="${id("fadeg")}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.35" stop-color="#fff" stop-opacity="1"/></linearGradient><mask id="${id("fade")}" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="${bot + 30}"><rect x="0" y="0" width="1000" height="${bot + 30}" fill="url(#${id("fadeg")})"/></mask>`);
+    s.push(`<filter id="${id("soft")}" x="-10%" y="-60%" width="120%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>`);
+    s.push(`<filter id="${id("fsh")}" x="-50%" y="-20%" width="200%" height="150%"><feGaussianBlur stdDeviation="2.5"/></filter>`);
     s.push("</defs>");
-    s.push('<text x="430" y="24">top hand</text><text x="690" y="24">bottom hand</text>');
-    s.push(`<rect x="20" y="42" width="960" height="40" rx="20" fill="url(#${uid}-bam)"/>`);
-    [70, 300, 640, 930].forEach(x => s.push(`<rect x="${x}" y="42" width="5" height="40" fill="var(--node)" opacity="0.7"/>`));
-    [[36, 6], [950, 6]].forEach(([x, n]) => { for (let k = 0; k < n; k++) s.push(`<rect x="${x + k * 3}" y="42" width="1.6" height="40" fill="var(--hole)" opacity="0.55"/>`); });
-    s.push('<ellipse cx="150" cy="62" rx="13" ry="10" fill="var(--hole)"/>');
-    s.push('<g class="bb-air" data-ref="air"><path d="M150 40 q 10 -8 20 0 t 20 0 t 20 0" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/></g>');
-    s.push('<text x="112" y="112">blowing hole</text>');
+    // Shadow, body, end grain.
+    s.push(`<ellipse cx="500" cy="${bot + 10}" rx="470" ry="8" fill="#000" opacity="0.35" filter="url(#${id("soft")})"/>`);
+    s.push(`<rect x="20" y="${top}" width="960" height="${2 * R}" rx="${R}" fill="url(#${id("bam")})"/>`);
+    // Grain: faint long lines along the bamboo.
+    [[0.2, 0.18], [0.62, 0.12], [0.78, 0.1]].forEach(([f, op]) => s.push(`<path d="M60 ${top + 2 * R * f} H 940" stroke="#fff" stroke-width="0.8" opacity="${op}"/>`));
+    // Nodes: a raised ring, dark then light.
+    [300, 640].forEach(x => s.push(`<rect x="${x - 3}" y="${top}" width="3" height="${2 * R}" fill="var(--bamboo-deep)" opacity="0.8"/><rect x="${x}" y="${top}" width="3" height="${2 * R}" fill="#f6e3a8" opacity="0.55"/>`));
+    // Silk thread bindings near both ends, and the darker end grain.
+    [[44, 30], [926, 30]].forEach(([x, w]) => {
+      s.push(`<rect x="${x}" y="${top - 1}" width="${w}" height="${2 * R + 2}" rx="3" fill="url(#${id("cord")})"/>`);
+      for (let k = 2; k < w; k += 4) s.push(`<line x1="${x + k}" y1="${top}" x2="${x + k}" y2="${bot}" stroke="#000" stroke-width="0.8" opacity="0.28"/>`);
+      s.push(`<rect x="${x}" y="${top + 2}" width="${w}" height="4" fill="#fff" opacity="0.18"/>`);
+    });
+    // Blowing hole, with its rim, and the air stream (animated while a note sounds).
+    s.push(`<ellipse cx="150" cy="${Y}" rx="15" ry="11" fill="#f3dc9a" opacity="0.45"/><ellipse cx="150" cy="${Y}" rx="13" ry="9.5" fill="url(#${id("hole")})"/>`);
+    s.push(`<g class="bb-air" data-ref="air">` + [0, 1, 2].map(k => `<path d="M${96 + k * 4} ${8 + k * 5} q 14 ${6 - k} 26 ${16 - k * 2} t 24 ${14 - k * 3}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" opacity="${1 - k * 0.25}"/>`).join("") + "</g>");
+    // Finger holes; each fingertip (with a nail) comes down from above onto its hole.
     BENCH_HOLE_X.forEach((x, i) => {
-      s.push(`<g class="bb-holehit" data-i="${i}"><circle cx="${x}" cy="62" r="24" fill="transparent"/><circle cx="${x}" cy="62" r="13" fill="var(--hole)"/>`);
-      s.push(`<circle data-ref="pad${i}" cx="${x}" cy="62" r="17" fill="var(--finger)" stroke="var(--finger-edge)" stroke-width="2"/></g>`);
-      s.push(`<text x="${x - 5}" y="112">${i + 1}</text>`);
+      s.push(`<g class="bb-holehit" data-i="${i}"><circle cx="${x}" cy="${Y}" r="30" fill="transparent"/><circle class="bb-holering" cx="${x}" cy="${Y}" r="20" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`);
+      s.push(`<circle cx="${x}" cy="${Y}" r="12.5" fill="#f3dc9a" opacity="0.4"/><circle cx="${x}" cy="${Y}" r="11" fill="url(#${id("hole")})"/>`);
+      s.push(`<g data-ref="pad${i}"><g mask="url(#${id("fade")})"><path d="M${x - 15} 0 V ${Y + 4} a 15 15 0 0 0 30 0 V 0 Z" fill="#000" opacity="0.35" filter="url(#${id("fsh")})" transform="translate(2 4)"/>`);
+      s.push(`<path d="M${x - 16} 0 V ${Y + 2} a 16 16 0 0 0 32 0 V 0 Z" fill="url(#${id("skin")})" stroke="var(--finger-edge)" stroke-width="1"/>`);
+      s.push(`<path d="M${x - 8} ${Y + 1} q 0 -12 8 -12 q 8 0 8 12 q 0 7 -8 7 q -8 0 -8 -7 Z" fill="#f2c9b4" opacity="0.85" stroke="var(--finger-edge)" stroke-width="0.6"/>`);
+      s.push(`<path d="M${x - 15} ${Y - 26} q 15 4 30 0" fill="none" stroke="var(--finger-edge)" stroke-width="1" opacity="0.5"/></g></g></g>`);
+    });
+    // Labels below: the blowing hole, hole numbers, and which hand covers which holes.
+    s.push(`<text x="150" y="${bot + 34}" text-anchor="middle">blowing hole</text>`);
+    BENCH_HOLE_X.forEach((x, i) => s.push(`<circle cx="${x}" cy="${bot + 29}" r="11" class="bb-numdot"/><text x="${x}" y="${bot + 34}" text-anchor="middle" class="bb-num">${i + 1}</text>`));
+    [[BENCH_HOLE_X[0], BENCH_HOLE_X[2], "top hand"], [BENCH_HOLE_X[3], BENCH_HOLE_X[5], "bottom hand"]].forEach(([a, b, t]) => {
+      s.push(`<path d="M${a - 12} ${bot + 46} v 6 H ${b + 12} v -6" fill="none" class="bb-bracket"/><text x="${(a + b) / 2}" y="${bot + 68}" text-anchor="middle">${t}</text>`);
     });
     q("fluteSvg").innerHTML = s.join("");
     q("fluteSvg").querySelectorAll(".bb-holehit").forEach(g => listen(g, "click", () => cycleHole(Number(g.dataset.i))));
@@ -2565,7 +2601,8 @@ function mountBench(container, opts) {
       holes.forEach((s, i) => {
         const pad = q("pad" + i);
         pad.style.display = s === "O" ? "none" : "";
-        if (s === "H") pad.setAttribute("clip-path", `url(#${uid}-half${i})`); else pad.removeAttribute("clip-path");
+        // Half-holing: the finger slides off to uncover half the hole (as it is really done).
+        if (s === "H") pad.setAttribute("transform", "translate(-15 0)"); else pad.removeAttribute("transform");
         const b = q("hb" + i); b.dataset.s = s;
         b.querySelector(".bb-st").textContent = s === "X" ? "closed" : s === "H" ? "half" : "open";
         b.setAttribute("aria-label", `Hole ${i + 1}: ${s === "X" ? "closed" : s === "H" ? "half closed" : "open"}`);
