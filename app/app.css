@@ -774,16 +774,17 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .row.tight .field { flex: 1 1 0; min-width: 0; }
 .row.tight output { min-width: 2.2rem; text-align: center; }
 .trplot .plot { margin-top: 8px; }
-.nview { display: grid; gap: 10px; padding: 14px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--line); font-family: var(--mono); font-size: 1.05rem; overflow-x: auto; }
-.nline { display: flex; flex-wrap: wrap; gap: 6px; }
-.nbar { display: flex; gap: 2px; padding: 4px 6px; border-left: 2px solid var(--line); }
-.nbar:first-child { border-left: 0; padding-left: 0; }
-.nbeat { min-width: 2.3em; padding: 2px 4px; border-radius: 6px; background: var(--surface); text-align: center; white-space: nowrap; }
-.nphrase { flex-wrap: wrap; gap: 4px 8px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--surface); }
-.nphrase:first-child { border-left: 1px solid var(--line); padding-left: 8px; }
-.ntok sup { font-size: 0.65em; color: var(--muted); margin-right: 1px; }
+.nview { display: grid; gap: 6px; padding: 14px 16px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--line); font-family: var(--mono); font-size: 1rem; overflow-x: auto; }
+.nview.deva { font-family: var(--body); font-size: 1.08rem; }
+.nrow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 0; }
+.nc { min-width: 3.4em; padding: 2px 0; white-space: nowrap; }
+.nc.nmulti { min-width: 4.6em; }
+.nc sup { font-size: 0.68em; color: var(--muted); margin-right: 1px; }
 .nhold { color: var(--muted); }
+.nsep { color: var(--line); width: 1.4em; text-align: center; font-weight: 700; }
+.npause { width: 1.6em; }
 .playrow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.playside { display: grid; gap: 6px; justify-items: end; }
 .playrow:first-of-type { border-top: 0; }
 .playbtn { width: 48px; height: 48px; padding: 0; justify-content: center; border-radius: 50%; }
 .playinfo { display: grid; gap: 4px; min-width: 0; }

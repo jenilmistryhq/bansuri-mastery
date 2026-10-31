@@ -4,19 +4,34 @@
 // Steps on the page: 1 get the sound, 2 what was found (and the settings), 3 the notation,
 // 4 listen and compare, 5 play along; then saved notations.
 import { h, toast, store, storeSet, today, icon } from "../util.js";
-import { getSettings, setSettings, saMidi } from "../core/settings.js";
+import { setSettings, saMidi } from "../core/settings.js";
 import { ac, master, makeVoice } from "../core/audio.js";
 import { decodeAudioFile, drawPitchPlot } from "../core/pitch.js";
 import { parseNotation, buildEvents, playEvents } from "../core/notation.js";
 import { countdown } from "../core/live.js";
 import { mountBench } from "../bench/bench.js";
-import { WEST, codeOf, devaNotation } from "../core/theory.js";
+import { WEST, codeOf, devaNotation, hzOf } from "../core/theory.js";
 import { monoDown, pitchTrack, transcribe, tonicMidi, fluteLabel, FLUTES, HOP } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
 const MAX_SECONDS = 360;
 // One note in a beat: an optional {kan}, lower-octave dots, the letter, upper-octave marks; or - or _.
 const NOTE_TOKEN = /\{[^}]*\}\.*[SrRgGmMPdDnN]'*|\.*[SrRgGmMPdDnN]'*|[-_]/g;
+// An AudioBuffer as a 16-bit mono WAV file, saved by the browser.
+function downloadWav(buf, name) {
+  const d = buf.getChannelData(0), n = d.length, out = new DataView(new ArrayBuffer(44 + n * 2));
+  const str = (o, t) => { for (let i = 0; i < t.length; i++) out.setUint8(o + i, t.charCodeAt(i)); };
+  let peak = 0; for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(d[i]));
+  const k = peak > 0.98 ? 0.98 / peak : 1;
+  str(0, "RIFF"); out.setUint32(4, 36 + n * 2, true); str(8, "WAVEfmt "); out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, 1, true);
+  out.setUint32(24, buf.sampleRate, true); out.setUint32(28, buf.sampleRate * 2, true); out.setUint16(32, 2, true); out.setUint16(34, 16, true); str(36, "data"); out.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) out.setInt16(44 + i * 2, Math.max(-1, Math.min(1, d[i] * k)) * 32767, true);
+  const url = URL.createObjectURL(new Blob([out], { type: "audio/wav" }));
+  const a = h("a", { href: url, download: name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
 const clock = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 
 export async function render(main) {
@@ -116,8 +131,9 @@ export async function render(main) {
   const toIn = h("input", { class: "input", type: "number", min: "0", step: "1", "aria-label": "To (seconds)" });
   const fluteSel = h("select", { class: "input", "aria-label": "Your flute" }, FLUTES.map(m => h("option", { value: String(m) }, fluteLabel(m))));
   fluteSel.value = String(Math.min(81, Math.max(60, saMidi())));
-  const seg = (name, items, get, set) => {
-    const btns = items.map(([v, label]) => h("button", { type: "button", class: "seg-btn", "aria-pressed": String(get() === v), onclick: () => { set(v); btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); redraw(); } }, label));
+  // A row of choices; after a choice, `after` runs (by default the notation is made again).
+  const seg = (name, items, get, set, after) => {
+    const btns = items.map(([v, label]) => h("button", { type: "button", class: "seg-btn", "aria-pressed": String(get() === v), onclick: () => { set(v); btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); (after || redraw)(); } }, label));
     return h("div", { class: "seg", role: "group", "aria-label": name }, btns);
   };
   const keySeg = seg("Key", [[true, "Same key as the recording"], [false, "My flute's own key"]], () => opt.sameKey, v => { opt.sameKey = v; opt.octave = 0; });
@@ -148,45 +164,52 @@ export async function render(main) {
     hints);
 
   // ---- 3. The notation ----
+  // Shown as the plain sargam text (as typed), every note in a column of the same width so the
+  // lines line up; Edit turns it into the text box. Devanagari is an option (its own font).
   const view = h("div", { class: "nview", "aria-label": "Notation" });
-  const editor = h("textarea", { class: "input mono", rows: "8", "aria-label": "Notation (you can edit it)", spellcheck: "false", hidden: true });
+  const editor = h("textarea", { class: "input mono", rows: "12", "aria-label": "Notation (you can edit it)", spellcheck: "false", hidden: true });
   const editBtn = h("button", { type: "button", class: "btn small", onclick: () => {
     const editing = editor.hidden;
     editor.hidden = !editing; view.hidden = editing;
     editBtn.textContent = editing ? "Done editing" : "Edit";
     if (!editing) drawView();
+    else editor.focus();
   } }, "Edit");
+  let script = "latin";
+  const scriptSeg = seg("Letters", [["latin", "S R G"], ["deva", "सा रे ग"]], () => script, v => { script = v; }, () => drawView());
   const nameIn = h("input", { class: "input", maxlength: "60", "aria-label": "Name", placeholder: "Name (for example the song's name)" });
   const notationText = () => editor.value;
   const notationCard = h("section", { class: "card" },
     h("div", { class: "row between" }, h("h2", null, "3. The notation"),
-      h("div", { class: "row tight" }, editBtn,
+      h("div", { class: "row tight" }, scriptSeg, editBtn,
         h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(notationText()); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"))),
     view, editor,
-    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, a small note in front is a grace note (kan)."),
+    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan)."),
     h("div", { class: "row" }, nameIn, h("button", { type: "button", class: "btn", onclick: () => save() }, "Save")));
 
-  // The notation drawn as bars and beats (or phrases), from the text, so edits show too.
   function drawView() {
-    const deva = getSettings().deva;
-    const note = tok => {
+    const deva = script === "deva";
+    const show = t => deva ? devaNotation(t) : t;
+    const cell = tok => {
+      if (tok === "|" || tok === "||") return h("span", { class: "nsep", "aria-hidden": "true" }, "|");
+      if (tok === ",") return h("span", { class: "npause", "aria-hidden": "true" });
       const m = /^\{([^}]*)\}(.*)$/.exec(tok);
-      const show = t => deva ? devaNotation(t) : t;
-      return m ? h("span", { class: "ntok" }, h("sup", null, show(m[1])), show(m[2])) : h("span", { class: "ntok" + (tok === "-" || tok === "_" ? " nhold" : "") }, tok === "," ? "," : show(tok));
+      return h("span", { class: "nc" + (tok === "-" || tok === "_" ? " nhold" : "") }, m ? [h("sup", null, show(m[1])), show(m[2])] : show(tok));
     };
+    // Beats in the bars layout can hold several notes ("SR"): those stay together in one cell.
     const lines = notationText().split("\n").filter(l => l.trim());
-    view.replaceChildren(...lines.map(line => {
-      // Phrases: each stretch between pauses (",") in its own box.
-      if (!line.includes("|")) return h("div", { class: "nline" }, line.split(",").map(ph => ph.trim()).filter(Boolean).map(ph => h("div", { class: "nbar nphrase" }, ph.split(/\s+/).map(note))));
-      const bars = line.replace(/\|\|\s*$/, "").split("|").map(b => b.trim()).filter(Boolean);
-      return h("div", { class: "nline" }, bars.map(b => h("div", { class: "nbar" }, b.split(/\s+/).map(beat => h("span", { class: "nbeat" }, (beat.match(NOTE_TOKEN) || [beat]).map(note))))));
-    }));
+    view.classList.toggle("deva", deva);
+    view.replaceChildren(...lines.map(line => h("div", { class: "nrow" }, line.trim().split(/\s+/).map(tok => {
+      const parts = tok === "|" || tok === "||" || tok === "," ? null : tok.match(NOTE_TOKEN);
+      if (!parts || parts.length < 2) return cell(tok);
+      return h("span", { class: "nc nmulti" }, parts.map(x => { const m = /^\{([^}]*)\}(.*)$/.exec(x); return m ? [h("sup", null, show(m[1])), show(m[2])] : show(x); }));
+    }))));
     if (!lines.length) view.append(h("p", { class: "small muted" }, "No notes."));
   }
 
   // ---- 4. Listen and compare ----
   const players = [];
-  function player(title, text, start) {
+  function player(title, text, start, render) {
     const btn = h("button", { type: "button", class: "btn primary playbtn", "aria-label": "Play: " + title }, icon("play"));
     const fill = h("i", { style: { width: "0%" } }), time = h("span", { class: "small mono muted" }, "0:00");
     const p = { stop: null, btn };
@@ -204,7 +227,13 @@ export async function render(main) {
       loop();
     };
     players.push(p);
-    return h("div", { class: "playrow" }, btn, h("div", { class: "playinfo" }, h("b", null, title), h("span", { class: "small muted" }, text), h("div", { class: "progressbar thin" }, fill)), time);
+    const dl = h("button", { type: "button", class: "btn small", "aria-label": "Download: " + title, onclick: async () => {
+      dl.disabled = true;
+      try { const r = await render(); if (r) downloadWav(r, fileName(title)); }
+      catch (e) { toast("Could not make the file: " + (e.message || e)); }
+      dl.disabled = false;
+    } }, icon("share"), " Download");
+    return h("div", { class: "playrow" }, btn, h("div", { class: "playinfo" }, h("b", null, title), h("span", { class: "small muted" }, text), h("div", { class: "progressbar thin" }, fill)), h("div", { class: "playside" }, time, dl));
   }
   function stopAll() { players.forEach(p => { if (p.stop) p.btn.click(); }); }
   cleanups.push(() => { stopAll(); if (bench) bench.destroy(); });
@@ -224,19 +253,57 @@ export async function render(main) {
     }
     return () => voices.forEach(v => v.stop());
   };
+  // Files: rendered offline (faster than playing), as 16-bit WAV.
+  const fileName = title => (nameIn.value.trim() || "recording").replace(/[^A-Za-z0-9 _-]+/g, "").trim().replace(/\s+/g, "-").toLowerCase() + "-" + title.toLowerCase().replace(/\s+/g, "-") + ".wav";
+  const SR = 44100;
+  async function renderMix(seconds, fill) {
+    const c = new OfflineAudioContext(1, Math.ceil(SR * (seconds + 0.6)), SR);
+    fill(c);
+    return c.startRendering();
+  }
+  const renderOriginal = (c, gain) => {
+    const [a, b] = part(), src = c.createBufferSource(), g = c.createGain();
+    g.gain.value = gain; src.buffer = audio; src.connect(g); g.connect(c.destination); src.start(0, a, b - a);
+  };
+  const renderFound = (c, level) => {
+    const [a, b] = part();
+    for (const n of last.notes) {
+      if (n.t1 < a || n.t0 > b) continue;
+      const v = makeVoice(440 * Math.pow(2, (n.midi + n.off - 69) / 12), Math.max(0, n.t0 - a), { level, ctx: c, dest: c.destination });
+      v.stop(Math.max(0.05, n.t1 - a));
+    }
+  };
   const listenCard = h("section", { class: "card" }, h("h2", null, "4. Listen and compare"),
     h("p", { class: "small muted" }, "Hear the recording, then the notation. Together, every wrong note stands out."),
-    player("The recording", "The part chosen above.", () => audio && playOriginal(1)),
+    player("The recording", "The part chosen above.", () => audio && playOriginal(1), async () => {
+      if (!audio) return null;
+      const [a, b] = part();
+      return renderMix(b - a, c => renderOriginal(c, 1));
+    }),
     player("The notation", "As written, at the tempo above, on your flute (Settings).", () => {
       const bpm = Number(bpmIn.value) || 80, b = buildEvents(parseNotation(notationText()).tokens, bpm);
       if (!b.ev.length) { toast("The notation has no notes."); return null; }
       const stop = playEvents(b.ev, b.beats, { bpm, click: false });
       return { seconds: b.total, stop };
+    }, async () => {
+      const bpm = Number(bpmIn.value) || 80, b = buildEvents(parseNotation(notationText()).tokens, bpm);
+      if (!b.ev.length) { toast("The notation has no notes."); return null; }
+      return renderMix(b.total, c => {
+        for (const e of b.ev) {
+          if (e.kan !== null && e.kan !== undefined) { const k = makeVoice(hzOf(e.kan), Math.max(0, e.start - 0.06), { ctx: c, dest: c.destination }); k.stop(e.start); }
+          const v = makeVoice(hzOf(e.semi), e.start, { ctx: c, dest: c.destination });
+          v.stop(e.start + Math.max(0.08, e.dur - 0.02));
+        }
+      });
     }),
     player("Both together", "The recording with the notes found played over it, at the same moments.", () => {
       if (!audio || !last) return null;
       const o = playOriginal(0.8), [a, b] = part(), stopNotes = playFound(ac().currentTime + 0.05, a, b);
       return { seconds: o.seconds, stop: () => { o.stop(); stopNotes(); } };
+    }, async () => {
+      if (!audio || !last) return null;
+      const [a, b] = part();
+      return renderMix(b - a, c => { renderOriginal(c, 0.8); renderFound(c, 0.16); });
     }));
 
   // ---- 5. Play along ----

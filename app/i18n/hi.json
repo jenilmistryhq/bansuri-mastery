@@ -1979,5 +1979,10 @@
 "What works well": "क्या अच्छा चलता है",
 "Best: one clear melody, such as a solo flute or a voice, with a drone, tabla or soft music behind it. Hard: a melody no louder than the music behind it (a full film orchestra, harmonium chords as loud as the tune). Either way it is a draft: compare it with the recording and fix what is wrong. Slides and fast ornaments are simplified.": "सबसे अच्छा: एक साफ़ धुन, जैसे अकेली बाँसुरी या आवाज़, पीछे तानपुरा, तबला या धीमा संगीत। कठिन: ऐसी धुन जो पीछे के संगीत से ऊँची न हो (पूरा फ़िल्मी ऑर्केस्ट्रा, धुन जितने ऊँचे हारमोनियम के कॉर्ड)। हर हाल में यह मसौदा है: रिकॉर्डिंग से मिलाइए और जो गलत हो ठीक कीजिए। मींड और तेज़ अलंकार सरल करके लिखे जाते हैं।",
 "Play: {x}": "{x} चलाइए",
-"Stop: {x}": "{x} रोकिए"
+"Stop: {x}": "{x} रोकिए",
+"Download": "डाउनलोड",
+"Download: {x}": "डाउनलोड: {x}",
+"Letters": "अक्षर",
+"Could not make the file: {x}": "फ़ाइल नहीं बन सकी: {x}",
+"Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan).": "आपकी बाँसुरी के सा से सरगम: स्वर से पहले बिंदु यानी मंद्र सप्तक, बाद में ' यानी तार सप्तक। - स्वर को एक मात्रा और रोकता है, _ विराम है, | आवर्तन का अंत है, वाक्यांश में ठहराव खाली जगह से दिखता है, आगे छोटा स्वर कण स्वर है।"
 }

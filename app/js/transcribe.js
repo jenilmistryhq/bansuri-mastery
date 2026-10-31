@@ -347,6 +347,27 @@ export function beatFit(notes, bpm) {
 // A note's code, with its grace note (kan) in braces before it: {G}R.
 const noteCode = (n, semiOf) => (n.kan !== undefined ? "{" + codeOf(semiOf({ midi: n.kan })) + "}" : "") + codeOf(semiOf(n));
 
+// Octave slips: a melody rarely leaps more than about an octave and straight back, so a note
+// further than 9 semitones from the notes around it (the median of up to four on each side) moves
+// by an octave or two when that brings it at least 6 semitones closer. Two passes.
+export function foldOctaves(notes) {
+  const out = notes.map(n => ({ ...n }));
+  for (let pass = 0; pass < 2; pass++) {
+    for (let j = 0; j < out.length; j++) {
+      const near = [];
+      for (let k = Math.max(0, j - 4); k <= Math.min(out.length - 1, j + 4); k++) if (k !== j) near.push(out[k].midi);
+      if (near.length < 2) continue;
+      near.sort((a, b) => a - b);
+      const ref = near[near.length >> 1], d = out[j].midi - ref;
+      if (Math.abs(d) <= 9) continue;
+      let best = 0;
+      for (const k of [12, -12, 24, -24]) if (Math.abs(d + k) < Math.abs(d + best)) best = k;
+      if (best && Math.abs(d) - Math.abs(d + best) >= 6) out[j].midi += best;
+    }
+  }
+  return out;
+}
+
 // Quick grace notes: a note under 130 ms that runs straight into a longer note close by becomes
 // that note's kan, as a player would write it, instead of a note of its own.
 export function graceNotes(notes) {
@@ -474,7 +495,7 @@ export function transcribe(track, levels, opts) {
   // Notes far from the melody's range (a drone or bass heard alone, a stray octave) are left out.
   const all = labelNotes(stableRuns(track, levels)), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
   const from = o.from || 0, to = o.to || Infinity;
-  const notes = graceNotes(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
+  const notes = graceNotes(foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to)));
   const tonics = findTonic(notes);
   const sa = o.sa !== undefined && o.sa !== null ? o.sa : tonics.length ? tonicMidi(tonics[0].pc, notes) : 72;
   const tune = notes.length ? notes.reduce((a, n) => a + n.off, 0) / notes.length : 0;

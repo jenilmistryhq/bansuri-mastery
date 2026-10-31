@@ -69,7 +69,7 @@
 .bb-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
 .bb-panel { display: grid; gap: 16px; }
 .bb-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius, 10px); padding: 16px; display: grid; gap: 12px; min-width: 0; }
-.bb-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.bb-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
 .bb-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
 .bb-tablewrap { overflow-x: auto; }
 .bb-bench table { border-collapse: collapse; width: 100%; font-size: 0.93rem; font-variant-numeric: tabular-nums; }
@@ -84,7 +84,7 @@
 .bb-mini i.h { background: linear-gradient(90deg, var(--finger) 50%, transparent 50%); border-color: var(--finger-edge); }
 .bb-mini .bb-gap { width: 6px; }
 .bb-bench textarea { width: 100%; min-height: 120px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-family: var(--mono); font-size: 0.95rem; resize: vertical; }
-.bb-score { font-family: var(--mono); display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 12px; background: var(--bg); border-radius: 8px; border: 1px solid var(--line); min-height: 3rem; }
+.bb-score { font-family: var(--mono); display: flex; flex-wrap: wrap; align-content: flex-start; gap: 4px 8px; padding: 12px; background: var(--bg); border-radius: 8px; border: 1px solid var(--line); min-height: 3rem; max-height: 26rem; overflow-y: auto; position: relative; }
 .bb-score span { padding: 1px 4px; border-radius: 4px; }
 .bb-score span.bb-barmark { color: var(--muted); }
 .bb-score span.bb-on { background: var(--accent); color: var(--accent-ink); }

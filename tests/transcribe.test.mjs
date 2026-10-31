@@ -158,6 +158,14 @@ await test("accompaniment: error by loudness, melody method vs single pitch (pri
   }
 });
 
+await test("octave slips fold back; real leaps stay", () => {
+  const mk = ms => ms.map((m, i) => ({ t0: i, t1: i + 0.5, midi: m }));
+  assert.deepEqual(T.foldOctaves(mk([62, 64, 66, 43, 64, 62, 66])).map(n => n.midi), [62, 64, 66, 67, 64, 62, 66]);
+  assert.deepEqual(T.foldOctaves(mk([62, 64, 81, 64, 62])).map(n => n.midi), [62, 64, 69, 64, 62]);
+  // An octave leap is music (S to S'), not a slip.
+  assert.deepEqual(T.foldOctaves(mk([60, 64, 67, 72, 67, 64, 60])).map(n => n.midi), [60, 64, 67, 72, 67, 64, 60]);
+});
+
 await test("notation helpers: beats compress, fit and flute names", () => {
   const notes = [{ t0: 0, t1: 0.6, midi: 72 }, { t0: 0.625, t1: 0.9, midi: 74 }, { t0: 0.9375, t1: 1.2, midi: 76 }];
   const text = T.toNotation(notes, 96, 0, 2, n => n.midi - 72);

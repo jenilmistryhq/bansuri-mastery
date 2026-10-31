@@ -27,9 +27,20 @@ export function master() { ac(); return masterGain; }
 
 onSettings(s => { if (masterGain) masterGain.gain.value = s.volume; });
 
+// opts.ctx and opts.dest render into another context (an OfflineAudioContext, to save a file).
+const noiseFor = new WeakMap();
+function noiseOf(c) {
+  if (!noiseFor.has(c)) {
+    const b = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    noiseFor.set(c, b);
+  }
+  return noiseFor.get(c);
+}
+
 export function makeVoice(freq, t, opts) {
   opts = opts || {};
-  const c = ac(), level = opts.level || 0.26;
+  const c = opts.ctx || ac(), level = opts.level || 0.26;
   const out = c.createGain(); out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(level, t + 0.05);
   const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(10000, freq * 6);
   // A bansuri-like voice: a strong fundamental with weak overtones (stronger on low notes), breath
@@ -52,7 +63,7 @@ export function makeVoice(freq, t, opts) {
   const wob = c.createOscillator(); wob.frequency.value = 0.9;
   const wg = c.createGain(); wg.gain.value = opts.wobble || 0; wob.connect(wg);
   oscs.forEach(({ o }) => wg.connect(o.detune)); wob.start(t);
-  const ns = c.createBufferSource(); ns.buffer = noiseBuffer; ns.loop = true;
+  const ns = c.createBufferSource(); ns.buffer = opts.ctx ? noiseOf(c) : noiseBuffer; ns.loop = true;
   const bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = freq * 2; bp.Q.value = 0.9;
   const ng = c.createGain(); ng.gain.value = (freq < 650 ? 0.05 : 0.03) * breath;
   ns.connect(bp); bp.connect(ng); ng.connect(out);
@@ -69,7 +80,7 @@ export function makeVoice(freq, t, opts) {
   const gc = c.createGain(); gc.gain.setValueAtTime(0.0001, t); gc.gain.exponentialRampToValueAtTime(0.09 * Math.max(0.5, breath), t + 0.012); gc.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
   ns.connect(bpc); bpc.connect(gc); gc.connect(out);
   ns.start(t);
-  lp.connect(out); out.connect(masterGain);
+  lp.connect(out); out.connect(opts.dest || masterGain);
   let stopped = false, endAt = Infinity;
   const voice = {
     ramp(from, to, at, dur) { oscs.forEach(({ o, h }) => { o.frequency.cancelScheduledValues(at); o.frequency.setValueAtTime(from * h, at); o.frequency.exponentialRampToValueAtTime(to * h, at + dur); }); },
@@ -99,7 +110,7 @@ export function makeVoice(freq, t, opts) {
       setTimeout(() => liveVoices.delete(voice), Math.max(0, (end - c.currentTime) * 1000) + 50);
     }
   };
-  liveVoices.add(voice);
+  if (!opts.ctx) liveVoices.add(voice);
   return voice;
 }
 

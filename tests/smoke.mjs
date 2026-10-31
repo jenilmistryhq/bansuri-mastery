@@ -959,12 +959,20 @@ try {
     // The notation view, the two layouts, and the players.
     check(/S/.test(await page.$eval("#main .nview", e => e.innerText).catch(() => "")), "transcribe: the notation is shown as phrases");
     await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Bars and beats").click());
-    check(await page.$("#main .nview .nbeat") !== null, "transcribe: Bars and beats shows the notes in beats");
+    check(await page.$("#main .nview .nsep") !== null, "transcribe: Bars and beats shows the notes in bars");
     await page.click("#main button[aria-label='Play: Both together']");
     await sleep(400);
     check(await page.$("#main button[aria-label='Stop: Both together']") !== null, "transcribe: the recording and the notes found play together");
     await page.click("#main button[aria-label='Stop: Both together']");
     await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Phrases").click());
+    // Downloads: each player makes a WAV file (the link click is caught, not saved).
+    await page.evaluate(() => { window.__dl = []; HTMLAnchorElement.prototype.click = function () { if (this.download) window.__dl.push(this.download); }; });
+    for (const t of ["The recording", "The notation", "Both together"]) await page.click(`#main button[aria-label='Download: ${t}']`);
+    await page.waitForFunction(() => window.__dl.length >= 3, { timeout: 15000 }).catch(() => {});
+    const dls = await page.evaluate(() => window.__dl);
+    check(dls.length === 3 && dls.every(n => /\.wav$/.test(n)), "transcribe: the recording, the notation and both together download as WAV files [" + dls.join(", ") + "]");
+    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "सा रे ग").click());
+    check(/सा/.test(await page.$eval("#main .nview", e => e.innerText)), "transcribe: the notation can be shown in Devanagari");
     // On a D flute, playing with the recording: C is komal Ni below Sa, so S R G R S is written n S R S n.
     await page.select("#main select[aria-label='Your flute']", "74");
     await sleep(200);

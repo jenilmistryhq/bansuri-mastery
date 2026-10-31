@@ -632,6 +632,8 @@ export function mountBench(container, opts) {
           if (q("seqStatus").textContent !== label) q("seqStatus").textContent = label;
           root.querySelectorAll(".bb-score span.bb-on").forEach(s => s.classList.remove("bb-on"));
           const sp = root.querySelector(`.bb-score span[data-tk="${e.ti}"]`); if (sp) sp.classList.add("bb-on");
+          // A long score scrolls in its box: keep the note being played in view.
+          if (sp) { const box = sp.parentElement; if (sp.offsetTop < box.scrollTop || sp.offsetTop > box.scrollTop + box.clientHeight - 30) box.scrollTop = Math.max(0, sp.offsetTop - box.clientHeight / 3); }
         },
         // The fingering changes a moment before each note, so there is time to place the fingers.
         lead: 0.3,

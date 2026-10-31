@@ -120,7 +120,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
 .bb-panel { display: grid; gap: 16px; }
 .bb-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius, 10px); padding: 16px; display: grid; gap: 12px; min-width: 0; }
-.bb-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.bb-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
 .bb-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
 .bb-tablewrap { overflow-x: auto; }
 .bb-bench table { border-collapse: collapse; width: 100%; font-size: 0.93rem; font-variant-numeric: tabular-nums; }
@@ -135,7 +135,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-mini i.h { background: linear-gradient(90deg, var(--finger) 50%, transparent 50%); border-color: var(--finger-edge); }
 .bb-mini .bb-gap { width: 6px; }
 .bb-bench textarea { width: 100%; min-height: 120px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-family: var(--mono); font-size: 0.95rem; resize: vertical; }
-.bb-score { font-family: var(--mono); display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 12px; background: var(--bg); border-radius: 8px; border: 1px solid var(--line); min-height: 3rem; }
+.bb-score { font-family: var(--mono); display: flex; flex-wrap: wrap; align-content: flex-start; gap: 4px 8px; padding: 12px; background: var(--bg); border-radius: 8px; border: 1px solid var(--line); min-height: 3rem; max-height: 26rem; overflow-y: auto; position: relative; }
 .bb-score span { padding: 1px 4px; border-radius: 4px; }
 .bb-score span.bb-barmark { color: var(--muted); }
 .bb-score span.bb-on { background: var(--accent); color: var(--accent-ink); }
@@ -593,9 +593,20 @@ function master() { ac(); return masterGain; }
 
 onSettings(s => { if (masterGain) masterGain.gain.value = s.volume; });
 
+// opts.ctx and opts.dest render into another context (an OfflineAudioContext, to save a file).
+const noiseFor = new WeakMap();
+function noiseOf(c) {
+  if (!noiseFor.has(c)) {
+    const b = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    noiseFor.set(c, b);
+  }
+  return noiseFor.get(c);
+}
+
 function makeVoice(freq, t, opts) {
   opts = opts || {};
-  const c = ac(), level = opts.level || 0.26;
+  const c = opts.ctx || ac(), level = opts.level || 0.26;
   const out = c.createGain(); out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(level, t + 0.05);
   const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(10000, freq * 6);
   // A bansuri-like voice: a strong fundamental with weak overtones (stronger on low notes), breath
@@ -618,7 +629,7 @@ function makeVoice(freq, t, opts) {
   const wob = c.createOscillator(); wob.frequency.value = 0.9;
   const wg = c.createGain(); wg.gain.value = opts.wobble || 0; wob.connect(wg);
   oscs.forEach(({ o }) => wg.connect(o.detune)); wob.start(t);
-  const ns = c.createBufferSource(); ns.buffer = noiseBuffer; ns.loop = true;
+  const ns = c.createBufferSource(); ns.buffer = opts.ctx ? noiseOf(c) : noiseBuffer; ns.loop = true;
   const bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = freq * 2; bp.Q.value = 0.9;
   const ng = c.createGain(); ng.gain.value = (freq < 650 ? 0.05 : 0.03) * breath;
   ns.connect(bp); bp.connect(ng); ng.connect(out);
@@ -635,7 +646,7 @@ function makeVoice(freq, t, opts) {
   const gc = c.createGain(); gc.gain.setValueAtTime(0.0001, t); gc.gain.exponentialRampToValueAtTime(0.09 * Math.max(0.5, breath), t + 0.012); gc.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
   ns.connect(bpc); bpc.connect(gc); gc.connect(out);
   ns.start(t);
-  lp.connect(out); out.connect(masterGain);
+  lp.connect(out); out.connect(opts.dest || masterGain);
   let stopped = false, endAt = Infinity;
   const voice = {
     ramp(from, to, at, dur) { oscs.forEach(({ o, h }) => { o.frequency.cancelScheduledValues(at); o.frequency.setValueAtTime(from * h, at); o.frequency.exponentialRampToValueAtTime(to * h, at + dur); }); },
@@ -665,7 +676,7 @@ function makeVoice(freq, t, opts) {
       setTimeout(() => liveVoices.delete(voice), Math.max(0, (end - c.currentTime) * 1000) + 50);
     }
   };
-  liveVoices.add(voice);
+  if (!opts.ctx) liveVoices.add(voice);
   return voice;
 }
 
@@ -2918,6 +2929,8 @@ function mountBench(container, opts) {
           if (q("seqStatus").textContent !== label) q("seqStatus").textContent = label;
           root.querySelectorAll(".bb-score span.bb-on").forEach(s => s.classList.remove("bb-on"));
           const sp = root.querySelector(`.bb-score span[data-tk="${e.ti}"]`); if (sp) sp.classList.add("bb-on");
+          // A long score scrolls in its box: keep the note being played in view.
+          if (sp) { const box = sp.parentElement; if (sp.offsetTop < box.scrollTop || sp.offsetTop > box.scrollTop + box.clientHeight - 30) box.scrollTop = Math.max(0, sp.offsetTop - box.clientHeight / 3); }
         },
         // The fingering changes a moment before each note, so there is time to place the fingers.
         lead: 0.3,
