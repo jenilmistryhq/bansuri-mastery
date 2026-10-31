@@ -40,6 +40,26 @@ function downloadWav(buf, name) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+// Notes (t0, t1 in seconds, midi) as a one-track MIDI file at the given tempo (480 ticks a beat).
+function midiBlob(notes, bpm, name) {
+  const tpb = 480, tick = t => Math.max(0, Math.round(t * bpm / 60 * tpb)), ev = [];
+  for (const n of notes) { ev.push([tick(n.t0), 0x90, n.midi, 90]); ev.push([tick(Math.max(n.t0 + 0.05, n.t1)), 0x80, n.midi, 0]); }
+  ev.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const vlq = v => { const b = [v & 0x7f]; while ((v >>= 7)) b.unshift((v & 0x7f) | 0x80); return b; };
+  const us = Math.round(60e6 / bpm), title = [...String(name).slice(0, 60)].map(c => c.charCodeAt(0) & 0x7f);
+  const body = [0, 0xff, 0x03, title.length, ...title, 0, 0xff, 0x51, 3, (us >> 16) & 255, (us >> 8) & 255, us & 255, 0, 0xc0, 73];
+  let at = 0;
+  for (const [t, st, m, v] of ev) { body.push(...vlq(t - at), st, m, v); at = t; }
+  body.push(0, 0xff, 0x2f, 0);
+  const len = body.length;
+  return new Blob([new Uint8Array([0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1, tpb >> 8, tpb & 255, 0x4d, 0x54, 0x72, 0x6b, len >>> 24, (len >> 16) & 255, (len >> 8) & 255, len & 255, ...body])], { type: "audio/midi" });
+}
+function saveBlob(blob, name) {
+  const url = URL.createObjectURL(blob), a = h("a", { href: url, download: name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
 const fmtWhen = iso => new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const clock = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 
@@ -135,7 +155,7 @@ export async function render(main) {
   // ---- Analysis ----
   async function analyse(blob, keep) {
     stopAll(); results.hidden = true;
-    manual = keep && keep.manual ? keep.manual : null; undo = [];
+    manual = keep && keep.manual ? keep.manual : null; undo = []; opt.phase = keep && keep.settings ? keep.settings.phase : undefined;
     const head = new Uint8Array(await blob.slice(0, 16).arrayBuffer());
     if (isMidi(head)) { await analyseMidi(blob, keep); return; }
     midi = null; midiNotes = null; midiTonics = null; midiField.hidden = true; partCard.hidden = false; notesField.hidden = false;
@@ -254,6 +274,41 @@ export async function render(main) {
   const octOut = h("output", { class: "mono" }, "0");
   const octave = h("div", { class: "row tight" }, h("button", { type: "button", class: "btn small", "aria-label": "Octave down", onclick: () => { opt.octave -= 12; redraw(); } }, "-"), octOut, h("button", { type: "button", class: "btn small", "aria-label": "Octave up", onclick: () => { opt.octave += 12; redraw(); } }, "+"));
   const bpmIn = h("input", { class: "input", type: "number", min: "30", max: "220", step: "1", "aria-label": "Tempo (BPM)" });
+  // Tap the beat while the recording plays: the tempo and where the beats fall come from the taps.
+  const tapBtn = h("button", { type: "button", class: "btn small", onclick: () => tapping ? finishTaps() : startTaps() }, "Tap the beat");
+  const tapPad = h("button", { type: "button", class: "btn primary tappad", hidden: true, onclick: () => tap() }, "Tap (or T)");
+  const tapNote = h("span", { class: "small muted" });
+  let tapping = null;
+  function startTaps() {
+    if (!audio) return;
+    stopAll();
+    const o2 = playOriginal(1), c = ac();
+    tapping = { taps: [], start: c.currentTime + 0.05, from: part()[0], o: o2 };
+    tapBtn.textContent = "Done"; tapPad.hidden = false; tapNote.textContent = "Tap along with the beat: at least 4 taps.";
+    tapPad.focus();
+  }
+  function tap() {
+    if (!tapping) return;
+    // About 50 ms is the usual delay between hearing a beat and the tap landing.
+    tapping.taps.push(tapping.from + ac().currentTime - tapping.start - 0.05);
+    tapNote.textContent = tapping.taps.length + " taps";
+    if (tapping.taps.length >= 24) finishTaps();
+  }
+  function finishTaps() {
+    const t = tapping; tapping = null;
+    tapBtn.textContent = "Tap the beat"; tapPad.hidden = true;
+    t.o.stop();
+    if (t.taps.length < 4) { tapNote.textContent = "Not enough taps: tap at least 4 times."; return; }
+    const gaps = t.taps.slice(1).map((x, i) => x - t.taps[i]).sort((a, b) => a - b), T = gaps[gaps.length >> 1];
+    let x = 0, y = 0; for (const tt of t.taps) { x += Math.cos(2 * Math.PI * tt / T); y += Math.sin(2 * Math.PI * tt / T); }
+    let ph = Math.atan2(y, x) / (2 * Math.PI) * T; if (ph < 0) ph += T;
+    bpmIn.value = String(Math.round(60 / T)); opt.phase = ph;
+    tapNote.textContent = "Tempo " + Math.round(60 / T) + " BPM from your taps; the bars start on your beat.";
+    redraw();
+  }
+  document.addEventListener("keydown", onTapKey);
+  cleanups.push(() => document.removeEventListener("keydown", onTapKey));
+  function onTapKey(e) { if (tapping && (e.key === "t" || e.key === "T")) { e.preventDefault(); tap(); } }
   const subSel = h("select", { class: "input", "aria-label": "Notes per beat" }, h("option", { value: "2" }, "Up to 2 notes per beat"), h("option", { value: "4" }, "Up to 4 notes per beat"), h("option", { value: "1" }, "1 note per beat"));
   const detailField = h("label", { class: "field", hidden: true }, "Detail", subSel);
   const midiSel = h("select", { class: "input", "aria-label": "MIDI track" });
@@ -264,7 +319,8 @@ export async function render(main) {
   const field = (label, ...kids) => h("label", { class: "field" }, label, ...kids);
   const group = (title, ...kids) => h("fieldset", { class: "trgroup" }, h("legend", null, title), ...kids);
   [saSel, fluteSel, subSel].forEach(el => el.addEventListener("change", () => { if (el === fluteSel) opt.octave = 0; redraw(); }));
-  [bpmIn, fromIn, toIn].forEach(el => el.addEventListener("change", redraw));
+  [fromIn, toIn].forEach(el => el.addEventListener("change", redraw));
+  bpmIn.addEventListener("change", () => { opt.phase = undefined; redraw(); });
   const partNote = h("p", { class: "small muted" });
   const partProgress = h("div", { class: "progressbar thin", hidden: true }, h("i", { style: { width: "0%" } }));
   const partSeg = seg("Which notation", [["whole", "Whole song"], ["singer", "Singer"], ["background", "Background"], ["best", "Best to play"]], () => opt.part, v => { opt.part = v; opt.octave = 0; manual = null; undo = []; }, () => choosePart());
@@ -310,6 +366,7 @@ export async function render(main) {
         h("div", { class: "row tight" }, field("Tempo (BPM)", bpmIn),
           h("button", { type: "button", class: "btn small", onclick: () => { bpmIn.value = String(Math.max(30, Math.round(Number(bpmIn.value) / 2))); redraw(); } }, "Half"),
           h("button", { type: "button", class: "btn small", onclick: () => { bpmIn.value = String(Math.min(220, Math.round(Number(bpmIn.value) * 2))); redraw(); } }, "Double")),
+        h("div", { class: "row tight" }, tapBtn, tapPad), tapNote,
         detailField)),
     hints);
 
@@ -335,7 +392,29 @@ export async function render(main) {
         h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(notationText()); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"))),
     view, editor,
     h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan)."),
-    h("div", { class: "row" }, nameIn, h("button", { type: "button", class: "btn", onclick: () => save() }, "Save")));
+    h("div", { class: "row" }, nameIn, h("button", { type: "button", class: "btn", onclick: () => save() }, "Save")),
+    h("div", { class: "row tight" },
+      h("button", { type: "button", class: "btn small", onclick: () => addToSongs() }, icon("note"), " Add to Songs"),
+      h("button", { type: "button", class: "btn small", onclick: () => { if (last) saveBlob(midiBlob(last.notes, Number(bpmIn.value) || 80, nameIn.value || "notation"), fileName("notes").replace(/\.wav$/, ".mid")); } }, icon("share"), " Save as MIDI"),
+      h("button", { type: "button", class: "btn small", onclick: () => printNotation() }, "Print")));
+  // Songs: the notation joins the Songs page (My songs), for play-along with the course melodies.
+  function addToSongs() {
+    const title = nameIn.value.trim() || "My song " + today(), list = store("bansuri.mysongs", []);
+    const song = { id: "my" + Date.now().toString(36), title, notation: notationText(), bpm: Number(bpmIn.value) || 80, added: today() };
+    const i = list.findIndex(x => x.title === title);
+    if (i >= 0) list[i] = { ...song, id: list[i].id }; else list.unshift(song);
+    storeSet("bansuri.mysongs", list.slice(0, 50));
+    toast((i >= 0 ? "Updated in" : "Added to") + " Songs: " + title + ".");
+  }
+  // Print: only the notation (with its name), as plain text in columns.
+  function printNotation() {
+    document.body.classList.add("printing-notation");
+    notationCard.dataset.title = nameIn.value.trim() || "Notation";
+    const done = () => { document.body.classList.remove("printing-notation"); window.removeEventListener("afterprint", done); };
+    window.addEventListener("afterprint", done);
+    window.print();
+    setTimeout(done, 1000);
+  }
 
   function drawView() {
     const deva = script === "deva";
@@ -387,15 +466,27 @@ export async function render(main) {
   }
   function stopAll() { players.forEach(p => { if (p.stop) p.btn.click(); }); ear.stop(); }
   // Edits by ear: the first edit copies the notes found; each edit can be undone.
-  const ear = earTools({ onEdit: (op, id) => {
+  const ear = earTools({ onEdit: (op, id, arg) => {
     if (op === "reset") { manual = null; undo = []; redraw(); return; }
     if (op === "undo") { if (undo.length) { manual = JSON.parse(undo.pop()); redraw(); } return; }
     if (!manual) manual = last.notes.map(n => ({ id: n.id, t0: n.t0, t1: n.t1, midi: n.midi, off: n.off || 0, cents: n.cents || 0, lv: n.lv, edited: n.edited }));
     undo.push(JSON.stringify(manual)); if (undo.length > 100) undo.shift();
+    if (op === "add") {
+      // Tuned like the notes around it.
+      const near = manual.filter(n => Math.abs(n.t0 - arg.t0) < 10), off = near.length ? near.reduce((a, n) => a + (n.off || 0), 0) / near.length : 0;
+      const nn = { id: "u" + Date.now().toString(36), t0: arg.t0, t1: arg.t1, midi: arg.midi, off, cents: 0, lv: 1, edited: true };
+      manual.push(nn); manual.sort((a, b) => a.t0 - b.t0);
+      redraw();
+      return nn.id;
+    }
     const i = manual.findIndex(n => n.id === id);
     if (i < 0) return;
-    const n = manual[i], shift = { up: 1, down: -1, octUp: 12, octDown: -12 }[op];
+    const n = manual[i], shift = { up: 1, down: -1, octUp: 12, octDown: -12 }[op], next = manual[i + 1];
     if (shift) { n.midi += shift; n.edited = true; }
+    else if (op === "heard") { n.midi = arg; n.edited = true; }
+    else if (op === "shorter") { n.t1 = Math.max(n.t0 + 0.06, n.t1 - 0.1); n.edited = true; }
+    else if (op === "longer") { n.t1 = Math.min(next ? next.t0 - 0.01 : n.t1 + 0.1, n.t1 + 0.1); n.edited = true; }
+    else if (op === "split" && n.t1 - n.t0 >= 0.12) { const mid = (n.t0 + n.t1) / 2; manual.splice(i + 1, 0, { ...n, id: "u" + Date.now().toString(36), t0: mid + 0.005 }); n.t1 = mid - 0.005; n.edited = true; }
     else if (op === "delete") manual.splice(i, 1);
     else if (op === "join" && manual[i + 1]) { n.t1 = manual[i + 1].t1; n.edited = true; manual.splice(i + 1, 1); }
     redraw();
@@ -524,9 +615,9 @@ export async function render(main) {
     if (!track) return;
     const flute = Number(fluteSel.value), [a, b] = part();
     const p = opt.part, src = p === "singer" || p === "background" ? parts[p] : track;
-    const base = { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b };
+    const base = { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, phase: opt.phase, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b };
     const given = manual || midiNotes;
-    const r = given ? transcribe(null, null, { ...base, notes: given, tonics: midiTonics, phase: midi ? 0 : undefined })
+    const r = given ? transcribe(null, null, { ...base, notes: given, tonics: midiTonics, phase: opt.phase !== undefined ? opt.phase : midi ? 0 : undefined })
       : p === "best" && parts.singer && parts.background ? transcribe(null, null, { ...base, runs: bestRuns(parts.singer, parts.background), playable: true })
       : transcribe((src || track).track, (src || track).levels, base);
     r.notes.forEach((n, i) => { if (n.id === undefined) n.id = "n" + i; });
@@ -555,7 +646,7 @@ export async function render(main) {
   // ---- Your recordings (kept in the app) ----
   const capList = h("div", { class: "stack" });
   const capUse = h("p", { class: "small muted" });
-  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
+  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, phase: opt.phase, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
   async function save() {
     const name = nameIn.value.trim() || "Recording of " + today();
     try {
@@ -618,7 +709,12 @@ export async function render(main) {
     if (!rows.length && !old.length) capList.append(h("p", { class: "small muted" }, "Recordings you make or open here are kept in the app, so you can open them again without a file."));
   }
 
-  const results = h("div", { class: "stack trresults", hidden: true }, foundCard, ear.el, notationCard, listenCard, alongCard);
+  // A bar of links to the steps (the page is long once a recording is open).
+  [[foundCard, "found"], [ear.el, "ear"], [notationCard, "notation"], [listenCard, "listen"], [alongCard, "along"]].forEach(([c, id]) => { c.id = "tr-" + id; });
+  const stepBar = h("nav", { class: "trsteps", "aria-label": "Steps" },
+    [["found", "Found"], ["ear", "Check by ear"], ["notation", "Notation"], ["listen", "Listen"], ["along", "Play along"]].map(([id, label]) =>
+      h("button", { type: "button", class: "btn small ghost", onclick: () => document.getElementById("tr-" + id).scrollIntoView({ behavior: "smooth", block: "start" }) }, label)));
+  const results = h("div", { class: "stack trresults", hidden: true }, stepBar, foundCard, ear.el, notationCard, listenCard, alongCard);
   page.append(
     h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Notation from a recording"), h("h1", null, "Turn a recording into sargam"),
       h("p", { class: "muted" }, "Play a song, and the app writes its melody as sargam for your flute, to check by ear, fix and play along with."),

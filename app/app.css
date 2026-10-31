@@ -813,3 +813,12 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .earinfo { min-height: 1.4em; font-weight: 600; }
 .earedit, .trresults .card > .row.tight { flex-wrap: wrap; }
 @media (max-width: 560px) { .earplot { height: 240px; } .earundo { margin-left: 0; } }
+.trsteps { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.tappad { min-width: 8rem; }
+@media print {
+  body.printing-notation * { visibility: hidden !important; }
+  body.printing-notation #tr-notation, body.printing-notation #tr-notation .nview, body.printing-notation #tr-notation .nview * { visibility: visible !important; }
+  body.printing-notation #tr-notation { position: absolute; inset: 0 auto auto 0; width: 100%; border: 0; }
+  body.printing-notation #tr-notation::before { content: attr(data-title); visibility: visible; font-size: 18pt; font-weight: 700; display: block; margin-bottom: 8pt; color: #000; }
+  body.printing-notation #tr-notation .nview { max-height: none; overflow: visible; background: #fff; color: #000; border: 0; }
+}

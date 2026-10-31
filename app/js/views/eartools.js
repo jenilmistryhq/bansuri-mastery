@@ -1,8 +1,9 @@
 // Check by ear (part of #/transcribe): a zoomable pitch line of the recording with the notes found,
 // where a note is picked (click, or the arrow keys), heard in the original at 50, 75 or 100% speed
 // without changing its pitch, looped with its phrase, compared with the notes played back, and
-// corrected (a semitone or an octave up or down, joined with the next, or deleted). The page owns
-// the notes; this module draws them, plays them and reports each edit through o.onEdit(op, id).
+// corrected (a semitone or an octave up or down, shorter, longer, split, joined with the next, set to
+// the pitch heard, added or deleted). The page owns the notes; this module draws them, plays them
+// and reports each edit through o.onEdit(op, id, arg) (for "add" the page returns the new id).
 import { h, icon } from "../util.js";
 import { ac, makeVoice } from "../core/audio.js";
 import { codeOf } from "../core/theory.js";
@@ -32,7 +33,11 @@ export function earTools(o) {
   const editRow = h("div", { class: "row tight earedit" },
     btn("Higher", "A semitone higher (Up arrow)", () => edit("up")), btn("Lower", "A semitone lower (Down arrow)", () => edit("down")),
     btn("Octave up", "An octave higher (Shift+Up)", () => edit("octUp")), btn("Octave down", "An octave lower (Shift+Down)", () => edit("octDown")),
-    btn("Join next", "Join with the next note (J)", () => edit("join")), btn("Delete", "Delete this note (Delete)", () => edit("delete"), "ghost"));
+    btn("Shorter", "Shorter by a tenth of a second (,)", () => edit("shorter")), btn("Longer", "Longer by a tenth of a second (.)", () => edit("longer")),
+    btn("Split", "Split into two notes (S)", () => edit("split")), btn("Join next", "Join with the next note (J)", () => edit("join")),
+    btn("Pitch heard", "Set the note to the pitch heard under it (H)", () => edit("heard", heardMidi())),
+    btn("Add after", "Add a note after this one (A); or double-click an empty place", () => addAfter()),
+    btn("Delete", "Delete this note (Delete)", () => edit("delete"), "ghost"));
   const playRow = h("div", { class: "row tight" },
     btn(h("span", null, icon("play"), " Here"), "Hear the original around this note (Space)", () => playAround()),
     btn(h("span", null, icon("play"), " Phrase"), "Hear the original phrase (P)", () => { const [a, b] = phrase(); playOriginal(a, b); }),
@@ -48,7 +53,7 @@ export function earTools(o) {
       h("div", { class: "row tight earundo" }, undoBtn, resetBtn)),
     h("div", { class: "earwrap" }, canvas), pos, info, playRow, editRow,
     h("details", { class: "small" }, h("summary", null, "Keys"),
-      h("p", null, "Left and Right: the previous or next note. Up and Down: a semitone higher or lower (with Shift: an octave). Delete: remove the note. J: join with the next. Space: the original here. P: the phrase. N: the phrase, then the notes. Ctrl+Z: undo.")));
+      h("p", null, "Left and Right: the previous or next note. Up and Down: a semitone higher or lower (with Shift: an octave). Comma and full stop: shorter or longer. S: split. J: join with the next. H: the pitch heard. A: add a note after. Delete: remove the note. Space: the original here. P: the phrase. N: the phrase, then the notes. Ctrl+Z: undo. Double-click an empty place to add a note there; drag to move along the song.")));
 
   // ---- Selection and edits ----
   const current = () => st.notes.find(n => n.id === sel) || null;
@@ -64,13 +69,35 @@ export function earTools(o) {
     info.textContent = n ? "Note " + (i + 1) + " of " + st.notes.length + ": " + codeOf(n.semi) + " at " + fmt(n.t0) + ", " + (n.t1 - n.t0).toFixed(2) + " s" + (n.edited ? " (changed)" : "") : "Click a note to hear it and correct it.";
     [...editRow.children, ...playRow.children].forEach(b => { b.disabled = !n && !/Stop/.test(b.title); });
   }
-  function edit(op) {
+  function edit(op, arg) {
     const i = indexOf();
-    if (i < 0) return;
+    if (i < 0 || (op === "heard" && arg === null)) return;
     // After a delete or a join the next note (or the joined one) stays selected.
     const id = sel;
     sel = op === "delete" ? (st.notes[i + 1] || st.notes[i - 1] || {}).id : sel;
-    o.onEdit(op, id);
+    o.onEdit(op, id, arg);
+  }
+  // The pitch heard under the selected note (the median of the pitch line), as a MIDI note in the
+  // recording's tuning; null when nothing was heard there.
+  function heardMidi() {
+    const n = current(); if (!n) return null;
+    const vals = [];
+    for (let i = Math.ceil(n.t0 / 0.02); i < n.t1 / 0.02; i++) { const m = st.frames[i]; if (m !== null && m !== undefined) vals.push(m); }
+    if (!vals.length) return null;
+    vals.sort((a, b) => a - b);
+    return Math.round(vals[vals.length >> 1] - st.tune);
+  }
+  // A new note: after the selected one (same pitch, until the next note or 0.4 s), or at a time and
+  // pitch (double-click). The page answers with the new note's id, which is then selected.
+  function add(t0, t1, midi) {
+    const id = o.onEdit("add", null, { t0, t1, midi });
+    if (id) select(id, false);
+  }
+  function addAfter() {
+    const n = current(); if (!n) return;
+    const next = st.notes[indexOf() + 1], t0 = n.t1 + 0.01, t1 = Math.min(next ? next.t0 - 0.01 : Infinity, t0 + 0.4);
+    if (t1 - t0 < 0.06) return;
+    add(t0, t1, n.midi);
   }
 
   // ---- Playing ----
@@ -164,11 +191,30 @@ export function earTools(o) {
       if (x1 - x0 > 22 && hh >= 10) { g.fillStyle = C.bg; g.fillText(codeOf(n.semi), x0 + 3, yy); }
     }
     if (playhead !== null) { g.strokeStyle = C.bad; g.lineWidth = 2; g.beginPath(); g.moveTo(x(playhead), padT); g.lineTo(x(playhead), H - padB); g.stroke(); g.lineWidth = 1; }
-    canvas._map = { x, y, padL, W, row };
+    canvas._map = { x, y, padL, W, row, lo, H, padB };
   }
 
   // ---- Pointer and keys ----
-  canvas.addEventListener("pointerdown", e => {
+  // A drag moves along the song (on a phone too); a tap or click picks the nearest note.
+  let drag = null;
+  canvas.addEventListener("pointerdown", e => { drag = { x: e.clientX, t: viewT0, moved: false }; });
+  canvas.addEventListener("pointermove", e => {
+    const m = canvas._map; if (!drag || !m || !(e.buttons & 1 || e.pointerType === "touch")) return;
+    const dx = e.clientX - drag.x;
+    if (Math.abs(dx) > 6) drag.moved = true;
+    if (drag.moved) { viewT0 = Math.max(0, Math.min(Math.max(0, st.duration - span), drag.t - dx / (m.W - m.padL - 6) * span)); pos.value = String(viewT0); draw(); }
+  });
+  canvas.addEventListener("pointerup", e => { const d = drag; drag = null; if (d && !d.moved) pick(e); });
+  canvas.addEventListener("dblclick", e => {
+    const m = canvas._map; if (!m) return;
+    const r = canvas.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+    const t = viewT0 + (px - m.padL) / (m.W - m.padL - 6) * span;
+    if (st.notes.some(n => t >= n.t0 && t <= n.t1)) return;
+    const semi = Math.round(m.lo + (m.H - m.padB - py) / m.row), prev = st.notes.filter(n => n.t1 <= t).pop(), next = st.notes.find(n => n.t0 >= t);
+    const t0 = Math.max(prev ? prev.t1 + 0.01 : 0, t - 0.2), t1 = Math.min(next ? next.t0 - 0.01 : Infinity, t + 0.2);
+    if (t1 - t0 >= 0.06) add(t0, t1, semi + st.zero);
+  });
+  function pick(e) {
     const m = canvas._map; if (!m) return;
     const r = canvas.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
     const t = viewT0 + (px - m.padL) / (m.W - m.padL - 6) * span;
@@ -179,7 +225,7 @@ export function earTools(o) {
       if (d < bd) { bd = d; best = n; }
     }
     if (best && bd < 3) { select(best.id, false); canvas.focus(); }
-  });
+  }
   canvas.addEventListener("keydown", e => {
     const i = indexOf(), ns = st.notes;
     const go = j => { if (ns[j]) { e.preventDefault(); select(ns[j].id); } };
@@ -189,6 +235,11 @@ export function earTools(o) {
     else if (e.key === "ArrowDown") { e.preventDefault(); edit(e.shiftKey ? "octDown" : "down"); }
     else if (e.key === "Delete" || e.key === "Backspace") { e.preventDefault(); edit("delete"); }
     else if (e.key === "j" || e.key === "J") edit("join");
+    else if (e.key === ",") edit("shorter");
+    else if (e.key === ".") edit("longer");
+    else if (e.key === "s" || e.key === "S") edit("split");
+    else if (e.key === "h" || e.key === "H") edit("heard", heardMidi());
+    else if (e.key === "a" || e.key === "A") addAfter();
     else if (e.key === " ") { e.preventDefault(); if (player.paused && !stopNotes) playAround(); else stop(); }
     else if (e.key === "p" || e.key === "P") { const [a, b] = phrase(); playOriginal(a, b); }
     else if (e.key === "n" || e.key === "N") { const [a, b] = phrase(); playOriginal(a, b, () => playNotes(a, b)); }

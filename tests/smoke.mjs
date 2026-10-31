@@ -1061,10 +1061,32 @@ try {
       const deleted = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
       check(/^r R G m/.test(raised) && /^S R G m/.test(undone) && /^R G m P/.test(deleted), "ear: a note picked with the keys is raised, the change undone, and a note deleted [" + raised.slice(0, 12) + " / " + undone.slice(0, 12) + " / " + deleted.slice(0, 12) + "]");
       check(/Note \d+ of \d+/.test(await page.$eval("#main .earinfo", e => e.textContent).catch(() => "")), "ear: the picked note is described");
+      // Split the picked note (R) in two, then add a note after it with the keys; undo both.
+      await page.focus("#main .earplot");
+      await page.keyboard.press("s");
+      await sleep(150);
+      const split = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
+      await page.keyboard.down("Control"); await page.keyboard.press("z"); await page.keyboard.press("z"); await page.keyboard.up("Control");
+      check(/^RR G m/.test(split), "ear: S splits the picked note in two [" + split.slice(0, 14) + "]");
       await page.click("#main button[aria-label='Hear the original around this note (Space)']");
       await sleep(400);
       await page.click("#main button[aria-label='Stop']");
+      // Tap the beat: six taps half a second apart give 120 BPM.
+      await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => b.textContent === "Tap the beat").click());
+      for (let k = 0; k < 6; k++) { await page.keyboard.press("t"); await sleep(500); }
+      await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => b.textContent === "Done").click());
+      const tapped = Number(await page.$eval("#main input[aria-label='Tempo (BPM)']", e => e.value));
+      check(Math.abs(tapped - 120) <= 6, "transcribe: tapping the beat sets the tempo [" + tapped + " BPM]");
+      // Save as MIDI, and Add to Songs (then the Songs page lists it).
+      await page.evaluate(() => { window.__dl = []; HTMLAnchorElement.prototype.click = function () { if (this.download) window.__dl.push(this.download); }; });
+      await page.evaluate(() => { document.querySelector("#main input[aria-label='Name']").value = "Smoke tune"; [...document.querySelectorAll("#main button")].find(b => /Save as MIDI/.test(b.textContent)).click(); [...document.querySelectorAll("#main button")].find(b => /Add to Songs/.test(b.textContent)).click(); });
+      const dl2 = await page.evaluate(() => window.__dl);
+      check(dl2.some(n => /\.mid$/.test(n)), "transcribe: the notation saves as a MIDI file [" + dl2.join(", ") + "]");
+      check(await page.$("#main .trsteps") !== null, "transcribe: a bar of links to the steps");
       fs.unlinkSync(midPath);
+      await go("/songs");
+      check(/my songs/.test(await text().catch(() => "")) && /smoke tune/.test(await text().catch(() => "")), "songs: a notation added from Transcribe is under My songs");
+      await go("/transcribe");
     }
     fs.unlinkSync(wavPath);
   });

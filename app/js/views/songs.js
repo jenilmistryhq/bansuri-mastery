@@ -65,6 +65,25 @@ export async function render(main) {
   function draw() {
     cleanups.splice(0).forEach(f => f());
     list.replaceChildren();
+    // My songs: notations made in Transcribe (Add to Songs), first.
+    const mine = store("bansuri.mysongs", []);
+    if (mine.length) list.append(h("h2", { class: "songlevel" }, "My songs"));
+    for (const m of mine) {
+      const host = h("div", { class: "toolhost", hidden: true });
+      let bench = null;
+      const playBtn = h("button", { type: "button", class: "btn primary" }, "Play along");
+      playBtn.addEventListener("click", () => {
+        if (bench) { bench.destroy(); bench = null; host.hidden = true; playBtn.textContent = "Play along"; return; }
+        host.hidden = false; playBtn.textContent = "Close";
+        bench = mountBench(host, { compact: true, tabs: ["play"], tab: "play", notation: m.notation, bpm: m.bpm, checkMe: true, title: m.title });
+      });
+      cleanups.push(() => bench && bench.destroy());
+      const remove = h("button", { type: "button", class: "btn small ghost", onclick: () => { if (remove.dataset.armed !== "1") { remove.dataset.armed = "1"; remove.textContent = "Tap again to remove"; return; } storeSet("bansuri.mysongs", store("bansuri.mysongs", []).filter(x => x.id !== m.id)); draw(); } }, "Remove");
+      list.append(h("article", { class: "card song" },
+        h("div", { class: "songhead" }, h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, m.title), h("span", { class: "small muted" }, "From Transcribe, " + m.bpm + " BPM")), h("span", { class: "chip info" }, "Mine")),
+        h("div", { class: "small mono songline" }, h("span", { class: "songpreview" }, m.notation.split("\n")[0] + (m.notation.includes("\n") ? " ..." : ""))),
+        h("div", { class: "row between" }, playBtn, remove), host));
+    }
     let lastLevel = null;
     for (const s of songs) {
       if (onlyReady && !ready(s)) continue;
