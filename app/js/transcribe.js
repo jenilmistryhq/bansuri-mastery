@@ -6,6 +6,9 @@ import { yin } from "./core/pitch.js";
 import { codeOf, fingOf, WEST } from "./core/theory.js";
 
 export const HOP = 0.02;
+// Frame i is centred on time i * HOP: the signal is analysed with `half` samples of silence in
+// front (half a window), so a note's time is when it is heard, not half a window early.
+function padFront(x, half) { const o = new Float32Array(x.length + half); o.set(x, half); return o; }
 const MIN_NOTE = 4; // frames (80 ms): anything shorter is a glide or a grace note, not a note
 
 // Mono, at about 22-24 kHz (enough for melody pitch), scaled so the loudest sample is 0.5.
@@ -49,6 +52,7 @@ export function stereoDown(channels, sr) {
 // framed like melodyTrack, for pitchTrack's o.mags.
 export async function repetitionParts(data, sr, o) {
   o = Object.assign({ maxSeconds: 360, onProgress: null }, o || {});
+  data = padFront(data, FFT_N / 2);
   const hop = Math.round(sr * HOP), end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - FFT_N;
   const KB = Math.min(FFT_N / 2, Math.ceil(5000 * FFT_N / sr) + 2);
   const win = new Float32Array(FFT_N); for (let i = 0; i < FFT_N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_N - 1));
@@ -106,6 +110,7 @@ export async function pitchTrack(data, sr, opts) {
   const o = Object.assign({ maxSeconds: 360, onProgress: null, engine: "melody" }, opts || {});
   if (o.engine !== "yin") return melodyTrack(data, sr, o);
   const size = 1024, hop = Math.round(sr * HOP);
+  data = padFront(data, size / 2);
   const end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - size;
   const track = [], levels = [];
   for (let pos = 0, n = 0; pos < end; pos += hop, n++) {
@@ -182,6 +187,10 @@ function partSpectrum(L, R, part, win, bufs) {
   return mag;
 }
 
+// A melody is rarely the lowest line: a bass under the tune also gets votes, so pitches below the
+// singing range count a little less (full weight from MIDI LOW_FULL up, falling to LOW_MIN at 75 Hz).
+const LOW_FULL = 55, LOW_MIN = 0.3;
+const PRIOR = Float32Array.from({ length: Math.ceil((HI_MIDI - LO_MIDI) / BIN) + 1 }, (_, b) => { const m = LO_MIDI + b * BIN; return m >= LOW_FULL ? 1 : LOW_MIN + (1 - LOW_MIN) * (m - LO_MIDI) / (LOW_FULL - LO_MIDI); });
 // Votes for one frame's spectrum: Float32Array(NB), pitch bins of 20 cents from 75 Hz.
 function salience(mag, sr) {
   const half = mag.length;
@@ -205,7 +214,7 @@ function salience(mag, sr) {
       if (c < -5 || c > NB + 5) continue;
       const w = w0 * Math.pow(0.8, h - 1);
       for (let b = Math.max(0, Math.ceil(c - 5)); b <= Math.min(NB - 1, Math.floor(c + 5)); b++) {
-        const x = Math.cos(Math.PI / 2 * (b - c) / 5); out[b] += w * x * x;
+        const x = Math.cos(Math.PI / 2 * (b - c) / 5); out[b] += w * x * x * PRIOR[b];
       }
     }
   }
@@ -216,6 +225,8 @@ function salience(mag, sr) {
 // then the mid signal); o.mags (one magnitude spectrum per frame, as from repetitionParts) with
 // o.part follows a part separated another way; without either, the whole mix.
 export async function melodyTrack(data, sr, o) {
+  data = padFront(data, FFT_N / 2);
+  if (o.stereo) o = { ...o, stereo: { ...o.stereo, L: padFront(o.stereo.L, FFT_N / 2), R: padFront(o.stereo.R, FFT_N / 2) } };
   const hop = Math.round(sr * HOP), end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - FFT_N;
   const win = new Float32Array(FFT_N); for (let i = 0; i < FFT_N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_N - 1));
   const re = new Float64Array(FFT_N), im = new Float64Array(FFT_N), bufs = [0, 0, 0, 0].map(() => new Float64Array(FFT_N));
@@ -775,8 +786,9 @@ export function scaleOf(notes, sa) {
   return { name: best.name, kind: best.kind, note: best.note, pcs: best.pcs, used, odd };
 }
 
-// Slides (meend): between two notes, a gap of 80 to 600 ms where the pitch was heard all along and
-// moved steadily from the one to the other (a step of 1 to 7 semitones). The second note gets
+// Slides (meend): between two notes, a gap of 80 to 600 ms where the pitch was heard all along,
+// moved steadily from the one to the other (a step of 1 to 7 semitones) and spent 80 ms or more
+// in between. The second note gets
 // .glide = true (written "~" before it). The short glide into most notes (under 80 ms) is left alone.
 export function markGlides(notes, track) {
   for (let j = 0; j + 1 < notes.length; j++) {
@@ -790,8 +802,10 @@ export function markGlides(notes, track) {
     if (v.some(x => x < lo || x > hi)) continue;
     let along = 0, moves = 0;
     for (let k = 1; k < v.length; k++) { const st = v[k] - v[k - 1]; if (Math.abs(st) > 0.02) { moves++; if (Math.sign(st) === Math.sign(d)) along++; } }
+    // The pitch spends at least 80 ms between the two notes (a quick glide into a note is shorter).
+    const between = v.filter(x => x > Math.min(a.midi, b.midi) + 0.3 && x < Math.max(a.midi, b.midi) - 0.3).length;
     const covered = (v[v.length - 1] - v[0]) / d;
-    if (moves && along >= 0.7 * moves && covered >= 0.4) b.glide = true;
+    if (moves && along >= 0.7 * moves && covered >= 0.4 && between >= 4) b.glide = true;
   }
   return notes;
 }

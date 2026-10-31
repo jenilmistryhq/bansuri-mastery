@@ -1,6 +1,6 @@
 // Service worker: keeps the app and the whole course available offline.
 // VERSION is rewritten by scripts/build_app.py whenever any app or course file changes.
-const VERSION = "062fcf0fbaf4";
+const VERSION = "6fc71f384679";
 const CACHE = "bansuri-" + VERSION;
 const VOICE_CACHE = "voice-clips-v1";
 
@@ -83,6 +83,17 @@ self.addEventListener("activate", event => {
   })());
 });
 
+// Pages are served cross-origin isolated (COOP same-origin, COEP credentialless), which GitHub
+// Pages cannot set itself: it lets the separation model (Transcribe) use several processor
+// threads. The app loads nothing cross-origin that this blocks (models come by CORS fetch).
+function isolated(res) {
+  if (!res || res.type === "opaque" || res.status === 0) return res;
+  const h = new Headers(res.headers);
+  h.set("Cross-Origin-Opener-Policy", "same-origin");
+  h.set("Cross-Origin-Embedder-Policy", "credentialless");
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
+}
+
 // A network request that gives up after a few seconds, so a weak connection falls back to the cache.
 function fetchSoon(req, ms) {
   return new Promise((resolve, reject) => {
@@ -112,15 +123,17 @@ self.addEventListener("fetch", event => {
     return;
   }
   event.respondWith((async () => {
+    // Pages and worker scripts carry the isolation headers (a worker started by an isolated page must too).
+    const page = req.mode === "navigate" || req.destination === "worker" ? isolated : r => r;
     try {
       const res = await fetchSoon(req, rel.startsWith("docs/") ? 8000 : 4000);
       if (res.ok && res.type === "basic") { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {}); }
-      return res;
+      return page(res);
     } catch (e) {
       const cache = await caches.open(CACHE);
       const cached = await cache.match(req, { ignoreSearch: true });
-      if (cached) return cached;
-      if (req.mode === "navigate") { const shell = await cache.match("index.html"); if (shell) return shell; }
+      if (cached) return page(cached);
+      if (req.mode === "navigate") { const shell = await cache.match("index.html"); if (shell) return isolated(shell); }
       if (rel.startsWith("docs/")) return new Response("You are offline and this page is not saved yet. The app itself works offline: go back to the app.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
       throw e;
     }

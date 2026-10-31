@@ -1,0 +1,4 @@
+ONNX Runtime Web 1.31.1 (MIT License, Microsoft), from the onnxruntime-web npm package:
+ort.webgpu.bundle.min.mjs, ort-wasm-simd-threaded.asyncify.mjs and ort-wasm-simd-threaded.asyncify.wasm, unmodified.
+Used only by Transcribe's singer and background separation (app/js/separate-worker.js), and loaded
+only when the learner chooses it.

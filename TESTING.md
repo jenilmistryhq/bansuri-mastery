@@ -8,6 +8,9 @@ npx eslint .    # lint (CI runs it first)
 # The browser tests refuse downloads (exports are checked in memory), so nothing lands in Downloads.
 npm test        # unit tests, plan test, transcription accuracy test, headless-browser smoke test
 node tests/transcribe-real.mjs [--verbose]   # notation from real bansuri recordings (app/audio), scored (CI runs it)
+node tests/melody-bench.mjs [--notes] [--sep] # melody on public clips with known answers (ADC2004, MIREX-05; downloads once)
+DEMUCS_MODEL=model.onnx node tests/separate-node.mjs in.wav out   # the separation model in Node (needs onnxruntime-node)
+DEMUCS_MODEL=model.onnx node tests/separate-browser.mjs song.wav 30  # the separation model end to end in headless Chrome
 SITE_ROOT=_site node tests/smoke.mjs   # the same smoke test against the assembled site (CI does this)
 node tests/webkit.mjs   # Safari's engine (WebKit), iPhone 13 size (CI does this; first: npx playwright-core install webkit)
 node tests/visual.mjs   # local only: screenshots compared with tests/visual/ baselines (--update after an intended change)

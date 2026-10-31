@@ -1,0 +1,6 @@
+processor.js, fft.js and constants.js: from demucs-web 1.0.2 by timcsy (MIT License, see LICENSE.txt),
+https://github.com/timcsy/demucs-web, unmodified. They prepare the input and rebuild the output
+of HTDemucs (Hybrid Transformer Demucs, Alexandre Defossez, Meta AI; MIT License,
+https://github.com/facebookresearch/demucs). The model itself (htdemucs_embedded.onnx, about 172 MB,
+https://huggingface.co/timcsy/demucs-web-onnx) is not in this repository: it is downloaded once,
+only when the learner chooses it, and kept in the browser's cache.

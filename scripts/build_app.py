@@ -36,6 +36,9 @@ def collect():
             # The in-browser reading voice (about 24 MB of runtime) loads only when a lesson is read aloud.
             if rel.startswith("app/vendor/kokoro/"):
                 continue
+            # The separation model's runtime (about 29 MB) loads only when a song is separated.
+            if rel.startswith("app/vendor/ort/"):
+                continue
             # Voice clips (several MB per language) are kept by the service worker as they are played,
             # or all at once from Settings; only their index is part of the offline download.
             if rel.startswith("app/voice/") and not rel.endswith("index.json"):

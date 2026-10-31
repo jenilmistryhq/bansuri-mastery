@@ -1,5 +1,5 @@
 {
- "version": "062fcf0fbaf4",
+ "version": "6fc71f384679",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -51,6 +51,7 @@
   "app/js/core/theory.js",
   "app/js/course.js",
   "app/js/demo.js",
+  "app/js/demucs.js",
   "app/js/errors.js",
   "app/js/fun.js",
   "app/js/games.js",
@@ -68,6 +69,7 @@
   "app/js/posture.js",
   "app/js/recorder.js",
   "app/js/reminder.js",
+  "app/js/separate-worker.js",
   "app/js/state.js",
   "app/js/steps.js",
   "app/js/transcribe-worker.js",
@@ -100,6 +102,9 @@
   "app/js/views/transcribe.js",
   "app/js/voice.js",
   "app/js/xp.js",
+  "app/vendor/demucs/constants.js",
+  "app/vendor/demucs/fft.js",
+  "app/vendor/demucs/processor.js",
   "app/vendor/marked.esm.js",
   "app/vendor/qrcode/qrcode.mjs",
   "app/voice/en/index.json",

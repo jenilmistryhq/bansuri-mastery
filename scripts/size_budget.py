@@ -13,6 +13,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MB = 1e6
 LIMITS = {"file": 25 * MB, "voice": 60 * MB, "site": 150 * MB}
+# One file may be larger: ONNX Runtime's WebAssembly for the separation model (about 29 MB), which
+# loads only when the learner separates a song (GitHub Pages allows files up to 100 MB).
+BIG_OK = {"app/vendor/ort/ort-wasm-simd-threaded.asyncify.wasm": 32 * MB}
 
 
 def size(p):
@@ -24,7 +27,7 @@ def main():
     site = [ROOT / "app", ROOT / "bansuri-mastery", ROOT / "index.html", ROOT / "sw.js", ROOT / "manifest.webmanifest"]
     for base in site:
         for f in (base.rglob("*") if base.is_dir() else [base]):
-            if f.is_file() and f.stat().st_size > LIMITS["file"]:
+            if f.is_file() and f.stat().st_size > BIG_OK.get(f.relative_to(ROOT).as_posix(), LIMITS["file"]):
                 problems.append(f"{f.relative_to(ROOT)} is {f.stat().st_size / MB:.1f} MB (limit 25 MB)")
     voice, total = size(ROOT / "app" / "voice"), sum(size(p) for p in site)
     if voice > LIMITS["voice"]:

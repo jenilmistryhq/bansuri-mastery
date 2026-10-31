@@ -16,7 +16,7 @@ import { listenMic } from "../core/listen.js";
 import { listCaptures, getCapture, addCapture, patchCapture, deleteCapture, MAX as MAX_CAPTURES } from "../captures.js";
 import { earTools } from "./eartools.js";
 import { isMidi, parseMidi, melodyScore, topLine, keyTonic } from "../midi.js";
-import { analyser } from "../analyser.js";
+import { analyser, separator } from "../analyser.js";
 import { bestRuns, transcribe, tonicMidi, fluteLabel, FLUTES, HOP, scoreTake } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
@@ -76,9 +76,15 @@ export async function render(main) {
   let stereo = false, loaded = false, parts = {}, partBusy = false;
   const an = analyser();
   cleanups.push(() => an.destroy());
+  // The separation model (Demucs): sepDone when the parts came from it; vocalsUrl plays the singer
+  // alone (Check by ear uses it for the Singer notation); modelCached once it is in the browser.
+  const sep = separator();
+  let sepDone = false, sepBusy = false, vocalsUrl = null, modelCached = false;
+  cleanups.push(() => { sep.destroy(); if (vocalsUrl) URL.revokeObjectURL(vocalsUrl); });
   // follow: the bars follow the recording's tempo as it changes; taps: beats tapped by the learner;
   // easy: the easier version.
-  const opt = { octave: 0, sameKey: true, layout: "phrases", main: true, part: "whole", follow: true, easy: false, taps: null };
+  // sameKey false (the default): sargam from the song's own Sa, as tutorials and song books write it.
+  const opt = { octave: 0, sameKey: false, layout: "phrases", main: true, part: "whole", follow: true, easy: false, taps: null };
   // A MIDI file: its tracks, the notes of the chosen one, and its key. Notes corrected by ear
   // (manual) replace the notes found until reset; undo keeps earlier versions.
   let midi = null, midiNotes = null, midiTonics = null, manual = null, undo = [], audioUrl = null;
@@ -173,6 +179,10 @@ export async function render(main) {
     const head = new Uint8Array(await blob.slice(0, 16).arrayBuffer());
     if (isMidi(head)) { await analyseMidi(blob, keep); return; }
     midi = null; midiNotes = null; midiTonics = null; midiField.hidden = true; partCard.hidden = false; notesField.hidden = false; followField.hidden = false; parts = {};
+    // Parts separated by the model earlier come back with the recording.
+    sepDone = !!(keep && keep.sep && keep.sep.singer && keep.sep.background);
+    if (sepDone) parts = { singer: keep.sep.singer, background: keep.sep.background };
+    if (vocalsUrl) { URL.revokeObjectURL(vocalsUrl); vocalsUrl = null; }
     setUrl(blob);
     setBusy("Reading the sound...", 0);
     try { audio = await decodeAudioFile(blob); }
@@ -223,6 +233,7 @@ export async function render(main) {
   // another), the key signature gives Sa, the file's tempo the beats, and the whole arrangement is
   // played with a simple sound so the listening tools work as for a recording.
   async function analyseMidi(blob, keep) {
+    sepDone = false; parts = {};
     setBusy("Reading the MIDI file...", 0);
     try { midi = parseMidi(new Uint8Array(await blob.arrayBuffer())); }
     catch (e) { setBusy((e && e.message) || "This MIDI file could not be read.", null); return; }
@@ -296,7 +307,7 @@ export async function render(main) {
     const btns = items.map(([v, label]) => h("button", { type: "button", class: "seg-btn", "aria-pressed": String(get() === v), onclick: () => { set(v); btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); (after || redraw)(); } }, label));
     return h("div", { class: "seg", role: "group", "aria-label": name }, btns);
   };
-  const keySeg = seg("Key", [[true, "Same key as the recording"], [false, "My flute's own key"]], () => opt.sameKey, v => { opt.sameKey = v; opt.octave = 0; });
+  const keySeg = seg("Key", [[false, "My flute's own key"], [true, "Same key as the recording"]], () => opt.sameKey, v => { opt.sameKey = v; opt.octave = 0; });
   const layoutSeg = seg("Layout", [["phrases", "Phrases"], ["beats", "Bars and beats"]], () => opt.layout, v => { opt.layout = v; detailField.hidden = v !== "beats"; });
   const octOut = h("output", { class: "mono" }, "0");
   const octave = h("div", { class: "row tight" }, h("button", { type: "button", class: "btn small", "aria-label": "Octave down", onclick: () => { opt.octave -= 12; redraw(); } }, "-"), octOut, h("button", { type: "button", class: "btn small", "aria-label": "Octave up", onclick: () => { opt.octave += 12; redraw(); } }, "+"));
@@ -354,7 +365,7 @@ export async function render(main) {
   const followField = h("label", { class: "check small", for: "tr-follow" }, followBox, "Follow tempo changes (a song that speeds up or slows down)");
   const partNote = h("p", { class: "small muted" });
   const partBar = h("div", { class: "progressbar thin" }, h("i", { style: { width: "0%" } }));
-  const partProgress = h("div", { class: "row tight trbusy", hidden: true }, partBar, h("button", { type: "button", class: "btn small ghost", onclick: () => an.cancel() }, "Cancel"));
+  const partProgress = h("div", { class: "row tight trbusy", hidden: true }, partBar, h("button", { type: "button", class: "btn small ghost", onclick: () => { an.cancel(); loaded = false; sep.cancel(); } }, "Cancel"));
   const partSeg = seg("Which notation", [["whole", "Whole song"], ["singer", "Singer"], ["background", "Background"], ["best", "Best to play"]], () => opt.part, v => { opt.part = v; opt.octave = 0; manual = null; undo = []; }, () => choosePart());
   partSeg.classList.add("partseg");
   const PART_TEXT = {
@@ -388,7 +399,74 @@ export async function render(main) {
     } finally { partBusy = false; }
     redraw();
   }
-  const partCard = h("div", { class: "partpick" }, h("span", { class: "small" }, h("b", null, "Which notation")), partSeg, partNote, partProgress);
+  // ---- The separation model ----
+  const SEP_TEXT = {
+    singer: "Only the singer, separated from the music by the separation model.",
+    background: "The melodic instruments (no voice, drums or bass), separated by the separation model: intros, interludes, counter-melodies.",
+    best: PART_TEXT.best,
+  };
+  const sepBox = h("div", { class: "sepbox small", hidden: true });
+  function drawSep() {
+    sepBox.hidden = !!midi || opt.part === "whole" && !sepDone;
+    if (sepDone) {
+      sepBox.replaceChildren(h("span", null, icon("check"), " Singer and background separated by the model (Demucs)."),
+        vocalsUrl ? h("button", { type: "button", class: "linkbtn", onclick: () => { const a = new Audio(vocalsUrl); a.play().catch(() => {}); setTimeout(() => a.pause(), 15000); } }, "Hear the singer alone (15 s)") : null);
+      return;
+    }
+    sepBox.replaceChildren(
+      h("p", null, h("b", null, "More exact: the separation model. "), "It hears the singer apart from the music, in any recording (mono too). " + (modelCached ? "It is in this browser" : "It downloads once (172 MB) and stays in this browser") + "; it runs on this device and nothing is uploaded. A song takes a few minutes (less with a graphics card)."),
+      h("div", { class: "row tight" },
+        h("button", { type: "button", class: "btn small primary", disabled: sepBusy, onclick: () => runDemucs() }, modelCached ? "Separate with the model" : "Download the model and separate"),
+        modelCached ? h("button", { type: "button", class: "btn small ghost", onclick: async () => { try { await sep.run({ cmd: "forget" }); } catch (e) { /* nothing kept */ } modelCached = false; drawSep(); toast("The separation model was removed from this browser."); } }, "Remove the model") : null));
+  }
+  sep.run({ cmd: "status" }).then(r => { modelCached = !!(r && r.cached); drawSep(); }, () => {});
+  // The recording at 44.1 kHz stereo (the model's rate), up to MAX_SECONDS.
+  async function at44k(buf) {
+    const c = new OfflineAudioContext(2, Math.ceil(Math.min(buf.duration, MAX_SECONDS) * 44100), 44100), src = c.createBufferSource();
+    src.buffer = buf; src.connect(c.destination); src.start();
+    const r = await c.startRendering();
+    return [r.getChannelData(0).slice(), r.getChannelData(1).slice()];
+  }
+  // The vocals as a small mono WAV (22 kHz), for hearing the singer alone.
+  function vocalsWav(v) {
+    const n = Math.floor(v.length / 2), out = new DataView(new ArrayBuffer(44 + n * 2));
+    let peak = 0; for (let i = 0; i < v.length; i++) peak = Math.max(peak, Math.abs(v[i]));
+    const k = peak > 0 ? 0.9 / peak : 1, str = (o, t) => { for (let i = 0; i < t.length; i++) out.setUint8(o + i, t.charCodeAt(i)); };
+    str(0, "RIFF"); out.setUint32(4, 36 + n * 2, true); str(8, "WAVEfmt "); out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, 1, true);
+    out.setUint32(24, 22050, true); out.setUint32(28, 44100, true); out.setUint16(32, 2, true); out.setUint16(34, 16, true); str(36, "data"); out.setUint32(40, n * 2, true);
+    for (let i = 0; i < n; i++) out.setInt16(44 + i * 2, Math.max(-1, Math.min(1, (v[2 * i] + v[2 * i + 1]) / 2 * k)) * 32767, true);
+    return new Blob([out], { type: "audio/wav" });
+  }
+  async function runDemucs() {
+    if (!audio || sepBusy || midi) return;
+    sepBusy = true; drawSep();
+    const bar = partBar.firstChild;
+    partProgress.hidden = false;
+    const show = (label, pc) => { bar.style.width = pc + "%"; partNote.textContent = label + pc + "%"; };
+    try {
+      show("Preparing the sound... ", 0);
+      const [L, R] = await at44k(audio);
+      const out = await sep.run({ cmd: "separate", left: L, right: R }, show, [L.buffer, R.buffer]);
+      modelCached = true;
+      if (vocalsUrl) URL.revokeObjectURL(vocalsUrl);
+      vocalsUrl = URL.createObjectURL(vocalsWav(out.vocals));
+      const singer = await an.run({ cmd: "track", data: out.vocals, sr: 44100, name: "singer" }, show, [out.vocals.buffer]);
+      const background = await an.run({ cmd: "track", data: out.other, sr: 44100, name: "background" }, show, [out.other.buffer]);
+      parts = { singer, background }; sepDone = true;
+      // Kept with the recording, so it opens again without separating again.
+      if (current) patchCapture(current.id, { sep: { singer, background } }).catch(() => {});
+      if (opt.part === "whole") opt.part = "singer";
+      syncSegs();
+      toast("Separated. The notation now follows the singer.");
+    } catch (e) {
+      if (e && e.cancelled) loaded = false;
+      else toast("The separation model could not run here: " + ((e && e.message) || e) + ". It needs a recent desktop browser with about 2 GB of free memory.");
+    } finally {
+      sepBusy = false; partProgress.hidden = true; status.textContent = ""; progress.hidden = cancelBtn.hidden = true;
+      drawSep(); redraw();
+    }
+  }
+  const partCard = h("div", { class: "partpick" }, h("span", { class: "small" }, h("b", null, "Which notation")), partSeg, partNote, partProgress, sepBox);
   const notesField = h("div", { class: "field" }, h("span", null, "Notes"), seg("Notes", [[true, "Main melody"], [false, "Every note"]], () => opt.main, v => { opt.main = v; manual = null; undo = []; }));
   // The easier version: quick runs folded, ornaments dropped, high notes and passing half-holes eased.
   const easyField = h("div", { class: "field" }, h("span", null, "Version"), seg("Version", [[false, "As played"], [true, "Easier"]], () => opt.easy, v => { opt.easy = v; }));
@@ -759,7 +837,8 @@ export async function render(main) {
       : transcribe((src || track).track, (src || track).levels, base);
     r.notes.forEach((n, i) => { if (n.id === undefined) n.id = "n" + i; });
     // Which parts can be chosen: only a stereo recording can be split.
-    partNote.textContent = PART_TEXT[p] + (p !== "whole" && !stereo ? " " + MONO_NOTE : "");
+    partNote.textContent = sepDone && p !== "whole" ? SEP_TEXT[p] : PART_TEXT[p] + (p !== "whole" && !stereo ? " " + MONO_NOTE : "");
+    drawSep();
     last = r;
     octOut.textContent = r.shift > 0 ? "+" + r.shift / 12 : String(r.shift / 12);
     editor.value = r.notation; drawView();
@@ -775,12 +854,13 @@ export async function render(main) {
       outOf ? h("span", { class: "chip bad" }, outOf + " notes out of the flute's range") : fit.high ? h("span", { class: "chip warn" }, fit.high + " very high notes") : h("span", { class: "chip good" }, icon("check"), " Fits your flute"));
     const tips = [];
     if (r.flute !== null && opt.sameKey && r.flute !== flute) tips.push(h("p", null, "A flute with Sa " + saName + " plays it with the same notes as the recording: ", h("button", { type: "button", class: "linkbtn", onclick: () => { fluteSel.value = String(r.flute); opt.octave = 0; redraw(); } }, "use " + fluteLabel(r.flute)), "."));
+    if (r.flute !== null && !opt.sameKey && r.flute % 12 !== flute % 12) tips.push(h("p", null, "To play along with the recording itself, use a flute with Sa " + saName + ": ", h("button", { type: "button", class: "linkbtn", onclick: () => { fluteSel.value = String(r.flute); opt.octave = 0; redraw(); } }, "use " + fluteLabel(r.flute)), "."));
     if (outOf) tips.push(h("p", null, "Try the octave buttons" + (opt.sameKey ? ", another flute, or \"My flute's own key\"." : ".")));
     if (flute !== mine) tips.push(h("p", null, "The notation player and play-along use your flute in Settings (" + fluteLabel(mine) + "). ", h("button", { type: "button", class: "linkbtn", onclick: () => { setSettings({ saNote: flute % 12, saOct: Math.floor(flute / 12) - 1 }); toast("Your flute is now " + fluteLabel(flute) + "."); redraw(); } }, "Make " + fluteLabel(flute) + " my flute"), "."));
     hints.replaceChildren(...tips);
     hints.hidden = !tips.length;
     const line = (p === "best" ? parts.singer : src) || track;
-    ear.show({ notes: r.notes, frames: line.track, tune: r.tune / 100, zero: r.base - r.shift, url: audioUrl, duration: audio ? audio.duration : 0, edited: !!manual, canUndo: undo.length > 0 });
+    ear.show({ notes: r.notes, frames: line.track, tune: r.tune / 100, zero: r.base - r.shift, url: p === "singer" && vocalsUrl ? vocalsUrl : audioUrl, duration: audio ? audio.duration : 0, edited: !!manual, canUndo: undo.length > 0 });
     fillLines();
   }
 

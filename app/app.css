@@ -817,6 +817,8 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .trsteps { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 .tappad { min-width: 8rem; }
 .trbusy { align-items: center; }
+.sepbox { display: grid; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.sepbox p { margin: 0; }
 .trbusy .progressbar { flex: 1 1 auto; }
 .ntime { flex: 0 0 auto; min-width: 3.4em; margin-right: 6px; padding: 1px 6px; font: inherit; font-size: 0.78em; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent; border-radius: 6px; cursor: pointer; align-self: center; }
 .ntime:hover, .ntime:focus-visible { border-color: var(--accent); }
