@@ -9,6 +9,9 @@ npx eslint .    # lint (CI runs it first)
 npm test        # unit tests, plan test, transcription accuracy test, headless-browser smoke test
 node tests/transcribe-real.mjs [--verbose]   # notation from real bansuri recordings (app/audio), scored (CI runs it)
 node tests/melody-bench.mjs [--notes] [--sep] # melody on public clips with known answers (ADC2004, MIREX-05; downloads once)
+node tests/song-bench.mjs <folder> [--pitch ours|rmvpe|fcpe] [--source mix|vocals] [--why] [--show] [--dump]
+                                             # notes right against trusted notations, song by song (goal: 90%); songs stay outside the repo
+PITCH_MODEL=rmvpe.onnx node tests/pitchmodel-bench.mjs [--sep]   # the melody benchmark with a trained pitch model (RMVPE, FCPE)
 DEMUCS_MODEL=model.onnx node tests/separate-node.mjs in.wav out   # the separation model in Node (needs onnxruntime-node)
 DEMUCS_MODEL=model.onnx node tests/separate-browser.mjs song.wav 30  # the separation model end to end in headless Chrome
 SITE_ROOT=_site node tests/smoke.mjs   # the same smoke test against the assembled site (CI does this)

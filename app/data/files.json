@@ -1,5 +1,5 @@
 {
- "version": "1a09db91ee87",
+ "version": "40c524ec5d6a",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -64,6 +64,7 @@
   "app/js/move.js",
   "app/js/news.js",
   "app/js/palette.js",
+  "app/js/pitchmodel.js",
   "app/js/placement.js",
   "app/js/playable.js",
   "app/js/posture.js",
