@@ -49,14 +49,9 @@ await page.reload({ waitUntil: "networkidle0" });
 console.log("webgpu in the page: " + await page.evaluate(() => !!navigator.gpu));
 await (await page.$("#tr-file")).uploadFile(clipPath);
 await page.waitForFunction(() => /^Done/.test((document.querySelector("#main [role=status]") || {}).textContent || ""), { timeout: 120000 });
-await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Singer").click());
-await page.waitForFunction(() => /Separate with the model/.test((document.querySelector("#main .sepbox") || {}).textContent || ""), { timeout: 60000 }).catch(async () => {
-  console.log("sepbox: " + await page.$eval("#main .sepbox", e => e.textContent).catch(() => "none"));
-  console.log("cache has it: " + await page.evaluate(async url => !!(await (await caches.open("demucs-model-v1")).match(url)), modelUrl));
-  throw new Error("the model was not seen as kept");
-});
 const t0 = Date.now();
-await page.evaluate(() => [...document.querySelectorAll("#main .sepbox button")].find(b => /separate/i.test(b.textContent)).click());
+await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Singer").click());
+// With the model in the browser, choosing Singer separates on its own.
 let lastNote = "";
 for (;;) {
   const st = await page.evaluate(() => ({ note: (document.querySelector("#main .partpick p") || {}).textContent || "", done: /separated by the model/.test((document.querySelector("#main .sepbox") || {}).textContent || "") }));
@@ -66,6 +61,7 @@ for (;;) {
   await new Promise(r => setTimeout(r, 1000));
 }
 console.log("\nseparated " + SECONDS + " s of audio in " + ((Date.now() - t0) / 1000).toFixed(0) + " s");
+console.log("Sa: " + await page.$eval("#main select[aria-label='Sa of the recording']", e => e.options[e.selectedIndex].textContent));
 const notation = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value);
 console.log("singer's notation:\n" + notation.split("\n").slice(0, 8).join("\n"));
 const cached = await page.evaluate(async () => !!(await (await caches.open("demucs-model-v1")).keys()).length);

@@ -1002,8 +1002,8 @@ try {
     // The separation model is offered for Singer and Background (not downloaded in this test).
     // A mono file: the singer is told apart by repetition, and the page says so.
     await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Singer").click());
-    await page.waitForFunction(() => /repetition/.test((document.querySelector("#main .partpick") || {}).textContent || "") && document.querySelector("#main .partpick .trbusy").hidden, { timeout: 30000 }).catch(() => {});
-    check(/repetition/.test(await page.$eval("#main .partpick", e => e.textContent).catch(() => "")) && /S/.test(await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "")), "transcribe: a mono recording's singer is found by repetition");
+    await page.waitForFunction(() => /mono \(one channel\)/.test((document.querySelector("#main .partpick") || {}).textContent || "") && document.querySelector("#main .partpick .trbusy").hidden, { timeout: 30000 }).catch(() => {});
+    check(/mono \(one channel\)/.test(await page.$eval("#main .partpick", e => e.textContent).catch(() => "")) && /S/.test(await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "")), "transcribe: Singer on a mono recording asks for the separation model (no repetition guess)");
     check(/Download the model and separate/.test(await page.$eval("#main .sepbox", e => e.textContent).catch(() => "")), "transcribe: the separation model is offered for the singer");
     await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Whole song").click());
     // The analysis runs in a worker and can be cancelled: a long recording, cancelled at once.

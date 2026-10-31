@@ -79,7 +79,7 @@ export async function render(main) {
   // The separation model (Demucs): sepDone when the parts came from it; vocalsUrl plays the singer
   // alone (Check by ear uses it for the Singer notation); modelCached once it is in the browser.
   const sep = separator();
-  let sepDone = false, sepBusy = false, vocalsUrl = null, modelCached = false;
+  let sepDone = false, sepBusy = false, vocalsUrl = null, modelCached = false, sepTune;
   cleanups.push(() => { sep.destroy(); if (vocalsUrl) URL.revokeObjectURL(vocalsUrl); });
   // follow: the bars follow the recording's tempo as it changes; taps: beats tapped by the learner;
   // easy: the easier version.
@@ -199,6 +199,7 @@ export async function render(main) {
     const first = transcribe(track.track, track.levels, { flute: saMidi() });
     if (first.notes.length < 3) { setBusy("No clear melody was found. It works best when one tune (a flute or a voice) is clearly louder than the rest.", null); return; }
     saSel.replaceChildren(...first.tonics.map((c, i) => h("option", { value: String(tonicMidi(c.pc, first.notes)) }, WEST[c.pc] + (i === 0 ? " (most likely)" : ""))));
+    if (sepDone) useSepTonics();
     bpmIn.value = String(first.bpm);
     fromIn.value = "0"; toIn.value = String(Math.round(track.seconds)); toIn.max = fromIn.max = String(Math.ceil(track.seconds));
     opt.octave = 0;
@@ -374,7 +375,7 @@ export async function render(main) {
     background: "Only the music around the singer: in a stereo recording, the instruments to the left and right of the mix (intros, interludes, counter-melodies).",
     best: "Made for the flute: the singer's line, the background melody filling the gaps, and every phrase moved into your flute's range.",
   };
-  const MONO_NOTE = "This recording is mono, so the parts are guessed by repetition instead: the music that repeats is taken as the background, what changes as the singer. This often fails: when every verse repeats the same tune, the singer's notes land in the background. A stereo recording (a browser tab, or the copy under Your recordings) splits far better.";
+  const MONO_NOTE = "This recording is mono (one channel), so the singer cannot be told apart by position. Separate it with the model below; until then the notation below is the whole song.";
   async function needPart(name) {
     if (parts[name]) return parts[name];
     const bar = partBar.firstChild;
@@ -386,8 +387,15 @@ export async function render(main) {
     } finally { partProgress.hidden = true; status.textContent = ""; progress.hidden = cancelBtn.hidden = true; }
     return parts[name];
   }
+  // Singer, Background and Best to play come from the separation model when it is in the browser
+  // (it runs on its own); without it, a stereo recording is split by its stereo image, and a mono
+  // one waits for the model (the repetition guess misses the singer in most songs).
   async function choosePart() {
     if (partBusy) return;
+    if (opt.part !== "whole" && !sepDone && !midi) {
+      if (modelCached && !sepBusy) { runDemucs(); return; }
+      if (!stereo) { redraw(); return; }
+    }
     partBusy = true;
     try {
       if (opt.part === "singer" || opt.part === "best") await needPart("singer");
@@ -437,6 +445,20 @@ export async function render(main) {
     for (let i = 0; i < n; i++) out.setInt16(44 + i * 2, Math.max(-1, Math.min(1, (v[2 * i] + v[2 * i + 1]) / 2 * k)) * 32767, true);
     return new Blob([out], { type: "audio/wav" });
   }
+  // Sa from the separated parts: the singer's notes and the accompaniment's together (the
+  // accompaniment's chords name the key more reliably; a singer often dwells on Ga).
+  function useSepTonics() {
+    if (!parts.singer || !parts.background) return;
+    const b = transcribe(parts.background.track, parts.background.levels, { sameKey: false });
+    // The singer's notes are named against the music's tuning (a singer can sing flat or sharp of the band).
+    sepTune = b.notes.length >= 8 ? b.tune / 100 : undefined;
+    const a = transcribe(parts.singer.track, parts.singer.levels, { sameKey: false, tuneRef: sepTune });
+    const score = new Array(12).fill(0);
+    for (const c of a.tonics) score[c.pc] += c.score;
+    for (const c of b.tonics) score[c.pc] += c.score;
+    const order = score.map((v, pc) => ({ pc, v })).sort((x, y) => y.v - x.v);
+    saSel.replaceChildren(...order.map((c, i) => h("option", { value: String(tonicMidi(c.pc, a.notes)) }, WEST[c.pc] + (i === 0 ? " (most likely: singer and music)" : ""))));
+  }
   async function runDemucs() {
     if (!audio || sepBusy || midi) return;
     sepBusy = true; drawSep();
@@ -453,6 +475,7 @@ export async function render(main) {
       const singer = await an.run({ cmd: "track", data: out.vocals, sr: 44100, name: "singer" }, show, [out.vocals.buffer]);
       const background = await an.run({ cmd: "track", data: out.other, sr: 44100, name: "background" }, show, [out.other.buffer]);
       parts = { singer, background }; sepDone = true;
+      useSepTonics();
       // Kept with the recording, so it opens again without separating again.
       if (current) patchCapture(current.id, { sep: { singer, background } }).catch(() => {});
       if (opt.part === "whole") opt.part = "singer";
@@ -828,16 +851,17 @@ export async function render(main) {
   function redraw() {
     if (!track) return;
     const flute = Number(fluteSel.value), [a, b] = part();
+    // A part not separated yet (a mono recording without the model) shows the whole song.
     const p = opt.part, src = p === "singer" || p === "background" ? parts[p] : track;
     const base = { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, phase: opt.phase, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b,
-      easy: opt.easy, taps: opt.taps || undefined, follow: !midi && opt.follow, beats: midi && midi.tempoChanges ? midi.beats : undefined };
+      easy: opt.easy, taps: opt.taps || undefined, tuneRef: sepDone && (opt.part === "singer" || opt.part === "best") ? sepTune : undefined, follow: !midi && opt.follow, beats: midi && midi.tempoChanges ? midi.beats : undefined };
     const given = manual || midiNotes;
     const r = given ? transcribe(null, null, { ...base, notes: given, tonics: midiTonics, phase: opt.phase !== undefined ? opt.phase : midi ? 0 : undefined })
       : p === "best" && parts.singer && parts.background ? transcribe(null, null, { ...base, runs: bestRuns(parts.singer, parts.background), playable: true })
       : transcribe((src || track).track, (src || track).levels, base);
     r.notes.forEach((n, i) => { if (n.id === undefined) n.id = "n" + i; });
     // Which parts can be chosen: only a stereo recording can be split.
-    partNote.textContent = sepDone && p !== "whole" ? SEP_TEXT[p] : PART_TEXT[p] + (p !== "whole" && !stereo ? " " + MONO_NOTE : "");
+    partNote.textContent = p === "whole" ? PART_TEXT.whole : sepDone ? SEP_TEXT[p] : stereo ? PART_TEXT[p] : MONO_NOTE;
     drawSep();
     last = r;
     octOut.textContent = r.shift > 0 ? "+" + r.shift / 12 : String(r.shift / 12);

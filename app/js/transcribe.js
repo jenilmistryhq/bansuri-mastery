@@ -417,12 +417,18 @@ function slides(track) {
 // that keeps every note close to a whole semitone while changing as little as possible over time.
 // A second pass makes rarely used notes a little less likely, so a Ga played 40 cents low reads
 // as Ga, not komal Ga, when komal Ga is not otherwise in the music.
-export function labelNotes(runs) {
+// ref (optional, semitones): a tuning known already (the band's, when the singer is named on her
+// own); the reference then stays within 0.3 semitone of it, so a singer singing flat or sharp
+// against the band keeps the band's note names.
+export function labelNotes(runs, ref) {
   if (!runs.length) return [];
-  const OFF = []; for (let k = -30; k <= 30; k++) OFF.push(k / 50);
+  const OFF = [];
+  if (ref === undefined || ref === null) for (let k = -30; k <= 30; k++) OFF.push(k / 50);
+  else for (let k = -15; k <= 15; k++) OFF.push(ref + k / 50);
+  const c0 = ref || 0;
   const pass = rare => {
     const n = runs.length, S = OFF.length, cost = new Float64Array(S), back = [];
-    const emit = (p, o) => { const q = Math.round(p - o), d = p - o - q; return d * d / 0.045 + o * o * 0.3 + (rare && rare.has(((q % 12) + 12) % 12) ? 1.5 : 0); };
+    const emit = (p, o) => { const q = Math.round(p - o), d = p - o - q; return d * d / 0.045 + (o - c0) * (o - c0) * 0.3 + (rare && rare.has(((q % 12) + 12) % 12) ? 1.5 : 0); };
     for (let s = 0; s < S; s++) cost[s] = emit(runs[0].p, OFF[s]);
     for (let j = 1; j < n; j++) {
       const dt = Math.max(0.1, (runs[j].t0 + runs[j].t1 - runs[j - 1].t0 - runs[j - 1].t1) / 2), sig = 0.04 + 0.05 * dt, k2 = 1 / (2 * sig * sig);
@@ -896,13 +902,13 @@ export function bestFlute(notes, saMidi) {
 // (true by default: the main melody only; false: every note found, with grace notes), runs
 // (stretches made already, as from bestRuns), playable (phrases moved into the flute's range),
 // easy (the easier version), follow (the beats follow tempo changes), beats (beat times known
-// already) and taps (tapped beat times) }.
+// already), taps (tapped beat times) and tuneRef (the tuning to name notes against, semitones) }.
 export function transcribe(track, levels, opts) {
   const o = Object.assign({ flute: 72, sameKey: true, sub: 2, octave: 0 }, opts || {});
   // o.notes: notes given exactly (a MIDI file, or notes corrected by ear): used as they are.
   if (o.notes) return fromNotes(o.notes.filter(n => n.t0 >= (o.from || 0) && n.t1 <= (o.to || Infinity)).map(n => ({ off: 0, cents: 0, lv: 1, ...n })), o, o.tonics);
   // Notes far from the melody's range (a drone or bass heard alone, a stray octave) are left out.
-  const all = labelNotes(o.runs || stableRuns(track, levels)), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
+  const all = labelNotes(o.runs || stableRuns(track, levels), o.tuneRef), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
   const from = o.from || 0, to = o.to || Infinity;
   const folded = foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
   // o.main (default): the main melody, plain; o.main false: every note found, with grace notes.
