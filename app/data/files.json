@@ -1,5 +1,5 @@
 {
- "version": "16f304351cce",
+ "version": "062fcf0fbaf4",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -30,6 +30,7 @@
   "app/i18n/hi.json",
   "app/i18n/lessons-hi.json",
   "app/icon.svg",
+  "app/js/analyser.js",
   "app/js/backup.js",
   "app/js/badges.js",
   "app/js/bench/bench-tokens.css",
@@ -69,6 +70,7 @@
   "app/js/reminder.js",
   "app/js/state.js",
   "app/js/steps.js",
+  "app/js/transcribe-worker.js",
   "app/js/transcribe.js",
   "app/js/tts-worker.js",
   "app/js/ui.js",

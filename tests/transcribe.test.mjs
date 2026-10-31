@@ -23,7 +23,8 @@ function synth(melody, o) {
   const n = Math.floor(total * o.sr), out = new Float32Array(n);
   let t = o.lead, phase = 0, prev = null, seed = 7;
   const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647 - 0.5; };
-  for (const [semi, beats] of melody) {
+  for (const [semi, beats, slide] of melody) {
+    const gl = slide || 0.05; // the glide into the note (a meend when long)
     const dur = beats * beat, i0 = Math.floor(t * o.sr), i1 = Math.floor((t + dur) * o.sr);
     if (semi !== null) {
       const target = o.sa + semi + o.detune / 100, from = prev === null ? target : o.sa + prev + o.detune / 100;
@@ -31,7 +32,7 @@ function synth(melody, o) {
       for (let i = i0; i < i1; i++) {
         const tt = (i - i0) / o.sr;
         if (tt < gap) continue;
-        const glide = prev !== null && prev !== semi && tt < 0.05 ? from + (target - from) * (tt / 0.05) : target;
+        const glide = prev !== null && prev !== semi && tt < gl ? from + (target - from) * (tt / gl) : target;
         const vib = tt > 0.2 ? o.vibrato / 100 * Math.sin(2 * Math.PI * 5.5 * tt) : 0;
         const f = 440 * Math.pow(2, (glide + vib - 69) / 12);
         phase += 2 * Math.PI * f / o.sr;
@@ -273,6 +274,78 @@ await test("notation helpers: beats compress, fit and flute names", () => {
   assert.equal(T.fitOf([-7, 0, 20]).below, 1);
   assert.equal(T.bestOctave([-14, -12, -10]), 12);
   assert.equal(T.fluteLabel(72), "C medium (Sa = C5)");
+});
+
+await test("beats that follow a tempo slowing from 120 to 76 BPM keep the bars in place", async () => {
+  // Quarter notes and half notes; each note's length shrinks or grows with the tempo where it is.
+  const tune = TWINKLE.concat(TWINKLE, TWINKLE), total = tune.reduce((a, [, b]) => a + b, 0);
+  let at = 0;
+  const slowing = tune.map(([s, b]) => { const bpm = 120 - 44 * (at / total); at += b; return [s, b * 96 / bpm]; });
+  const { data, sr } = synth(slowing, { sa: 62, bpm: 96 });
+  const tr = await T.pitchTrack(data, sr);
+  // The notation as beats, with one note (or "-") a beat: the expected tokens.
+  const want = tune.flatMap(([s, b]) => [s, ...new Array(b - 1).fill("-")]);
+  const tokensOf = text => text.replace(/[|]/g, " ").split(/\s+/).filter(Boolean).map(t => (t === "-" ? "-" : t === "_" ? "_" : notesOf(t)[0]));
+  const score = follow => {
+    const r = T.transcribe(tr.track, tr.levels, { sa: 62, sameKey: false, layout: "beats", sub: 1, bpm: 96, follow });
+    const got = tokensOf(r.notation).filter(t => t !== "_");
+    return { err: errorRate(got, want), r };
+  };
+  const steady = score(false), followed = score(true);
+  console.log("       slowing tempo, beat tokens wrong: steady pulse " + Math.round(steady.err * 100) + "%, following " + Math.round(followed.err * 100) + "%, range " + followed.r.tempoRange);
+  assert.ok(followed.err <= 0.1, "following the tempo: " + followed.err + " in " + followed.r.notation);
+  assert.ok(followed.err < steady.err, "following beats a steady pulse");
+  assert.ok(followed.r.tempoRange[0] <= 86 && followed.r.tempoRange[1] >= 108, "tempo range " + followed.r.tempoRange);
+});
+
+await test("tapped beats are used where they were tapped", () => {
+  const notes = [0, 1, 2, 3, 4, 5, 6, 7].map(i => ({ t0: i * 0.5, t1: i * 0.5 + 0.4, midi: 72 }));
+  const grid = T.beatGrid(notes, 120, 0, { taps: [1.02, 1.51, 2.0, 2.52, 3.0] });
+  assert.ok(grid.includes(1.51) && grid.includes(2.52), "taps kept");
+  assert.ok(grid.some(t => Math.abs(t - 0.5) < 0.05), "beats before the taps continue");
+});
+
+await test("a slide (meend) between two notes is written with ~; quick glides are not", async () => {
+  const slide = [[4, 2], [2, 2, 0.3], [0, 2], [4, 1], [7, 2, 0.32], [4, 2]];
+  const r = await run(slide, { sa: 62, vibrato: 0 }, { sa: 62, sameKey: false, flute: 74 });
+  assert.ok(/~R/.test(r.notation) && /~P/.test(r.notation), "slides into R and P: " + r.notation);
+  assert.equal((r.notation.match(/~/g) || []).length, 2, r.notation);
+  const plain = await run(TWINKLE, { sa: 62 }, { flute: 74 });
+  assert.ok(!/~/.test(plain.notation), "no slides in a plain tune: " + plain.notation);
+});
+
+await test("the scale: thaat or raga, and odd notes marked", () => {
+  const mk = semis => semis.map((s, i) => ({ t0: i * 0.5, t1: i * 0.5 + 0.45, midi: 60 + s }));
+  const yaman = T.scaleOf(mk([-1, 2, 4, 6, 7, 9, 11, 12, 11, 9, 7, 6, 4, 2, 0]), 60);
+  assert.equal(yaman.name, "Kalyan");
+  const bhupali = T.scaleOf(mk([0, 2, 4, 7, 9, 12, 9, 7, 4, 2, 0, 2, 4, 7]), 60);
+  assert.deepEqual([bhupali.kind, bhupali.name], ["raga", "Bhupali"]);
+  // A major-scale tune with one stray komal Ga (a likely mistake).
+  const notes = mk([0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 3, 2, 0, 0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0]);
+  const sc = T.scaleOf(notes, 60);
+  assert.equal(sc.name, "Bilawal");
+  assert.deepEqual(sc.odd, [3]);
+  assert.deepEqual(notes.filter(n => n.odd).map(n => n.midi), [63]);
+});
+
+await test("the easier version: quick runs fold, high notes come down, passing half-holes go", () => {
+  const sa = 72, semiOf = n => n.midi - sa;
+  const notes = [[0, 0, 0.5], [2, 0.5, 0.62], [4, 0.62, 0.74], [5, 0.74, 1.4], [3, 1.45, 1.6], [2, 1.6, 2.2], [19, 2.4, 3], [17, 3, 3.5], [16, 3.5, 4]].map(([s, t0, t1]) => ({ t0, t1, midi: sa + s }));
+  const e = T.easier(notes, semiOf);
+  const semis = e.map(semiOf);
+  assert.ok(!semis.includes(4) || !semis.includes(2) || e.length < notes.length, "the quick run folded: " + semis);
+  assert.ok(semis.every(s => s <= 16 && s >= -5), "all in the easy range: " + semis);
+  assert.ok(!semis.includes(3), "the passing komal Ga became an open note: " + semis);
+});
+
+await test("practice: a take is scored note by note", () => {
+  const notes = [0, 2, 4, 2].map((semi, i) => ({ t0: i * 0.5, t1: i * 0.5 + 0.45, semi }));
+  // Readings every 33 ms: right, an octave up, wrong, silent.
+  const played = [0, 14, 5, null], readings = [];
+  for (let t = 0; t < 2; t += 0.033) { const k = Math.min(3, Math.floor(t / 0.5)); readings.push({ t, semi: played[k] === null ? null : played[k] + 0.1 }); }
+  const sc = T.scoreTake(notes, readings);
+  assert.deepEqual(sc.marks, ["right", "octave", "wrong", "missed"]);
+  assert.equal(sc.right, 1);
 });
 
 console.log("transcribe tests: " + passed + " passed");

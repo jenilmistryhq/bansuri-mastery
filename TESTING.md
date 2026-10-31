@@ -83,6 +83,11 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] The same with a film song (voice plus band): expect many wrong notes; the page should say why.
 - [ ] Phone: play a recording near the microphone, Stop: notation appears.
 - [ ] Change the flute and the key mode: the notation changes as expected; "Play along" plays it.
+- [ ] A long song (3+ minutes): the page stays responsive while it is analysed; Cancel stops it.
+- [ ] A song that speeds up or slows down: with "Follow tempo changes" the bars stay on the beat; the chip shows the tempo range.
+- [ ] Practise a line with the recording, with headphones and a real flute: notes played right turn green; after a good pass the speed goes up.
+- [ ] Check by ear on a phone: two-finger pinch zooms the pitch line.
+- [ ] Settings > Download backup with recordings, then restore it in another browser: My songs and Your recordings come back.
 
 ### Listening with a real flute (the most important manual check)
 - [ ] Bench > Long tones, target Sa: play Sa. The note shows as `S`, the ring fills, the needle moves when you blow harder or softer.

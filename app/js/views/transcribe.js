@@ -12,15 +12,17 @@ import { parseNotation, buildEvents, playEvents } from "../core/notation.js";
 import { countdown } from "../core/live.js";
 import { mountBench } from "../bench/bench.js";
 import { WEST, codeOf, devaNotation, hzOf } from "../core/theory.js";
+import { listenMic } from "../core/listen.js";
 import { listCaptures, getCapture, addCapture, patchCapture, deleteCapture, MAX as MAX_CAPTURES } from "../captures.js";
 import { earTools } from "./eartools.js";
 import { isMidi, parseMidi, melodyScore, topLine, keyTonic } from "../midi.js";
-import { stereoDown, repetitionParts, bestRuns, monoDown, pitchTrack, transcribe, tonicMidi, fluteLabel, FLUTES, HOP } from "../transcribe.js";
+import { analyser } from "../analyser.js";
+import { bestRuns, transcribe, tonicMidi, fluteLabel, FLUTES, HOP, scoreTake } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
 const MAX_SECONDS = 360;
 // One note in a beat: an optional {kan}, lower-octave dots, the letter, upper-octave marks; or - or _.
-const NOTE_TOKEN = /\{[^}]*\}\.*[SrRgGmMPdDnN]'*|\.*[SrRgGmMPdDnN]'*|[-_]/g;
+const NOTE_TOKEN = /~?(?:\{[^}]*\})?\.*[SrRgGmMPdDnN]'*|[-_]/g;
 // An AudioBuffer as a 16-bit WAV file with all its channels (a stereo recording stays stereo).
 function wavBlob(buf) {
   const chs = Math.min(2, buf.numberOfChannels), ds = Array.from({ length: chs }, (_, c) => buf.getChannelData(c)), n = ds[0].length, bytes = n * chs * 2;
@@ -69,8 +71,14 @@ export async function render(main) {
   const cleanups = [];
   let audio = null, track = null, capture = null, bench = null, last = null, current = null;
   // The parts of a stereo recording (singer, background), worked out the first time each is chosen.
-  let stereo = null, mono = null, rep = null, parts = {}, partBusy = false;
-  const opt = { octave: 0, sameKey: true, layout: "phrases", main: true, part: "whole" };
+  // The analysis runs in a worker (analyser.js); `loaded` says whether it still holds this recording
+  // (a cancel clears it).
+  let stereo = false, loaded = false, parts = {}, partBusy = false;
+  const an = analyser();
+  cleanups.push(() => an.destroy());
+  // follow: the bars follow the recording's tempo as it changes; taps: beats tapped by the learner;
+  // easy: the easier version.
+  const opt = { octave: 0, sameKey: true, layout: "phrases", main: true, part: "whole", follow: true, easy: false, taps: null };
   // A MIDI file: its tracks, the notes of the chosen one, and its key. Notes corrected by ear
   // (manual) replace the notes found until reset; undo keeps earlier versions.
   let midi = null, midiNotes = null, midiTonics = null, manual = null, undo = [], audioUrl = null;
@@ -87,7 +95,10 @@ export async function render(main) {
   const recLabel = h("span", null, "Listening");
   const stopBtn = h("button", { type: "button", class: "btn primary" }, icon("stop"), " Stop and make notation");
   const recPanel = h("div", { class: "recpanel", hidden: true }, h("span", { class: "recdot", "aria-hidden": "true" }), recLabel, recTime, stopBtn);
-  const setBusy = (text, pct) => { status.textContent = text; progress.hidden = pct === null; if (pct !== null) bar.style.width = pct + "%"; };
+  // Cancel stops the worker's job, and an analysis still decoding stops at its next step (gen).
+  let gen = 0;
+  const cancelBtn = h("button", { type: "button", class: "btn small ghost", hidden: true, onclick: () => { gen++; an.cancel(); } }, "Cancel");
+  const setBusy = (text, pct) => { status.textContent = text; progress.hidden = cancelBtn.hidden = pct === null; if (pct !== null) bar.style.width = pct + "%"; };
 
   // A stream (a shared tab's sound, or the microphone) is recorded until Stop (or 6 minutes).
   async function recordStream(stream, label) {
@@ -137,7 +148,8 @@ export async function render(main) {
     try { current = await addCapture(blob, name, seconds); nameIn.value = name; drawCaptures(); }
     catch (e) { toast("Could not keep the recording in the app: " + (e.message || e)); }
     await analyse(blob);
-    if (current && audio && !seconds) patchCapture(current.id, { seconds: Math.round(audio.duration) }).then(drawCaptures).catch(() => {});
+    // Its length, once known (not after a cancel: the learner may be deleting it).
+    if (current && audio && !seconds && !results.hidden) patchCapture(current.id, { seconds: Math.round(audio.duration) }).then(drawCaptures).catch(() => {});
   }
   const tile = (ic, title, text, attrs) => h(attrs.for ? "label" : "button", Object.assign({ class: "srctile" }, attrs.for ? { for: attrs.for } : { type: "button", onclick: e => attrs.onclick(e.currentTarget) }),
     h("span", { class: "srcicon" }, icon(ic)), h("b", null, title), h("span", { class: "small muted" }, text));
@@ -146,7 +158,7 @@ export async function render(main) {
     tile("mic", "The microphone", canTab ? "Play it near the computer." : "Play it near the phone, from a speaker or another device.", { onclick: fromMic }),
     tile("file", "A file", "An mp3, m4a, wav or ogg file you have.", { for: "tr-file" }),
     tile("note", "A MIDI file", "Exact notes, no guessing: a song's .mid file (karaoke and backing-track sites have many).", { for: "tr-midi" }));
-  const srcCard = h("section", { class: "card" }, h("h2", null, "1. Get the sound"), sources, fileIn, midiIn, recPanel, status, progress,
+  const srcCard = h("section", { class: "card" }, h("h2", null, "1. Get the sound"), sources, fileIn, midiIn, recPanel, status, h("div", { class: "row tight trbusy" }, progress, cancelBtn),
     canTab ? h("details", { class: "small" }, h("summary", null, "How to share a YouTube tab"),
       h("ol", { class: "steps" }, h("li", null, "Open the video in another tab and pause it at the part you want."),
         h("li", null, "Press \"A browser tab\" here, choose that tab, and turn on \"Share tab audio\"."),
@@ -154,20 +166,26 @@ export async function render(main) {
 
   // ---- Analysis ----
   async function analyse(blob, keep) {
-    stopAll(); results.hidden = true;
-    manual = keep && keep.manual ? keep.manual : null; undo = []; opt.phase = keep && keep.settings ? keep.settings.phase : undefined;
+    stopAll(); results.hidden = true; an.cancel(); loaded = false;
+    const mine = ++gen;
+    const cancelled = () => { if (gen === mine) return false; setBusy("Cancelled. Choose a sound again when you are ready.", null); return true; };
+    manual = keep && keep.manual ? keep.manual : null; undo = []; opt.phase = keep && keep.settings ? keep.settings.phase : undefined; opt.taps = keep && keep.settings && Array.isArray(keep.settings.taps) ? keep.settings.taps : null;
     const head = new Uint8Array(await blob.slice(0, 16).arrayBuffer());
     if (isMidi(head)) { await analyseMidi(blob, keep); return; }
-    midi = null; midiNotes = null; midiTonics = null; midiField.hidden = true; partCard.hidden = false; notesField.hidden = false;
+    midi = null; midiNotes = null; midiTonics = null; midiField.hidden = true; partCard.hidden = false; notesField.hidden = false; followField.hidden = false; parts = {};
     setUrl(blob);
     setBusy("Reading the sound...", 0);
     try { audio = await decodeAudioFile(blob); }
     catch (e) { setBusy("This browser could not read that sound. Try an mp3, m4a, wav or ogg file.", null); return; }
-    const ch = []; for (let i = 0; i < audio.numberOfChannels; i++) ch.push(audio.getChannelData(i));
-    const { data, sr } = monoDown(ch, audio.sampleRate);
-    const sd = stereoDown(ch, audio.sampleRate);
-    stereo = sd && sd.side > 0.02 ? sd : null; parts = {}; rep = null; mono = { data, sr };
-    track = await pitchTrack(data, sr, { maxSeconds: MAX_SECONDS, onProgress: p => setBusy("Finding the melody... " + p + "%", p) });
+    if (cancelled()) return;
+    try {
+      await ensureLoaded();
+      if (cancelled()) return;
+      track = await an.run({ cmd: "whole" }, (label, p) => setBusy(label + p + "%", p));
+    } catch (e) {
+      setBusy(e && e.cancelled ? "Cancelled. Choose a sound again when you are ready." : "Could not finish: " + ((e && e.message) || e), null);
+      return;
+    }
     const first = transcribe(track.track, track.levels, { flute: saMidi() });
     if (first.notes.length < 3) { setBusy("No clear melody was found. It works best when one tune (a flute or a voice) is clearly louder than the rest.", null); return; }
     saSel.replaceChildren(...first.tonics.map((c, i) => h("option", { value: String(tonicMidi(c.pc, first.notes)) }, WEST[c.pc] + (i === 0 ? " (most likely)" : ""))));
@@ -183,11 +201,20 @@ export async function render(main) {
     if (keep && keep.notation) { editor.value = keep.notation; drawView(); }
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+  // The recording in the worker (again after a cancel): mono, and stereo when its channels differ.
+  async function ensureLoaded() {
+    if (loaded) return;
+    setBusy("Reading the sound...", 0);
+    const ch = []; for (let i = 0; i < audio.numberOfChannels; i++) ch.push(audio.getChannelData(i));
+    stereo = (await an.run({ cmd: "load", channels: ch, sr: audio.sampleRate })).stereo;
+    loaded = true;
+  }
   // Settings saved with a recording come back with it.
   function restore(st) {
     if (!st) { opt.part = "whole"; syncSegs(); return; }
     if ([...saSel.options].some(o => o.value === String(st.sa))) saSel.value = String(st.sa);
     fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0; opt.main = st.main !== false; opt.part = st.part || "whole";
+    opt.follow = st.follow !== false; opt.easy = !!st.easy; followBox.checked = opt.follow;
     bpmIn.value = String(st.bpm); fromIn.value = String(st.from); toIn.value = String(st.to); subSel.value = String(st.sub || 2);
     syncSegs();
   }
@@ -205,8 +232,8 @@ export async function render(main) {
     midiSel.replaceChildren(...usable.map(t => h("option", { value: String(t.index) }, (t.name || "Track " + (t.index + 1)) + (t.family ? " (" + t.family + ")" : "") + ", " + t.notes.length + " notes" + (t === ranked[0] ? " - the melody, most likely" : ""))));
     const st = keep && keep.settings;
     midiSel.value = String(st && st.midiTrack !== undefined && usable.some(t => t.index === st.midiTrack) ? st.midiTrack : ranked[0].index);
-    stereo = null; parts = {}; rep = null; mono = null;
-    midiField.hidden = false; partCard.hidden = true; notesField.hidden = true;
+    stereo = false; parts = {}; loaded = false;
+    midiField.hidden = false; partCard.hidden = true; notesField.hidden = true; followField.hidden = true;
     setBusy("Making its sound...", 50);
     audio = await renderMidi(midi, Number(midiSel.value));
     setUrl(wavBlob(audio));
@@ -302,8 +329,8 @@ export async function render(main) {
     const gaps = t.taps.slice(1).map((x, i) => x - t.taps[i]).sort((a, b) => a - b), T = gaps[gaps.length >> 1];
     let x = 0, y = 0; for (const tt of t.taps) { x += Math.cos(2 * Math.PI * tt / T); y += Math.sin(2 * Math.PI * tt / T); }
     let ph = Math.atan2(y, x) / (2 * Math.PI) * T; if (ph < 0) ph += T;
-    bpmIn.value = String(Math.round(60 / T)); opt.phase = ph;
-    tapNote.textContent = "Tempo " + Math.round(60 / T) + " BPM from your taps; the bars start on your beat.";
+    bpmIn.value = String(Math.round(60 / T)); opt.phase = ph; opt.taps = t.taps;
+    tapNote.textContent = "Tempo " + Math.round(60 / T) + " BPM from your taps; the bars follow your beats where you tapped.";
     redraw();
   }
   document.addEventListener("keydown", onTapKey);
@@ -320,9 +347,14 @@ export async function render(main) {
   const group = (title, ...kids) => h("fieldset", { class: "trgroup" }, h("legend", null, title), ...kids);
   [saSel, fluteSel, subSel].forEach(el => el.addEventListener("change", () => { if (el === fluteSel) opt.octave = 0; redraw(); }));
   [fromIn, toIn].forEach(el => el.addEventListener("change", redraw));
-  bpmIn.addEventListener("change", () => { opt.phase = undefined; redraw(); });
+  bpmIn.addEventListener("change", () => { opt.phase = undefined; opt.taps = null; redraw(); });
+  // Follow tempo changes (on by default): the beats are tracked through the song.
+  const followBox = h("input", { type: "checkbox", id: "tr-follow", checked: true });
+  followBox.addEventListener("change", () => { opt.follow = followBox.checked; redraw(); });
+  const followField = h("label", { class: "check small", for: "tr-follow" }, followBox, "Follow tempo changes (a song that speeds up or slows down)");
   const partNote = h("p", { class: "small muted" });
-  const partProgress = h("div", { class: "progressbar thin", hidden: true }, h("i", { style: { width: "0%" } }));
+  const partBar = h("div", { class: "progressbar thin" }, h("i", { style: { width: "0%" } }));
+  const partProgress = h("div", { class: "row tight trbusy", hidden: true }, partBar, h("button", { type: "button", class: "btn small ghost", onclick: () => an.cancel() }, "Cancel"));
   const partSeg = seg("Which notation", [["whole", "Whole song"], ["singer", "Singer"], ["background", "Background"], ["best", "Best to play"]], () => opt.part, v => { opt.part = v; opt.octave = 0; manual = null; undo = []; }, () => choosePart());
   partSeg.classList.add("partseg");
   const PART_TEXT = {
@@ -334,17 +366,13 @@ export async function render(main) {
   const MONO_NOTE = "This recording is mono, so the parts are guessed by repetition instead: the music that repeats is taken as the background, what changes as the singer. This often fails: when every verse repeats the same tune, the singer's notes land in the background. A stereo recording (a browser tab, or the copy under Your recordings) splits far better.";
   async function needPart(name) {
     if (parts[name]) return parts[name];
-    const bar = partProgress.firstChild;
+    const bar = partBar.firstChild;
     partProgress.hidden = false;
     const show = (label, pc) => { bar.style.width = pc + "%"; partNote.textContent = label + pc + "%"; };
-    if (stereo) parts[name] = await pitchTrack(stereo.M, stereo.sr, { maxSeconds: MAX_SECONDS, stereo: { L: stereo.L, R: stereo.R, part: name }, onProgress: pc => show("Listening for the " + name + "... ", pc) });
-    else {
-      // Mono: separated once by repetition (both parts at once), then each part's melody.
-      if (!rep) rep = await repetitionParts(mono.data, mono.sr, { maxSeconds: MAX_SECONDS, onProgress: pc => show("Finding what repeats (the background)... ", pc) });
-      parts[name] = await pitchTrack(mono.data, mono.sr, { maxSeconds: MAX_SECONDS, mags: rep[name], part: name, onProgress: pc => show("Listening for the " + name + "... ", pc) });
-      if (parts.singer && parts.background) rep = null;
-    }
-    partProgress.hidden = true;
+    try {
+      await ensureLoaded();
+      parts[name] = await an.run({ cmd: "part", name }, show);
+    } finally { partProgress.hidden = true; status.textContent = ""; progress.hidden = cancelBtn.hidden = true; }
     return parts[name];
   }
   async function choosePart() {
@@ -353,20 +381,26 @@ export async function render(main) {
     try {
       if (opt.part === "singer" || opt.part === "best") await needPart("singer");
       if (opt.part === "background" || opt.part === "best") await needPart("background");
+    } catch (e) {
+      // Cancelled (or failed): back to the whole song.
+      opt.part = "whole"; syncSegs();
+      if (!(e && e.cancelled)) toast("Could not separate the parts: " + ((e && e.message) || e));
     } finally { partBusy = false; }
     redraw();
   }
   const partCard = h("div", { class: "partpick" }, h("span", { class: "small" }, h("b", null, "Which notation")), partSeg, partNote, partProgress);
   const notesField = h("div", { class: "field" }, h("span", null, "Notes"), seg("Notes", [[true, "Main melody"], [false, "Every note"]], () => opt.main, v => { opt.main = v; manual = null; undo = []; }));
+  // The easier version: quick runs folded, ornaments dropped, high notes and passing half-holes eased.
+  const easyField = h("div", { class: "field" }, h("span", null, "Version"), seg("Version", [[false, "As played"], [true, "Easier"]], () => opt.easy, v => { opt.easy = v; }));
   const foundCard = h("section", { class: "card" }, h("h2", null, "2. What the app found"), partCard, chips,
     h("div", { class: "trgroups" },
-      group("The recording", midiField, field("Sa", saSel), h("div", { class: "row tight" }, field("From (s)", fromIn), field("To (s)", toIn)), notesField),
+      group("The recording", midiField, field("Sa", saSel), h("div", { class: "row tight" }, field("From (s)", fromIn), field("To (s)", toIn)), notesField, easyField),
       group("Your flute", field("Flute", fluteSel), h("div", { class: "field" }, h("span", null, "Write it in"), keySeg), h("div", { class: "field" }, h("span", null, "Octave"), octave)),
       group("Rhythm", h("div", { class: "field" }, h("span", null, "Layout"), layoutSeg),
         h("div", { class: "row tight" }, field("Tempo (BPM)", bpmIn),
           h("button", { type: "button", class: "btn small", onclick: () => { bpmIn.value = String(Math.max(30, Math.round(Number(bpmIn.value) / 2))); redraw(); } }, "Half"),
           h("button", { type: "button", class: "btn small", onclick: () => { bpmIn.value = String(Math.min(220, Math.round(Number(bpmIn.value) * 2))); redraw(); } }, "Double")),
-        h("div", { class: "row tight" }, tapBtn, tapPad), tapNote,
+        h("div", { class: "row tight" }, tapBtn, tapPad), tapNote, followField,
         detailField)),
     hints);
 
@@ -391,7 +425,7 @@ export async function render(main) {
       h("div", { class: "row tight" }, scriptSeg, editBtn,
         h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(notationText()); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"))),
     view, editor,
-    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan)."),
+    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan), ~ before a note is a slide into it (meend). The time in front of a line plays that line of the recording."),
     h("div", { class: "row" }, nameIn, h("button", { type: "button", class: "btn", onclick: () => save() }, "Save")),
     h("div", { class: "row tight" },
       h("button", { type: "button", class: "btn small", onclick: () => addToSongs() }, icon("note"), " Add to Songs"),
@@ -416,23 +450,50 @@ export async function render(main) {
     setTimeout(done, 1000);
   }
 
+  // One note's text: a slide mark, a small grace note, then the note.
+  function noteParts(tok, show) {
+    const m = /^(~?)(?:\{([^}]*)\})?(.*)$/.exec(tok);
+    return [m[1] ? h("span", { class: "nglide", title: "Slide into this note (meend)" }, "~") : null, m[2] ? h("sup", null, show(m[2])) : null, show(m[3])];
+  }
+  // A line of the notation, played from the recording (the row is marked while it plays).
+  function lineSpan(i) {
+    const ts = last.lineTimes, notes = last.notes;
+    return [Math.max(0, ts[i] - 0.2), i + 1 < ts.length ? ts[i + 1] : notes.length ? notes[notes.length - 1].t1 + 0.3 : ts[i] + 4];
+  }
+  let lineStop = null;
+  function playLine(i, row) {
+    if (!audio || !last) return;
+    stopAll();
+    const [a, b] = lineSpan(i), c = ac(), src = c.createBufferSource();
+    src.buffer = audio; src.connect(master()); src.start(c.currentTime + 0.05, a, b - a);
+    row.classList.add("nplaying");
+    ear.seek(a);
+    if (practiceLine.querySelector("option[value='" + i + "']")) practiceLine.value = String(i);
+    const done = () => { row.classList.remove("nplaying"); if (lineStop === stop) lineStop = null; };
+    const timer = setTimeout(done, (b - a) * 1000 + 100);
+    const stop = () => { clearTimeout(timer); try { src.stop(); } catch (e) { /* already stopped */ } done(); };
+    lineStop = stop;
+  }
+
   function drawView() {
     const deva = script === "deva";
     const show = t => deva ? devaNotation(t) : t;
     const cell = tok => {
       if (tok === "|" || tok === "||") return h("span", { class: "nsep", "aria-hidden": "true" }, "|");
       if (tok === ",") return h("span", { class: "npause", "aria-hidden": "true" });
-      const m = /^\{([^}]*)\}(.*)$/.exec(tok);
-      return h("span", { class: "nc" + (tok === "-" || tok === "_" ? " nhold" : "") }, m ? [h("sup", null, show(m[1])), show(m[2])] : show(tok));
+      return h("span", { class: "nc" + (tok === "-" || tok === "_" ? " nhold" : "") }, noteParts(tok, show));
     };
     // Beats in the bars layout can hold several notes ("SR"): those stay together in one cell.
     const lines = notationText().split("\n").filter(l => l.trim());
+    // Unedited text: each line shows where it starts in the recording; the time plays that line.
+    const timed = last && notationText() === last.notation && last.lineTimes && last.lineTimes.length === lines.length;
     view.classList.toggle("deva", deva);
-    view.replaceChildren(...lines.map(line => h("div", { class: "nrow" }, line.trim().split(/\s+/).map(tok => {
+    view.classList.toggle("timed", !!timed);
+    view.replaceChildren(...lines.map((line, li) => h("div", { class: "nrow" }, timed ? h("button", { type: "button", class: "ntime", "aria-label": "Play line " + (li + 1) + " of the recording, from " + clock(last.lineTimes[li]), onclick: e => playLine(li, e.currentTarget.parentNode) }, clock(last.lineTimes[li])) : null, h("span", { class: "ntoks" }, line.trim().split(/\s+/).map(tok => {
       const parts = tok === "|" || tok === "||" || tok === "," ? null : tok.match(NOTE_TOKEN);
       if (!parts || parts.length < 2) return cell(tok);
-      return h("span", { class: "nc nmulti" }, parts.map(x => { const m = /^\{([^}]*)\}(.*)$/.exec(x); return m ? [h("sup", null, show(m[1])), show(m[2])] : show(x); }));
-    }))));
+      return h("span", { class: "nc nmulti" }, parts.map(x => noteParts(x, show)));
+    })))));
     if (!lines.length) view.append(h("p", { class: "small muted" }, "No notes."));
   }
 
@@ -464,12 +525,12 @@ export async function render(main) {
     } }, icon("share"), " Download");
     return h("div", { class: "playrow" }, btn, h("div", { class: "playinfo" }, h("b", null, title), h("span", { class: "small muted" }, text), h("div", { class: "progressbar thin" }, fill)), h("div", { class: "playside" }, time, dl));
   }
-  function stopAll() { players.forEach(p => { if (p.stop) p.btn.click(); }); ear.stop(); }
+  function stopAll() { players.forEach(p => { if (p.stop) p.btn.click(); }); ear.stop(); if (lineStop) lineStop(); stopPractice(); }
   // Edits by ear: the first edit copies the notes found; each edit can be undone.
   const ear = earTools({ onEdit: (op, id, arg) => {
     if (op === "reset") { manual = null; undo = []; redraw(); return; }
     if (op === "undo") { if (undo.length) { manual = JSON.parse(undo.pop()); redraw(); } return; }
-    if (!manual) manual = last.notes.map(n => ({ id: n.id, t0: n.t0, t1: n.t1, midi: n.midi, off: n.off || 0, cents: n.cents || 0, lv: n.lv, edited: n.edited }));
+    if (!manual) manual = last.notes.map(n => ({ id: n.id, t0: n.t0, t1: n.t1, midi: n.midi, off: n.off || 0, cents: n.cents || 0, lv: n.lv, edited: n.edited, glide: n.glide, kan: n.kan }));
     undo.push(JSON.stringify(manual)); if (undo.length > 100) undo.shift();
     if (op === "add") {
       // Tuned like the notes around it.
@@ -487,6 +548,7 @@ export async function render(main) {
     else if (op === "shorter") { n.t1 = Math.max(n.t0 + 0.06, n.t1 - 0.1); n.edited = true; }
     else if (op === "longer") { n.t1 = Math.min(next ? next.t0 - 0.01 : n.t1 + 0.1, n.t1 + 0.1); n.edited = true; }
     else if (op === "split" && n.t1 - n.t0 >= 0.12) { const mid = (n.t0 + n.t1) / 2; manual.splice(i + 1, 0, { ...n, id: "u" + Date.now().toString(36), t0: mid + 0.005 }); n.t1 = mid - 0.005; n.edited = true; }
+    else if (op === "glide") { n.glide = !n.glide; n.edited = true; }
     else if (op === "delete") manual.splice(i, 1);
     else if (op === "join" && manual[i + 1]) { n.t1 = manual[i + 1].t1; n.edited = true; manual.splice(i + 1, 1); }
     redraw();
@@ -499,6 +561,7 @@ export async function render(main) {
     g.gain.value = gain; src.buffer = audio; src.connect(g); g.connect(master()); src.start(c.currentTime + 0.05, a, b - a);
     return { src, seconds: b - a, stop: () => { try { src.stop(); } catch (e) { /* already stopped */ } } };
   };
+  const hzFound = n => 440 * Math.pow(2, (n.midi + (n.off || 0) - 69) / 12);
   // The notes found, at their own times, each at its swara's pitch in the recording's tuning.
   // Made a little ahead of time, not all at once (hundreds of voices at once make the sound crackle).
   const playFound = (at, a, b) => {
@@ -506,7 +569,8 @@ export async function render(main) {
     let i = 0, voices = [];
     const pump = () => {
       for (; i < notes.length && at + notes[i].t0 - a < c.currentTime + 1.5; i++) {
-        const n = notes[i], v = makeVoice(440 * Math.pow(2, (n.midi + n.off - 69) / 12), at + Math.max(0, n.t0 - a), { level: 0.16 });
+        const n = notes[i], st = at + Math.max(0, n.t0 - a), v = makeVoice(hzFound(n), st, { level: 0.16 });
+        if (n.glide && notes[i - 1]) v.ramp(hzFound(notes[i - 1]), hzFound(n), st, Math.min(0.25, (n.t1 - n.t0) * 0.5));
         v.end = at + n.t1 - a; v.stop(at + Math.max(0.05, n.t1 - a)); voices.push(v);
       }
       voices = voices.filter(v => v.end > c.currentTime - 0.5);
@@ -529,11 +593,12 @@ export async function render(main) {
   };
   const renderFound = (c, level) => {
     const [a, b] = part();
-    for (const n of last.notes) {
-      if (n.t1 < a || n.t0 > b) continue;
-      const v = makeVoice(440 * Math.pow(2, (n.midi + n.off - 69) / 12), Math.max(0, n.t0 - a), { level, ctx: c, dest: c.destination });
+    last.notes.forEach((n, k) => {
+      if (n.t1 < a || n.t0 > b) return;
+      const st = Math.max(0, n.t0 - a), v = makeVoice(hzFound(n), st, { level, ctx: c, dest: c.destination }), prev = last.notes[k - 1];
+      if (n.glide && prev) v.ramp(hzFound(prev), hzFound(n), st, Math.min(0.25, (n.t1 - n.t0) * 0.5));
       v.stop(Math.max(0.05, n.t1 - a));
-    }
+    });
   };
   // The notes as found (unedited notation): times from the start of the chosen part, held through
   // short gaps the way the notation reads, and pitched from the flute's Sa (n.semi).
@@ -541,7 +606,7 @@ export async function render(main) {
     if (!last || notationText() !== last.notation) return null;
     const [a, b] = part(), list = last.notes.filter(n => n.t1 >= a && n.t0 <= b);
     if (!list.length) return null;
-    const notes = list.map((n, i) => { const next = list[i + 1], end = next && next.t0 - n.t1 < 0.25 ? next.t0 : n.t1; return { semi: n.semi, t0: Math.max(0, n.t0 - a), t1: end - a }; });
+    const notes = list.map((n, i) => { const next = list[i + 1], end = next && next.t0 - n.t1 < 0.25 ? next.t0 : n.t1; return { semi: n.semi, from: n.glide && i ? list[i - 1].semi : null, t0: Math.max(0, n.t0 - a), t1: end - a }; });
     return { notes, seconds: notes[notes.length - 1].t1 + 0.3 };
   }
   // Played a little ahead of time, like the other players.
@@ -551,6 +616,7 @@ export async function render(main) {
     const pump = () => {
       for (; i < tn.notes.length && at + tn.notes[i].t0 < c.currentTime + 1.5; i++) {
         const n = tn.notes[i], v = makeVoice(hzOf(n.semi), at + n.t0);
+        if (n.from !== null) v.ramp(hzOf(n.from), hzOf(n.semi), at + n.t0, Math.min(0.25, (n.t1 - n.t0) * 0.5));
         v.end = at + n.t1; v.stop(at + Math.max(n.t0 + 0.08, n.t1)); voices.push(v);
       }
       voices = voices.filter(v => v.end > c.currentTime - 0.5);
@@ -575,7 +641,11 @@ export async function render(main) {
       return { seconds: b.total, stop };
     }, async () => {
       const tn = timedNotes();
-      if (tn) return renderMix(tn.seconds, c => tn.notes.forEach(n => { const v = makeVoice(hzOf(n.semi), n.t0, { ctx: c, dest: c.destination }); v.stop(Math.max(n.t0 + 0.08, n.t1)); }));
+      if (tn) return renderMix(tn.seconds, c => tn.notes.forEach(n => {
+        const v = makeVoice(hzOf(n.semi), n.t0, { ctx: c, dest: c.destination });
+        if (n.from !== null) v.ramp(hzOf(n.from), hzOf(n.semi), n.t0, Math.min(0.25, (n.t1 - n.t0) * 0.5));
+        v.stop(Math.max(n.t0 + 0.08, n.t1));
+      }));
       const bpm = Number(bpmIn.value) || 80, b = buildEvents(parseNotation(notationText()).tokens, bpm);
       if (!b.ev.length) { toast("The notation has no notes."); return null; }
       return renderMix(b.total, c => {
@@ -606,16 +676,83 @@ export async function render(main) {
     benchHost.hidden = false;
     benchHost.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
+  // Practise a line with the recording: the line loops, slowed down without changing its pitch;
+  // the microphone checks each note against the notes found (in the recording's own timing), and
+  // after a pass with 80% of the notes right it can speed up.
+  const practiceLine = h("select", { class: "input", "aria-label": "Line to practise" });
+  let pSpeed = 0.75, practice = null;
+  const pSpeedSeg = seg("Practice speed", [[0.5, "50%"], [0.75, "75%"], [1, "100%"]], () => pSpeed, v => { pSpeed = v; if (practice) pPlayer.playbackRate = v; }, () => {});
+  const pHear = h("input", { type: "checkbox", id: "tr-phear", checked: true });
+  const pAuto = h("input", { type: "checkbox", id: "tr-pauto", checked: true });
+  const pBtn = h("button", { type: "button", class: "btn primary", onclick: () => (practice ? stopPractice() : startPractice()) }, icon("mic"), " Start");
+  const pOut = h("div", { class: "stack small pout", "aria-live": "polite" });
+  const pPlayer = new Audio();
+  pPlayer.preservesPitch = true; pPlayer.mozPreservesPitch = true; pPlayer.webkitPreservesPitch = true;
+  cleanups.push(() => { stopPractice(); pPlayer.removeAttribute("src"); });
+  function fillLines() {
+    const keep = practiceLine.value, ts = last ? last.lineTimes || [] : [], lines = last ? last.notation.split("\n").filter(l => l.trim()) : [];
+    practiceLine.replaceChildren(...ts.map((t, i) => h("option", { value: String(i) }, "Line " + (i + 1) + " (" + clock(t) + "): " + (lines[i] || "").replace(/[|]/g, " ").split(/\s+/).filter(x => x && x !== "-" && x !== "_" && x !== ",").slice(0, 8).join(" "))));
+    if ([...practiceLine.options].some(o => o.value === keep)) practiceLine.value = keep;
+  }
+  async function startPractice() {
+    if (!last || !audioUrl || !last.lineTimes || !last.lineTimes.length) { toast("Make the notation first."); return; }
+    const [a, b] = lineSpan(Number(practiceLine.value) || 0), notes = last.notes.filter(n => n.t0 >= a && n.t0 < b);
+    if (!notes.length) { toast("That line has no notes."); return; }
+    stopAll();
+    const p = { readings: [], pass: 0, a, b, notes, off: null, timer: 0, next: 0 };
+    // About 0.1 s from the sound reaching the microphone to the reading (its buffer and smoothing).
+    try { p.off = await listenMic(r => { if (practice === p && !pPlayer.paused) p.readings.push({ t: pPlayer.currentTime - 0.1 * pPlayer.playbackRate, semi: r.semi }); }); }
+    catch (e) { toast("The microphone is not available: " + ((e && e.message) || e)); return; }
+    practice = p;
+    pBtn.replaceChildren(icon("stop"), " Stop");
+    pOut.replaceChildren(h("p", null, "Play the line with the recording" + (pHear.checked ? " (headphones help: the microphone should hear only you)" : "") + "."));
+    runPass();
+  }
+  function runPass() {
+    const p = practice; if (!p) return;
+    p.readings = [];
+    if (pPlayer.src !== audioUrl) pPlayer.src = audioUrl;
+    pPlayer.playbackRate = pSpeed; pPlayer.volume = pHear.checked ? 1 : 0;
+    pPlayer.currentTime = Math.max(0, p.a - 0.6);
+    pPlayer.play().catch(() => {});
+    p.timer = setInterval(() => { if (pPlayer.currentTime >= p.b || pPlayer.ended) { clearInterval(p.timer); pPlayer.pause(); endPass(); } }, 50);
+  }
+  function endPass() {
+    const p = practice; if (!p) return;
+    const sc = scoreTake(p.notes, p.readings), share = sc.right / p.notes.length, at = Math.round(pSpeed * 100);
+    p.pass++;
+    let msg = "Pass " + p.pass + " at " + at + "%: " + sc.right + " of " + p.notes.length + " notes right.";
+    if (pAuto.checked && share >= 0.8 && pSpeed < 1) { pSpeed = pSpeed === 0.5 ? 0.75 : 1; syncSegs(); msg += " Good: faster now (" + Math.round(pSpeed * 100) + "%)."; }
+    else if (share >= 0.8 && pSpeed >= 1) msg += " Right at full speed. Try the next line.";
+    else if (share < 0.5) msg += " Listen once more, then try again" + (pSpeed > 0.5 ? " (or slow it down)" : "") + ".";
+    const label = { right: "right", octave: "another octave", wrong: "another note", missed: "not heard" };
+    pOut.replaceChildren(h("p", null, msg), h("div", { class: "pmarks" }, p.notes.map((n, i) => h("span", { class: "chip " + (sc.marks[i] === "right" ? "good" : sc.marks[i] === "missed" ? "mutedc" : "bad"), title: codeOf(n.semi) + ": " + label[sc.marks[i]] }, codeOf(n.semi), h("span", { class: "sr-only" }, ", " + label[sc.marks[i]])))));
+    p.next = setTimeout(runPass, 1500);
+  }
+  function stopPractice() {
+    const p = practice; if (!p) return;
+    practice = null;
+    clearInterval(p.timer); clearTimeout(p.next); if (p.off) p.off();
+    pPlayer.pause();
+    pBtn.replaceChildren(icon("mic"), " Start");
+  }
+  const practiceBox = h("div", { class: "stack practice" },
+    h("h3", null, "Practise a line with the recording"),
+    h("p", { class: "small muted" }, "The line loops, slowed down without changing its pitch, and the microphone checks every note against the recording. After a pass with most notes right it speeds up. A time in front of a line of the notation picks that line too."),
+    h("div", { class: "row tight" }, h("label", { class: "field grow" }, "Line", practiceLine), h("div", { class: "field" }, h("span", null, "Speed"), pSpeedSeg)),
+    h("div", { class: "row tight" }, h("label", { class: "check small", for: "tr-phear" }, pHear, "Hear the recording"), h("label", { class: "check small", for: "tr-pauto" }, pAuto, "Speed up when I get it right")),
+    h("div", { class: "row tight" }, pBtn), pOut);
   const alongCard = h("section", { class: "card" }, h("h2", null, "6. Play along"),
     h("p", { class: "small muted" }, "The notation in the practice player: loop a part, slow it down, and the microphone checks each note you play."),
-    alongBtn, benchHost);
+    alongBtn, benchHost, practiceBox);
 
   // ---- Redraw from the settings ----
   function redraw() {
     if (!track) return;
     const flute = Number(fluteSel.value), [a, b] = part();
     const p = opt.part, src = p === "singer" || p === "background" ? parts[p] : track;
-    const base = { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, phase: opt.phase, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b };
+    const base = { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, phase: opt.phase, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b,
+      easy: opt.easy, taps: opt.taps || undefined, follow: !midi && opt.follow, beats: midi && midi.tempoChanges ? midi.beats : undefined };
     const given = manual || midiNotes;
     const r = given ? transcribe(null, null, { ...base, notes: given, tonics: midiTonics, phase: opt.phase !== undefined ? opt.phase : midi ? 0 : undefined })
       : p === "best" && parts.singer && parts.background ? transcribe(null, null, { ...base, runs: bestRuns(parts.singer, parts.background), playable: true })
@@ -628,9 +765,12 @@ export async function render(main) {
     editor.value = r.notation; drawView();
     const saName = WEST[((r.sa % 12) + 12) % 12], fit = r.fit, mine = saMidi();
     const outOf = fit.below + fit.reg3;
+    const sc = r.scale, odd = r.notes.filter(n => n.odd).length, tr = r.tempoRange;
     chips.replaceChildren(
       h("span", { class: "chip info" }, "Sa " + saName + (r.tune ? " (" + (r.tune > 0 ? "+" : "") + r.tune + " cents)" : "")),
-      h("span", { class: "chip mutedc" }, r.bpm + " BPM"),
+      h("span", { class: "chip mutedc" }, tr && tr[1] - tr[0] >= 6 ? "Tempo " + tr[0] + " to " + tr[1] + " BPM" : r.bpm + " BPM"),
+      sc && sc.name ? h("span", { class: "chip info", title: sc.kind === "raga" ? "The same five notes as raga " + sc.name + " (a raga is more than its notes)" : sc.name + " thaat: " + sc.note }, sc.kind === "raga" ? "Notes of raga " + sc.name : sc.name + " thaat") : null,
+      odd ? h("button", { type: "button", class: "chip warn chiplink", title: "Notes outside the scale: often a wrong note. Check them by ear.", onclick: () => { document.getElementById("tr-ear").scrollIntoView({ behavior: "smooth", block: "start" }); ear.nextOdd(); } }, odd + (odd === 1 ? " odd note: check it" : " odd notes: check them")) : null,
       h("span", { class: "chip mutedc" }, r.notes.length + " notes, " + codeOf(fit.lo) + " to " + codeOf(fit.hi)),
       outOf ? h("span", { class: "chip bad" }, outOf + " notes out of the flute's range") : fit.high ? h("span", { class: "chip warn" }, fit.high + " very high notes") : h("span", { class: "chip good" }, icon("check"), " Fits your flute"));
     const tips = [];
@@ -641,12 +781,13 @@ export async function render(main) {
     hints.hidden = !tips.length;
     const line = (p === "best" ? parts.singer : src) || track;
     ear.show({ notes: r.notes, frames: line.track, tune: r.tune / 100, zero: r.base - r.shift, url: audioUrl, duration: audio ? audio.duration : 0, edited: !!manual, canUndo: undo.length > 0 });
+    fillLines();
   }
 
   // ---- Your recordings (kept in the app) ----
   const capList = h("div", { class: "stack" });
   const capUse = h("p", { class: "small muted" });
-  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, phase: opt.phase, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
+  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, phase: opt.phase, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value), follow: opt.follow, easy: opt.easy, taps: opt.taps || undefined });
   async function save() {
     const name = nameIn.value.trim() || "Recording of " + today();
     try {

@@ -347,9 +347,10 @@ export function stableRuns(track, levels) {
   const runs = [];
   let cur = null;
   const close = i => { if (cur) { cur.i1 = i - 1; runs.push(cur); cur = null; } };
+  const moving = slides(track);
   for (let i = 0; i < track.length; i++) {
     const m = track[i];
-    if (m === null) { close(i); continue; }
+    if (m === null || moving[i]) { close(i); continue; }
     if (cur) {
       const recent = cur.vals.slice(-6), avg = recent.reduce((a, b) => a + b, 0) / recent.length;
       if (Math.abs(m - avg) <= 0.6) { cur.vals.push(m); continue; }
@@ -377,6 +378,26 @@ export function stableRuns(track, levels) {
   }
   // lv: how strong the melody was in the stretch (its median level), to drop weak, unsure ones.
   return joined.map(r => ({ t0: r.i0 * HOP, t1: (r.i1 + 1) * HOP, p: median(r.vals), lv: median(levels.slice(r.i0, r.i1 + 1)) }));
+}
+
+// Frames in the middle of a slide: over 140 ms around them the pitch never turns back, moves on in
+// most frames, and by 0.6 semitone or more in all. Vibrato turns back sooner, and the quick glide into a
+// note is shorter, so neither counts; a slow meend does, and is kept out of the notes on each side.
+function slides(track) {
+  const out = new Uint8Array(track.length);
+  for (let i = 3; i < track.length - 3; i++) {
+    if (track[i - 3] === null || track[i + 3] === null) continue;
+    const dir = Math.sign(track[i + 3] - track[i - 3]);
+    if (Math.abs(track[i + 3] - track[i - 3]) < 0.6) continue;
+    let ok = true, steps = 0;
+    for (let k = i - 3; k < i + 3 && ok; k++) {
+      const st = track[k] === null || track[k + 1] === null ? null : (track[k + 1] - track[k]) * dir;
+      ok = st !== null && st >= -0.01;
+      if (st >= 0.03) steps++;
+    }
+    if (ok && steps >= 4) out[i] = 1;
+  }
+  return out;
 }
 
 // Names each stretch as a note. Players drift (a flute warms up, a singer sags) and real
@@ -470,8 +491,94 @@ export function beatFit(notes, bpm) {
   return { r: w ? Math.hypot(x, y) / w : 0, phase };
 }
 
-// A note's code, with its grace note (kan) in braces before it: {G}R.
-const noteCode = (n, semiOf) => (n.kan !== undefined ? "{" + codeOf(semiOf({ midi: n.kan })) + "}" : "") + codeOf(semiOf(n));
+// The beats as a list of times. o.follow: the beats follow the music's own tempo as it drifts or
+// changes (beat tracking by dynamic programming, as in Ellis 2007: beats that land on note starts,
+// with a cost for every change of the beat's length); otherwise a steady pulse from `phase`.
+// o.beats: beat times known already (a MIDI file's tempo map). o.taps: beats tapped by the
+// learner, used as they are where they were tapped.
+export function beatGrid(notes, bpm, phase, o) {
+  o = o || {};
+  if (!notes.length) return [];
+  const P = 60 / bpm, a = notes[0].t0 - 2 * P, z = notes[notes.length - 1].t1 + 2 * P;
+  let grid;
+  if (o.beats && o.beats.length > 1) grid = extend(o.beats.slice(), a, z);
+  else if (o.follow) grid = extend(trackBeats(notes, P, a, z), a, z);
+  else { grid = []; for (let t = phase + Math.ceil((a - phase) / P) * P; t <= z; t += P) grid.push(t); }
+  if (o.taps && o.taps.length >= 4) grid = withTaps(grid, o.taps, a, z);
+  return grid;
+}
+// Beats before the first and after the last, at the length of the nearest beat, to cover a..z.
+function extend(grid, a, z) {
+  if (grid.length < 2) return grid;
+  while (grid[0] > a) grid.unshift(grid[0] - (grid[1] - grid[0]));
+  while (grid[grid.length - 1] < z) grid.push(2 * grid[grid.length - 1] - grid[grid.length - 2]);
+  return grid;
+}
+// Onsets (note starts, longer notes counting more) every 10 ms; then the best chain of beats, by
+// dynamic programming over (beat time, beat length): each beat scores the onsets it lands on, minus
+// BETA times the squared log-ratio of its length to the beat before (the tempo changes smoothly)
+// and a little for straying from the expected tempo. A slow drift costs almost nothing; a jump to
+// catch one off-beat note costs more than it gains.
+function trackBeats(notes, P, a, z) {
+  const F = 0.01, n = Math.ceil((z - a) / F) + 1, env = new Float32Array(n);
+  for (const nt of notes) {
+    const i = Math.round((nt.t0 - a) / F), w = Math.min(1, (nt.t1 - nt.t0) / 0.25) + 0.25;
+    for (let d = -6; d <= 6; d++) if (i + d >= 0 && i + d < n) env[i + d] += w * Math.exp(-d * d / 8);
+  }
+  const p = P / F, dLo = Math.max(2, Math.round(p * 0.6)), dHi = Math.round(p * 1.6), D = dHi - dLo + 1;
+  const ALPHA = 4, BETA = 150, W = 4, logd = Float64Array.from({ length: D }, (_, k) => Math.log(dLo + k));
+  const score = new Float32Array(n * D), back = new Int32Array(n * D).fill(-1);
+  for (let t = 0; t < n; t++) for (let k = 0; k < D; k++) {
+    const d = dLo + k, tp = t - d, dev = logd[k] - Math.log(p);
+    let best = 0, arg = -1;
+    if (tp >= 0) for (let k2 = Math.max(0, k - W); k2 <= Math.min(D - 1, k + W); k2++) {
+      const l = logd[k] - logd[k2], c = score[tp * D + k2] - BETA * l * l;
+      if (c > best) { best = c; arg = tp * D + k2; }
+    }
+    score[t * D + k] = env[t] + best - ALPHA * dev * dev; back[t * D + k] = arg;
+  }
+  let end = (n - 1) * D;
+  for (let t = Math.max(0, n - dHi); t < n; t++) for (let k = 0; k < D; k++) if (score[t * D + k] > score[end]) end = t * D + k;
+  const out = [];
+  for (let s = end; s >= 0; s = back[s]) out.push(a + Math.floor(s / D) * F);
+  return out.reverse();
+}
+// Tapped beats replace the grid where they were tapped: taps much closer than the usual gap are
+// left out, a missed tap is filled in.
+function withTaps(grid, taps, a, z) {
+  const ts = taps.slice().sort((x, y) => x - y), gaps = ts.slice(1).map((x, i) => x - ts[i]).sort((x, y) => x - y), T = gaps[gaps.length >> 1];
+  const beats = [ts[0]];
+  for (const t of ts.slice(1)) {
+    const g = t - beats[beats.length - 1];
+    if (g < 0.5 * T) continue;
+    const k = Math.round(g / T);
+    for (let j = 1; j < k; j++) beats.push(beats[beats.length - 1] + g / k);
+    beats.push(t);
+  }
+  const first = beats[0], last = beats[beats.length - 1];
+  return extend(grid.filter(t => t < first - 0.5 * T).concat(beats, grid.filter(t => t > last + 0.5 * T)), a, z);
+}
+// Where a time falls on the grid: the beat before it, how far into that beat, and the beat's length.
+function beatAt(grid, t) {
+  let lo = 0, hi = grid.length - 1;
+  if (t <= grid[0]) return { i: 0, frac: (t - grid[0]) / (grid[1] - grid[0]), len: grid[1] - grid[0] };
+  if (t >= grid[hi]) return { i: hi, frac: (t - grid[hi]) / (grid[hi] - grid[hi - 1]), len: grid[hi] - grid[hi - 1] };
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (grid[m] <= t) lo = m; else hi = m; }
+  const len = grid[lo + 1] - grid[lo];
+  return { i: lo, frac: (t - grid[lo]) / len, len };
+}
+// The step (1/sub of a beat) nearest a time.
+const slotOf = (grid, t, sub) => { const b = beatAt(grid, t); return Math.round((b.i + b.frac) * sub); };
+
+// The tempo range of a grid (BPM, from the middle 80% of its beats), to show when it changes.
+export function tempoRange(grid) {
+  if (grid.length < 4) return null;
+  const bpms = grid.slice(1).map((t, i) => 60 / (t - grid[i])).sort((x, y) => x - y);
+  return [Math.round(bpms[Math.floor(bpms.length * 0.1)]), Math.round(bpms[Math.floor(bpms.length * 0.9)])];
+}
+
+// A note's code: "~" when it is reached by a slide (meend), its grace note (kan) in braces: ~{G}R.
+const noteCode = (n, semiOf) => (n.glide ? "~" : "") + (n.kan !== undefined ? "{" + codeOf(semiOf({ midi: n.kan })) + "}" : "") + codeOf(semiOf(n));
 
 // Main melody only: what a listener would sing back. Leaves out notes outside the melody's main
 // range (an instrument above or below the singer in an interlude), weak and unsure stretches, and
@@ -563,19 +670,18 @@ function beatToken(items) {
 // beat, held notes continue with "-", silences become "_", four beats to a bar, four bars to a line.
 // Bars of silence are left out, so long gaps do not fill the page.
 // The notes on a beat grid: one token per beat ("S", "SR", "-", "_"), shared by both layouts.
-function beatTokens(notes, bpm, phase, sub, semiOf) {
-  const beat = 60 / bpm, step = beat / sub;
-  const first = Math.floor(Math.round((notes[0].t0 - phase) / step) / sub) * sub;
+function beatTokens(notes, grid, sub, semiOf) {
+  const first = Math.floor(slotOf(grid, notes[0].t0, sub) / sub) * sub;
   const slots = [];
   const put = (k, v) => { const i = k - first; if (i >= 0) slots[i] = v; };
   notes.forEach((n, j) => {
-    let k0 = Math.round((n.t0 - phase) / step);
+    let k0 = slotOf(grid, n.t0, sub);
     while (slots[k0 - first] && slots[k0 - first] !== "-") k0++; // two notes on one step: the later one moves on
     const next = notes[j + 1];
-    let k1 = Math.max(k0 + 1, Math.round((n.t1 - phase) / step));
+    let k1 = Math.max(k0 + 1, slotOf(grid, n.t1, sub));
     // A gap shorter than most of a beat is a breath or a re-articulation, not a rest: hold on.
-    if (next && next.t0 - n.t1 < 0.75 * beat) k1 = Math.round((next.t0 - phase) / step);
-    if (next) k1 = Math.min(k1, Math.max(k0 + 1, Math.round((next.t0 - phase) / step)));
+    if (next && next.t0 - n.t1 < 0.75 * beatAt(grid, n.t1).len) k1 = slotOf(grid, next.t0, sub);
+    if (next) k1 = Math.min(k1, Math.max(k0 + 1, slotOf(grid, next.t0, sub)));
     put(k0, noteCode(n, semiOf));
     for (let k = k0 + 1; k < k1; k++) if (!slots[k - first]) put(k, "-");
   });
@@ -585,33 +691,43 @@ function beatTokens(notes, bpm, phase, sub, semiOf) {
     for (let k = 0; k < sub; k++) items.push(slots[i + k] || "_");
     beats.push(beatToken(items));
   }
-  return beats;
+  return { beats, first: first / sub };
 }
 
-export function toNotation(notes, bpm, phase, sub, semiOf) {
+// x (optional): { grid (beat times; else a steady pulse from phase), times (filled with the time
+// each line starts) }.
+export function toNotation(notes, bpm, phase, sub, semiOf, x) {
   if (!notes.length) return "";
-  const beats = beatTokens(notes, bpm, phase, sub, semiOf);
+  x = x || {};
+  const grid = x.grid || beatGrid(notes, bpm, phase);
+  const { beats, first } = beatTokens(notes, grid, sub, semiOf);
   while (beats.length % 4) beats.push("_");
   const bars = [];
   for (let i = 0; i < beats.length; i += 4) {
     const bar = beats.slice(i, i + 4);
     if (bar.every(b => b === "_")) continue;
-    bars.push(bar.join(" "));
+    bars.push({ text: bar.join(" "), t: grid[Math.min(grid.length - 1, Math.max(0, first + i))] });
   }
   const lines = [];
-  for (let i = 0; i < bars.length; i += 4) lines.push(bars.slice(i, i + 4).join(" | ") + " ||");
+  for (let i = 0; i < bars.length; i += 4) {
+    lines.push(bars.slice(i, i + 4).map(b => b.text).join(" | ") + " ||");
+    if (x.times) x.times.push(bars[i].t);
+  }
   return lines.join("\n");
 }
 
 // Phrases: the notes in order, easy to read: "-" for each further beat a note is held (up to
 // three), "," at a pause and a new line at a longer pause. The exact timing is kept with the notes
 // (the page plays them as found); the bars layout writes the rhythm into the text.
-export function toPhrases(notes, bpm, semiOf) {
-  const beat = 60 / bpm, lines = [];
+// x (optional): { grid (beat times, so a held note's beats follow the tempo where it is), times }.
+export function toPhrases(notes, bpm, semiOf, x) {
+  x = x || {};
+  const lines = [];
   let line = [];
   notes.forEach((n, j) => {
-    const next = notes[j + 1], gap = next ? next.t0 - n.t1 : Infinity;
+    const next = notes[j + 1], gap = next ? next.t0 - n.t1 : Infinity, beat = x.grid && x.grid.length > 1 ? beatAt(x.grid, n.t0).len : 60 / bpm;
     const held = (gap < 0.75 * beat ? next.t0 : n.t1) - n.t0;
+    if (!line.length && x.times) x.times.push(n.t0);
     line.push(noteCode(n, semiOf));
     for (let k = 1; k < Math.min(4, Math.round(held / beat)); k++) line.push("-");
     if (gap >= 1.2 || (gap >= 0.3 && line.length >= 12) || line.length >= 24) { lines.push(line.join(" ")); line = []; }
@@ -619,6 +735,106 @@ export function toPhrases(notes, bpm, semiOf) {
   });
   if (line.length) lines.push(line.join(" "));
   return lines.join("\n");
+}
+
+// The notes a melody uses, as a thaat (the ten parent scales of Hindustani music) or, when it uses
+// exactly five notes, the pentatonic raga with those notes. It names the notes, not the raga:
+// ragas sharing notes differ in movement and emphasis, which this does not judge.
+const THAATS = [
+  ["Bilawal", [0, 2, 4, 5, 7, 9, 11], "like the major scale"], ["Kalyan", [0, 2, 4, 6, 7, 9, 11], "tivra Ma"],
+  ["Khamaj", [0, 2, 4, 5, 7, 9, 10], "komal Ni"], ["Kafi", [0, 2, 3, 5, 7, 9, 10], "komal Ga and Ni"],
+  ["Asavari", [0, 2, 3, 5, 7, 8, 10], "komal Ga, Dha and Ni"], ["Bhairavi", [0, 1, 3, 5, 7, 8, 10], "komal Re, Ga, Dha and Ni"],
+  ["Bhairav", [0, 1, 4, 5, 7, 8, 11], "komal Re and Dha"], ["Purvi", [0, 1, 4, 6, 7, 8, 11], "komal Re and Dha, tivra Ma"],
+  ["Marwa", [0, 1, 4, 6, 7, 9, 11], "komal Re, tivra Ma"], ["Todi", [0, 1, 3, 6, 7, 8, 11], "komal Re, Ga and Dha, tivra Ma"],
+];
+const FIVE = [["Bhupali", [0, 2, 4, 7, 9]], ["Durga", [0, 2, 5, 7, 9]], ["Malkauns", [0, 3, 5, 8, 10]], ["Dhani", [0, 3, 5, 7, 10]], ["Madhmad Sarang", [0, 2, 5, 7, 10]], ["Shivranjani", [0, 2, 3, 7, 9]]];
+// Returns { name, kind ("thaat", "raga" or "mixed"), note (how it differs from Bilawal), pcs, used,
+// odd } or null for too few notes. used: the pitch classes from Sa with at least 3% of the time;
+// odd: pitch classes outside the scale, each under 6% of the time (a real scale note is used more).
+// Notes with an odd pitch class get .odd = true: they are the ones most worth checking by ear.
+export function scaleOf(notes, sa) {
+  for (const n of notes) delete n.odd;
+  if (notes.length < 8) return null;
+  const share = new Array(12).fill(0); let tot = 0;
+  const pcOf = n => (((n.midi - sa) % 12) + 12) % 12;
+  for (const n of notes) { const d = Math.min(2, n.t1 - n.t0); share[pcOf(n)] += d; tot += d; }
+  for (let i = 0; i < 12; i++) share[i] /= tot;
+  const used = share.map((x, pc) => (x >= 0.03 ? pc : -1)).filter(pc => pc >= 0);
+  let best = null;
+  if (used.length === 5) for (const [name, pcs] of FIVE) if (pcs.every(pc => used.includes(pc))) best = { name, kind: "raga", note: "", pcs };
+  if (!best) for (const [name, pcs, note] of THAATS) {
+    // In-scale share, minus a little for each scale note the melody never uses.
+    const fit = pcs.reduce((a, pc) => a + share[pc], 0) - 0.01 * pcs.filter(pc => share[pc] < 0.01).length;
+    if (!best || fit > best.fit) best = { name, kind: "thaat", note, pcs, fit };
+  }
+  // A scale that leaves out a much-used note does not describe the melody.
+  if (share.some((x, pc) => x >= 0.06 && !best.pcs.includes(pc))) return { name: null, kind: "mixed", note: "", pcs: used, used, odd: [] };
+  const odd = [];
+  for (let pc = 0; pc < 12; pc++) if (!best.pcs.includes(pc) && share[pc] > 0) odd.push(pc);
+  for (const n of notes) if (odd.includes(pcOf(n))) n.odd = true;
+  return { name: best.name, kind: best.kind, note: best.note, pcs: best.pcs, used, odd };
+}
+
+// Slides (meend): between two notes, a gap of 80 to 600 ms where the pitch was heard all along and
+// moved steadily from the one to the other (a step of 1 to 7 semitones). The second note gets
+// .glide = true (written "~" before it). The short glide into most notes (under 80 ms) is left alone.
+export function markGlides(notes, track) {
+  for (let j = 0; j + 1 < notes.length; j++) {
+    const a = notes[j], b = notes[j + 1], d = b.midi - a.midi, gap = b.t0 - a.t1;
+    if (gap < 0.08 || gap > 0.6 || Math.abs(d) < 1 || Math.abs(d) > 7) continue;
+    const i0 = Math.ceil(a.t1 / HOP), i1 = Math.floor(b.t0 / HOP), vals = [];
+    for (let i = i0; i < i1; i++) vals.push(track[i]);
+    const v = vals.filter(x => x !== null && x !== undefined).map(x => x - (b.off || 0));
+    if (vals.length < 3 || v.length < 0.8 * vals.length) continue;
+    const lo = Math.min(a.midi, b.midi) - 0.6, hi = Math.max(a.midi, b.midi) + 0.6;
+    if (v.some(x => x < lo || x > hi)) continue;
+    let along = 0, moves = 0;
+    for (let k = 1; k < v.length; k++) { const st = v[k] - v[k - 1]; if (Math.abs(st) > 0.02) { moves++; if (Math.sign(st) === Math.sign(d)) along++; } }
+    const covered = (v[v.length - 1] - v[0]) / d;
+    if (moves && along >= 0.7 * moves && covered >= 0.4) b.glide = true;
+  }
+  return notes;
+}
+
+// An easier version for a learner: quick runs (notes under 0.2 s straight after another note)
+// fold into the note before, grace notes and slides go, every phrase moves into the flute's easy
+// range (and any note still above G' or below .P by an octave), and a rarely used half-hole note
+// that only passes by (under 0.3 s) becomes the nearest open note. semiOf: from the flute's Sa.
+export function easier(notes, semiOf) {
+  const out = [];
+  for (const n of notes) {
+    const p = out[out.length - 1];
+    if (p && n.t1 - n.t0 < 0.2 && n.t0 - p.t1 < 0.1) { p.t1 = n.t1; continue; }
+    const plain = { ...n }; delete plain.kan; delete plain.glide;
+    out.push(plain);
+  }
+  const moved = phraseOctaves(out, semiOf).map(n => { const s = semiOf(n); return s > 16 ? { ...n, midi: n.midi - 12 } : s < -5 ? { ...n, midi: n.midi + 12 } : n; });
+  const share = {}; let tot = 0;
+  for (const n of moved) { const s = semiOf(n); share[s] = (share[s] || 0) + n.t1 - n.t0; tot += n.t1 - n.t0; }
+  const half = s => { const f = fingOf(s).f; return !!f && f.includes("H"); };
+  return moved.map(n => {
+    const s = semiOf(n);
+    if (!half(s) || n.t1 - n.t0 >= 0.3 || (share[s] || 0) / tot >= 0.05) return n;
+    const near = [s - 1, s + 1].filter(x => !half(x) && x >= -5 && x <= 16).sort((x, y) => (share[y] || 0) - (share[x] || 0));
+    return near.length ? { ...n, midi: n.midi + near[0] - s } : n;
+  });
+}
+
+// How a take went, for Practise with the recording: each note (t0 and t1 in the recording's time,
+// semi from the flute's Sa) against the microphone's readings ({ t in the recording's time, semi })
+// in its middle: "right" (at least 40% of the clear readings within half a semitone), "octave"
+// (the right note in another octave), "wrong" (another note) or "missed" (hardly any sound).
+export function scoreTake(notes, readings) {
+  const marks = notes.map(n => {
+    const a = n.t0 + Math.min(0.08, (n.t1 - n.t0) * 0.25), b = n.t1 - 0.02;
+    const rs = readings.filter(r => r.t >= a && r.t <= b), heard = rs.filter(r => r.semi !== null && r.semi !== undefined);
+    if (!rs.length || heard.length < Math.max(1, rs.length * 0.3)) return "missed";
+    const near = d => heard.filter(r => Math.abs(r.semi - n.semi - d) <= 0.5).length / heard.length;
+    if (near(0) >= 0.4) return "right";
+    if (near(12) >= 0.4 || near(-12) >= 0.4) return "octave";
+    return "wrong";
+  });
+  return { marks, right: marks.filter(m => m === "right").length };
 }
 
 // How well a melody (semis from the flute's Sa) suits a 6-hole bansuri: below .P cannot be played,
@@ -664,7 +880,9 @@ export function bestFlute(notes, saMidi) {
 // sargam on the flute's own Sa), bpm, sub (steps per beat: 1, 2 or 4), octave (extra shift),
 // layout ("beats" or "phrases"), from and to (seconds: only that part of the recording), main
 // (true by default: the main melody only; false: every note found, with grace notes), runs
-// (stretches made already, as from bestRuns) and playable (phrases moved into the flute's range) }.
+// (stretches made already, as from bestRuns), playable (phrases moved into the flute's range),
+// easy (the easier version), follow (the beats follow tempo changes), beats (beat times known
+// already) and taps (tapped beat times) }.
 export function transcribe(track, levels, opts) {
   const o = Object.assign({ flute: 72, sameKey: true, sub: 2, octave: 0 }, opts || {});
   // o.notes: notes given exactly (a MIDI file, or notes corrected by ear): used as they are.
@@ -674,7 +892,8 @@ export function transcribe(track, levels, opts) {
   const from = o.from || 0, to = o.to || Infinity;
   const folded = foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
   // o.main (default): the main melody, plain; o.main false: every note found, with grace notes.
-  return fromNotes(o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable), o);
+  const list = o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable);
+  return fromNotes(track ? markGlides(list, track) : list, o);
 }
 
 // The rest of transcribe, from named notes: Sa, tempo, the flute's octave and the notation.
@@ -690,13 +909,22 @@ function fromNotes(notes, o, knownTonics) {
   const raw = notes.map(n => n.midi - base);
   const shift = bestOctave(raw) + o.octave;
   const semiOf = n => n.midi - base + shift;
-  // o.playable (Best to play): every phrase moved by octaves into the flute's range.
-  if (o.playable) notes = phraseOctaves(notes, semiOf);
+  // o.playable (Best to play): every phrase moved by octaves into the flute's range; o.easy: the
+  // easier version (which moves phrases too).
+  if (o.easy) notes = easier(notes, semiOf);
+  else if (o.playable) notes = phraseOctaves(notes, semiOf);
+  const scale = scaleOf(notes, sa);
   const semis = notes.map(semiOf);
   notes.forEach((n, k) => { n.semi = semis[k]; });
+  // The beats: o.beats (a MIDI file's), o.follow (follow the tempo as it changes), o.taps (tapped).
+  const grid = notes.length ? beatGrid(notes, bpm, tempo.phase, { follow: o.follow, beats: o.beats, taps: o.taps }) : [];
+  const inside = notes.length ? grid.filter(t => t >= notes[0].t0 && t <= notes[notes.length - 1].t1) : [];
+  const lineTimes = [];
   return {
-    notes, tune: Math.round(tune * 100), tonics, sa, bpm, phase: tempo.phase, shift, base,
+    notes, tune: Math.round(tune * 100), tonics, sa, bpm, phase: tempo.phase, shift, base, scale, grid,
+    tempoRange: o.follow || o.beats || o.taps ? tempoRange(inside) : null,
     fit: fitOf(semis), flute: bestFlute(notes, sa),
-    notation: o.layout === "phrases" ? toPhrases(notes, bpm, semiOf) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf),
+    notation: o.layout === "phrases" ? toPhrases(notes, bpm, semiOf, { grid, times: lineTimes }) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf, { grid, times: lineTimes }),
+    lineTimes,
   };
 }

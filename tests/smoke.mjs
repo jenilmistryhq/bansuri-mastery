@@ -975,6 +975,22 @@ try {
     check(dls.length === 3 && dls.every(n => /\.wav$/.test(n)), "transcribe: the recording, the notation and both together download as WAV files [" + dls.join(", ") + "]");
     await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "सा रे ग").click());
     check(/सा/.test(await page.$eval("#main .nview", e => e.innerText)), "transcribe: the notation can be shown in Devanagari");
+    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "S R G").click());
+    // Each line shows where it starts; its time plays that line (and picks it for practice).
+    await page.click("#main .nview .ntime").catch(() => {});
+    await sleep(150);
+    check(await page.$("#main .nview .nrow.nplaying") !== null && await page.$$eval("#main select[aria-label='Line to practise'] option", o => o.length).catch(() => 0) >= 1, "transcribe: a line's time plays it, and lines can be practised with the recording");
+    // Practise the line: the recording loops and the (fake) microphone's pass is scored.
+    await page.evaluate(() => { document.querySelector("#tr-phear").checked = false; [...document.querySelectorAll("#main .practice button")].find(b => /Start/.test(b.textContent)).click(); });
+    await page.waitForFunction(() => /^Pass 1 at \d+%: \d+ of \d+ notes right/.test((document.querySelector("#main .pout p") || {}).textContent || ""), { timeout: 20000 }).catch(() => {});
+    const pass1 = await page.$eval("#main .pout p", e => e.textContent).catch(() => "");
+    await page.evaluate(() => [...document.querySelectorAll("#main .practice button")].find(b => /Stop/.test(b.textContent)).click());
+    check(/^Pass 1 at \d+%/.test(pass1) && await page.$$eval("#main .pmarks .chip", c => c.length).catch(() => 0) >= 3, "transcribe: practising a line scores each pass, note by note [" + pass1 + "]");
+    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Easier").click());
+    const easy = (await page.$eval("#main textarea[aria-label^='Notation']", e => e.value)).replace(/[|_,-]/g, " ").replace(/\s+/g, " ").trim();
+    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "As played").click());
+    check(/S R G R S/.test(easy), "transcribe: the easier version of a plain tune keeps its notes [" + easy + "]");
+    check(await page.$("#tr-follow") !== null, "transcribe: the bars can follow tempo changes");
     // On a D flute, playing with the recording: C is komal Ni below Sa, so S R G R S is written n S R S n.
     await page.select("#main select[aria-label='Your flute']", "74");
     await sleep(200);
@@ -982,13 +998,34 @@ try {
     check(/n S R S n/.test(onD.replace(/\.n/g, "n").replace(/n'/g, "n")), "transcribe: on a D flute the same sound is written n S R S n [" + onD + "]");
     // A mono file: the singer is told apart by repetition, and the page says so.
     await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Singer").click());
-    await page.waitForFunction(() => /repetition/.test((document.querySelector("#main .partpick") || {}).textContent || "") && document.querySelector("#main .partpick .progressbar").hidden, { timeout: 30000 }).catch(() => {});
+    await page.waitForFunction(() => /repetition/.test((document.querySelector("#main .partpick") || {}).textContent || "") && document.querySelector("#main .partpick .trbusy").hidden, { timeout: 30000 }).catch(() => {});
     check(/repetition/.test(await page.$eval("#main .partpick", e => e.textContent).catch(() => "")) && /S/.test(await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "")), "transcribe: a mono recording's singer is found by repetition");
     await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Whole song").click());
+    // The analysis runs in a worker and can be cancelled: a long recording, cancelled at once.
+    {
+      const n3 = sr * 90, long = Buffer.alloc(44 + n3 * 2);
+      long.write("RIFF", 0); long.writeUInt32LE(36 + n3 * 2, 4); long.write("WAVEfmt ", 8); long.writeUInt32LE(16, 16); long.writeUInt16LE(1, 20); long.writeUInt16LE(1, 22);
+      long.writeUInt32LE(sr, 24); long.writeUInt32LE(sr * 2, 28); long.writeUInt16LE(2, 32); long.writeUInt16LE(16, 34); long.write("data", 36); long.writeUInt32LE(n3 * 2, 40);
+      for (let i = 0; i < n3; i++) long.writeInt16LE(Math.round(8000 * Math.sin(2 * Math.PI * 523.25 * i / sr) * (Math.floor(i / sr) % 2 ? 1 : 0.2)), 44 + i * 2);
+      const longPath = path.join(process.env.TEMP || process.env.TMPDIR || "/tmp", "bansuri-transcribe-long.wav");
+      fs.writeFileSync(longPath, long);
+      await (await page.$("#tr-file")).uploadFile(longPath);
+      await page.waitForFunction(() => { const b = [...document.querySelectorAll("#main .trbusy .btn")].find(x => x.textContent === "Cancel" && x.offsetParent !== null); if (b) b.click(); return !!b; }, { timeout: 15000 }).catch(() => {});
+      await page.waitForFunction(() => /^Cancelled/.test((document.querySelector("#main [role=status]") || {}).textContent || ""), { timeout: 5000 }).catch(() => {});
+      check(/^Cancelled/.test(await page.$eval("#main [role=status]", e => e.textContent).catch(() => "")), "transcribe: a long analysis can be cancelled");
+      fs.unlinkSync(longPath);
+      await page.evaluate(async () => { const m = await import(new URL("app/js/captures.js", document.baseURI).href); for (const c of await m.listCaptures()) if (/long/.test(c.name)) await m.deleteCapture(c.id); });
+      await go("/today");
+      await go("/transcribe");
+      await page.waitForSelector("#main .caprow .btn.primary", { timeout: 5000 }).catch(() => {});
+      // Back to the short recording.
+      await page.evaluate(() => [...document.querySelectorAll("#main .caprow")].find(r => /bansuri-transcribe-test/.test(r.textContent)).querySelector(".btn.primary").click());
+      await page.waitForSelector(".trresults:not([hidden])", { timeout: 20000 }).catch(() => {});
+    }
     // Kept in the app: the file is listed under Your recordings; Save keeps an edited notation,
     // and Open brings the recording back with it, without any file.
     await page.waitForFunction(() => /bansuri-transcribe-test/.test((document.querySelector("#main .caprow") || {}).textContent || ""), { timeout: 5000 }).catch(() => {});
-    check(/bansuri-transcribe-test/.test(await page.$eval("#main .caprow", e => e.innerText).catch(() => "")), "transcribe: the opened file is kept under Your recordings");
+    check(/bansuri-transcribe-test/.test(await page.$eval("#main .caprow", e => e.innerText).catch(() => "")), "transcribe: the opened file is kept under Your recordings [" + await page.$$eval("#main .caprow b", r => r.map(x => x.textContent).join(", ")).catch(() => "") + "]");
     await page.evaluate(() => { const t = document.querySelector("#main textarea[aria-label^='Notation']"); t.value = "S R G R S - - - ||"; [...document.querySelectorAll("#main button")].find(b => b.textContent === "Save").click(); });
     await page.waitForFunction(() => /notation saved/.test((document.querySelector("#main .caprow") || {}).textContent || ""), { timeout: 5000 }).catch(() => {});
     await go("/transcribe");
@@ -1083,6 +1120,9 @@ try {
       const dl2 = await page.evaluate(() => window.__dl);
       check(dl2.some(n => /\.mid$/.test(n)), "transcribe: the notation saves as a MIDI file [" + dl2.join(", ") + "]");
       check(await page.$("#main .trsteps") !== null, "transcribe: a bar of links to the steps");
+      // A backup carries My songs and Transcribe's recordings.
+      const bk = await page.evaluate(async () => { const m = await import(new URL("app/js/backup.js", document.baseURI).href); const o = await m.backupWith(true); return { songs: /Smoke tune/.test((o.stores || {})["bansuri.mysongs"] || ""), caps: (o.captures || []).length, data: /^data:/.test(((o.captures || [])[0] || {}).data || "") }; }).catch(e => ({ err: String(e) }));
+      check(bk.songs && bk.caps >= 1 && bk.data, "backup: My songs and Transcribe's recordings are in the backup [" + JSON.stringify(bk) + "]");
       fs.unlinkSync(midPath);
       await go("/songs");
       check(/my songs/.test(await text().catch(() => "")) && /smoke tune/.test(await text().catch(() => "")), "songs: a notation added from Transcribe is under My songs");

@@ -1,7 +1,7 @@
 // Settings (#/settings): flute, display, placement, backup/restore, reset, about.
 import { h, toast, today } from "../util.js";
 import { errorList, clearErrors, problemReport } from "../errors.js";
-import { getState, update, backupObject, restoreFrom, resetAll } from "../state.js";
+import { getState, update, restoreFrom, resetAll } from "../state.js";
 import { getPlan, current } from "../course.js";
 import { getSettings, setSettings, saHz } from "../core/settings.js";
 import { playNote } from "../core/audio.js";
@@ -10,12 +10,12 @@ import { fluteFinder, micIntro, countdown } from "../core/live.js";
 import { placementTest } from "../placement.js";
 import { listenMic, micStats } from "../core/listen.js";
 import { ac } from "../core/audio.js";
-import { listRecordings, saveRecording, clearRecordings, blobToDataUrl } from "../recorder.js";
+import { saveRecording, clearRecordings } from "../recorder.js";
 import { clearCaptures } from "../captures.js";
 import { sayButton, saveVoiceOffline, modelReady, voiceSizeMB, removeSavedVoice } from "../voice.js";
 import { fingSvg } from "../core/fingers.js";
 import { enableReminder, disableReminder, remindersSupported } from "../reminder.js";
-import { saveBackup } from "../backup.js";
+import { saveBackup, backupWith, restoreCaptures } from "../backup.js";
 import { calibrationWidget } from "../calibrate.js";
 import { encodeMove, moveLink, QR_LIMIT } from "../move.js";
 
@@ -251,12 +251,7 @@ export async function render(main) {
   const withRec = h("input", { type: "checkbox", id: "st-withrec" });
   const exportBtn = h("button", { type: "button", class: "btn primary" }, "Download backup");
   exportBtn.addEventListener("click", async () => {
-    const obj = backupObject();
-    if (withRec.checked) {
-      const recs = await listRecordings();
-      obj.recordings = [];
-      for (const r of recs) obj.recordings.push(Object.assign({}, r, { blob: undefined, data: await blobToDataUrl(r.blob) }));
-    }
+    const obj = await backupWith(withRec.checked);
     download("bansuri-backup-" + today() + ".json", JSON.stringify(obj));
     update(st => { st.lastBackup = today(); });
     toast("Backup downloaded.");
@@ -314,6 +309,7 @@ export async function render(main) {
           await saveRecording(rec, { count: false });
         }
       }
+      await restoreCaptures(obj.captures, b64ToBlob);
       toast("Backup restored.");
       location.hash = "#/today";
     } catch (e) { toast(String(e.message || "That file could not be read.")); }
@@ -327,7 +323,7 @@ export async function render(main) {
   }).catch(() => {});
   page.append(h("section", { class: "card" }, h("h2", null, "Your data"), storeLine,
     h("p", { class: "small muted" }, "Progress and recordings live only in this browser. Back up regularly, and to move to another device, download a backup here and restore it there."),
-    h("label", { class: "check", for: "st-withrec" }, withRec, "Include recordings (larger file)"),
+    h("label", { class: "check", for: "st-withrec" }, withRec, "Include recordings (larger file): the Journal's and Transcribe's"),
     h("div", { class: "row" }, exportBtn, shareBtn, csvBtn),
     h("h3", null, "Move to another device"), h("p", { class: "small muted" }, "No account needed: a link carries your progress to your other phone or computer."), h("div", { class: "row" }, moveBtn), moveOut,
     h("label", { class: "field", for: "st-import" }, "Restore from a backup file (replaces current progress)", fileIn)));

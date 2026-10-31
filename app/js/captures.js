@@ -43,6 +43,13 @@ export async function addCapture(blob, name, seconds) {
   return rec;
 }
 
+// A capture from a backup, as it was (same id; the oldest beyond MAX are removed).
+export async function putCapture(rec) {
+  await tx("readwrite", s => s.put(rec));
+  const all = await listCaptures();
+  for (const old of all.slice(MAX)) await deleteCapture(old.id);
+}
+
 export async function patchCapture(id, patch) {
   const rec = await getCapture(id);
   if (!rec) return null;

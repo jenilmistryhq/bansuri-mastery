@@ -20,7 +20,8 @@ const FAMILY = ["Piano", "Chromatic percussion", "Organ", "Guitar", "Bass", "Str
 export function isMidi(bytes) { return bytes.length > 14 && bytes[0] === 0x4d && bytes[1] === 0x54 && bytes[2] === 0x68 && bytes[3] === 0x64; }
 
 // Returns { tracks: [{ name, program, family, channel, drums, notes: [{ t0, t1, midi, vel }] }], bpm,
-// tempoChanges, key: { sf, mi } | null, timeSig: [num, den] | null, duration } or throws an Error.
+// tempoChanges, key: { sf, mi } | null, timeSig: [num, den] | null, duration, beats (the time of
+// every quarter note) } or throws an Error.
 export function parseMidi(bytes) {
   if (!isMidi(bytes)) throw new Error("This is not a MIDI file.");
   const r = reader(bytes);
@@ -83,7 +84,10 @@ export function parseMidi(bytes) {
     const channel = tr.channels.size ? [...tr.channels][0] : null;
     return { index: i, name: tr.name, program: tr.program, family: tr.program === null ? "" : FAMILY[tr.program >> 3], channel, drums: channel === 9, notes };
   }).filter(t => t.notes.length);
-  return { tracks, bpm: Math.round(60e6 / map[0].us), tempoChanges: map.length - 1, key, timeSig, duration };
+  // Every beat (quarter note) through the tempo map, so the bars follow tempo changes exactly.
+  const beats = [];
+  if (!smpte) for (let k = 0; beats.length < 20000; k++) { const t = secOf(k * division); beats.push(t); if (t > duration) break; }
+  return { tracks, bpm: Math.round(60e6 / map[0].us), tempoChanges: map.length - 1, key, timeSig, duration, beats };
 }
 
 // How likely a track is the melody: one note at a time, in a singing range, with a melody-like

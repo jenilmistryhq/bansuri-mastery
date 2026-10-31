@@ -99,9 +99,14 @@ export function addLog(entry) {
 
 export function resetAll() { state = fresh(); save(); }
 
-// Backup: a JSON document. Recordings are added by the caller (recorder.js) when requested.
+// Backup: a JSON document. Recordings are added by the caller (backup.js) when requested.
+// Besides progress and settings it carries what the learner made: My songs, saved notations,
+// compositions, learned songs, students and coach history (STORES, as stored).
+const STORES = ["bansuri.mysongs", "bansuri.transcribed", "bansuri.compose.saved", "bansuri.songs.learned", "bansuri.students", "bansuri.coach.history"];
 export function backupObject() {
-  return { app: "bansuri-mastery", kind: "backup", exportedAt: new Date().toISOString(), progress: state, settings: readSettingsRaw() };
+  const stores = {};
+  for (const k of STORES) { try { const v = localStorage.getItem(k); if (v !== null) stores[k] = v; } catch (e) { /* storage unavailable */ } }
+  return { app: "bansuri-mastery", kind: "backup", exportedAt: new Date().toISOString(), progress: state, settings: readSettingsRaw(), stores };
 }
 
 function readSettingsRaw() {
@@ -113,6 +118,12 @@ export function restoreFrom(obj) {
   state = migrate(obj.progress);
   if (obj.settings && typeof obj.settings === "object") {
     try { localStorage.setItem("bansuri.settings", JSON.stringify(obj.settings)); } catch (e) { /* ignore */ }
+  }
+  // Only the known keys, and only values that are valid JSON.
+  if (obj.stores && typeof obj.stores === "object") for (const k of STORES) {
+    const v = obj.stores[k];
+    if (typeof v !== "string") continue;
+    try { JSON.parse(v); localStorage.setItem(k, v); } catch (e) { /* not valid, or storage full */ }
   }
   save();
 }
