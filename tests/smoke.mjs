@@ -956,6 +956,15 @@ try {
     const sa = await page.$eval("#main select[aria-label='Sa of the recording']", e => e.options[e.selectedIndex].textContent).catch(() => "");
     check(/^C/.test(sa), "transcribe: the recording's Sa is found (C) [" + sa + "]");
     await shot("20-transcribe-result");
+    // The notation view, the two layouts, and the players.
+    check(/S/.test(await page.$eval("#main .nview", e => e.innerText).catch(() => "")), "transcribe: the notation is shown as phrases");
+    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Bars and beats").click());
+    check(await page.$("#main .nview .nbeat") !== null, "transcribe: Bars and beats shows the notes in beats");
+    await page.click("#main button[aria-label='Play: Both together']");
+    await sleep(400);
+    check(await page.$("#main button[aria-label='Stop: Both together']") !== null, "transcribe: the recording and the notes found play together");
+    await page.click("#main button[aria-label='Stop: Both together']");
+    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Phrases").click());
     // On a D flute, playing with the recording: C is komal Ni below Sa, so S R G R S is written n S R S n.
     await page.select("#main select[aria-label='Your flute']", "74");
     await sleep(200);

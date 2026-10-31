@@ -17,7 +17,7 @@ const YAMAN = [[-1, 0.5], [2, 0.5], [4, 1], [6, 0.5], [4, 0.5], [2, 1], [-1, 0.5
 // Synthesis: harmonics, vibrato, a short glide into each new note, breath noise, and a short gap
 // before a repeated note (re-articulation). Optional drone on Sa and Pa underneath.
 function synth(melody, o) {
-  o = Object.assign({ sr: 22050, sa: 62, bpm: 96, vibrato: 30, detune: 0, harmonics: [1, 0.5, 0.3, 0.15], noise: 0.02, drone: 0, chords: 0, lead: 0.4 }, o);
+  o = Object.assign({ sr: 22050, sa: 62, bpm: 96, vibrato: 30, detune: 0, harmonics: [1, 0.5, 0.3, 0.15], noise: 0.02, drone: 0, chords: 0, harmonium: 0, tabla: 0, lead: 0.4 }, o);
   const beat = 60 / o.bpm;
   const total = o.lead + melody.reduce((a, [, b]) => a + b, 0) * beat + 0.5;
   const n = Math.floor(total * o.sr), out = new Float32Array(n);
@@ -51,6 +51,19 @@ function synth(melody, o) {
     const tt = i / o.sr, k = Math.floor(tt / (2 * beat)) % 2, ch = k ? [5, 9, 12] : [0, 4, 7];
     for (const c of ch) out[i] += o.chords * Math.sin(2 * Math.PI * 440 * Math.pow(2, (o.sa - 12 + c - 69) / 12) * tt);
   }
+  // Harmonium-like chords: reedy (many harmonics), in the melody's own octave, changing every 2 beats.
+  if (o.harmonium) for (let i = 0; i < n; i++) {
+    const tt = i / o.sr, k = Math.floor(tt / (2 * beat)) % 2, ch = k ? [5, 9, 12] : [0, 4, 7];
+    for (const c of ch) { const f = 440 * Math.pow(2, (o.sa + c - 69) / 12); for (let h = 1; h <= 6; h++) out[i] += o.harmonium * Math.pow(0.7, h - 1) * Math.sin(2 * Math.PI * f * h * tt + h); }
+  }
+  // Tabla-like hits on every beat: a low thump and a burst of noise, both decaying fast.
+  if (o.tabla) for (let k = 0; k * beat < total; k++) {
+    const i0 = Math.floor((o.lead + k * beat) * o.sr);
+    for (let i = 0; i < 0.15 * o.sr && i0 + i < n; i++) {
+      const tt = i / o.sr, env = Math.exp(-tt * 30);
+      out[i0 + i] += o.tabla * env * (Math.sin(2 * Math.PI * 110 * tt * (1 + 0.5 * Math.exp(-tt * 40))) + 0.8 * rnd());
+    }
+  }
   return { data: out, sr: o.sr };
 }
 
@@ -63,9 +76,9 @@ function errorRate(got, want) {
   for (let i = 1; i <= got.length; i++) for (let j = 1; j <= want.length; j++) D[i][j] = Math.min(D[i - 1][j - 1] + (got[i - 1] === want[j - 1] ? 0 : 1), D[i - 1][j] + 1, D[i][j - 1] + 1);
   return D[got.length][want.length] / want.length;
 }
-const run = async (melody, o, opts) => {
+const run = async (melody, o, opts, engine) => {
   const { data, sr } = synth(melody, o);
-  const { track, levels } = await T.pitchTrack(data, sr);
+  const { track, levels } = await T.pitchTrack(data, sr, { engine });
   const r = T.transcribe(track, levels, opts);
   // DBG=1 prints what was found, for tuning.
   if (process.env.DBG) console.log(JSON.stringify({ bpm: r.bpm, phase: r.phase, notes: r.notes.map(n => [n.t0.toFixed(2), n.t1.toFixed(2), n.midi]) }));
@@ -129,15 +142,20 @@ await test("a low male voice (Sa = A2 region) is tracked", async () => {
   assert.ok(Math.min(errorRate(got, want), errorRate(got, want.map(s => s + 12)), errorRate(got, want.map(s => s - 12))) <= 0.1, r.notation);
 });
 
-// Not a pass/fail check: how the error grows as the accompaniment gets louder. Printed so the
-// limits stay visible (a melody under equal-level chords is beyond this method).
-await test("accompaniment: error rate by chord loudness (printed)", async () => {
-  const rows = [];
-  for (const level of [0.03, 0.06, 0.1, 0.15]) {
-    const r = await run(TWINKLE, { sa: 62, chords: level }, { flute: 74 });
-    rows.push(level + ": " + Math.round(errorRate(notesOf(r.notation), wantNotes(TWINKLE, 0)) * 100) + "% notes wrong, Sa " + (r.sa % 12 === 2 ? "right" : "wrong"));
+// How the error grows as the accompaniment gets louder, for both pitch methods. Printed so the
+// limits stay visible; the melody method must stay usable with each chord note at half the melody's level.
+await test("accompaniment: error by loudness, melody method vs single pitch (printed)", async () => {
+  const pct = r => Math.round(errorRate(notesOf(r.notation), wantNotes(TWINKLE, 0)) * 100);
+  for (const [label, mix] of [["chords", l => ({ chords: l })], ["chords + tabla", l => ({ chords: l, tabla: l * 1.5, drone: l / 2 })], ["harmonium (same octave) + tabla", l => ({ harmonium: l, tabla: l * 1.5 })]]) {
+    const rows = [];
+    for (const level of [0.06, 0.1, 0.15, 0.2, 0.3]) {
+      const m = await run(TWINKLE, { sa: 62, ...mix(level) }, { flute: 74 }), y = await run(TWINKLE, { sa: 62, ...mix(level) }, { flute: 74 }, "yin");
+      rows.push(level + ": " + pct(m) + "% (yin " + pct(y) + "%)" + (m.sa % 12 === 2 ? "" : " Sa wrong"));
+      if (process.env.SHOWMIX) console.log(label, level, m.sa, m.notes.map(n => n.midi + "@" + n.t0.toFixed(2)).join(" "));
+      if (level === 0.15 && !label.startsWith("harmonium") && !process.env.NOASSERT) assert.ok(pct(m) <= 15, label + " at 0.15: the melody method got " + pct(m) + "% wrong");
+    }
+    console.log("       " + label + ", per-note level vs melody 0.3, notes wrong: " + rows.join("; "));
   }
-  console.log("       chords per note vs melody 0.3: " + rows.join("; "));
 });
 
 await test("notation helpers: beats compress, fit and flute names", () => {

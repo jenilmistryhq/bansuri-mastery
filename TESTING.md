@@ -6,6 +6,7 @@
 npm ci
 npx eslint .    # lint (CI runs it first)
 npm test        # unit tests, plan test, transcription accuracy test, headless-browser smoke test
+node tests/transcribe-real.mjs [--verbose]   # notation from real bansuri recordings (app/audio), scored (CI runs it)
 SITE_ROOT=_site node tests/smoke.mjs   # the same smoke test against the assembled site (CI does this)
 node tests/webkit.mjs   # Safari's engine (WebKit), iPhone 13 size (CI does this; first: npx playwright-core install webkit)
 node tests/visual.mjs   # local only: screenshots compared with tests/visual/ baselines (--update after an intended change)

@@ -24,8 +24,11 @@ export function monoDown(channels, sr) {
 
 // Pitch (MIDI number, fractional) and loudness every HOP seconds. Voices go down to about 75 Hz,
 // so the range is wider than the flute tuner's. Resolves { track, levels, seconds, truncated }.
+// opts.engine: "melody" (default: follows the main melody through accompaniment, see melodyTrack)
+// or "yin" (one pitch at a time; fine for a solo instrument).
 export async function pitchTrack(data, sr, opts) {
-  const o = Object.assign({ maxSeconds: 360, onProgress: null }, opts || {});
+  const o = Object.assign({ maxSeconds: 360, onProgress: null, engine: "melody" }, opts || {});
+  if (o.engine !== "yin") return melodyTrack(data, sr, o);
   const size = 1024, hop = Math.round(sr * HOP);
   const end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - size;
   const track = [], levels = [];
@@ -40,6 +43,151 @@ export async function pitchTrack(data, sr, opts) {
     if (n % 250 === 249) { if (o.onProgress) o.onProgress(Math.round(pos / end * 100)); await new Promise(res => setTimeout(res, 0)); }
   }
   return { track: cleanTrack(track), levels, seconds: Math.max(0, end) / sr, truncated: data.length - size > end };
+}
+
+// ---- Melody through accompaniment ----
+// The usual way to pull a melody out of a mix (harmonic summation, as in Salamon and Gomez's
+// MELODIA): each 20 ms, the spectrum's peaks vote for every pitch they could be a harmonic of
+// (fewer votes for higher harmonics); sounds that hold still through the whole recording (a
+// tanpura, a drone, a sustained pad) are subtracted bin by bin; then a path through the votes is
+// chosen that is strong and moves smoothly (a dynamic programme, with a cost for every jump).
+// Frames where the chosen pitch is weak count as silence.
+const FFT_N = 2048, BIN = 0.2, LO_MIDI = 69 + 12 * Math.log2(75 / 440), HI_MIDI = 69 + 12 * Math.log2(2200 / 440);
+const NB = Math.ceil((HI_MIDI - LO_MIDI) / BIN) + 1;
+
+function fft(re, im) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) { let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let cr = 1, ci = 0;
+      for (let k = 0; k < len / 2; k++) {
+        const a = i + k, b = a + len / 2, xr = re[b] * cr - im[b] * ci, xi = re[b] * ci + im[b] * cr;
+        re[b] = re[a] - xr; im[b] = im[a] - xi; re[a] += xr; im[a] += xi;
+        const t = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = t;
+      }
+    }
+  }
+}
+
+// Votes for one frame: Float32Array(NB), pitch bins of 20 cents from 75 Hz.
+function salience(frame, sr, win, re, im) {
+  re.fill(0); im.fill(0);
+  for (let i = 0; i < frame.length; i++) re[i] = frame[i] * win[i];
+  fft(re, im);
+  const half = FFT_N / 2, mag = new Float32Array(half);
+  let max = 0;
+  for (let k = 1; k < half; k++) { mag[k] = Math.hypot(re[k], im[k]); if (mag[k] > max) max = mag[k]; }
+  const out = new Float32Array(NB);
+  if (max < 1e-4) return out;
+  const peaks = [];
+  for (let k = 2; k < half - 1; k++) {
+    if (mag[k] > mag[k - 1] && mag[k] >= mag[k + 1] && mag[k] > max * 0.01) {
+      const a = Math.log(mag[k - 1] + 1e-9), b = Math.log(mag[k]), c = Math.log(mag[k + 1] + 1e-9), den = a - 2 * b + c;
+      const d = den ? 0.5 * (a - c) / den : 0, f = (k + d) * sr / FFT_N;
+      if (f >= 70 && f <= 5000) peaks.push([f, Math.exp(b - 0.25 * (a - c) * d)]);
+    }
+  }
+  peaks.sort((x, y) => y[1] - x[1]);
+  for (const [f, amp] of peaks.slice(0, 30)) {
+    const w0 = Math.sqrt(amp / max);
+    for (let h = 1; h <= 8; h++) {
+      const m = 69 + 12 * Math.log2(f / h / 440), c = (m - LO_MIDI) / BIN;
+      if (c < -5 || c > NB + 5) continue;
+      const w = w0 * Math.pow(0.8, h - 1);
+      for (let b = Math.max(0, Math.ceil(c - 5)); b <= Math.min(NB - 1, Math.floor(c + 5)); b++) {
+        const x = Math.cos(Math.PI / 2 * (b - c) / 5); out[b] += w * x * x;
+      }
+    }
+  }
+  return out;
+}
+
+export async function melodyTrack(data, sr, o) {
+  const hop = Math.round(sr * HOP), end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - FFT_N;
+  const win = new Float32Array(FFT_N); for (let i = 0; i < FFT_N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_N - 1));
+  const re = new Float64Array(FFT_N), im = new Float64Array(FFT_N);
+  const sal = [], levels = [], yins = [];
+  for (let pos = 0, n = 0; pos < end; pos += hop, n++) {
+    const frame = data.subarray(pos, pos + FFT_N);
+    sal.push(salience(frame, sr, win, re, im));
+    // A very confident single-pitch reading of the frame's middle, to check the octave below.
+    const y = yin(frame.subarray(FFT_N / 2 - 512, FFT_N / 2 + 512), sr, 75, 2200, 0.1);
+    yins.push(y && y.clarity >= 0.93 ? 69 + 12 * Math.log2(y.f / 440) : null);
+    const mid = frame.subarray(FFT_N / 2 - hop / 2, FFT_N / 2 + hop / 2);
+    let sq = 0; for (let i = 0; i < mid.length; i++) sq += mid[i] * mid[i];
+    levels.push(Math.sqrt(sq / mid.length));
+    if (n % 200 === 199) { if (o.onProgress) o.onProgress(Math.round(pos / end * 90)); await new Promise(res => setTimeout(res, 0)); }
+  }
+  const T = sal.length;
+  if (!T) return { track: [], levels, seconds: 0, truncated: false };
+  // What holds still all through: the 40th percentile of each bin over time (sampled), subtracted.
+  const step = Math.max(1, Math.floor(T / 400)), base = new Float32Array(NB), col = [];
+  for (let b = 0; b < NB; b++) {
+    col.length = 0;
+    for (let t = 0; t < T; t += step) col.push(sal[t][b]);
+    col.sort((x, y) => x - y);
+    base[b] = col[Math.floor(col.length * 0.4)];
+  }
+  for (let t = 0; t < T; t++) { const v = sal[t]; for (let b = 0; b < NB; b++) v[b] = Math.max(0, v[b] - base[b]); }
+  // Drum strokes are short bursts that vote everywhere at once; a 5-frame (100 ms) median of each
+  // pitch over time removes them and keeps notes, which last longer.
+  const orig = sal.map(v => v.slice());
+  {
+    const w = [0, 0, 0, 0, 0];
+    for (let t = 2; t < T - 2; t++) for (let b = 0; b < NB; b++) {
+      for (let k = 0; k < 5; k++) w[k] = orig[t - 2 + k][b];
+      w.sort((x, y) => x - y); sal[t][b] = w[2];
+    }
+  }
+  // The path: strong and smooth. Cost per frame = -log(share of the frame's strongest vote), plus
+  // 0.15 per 20-cent step moved (within 2.4 semitones a frame), or a jump anywhere for a fixed cost.
+  const W = 12, LAM = 0.15, JUMP = 2.5;
+  let cost = new Float64Array(NB), next = new Float64Array(NB);
+  const back = new Array(T), emit = (v, mx, b) => -Math.log((v[b] + 1e-6 * mx + 1e-9) / (mx + 1e-9));
+  { const v = sal[0]; let mx = 0; for (let b = 0; b < NB; b++) mx = Math.max(mx, v[b]); for (let b = 0; b < NB; b++) cost[b] = emit(v, mx, b); }
+  for (let t = 1; t < T; t++) {
+    const v = sal[t]; let mx = 0; for (let b = 0; b < NB; b++) mx = Math.max(mx, v[b]);
+    let gmin = Infinity, garg = 0; for (let b = 0; b < NB; b++) if (cost[b] < gmin) { gmin = cost[b]; garg = b; }
+    const from = new Int16Array(NB);
+    for (let b = 0; b < NB; b++) {
+      let best = gmin + JUMP, arg = garg;
+      for (let r = Math.max(0, b - W); r <= Math.min(NB - 1, b + W); r++) { const c = cost[r] + LAM * Math.abs(r - b); if (c < best) { best = c; arg = r; } }
+      next[b] = best + emit(v, mx, b); from[b] = arg;
+    }
+    back[t] = from;
+    const tmp = cost; cost = next; next = tmp;
+    if (t % 400 === 0) { if (o.onProgress) o.onProgress(90 + Math.round(t / T * 10)); await new Promise(res => setTimeout(res, 0)); }
+  }
+  let b = 0; for (let k = 1; k < NB; k++) if (cost[k] < cost[b]) b = k;
+  const path = new Int16Array(T); path[T - 1] = b;
+  for (let t = T - 1; t > 0; t--) { b = back[t][b]; path[t - 1] = b; }
+  // Voicing: the path's strength against the typical strength where there is sound.
+  const strength = Array.from(path, (pb, t) => sal[t][pb]);
+  let loud = 0; for (const l of levels) if (l > loud) loud = l;
+  const sounding = strength.filter((x, t) => levels[t] > loud * 0.05).sort((x, y) => x - y);
+  const ref = sounding.length ? sounding[Math.floor(sounding.length * 0.5)] : 0;
+  const track = Array.from(path, (pb, t) => {
+    if (levels[t] < loud * 0.02 || strength[t] < ref * 0.3) return null;
+    const v = sal[t], a = pb > 0 ? v[pb - 1] : 0, c = pb < NB - 1 ? v[pb + 1] : 0, den = a - 2 * v[pb] + c;
+    const d = den < 0 ? Math.max(-0.5, Math.min(0.5, 0.5 * (a - c) / den)) : 0;
+    const m = LO_MIDI + (pb + d) * BIN, y = yins[t];
+    // Harmonic votes can settle an octave (or two) below a clean note; a
+    // confident single-pitch reading exactly that far above wins.
+    if (y !== null) for (const k of [12, 24]) if (Math.abs(y - m - k) < 0.4) return y;
+    return m;
+  });
+  // Breaks in the melody, such as the short gap before a repeated note: a dip in the loudness (clear
+  // in a solo recording) or in the melody's own strength before the drum filter (clearer when
+  // accompaniment fills the loudness). Their product dips when either does.
+  const own = Array.from(path, (pb, t) => levels[t] * orig[t][pb]);
+  return { track: cleanTrack(track), levels: own, seconds: Math.max(0, end) / sr, truncated: data.length - FFT_N > end };
 }
 
 // The detector's usual slips: a frame an octave away from its neighbours is folded back, a single
@@ -66,61 +214,83 @@ export function cleanTrack(raw) {
   return out;
 }
 
-// How far the recording sits from A4 = 440 tuning, in semitones (-0.5 to 0.5): a circular mean
-// over steady frames, so a song tuned a little sharp or flat still snaps to the right notes.
-export function tuningOf(track) {
-  let x = 0, y = 0;
-  for (let i = 1; i < track.length - 1; i++) {
-    const a = track[i - 1], b = track[i], c = track[i + 1];
-    if (a === null || b === null || c === null || Math.abs(a - b) > 0.1 || Math.abs(b - c) > 0.1) continue;
-    x += Math.cos(2 * Math.PI * b); y += Math.sin(2 * Math.PI * b);
-  }
-  return x || y ? Math.atan2(y, x) / (2 * Math.PI) : 0;
-}
-
-// Notes: a new note starts when the pitch moves more than 0.75 semitone from the current one (so
-// vibrato and andolan stay one note), at a silence, or at a clear dip in loudness (a repeated note).
-// Runs shorter than 80 ms are glides between notes (meend) or grace notes, and are left out.
-export function segmentNotes(track, levels, tune) {
+// Steady stretches of pitch, not yet named: a stretch goes on while the pitch stays within 0.6
+// semitone of its recent average (so vibrato and andolan stay one note) and ends at a silence or a
+// clear dip in loudness (a repeated note). Stretches shorter than 80 ms are glides (meend) or grace
+// notes and are left out. Each keeps its median pitch, unrounded: naming it is labelNotes' job.
+export function stableRuns(track, levels) {
   const runs = [];
   let cur = null;
   const close = i => { if (cur) { cur.i1 = i - 1; runs.push(cur); cur = null; } };
   for (let i = 0; i < track.length; i++) {
     const m = track[i];
     if (m === null) { close(i); continue; }
-    const x = m - tune;
-    if (cur && Math.abs(x - cur.q) <= 0.75) { cur.vals.push(x); continue; }
+    if (cur) {
+      const recent = cur.vals.slice(-6), avg = recent.reduce((a, b) => a + b, 0) / recent.length;
+      if (Math.abs(m - avg) <= 0.6) { cur.vals.push(m); continue; }
+    }
     close(i);
-    cur = { q: Math.round(x), i0: i, vals: [x] };
+    cur = { i0: i, vals: [m] };
   }
   close(track.length);
-  // Split at loudness dips: a repeated note sung or tongued again without a silence between.
   const split = [];
   for (const r of runs) {
     const lv = levels.slice(r.i0, r.i1 + 1), med = lv.slice().sort((a, b) => a - b)[lv.length >> 1];
     let start = r.i0, cut = false;
     for (let i = r.i0 + MIN_NOTE; i <= r.i1 - MIN_NOTE; i++) {
-      if (levels[i] < 0.45 * med && levels[i] <= levels[i - 1] && levels[i] <= levels[i + 1]) { split.push({ q: r.q, i0: start, i1: i - 1, vals: r.vals.slice(start - r.i0, i - r.i0), cut }); start = i + 1; cut = true; i += MIN_NOTE; }
+      if (levels[i] < 0.45 * med && levels[i] <= levels[i - 1] && levels[i] <= levels[i + 1]) { split.push({ i0: start, i1: i - 1, vals: r.vals.slice(start - r.i0, i - r.i0), cut }); start = i + 1; cut = true; i += MIN_NOTE; }
     }
-    split.push({ q: r.q, i0: start, i1: r.i1, vals: r.vals.slice(start - r.i0), cut });
+    split.push({ i0: start, i1: r.i1, vals: r.vals.slice(start - r.i0), cut });
   }
-  // Join a note broken by a glide-length wobble to the same note (but not one split at a dip).
-  const long = split.filter(r => r.i1 - r.i0 + 1 >= MIN_NOTE);
+  const median = v => v.slice().sort((a, b) => a - b)[v.length >> 1];
   const joined = [];
-  for (const r of long) {
+  for (const r of split.filter(x => x.i1 - x.i0 + 1 >= MIN_NOTE)) {
     const p = joined[joined.length - 1];
-    if (p && p.q === r.q && !r.cut && r.i0 - p.i1 <= 4 && track.slice(p.i1 + 1, r.i0).every(v => v !== null)) { p.i1 = r.i1; p.vals = p.vals.concat(r.vals); }
+    // A note broken by a short wobble joins back up (not one split at a loudness dip).
+    if (p && !r.cut && r.i0 - p.i1 <= 4 && Math.abs(median(p.vals) - median(r.vals)) < 0.4 && track.slice(p.i1 + 1, r.i0).every(v => v !== null)) { p.i1 = r.i1; p.vals = p.vals.concat(r.vals); }
     else joined.push({ ...r });
   }
-  return joined.map(r => {
-    const v = r.vals.slice().sort((a, b) => a - b), med = v[v.length >> 1];
-    return { t0: r.i0 * HOP, t1: (r.i1 + 1) * HOP, midi: r.q, cents: Math.round((med - r.q) * 100) };
-  });
+  return joined.map(r => ({ t0: r.i0 * HOP, t1: (r.i1 + 1) * HOP, p: median(r.vals) }));
 }
 
-// The recording's Sa: each candidate pitch class is scored by how well the notes' durations fit
-// where Sa, Pa and the other notes of a scale usually sit, plus a bonus for the last note (songs and
-// alap usually end on Sa). Returns all 12, most likely first: [{ pc, score }].
+// Names each stretch as a note. Players drift (a flute warms up, a singer sags) and real
+// instruments are not tuned in equal temperament, so the reference is allowed to move slowly: a
+// dynamic programme over a tuning offset (-0.6 to +0.6 semitone, in 2-cent steps) picks the path
+// that keeps every note close to a whole semitone while changing as little as possible over time.
+// A second pass makes rarely used notes a little less likely, so a Ga played 40 cents low reads
+// as Ga, not komal Ga, when komal Ga is not otherwise in the music.
+export function labelNotes(runs) {
+  if (!runs.length) return [];
+  const OFF = []; for (let k = -30; k <= 30; k++) OFF.push(k / 50);
+  const pass = rare => {
+    const n = runs.length, S = OFF.length, cost = new Float64Array(S), back = [];
+    const emit = (p, o) => { const q = Math.round(p - o), d = p - o - q; return d * d / 0.045 + o * o * 0.3 + (rare && rare.has(((q % 12) + 12) % 12) ? 1.5 : 0); };
+    for (let s = 0; s < S; s++) cost[s] = emit(runs[0].p, OFF[s]);
+    for (let j = 1; j < n; j++) {
+      const dt = Math.max(0.1, (runs[j].t0 + runs[j].t1 - runs[j - 1].t0 - runs[j - 1].t1) / 2), sig = 0.04 + 0.05 * dt, k2 = 1 / (2 * sig * sig);
+      const next = new Float64Array(S), from = new Int16Array(S);
+      for (let s = 0; s < S; s++) {
+        let best = Infinity, arg = 0;
+        for (let r = 0; r < S; r++) { const d = OFF[s] - OFF[r], c = cost[r] + d * d * k2; if (c < best) { best = c; arg = r; } }
+        next[s] = best + emit(runs[j].p, OFF[s]); from[s] = arg;
+      }
+      back.push(from); cost.set(next);
+    }
+    let s = 0; for (let k = 1; k < S; k++) if (cost[k] < cost[s]) s = k;
+    const path = new Array(n); path[n - 1] = s;
+    for (let j = n - 1; j > 0; j--) { s = back[j - 1][s]; path[j - 1] = s; }
+    return runs.map((r, j) => { const o = OFF[path[j]], q = Math.round(r.p - o); return { t0: r.t0, t1: r.t1, midi: q, cents: Math.round((r.p - o - q) * 100), off: o }; });
+  };
+  const first = pass(null);
+  const share = new Array(12).fill(0); let tot = 0;
+  for (const nt of first) { const d = nt.t1 - nt.t0; share[((nt.midi % 12) + 12) % 12] += d; tot += d; }
+  const rare = new Set(share.map((x, pc) => x / tot < 0.04 ? pc : -1).filter(pc => pc >= 0));
+  return pass(rare);
+}
+
+// The recording's Sa: each pitch class is scored by how well the notes' durations fit where Sa,
+// Pa and the other swaras usually sit, plus a bonus for the first and last held notes (scales,
+// songs and alap usually start or end on Sa). Returns all 12, most likely first: [{ pc, score }].
 const SA_TEMPLATE = [1, -0.3, 0.25, 0.1, 0.25, 0.2, 0.02, 0.75, 0.1, 0.25, 0.15, 0.25];
 export function findTonic(notes) {
   const hist = new Array(12).fill(0);
@@ -128,11 +298,13 @@ export function findTonic(notes) {
   for (const n of notes) { const d = Math.min(n.t1 - n.t0, 2); hist[((n.midi % 12) + 12) % 12] += d; tot += d; }
   if (!tot) return [];
   for (let i = 0; i < 12; i++) hist[i] /= tot;
-  const last = notes.slice(-3).sort((a, b) => (b.t1 - b.t0) - (a.t1 - a.t0))[0];
+  const held = notes.filter(n => n.t1 - n.t0 >= 0.25);
+  const firstPc = held.length ? ((held[0].midi % 12) + 12) % 12 : -1, lastPc = held.length ? ((held[held.length - 1].midi % 12) + 12) % 12 : -1;
   return Array.from({ length: 12 }, (_, pc) => {
     let s = 0;
     for (let k = 0; k < 12; k++) s += hist[(pc + k) % 12] * SA_TEMPLATE[k];
-    if (last && ((last.midi % 12) + 12) % 12 === pc) s += 0.08;
+    if (pc === firstPc) s += 0.05;
+    if (pc === lastPc) s += 0.15;
     return { pc, score: Math.round(s * 1000) / 1000 };
   }).sort((a, b) => b.score - a.score);
 }
@@ -172,6 +344,24 @@ export function beatFit(notes, bpm) {
   return { r: w ? Math.hypot(x, y) / w : 0, phase };
 }
 
+// A note's code, with its grace note (kan) in braces before it: {G}R.
+const noteCode = (n, semiOf) => (n.kan !== undefined ? "{" + codeOf(semiOf({ midi: n.kan })) + "}" : "") + codeOf(semiOf(n));
+
+// Quick grace notes: a note under 130 ms that runs straight into a longer note close by becomes
+// that note's kan, as a player would write it, instead of a note of its own.
+export function graceNotes(notes) {
+  const out = [];
+  for (let j = 0; j < notes.length; j++) {
+    const n = notes[j], next = notes[j + 1];
+    if (next && n.t1 - n.t0 < 0.13 && next.t0 - n.t1 < 0.05 && next.t1 - next.t0 >= 0.15 && next.midi !== n.midi && Math.abs(next.midi - n.midi) <= 4) {
+      notes[j + 1] = { ...next, kan: n.midi, t0: n.t0 };
+      continue;
+    }
+    out.push(n);
+  }
+  return out;
+}
+
 // One beat's items to the shortest notation that means the same: [S, -] -> S, [S, -, R, -] -> SR.
 function beatToken(items) {
   let it = items.slice();
@@ -195,8 +385,10 @@ export function toNotation(notes, bpm, phase, sub, semiOf) {
     while (slots[k0 - first] && slots[k0 - first] !== "-") k0++; // two notes on one step: the later one moves on
     const next = notes[j + 1];
     let k1 = Math.max(k0 + 1, Math.round((n.t1 - phase) / step));
+    // A gap shorter than most of a beat is a breath or a re-articulation, not a rest: hold on.
+    if (next && next.t0 - n.t1 < 0.75 * beat) k1 = Math.round((next.t0 - phase) / step);
     if (next) k1 = Math.min(k1, Math.max(k0 + 1, Math.round((next.t0 - phase) / step)));
-    put(k0, codeOf(semiOf(n)));
+    put(k0, noteCode(n, semiOf));
     for (let k = k0 + 1; k < k1; k++) if (!slots[k - first]) put(k, "-");
   });
   const beats = [];
@@ -214,6 +406,24 @@ export function toNotation(notes, bpm, phase, sub, semiOf) {
   }
   const lines = [];
   for (let i = 0; i < bars.length; i += 4) lines.push(bars.slice(i, i + 4).join(" | ") + " ||");
+  return lines.join("\n");
+}
+
+// Phrases: the notes in order, one per beat, with "-" for each further beat a note is held (up
+// to three), "," at a pause and a new line at a longer pause. Easier to read than bars for
+// free-flowing music (alap, a slow song); the beats layout keeps the rhythm.
+export function toPhrases(notes, bpm, semiOf) {
+  const beat = 60 / bpm, lines = [];
+  let line = [];
+  notes.forEach((n, j) => {
+    const next = notes[j + 1], gap = next ? next.t0 - n.t1 : Infinity;
+    const held = (gap < 0.75 * beat ? next.t0 : n.t1) - n.t0;
+    line.push(noteCode(n, semiOf));
+    for (let k = 1; k < Math.min(4, Math.round(held / beat)); k++) line.push("-");
+    if (gap >= 1.2 || (gap >= 0.3 && line.length >= 12) || line.length >= 24) { lines.push(line.join(" ")); line = []; }
+    else if (gap >= 0.5) line.push(",");
+  });
+  if (line.length) lines.push(line.join(" "));
   return lines.join("\n");
 }
 
@@ -257,15 +467,17 @@ export function bestFlute(notes, saMidi) {
 
 // Everything above, in one call. opts: { sa (MIDI of the recording's Sa, else detected), flute (MIDI
 // of the flute's Sa), sameKey (true: play along with the recording; false: keep the recording's
-// sargam on the flute's own Sa), bpm, sub (steps per beat: 2 or 4), octave (extra shift) }.
+// sargam on the flute's own Sa), bpm, sub (steps per beat: 1, 2 or 4), octave (extra shift),
+// layout ("beats" or "phrases"), from and to (seconds: only that part of the recording) }.
 export function transcribe(track, levels, opts) {
   const o = Object.assign({ flute: 72, sameKey: true, sub: 2, octave: 0 }, opts || {});
-  const tune = tuningOf(track);
   // Notes far from the melody's range (a drone or bass heard alone, a stray octave) are left out.
-  const all = segmentNotes(track, levels, tune), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
-  const notes = all.filter(n => Math.abs(n.midi - mid) <= 17);
+  const all = labelNotes(stableRuns(track, levels)), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
+  const from = o.from || 0, to = o.to || Infinity;
+  const notes = graceNotes(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
   const tonics = findTonic(notes);
   const sa = o.sa !== undefined && o.sa !== null ? o.sa : tonics.length ? tonicMidi(tonics[0].pc, notes) : 72;
+  const tune = notes.length ? notes.reduce((a, n) => a + n.off, 0) / notes.length : 0;
   const tempo = o.bpm ? { bpm: o.bpm, phase: beatFit(notes, o.bpm).phase } : estimateTempo(notes);
   const bpm = tempo.bpm;
   const base = o.sameKey ? o.flute : sa;
@@ -276,6 +488,6 @@ export function transcribe(track, levels, opts) {
   return {
     notes, tune: Math.round(tune * 100), tonics, sa, bpm, phase: tempo.phase, shift, base,
     fit: fitOf(semis), flute: bestFlute(notes, sa),
-    notation: toNotation(notes, bpm, tempo.phase, o.sub, semiOf),
+    notation: o.layout === "phrases" ? toPhrases(notes, bpm, semiOf) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf),
   };
 }

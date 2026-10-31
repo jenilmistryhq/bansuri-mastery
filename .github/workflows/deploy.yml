@@ -67,6 +67,11 @@ jobs:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tests/smoke.mjs
 
+      - name: Notation from real recordings
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tests/transcribe-real.mjs
+
       - name: Cache the WebKit browser
         uses: actions/cache@v4
         with:

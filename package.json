@@ -8,6 +8,7 @@
     "test": "node tests/core.test.mjs && node tests/live.test.mjs && node tests/plan.test.mjs && node tests/transcribe.test.mjs && node tests/smoke.mjs",
     "test:webkit": "node tests/webkit.mjs",
     "test:visual": "node tests/visual.mjs",
+    "test:real": "node tests/transcribe-real.mjs",
     "lint": "eslint ."
   },
   "devDependencies": {

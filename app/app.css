@@ -748,6 +748,46 @@ html.noscroll, html.noscroll body { overflow: hidden; }
 .page:has(.dashq) { max-width: 1180px; }
 main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; }
 
-/* Notation from a recording */
+/* Notation from a recording (#/transcribe) */
+.trresults { gap: 18px; }
+.srctiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.srctile { display: grid; gap: 4px; align-content: start; text-align: left; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); color: var(--ink); cursor: pointer; font: inherit; }
+.srctile:hover, .srctile:focus-visible { border-color: var(--accent); }
+.srctile b { font-size: 1.02rem; }
+.srcicon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); margin-bottom: 4px; }
+.srcicon .icon { width: 20px; height: 20px; }
+.recpanel { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 16px; border: 2px solid var(--accent); border-radius: var(--radius); background: var(--accent-soft); }
+.recpanel .mono { font-size: 1.3rem; }
+.recpanel .btn { margin-left: auto; }
+.recdot { width: 12px; height: 12px; border-radius: 50%; background: var(--bad); }
+@media (prefers-reduced-motion: no-preference) { .recdot { animation: recpulse 1.2s ease-in-out infinite; } }
+@keyframes recpulse { 50% { opacity: 0.3; } }
+.trstatus:empty { display: none; }
+.trchips .chip { font-size: 0.85rem; padding: 4px 12px; }
+.trgroups { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.trgroup { margin: 0; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.trgroup legend { padding: 0 6px; font-weight: 600; color: var(--ink); }
+.trgroup .input { width: 100%; }
+.trgroup .seg { display: grid; grid-template-columns: 1fr 1fr; }
+.trgroup .seg-btn { padding: 8px 10px; line-height: 1.25; }
+.row.tight { gap: 6px; align-items: end; flex-wrap: nowrap; }
+.row.tight .field { flex: 1 1 0; min-width: 0; }
+.row.tight output { min-width: 2.2rem; text-align: center; }
+.trplot .plot { margin-top: 8px; }
+.nview { display: grid; gap: 10px; padding: 14px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--line); font-family: var(--mono); font-size: 1.05rem; overflow-x: auto; }
+.nline { display: flex; flex-wrap: wrap; gap: 6px; }
+.nbar { display: flex; gap: 2px; padding: 4px 6px; border-left: 2px solid var(--line); }
+.nbar:first-child { border-left: 0; padding-left: 0; }
+.nbeat { min-width: 2.3em; padding: 2px 4px; border-radius: 6px; background: var(--surface); text-align: center; white-space: nowrap; }
+.nphrase { flex-wrap: wrap; gap: 4px 8px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--surface); }
+.nphrase:first-child { border-left: 1px solid var(--line); padding-left: 8px; }
+.ntok sup { font-size: 0.65em; color: var(--muted); margin-right: 1px; }
+.nhold { color: var(--muted); }
+.playrow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.playrow:first-of-type { border-top: 0; }
+.playbtn { width: 48px; height: 48px; padding: 0; justify-content: center; border-radius: 50%; }
+.playinfo { display: grid; gap: 4px; min-width: 0; }
 .savedrow { display: grid; gap: 6px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .savedrow pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.trresults .card > .btn { justify-self: start; }
+.trresults .card > .row > .input { flex: 1 1 220px; }

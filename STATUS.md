@@ -1,8 +1,8 @@
 # Status (2026-10-31)
 
-- App version `6795a5ee6b1d`; last commit: 8ecfe50 Launch safety, plain lessons, full Hindi lessons, teacher tools and test isolation
+- App version `4858e66dffcc`; last commit: 11edc48 Notation from a recording: a YouTube tab, the microphone or a file, as sargam for any flute
 - Course: 701 days, 11 milestones, 38 lessons
-- Hindi interface: 1887 of 1914 strings translated
+- Hindi interface: 1954 of 1981 strings translated
 - Hindi lessons: 38 of 38 lessons, 382 sections
 - Voice clips: English 13.2 MB, Hindi 27.2 MB; whole app 91.9 MB
 - Claims for a teacher to review: 63 (TEACHER-REVIEW-CLAIMS.md)
