@@ -40,6 +40,64 @@ export function stereoDown(channels, sr) {
   return { L, R, M, sr: sr / k, side: em ? es / em : 0 };
 }
 
+// Singer and background from a mono recording, by repetition (REPET-SIM, Rafii and Pardo 2012):
+// the backing music of a song repeats (the same chords, rhythm and accompaniment bar after bar),
+// the melody changes. Every 0.1 s block is compared with every other (log-band spectra, cosine);
+// the background at each moment is the median of the 10 most similar moments at least a second
+// away, and the singer is what is left. Less exact than the stereo split; it needs a song whose
+// backing repeats. Resolves { singer, background }: magnitude spectra (bins up to 5 kHz) per frame,
+// framed like melodyTrack, for pitchTrack's o.mags.
+export async function repetitionParts(data, sr, o) {
+  o = Object.assign({ maxSeconds: 360, onProgress: null }, o || {});
+  const hop = Math.round(sr * HOP), end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - FFT_N;
+  const KB = Math.min(FFT_N / 2, Math.ceil(5000 * FFT_N / sr) + 2);
+  const win = new Float32Array(FFT_N); for (let i = 0; i < FFT_N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_N - 1));
+  const re = new Float64Array(FFT_N), im = new Float64Array(FFT_N), S = [];
+  const tick = async (p) => { if (o.onProgress) o.onProgress(p); await new Promise(res => setTimeout(res, 0)); };
+  for (let pos = 0, n = 0; pos < end; pos += hop, n++) {
+    S.push(spectrum(data.subarray(pos, pos + FFT_N), win, re, im).slice(0, KB));
+    if (n % 300 === 299) await tick(Math.round(pos / end * 30));
+  }
+  const T = S.length, BL = 5, NBL = Math.floor(T / BL), BANDS = Math.ceil(KB / 10);
+  // Block features: log band energies, centred and normalised (cosine similarity = dot product).
+  const F = [];
+  for (let i = 0; i < NBL; i++) {
+    const f = new Float32Array(BANDS);
+    for (let t = i * BL; t < i * BL + BL; t++) for (let k = 1; k < KB; k++) f[Math.floor(k / 10)] += S[t][k];
+    let mean = 0; for (let b = 0; b < BANDS; b++) { f[b] = Math.log(1 + f[b]); mean += f[b]; }
+    mean /= BANDS;
+    let norm = 0; for (let b = 0; b < BANDS; b++) { f[b] -= mean; norm += f[b] * f[b]; }
+    norm = Math.sqrt(norm) || 1; for (let b = 0; b < BANDS; b++) f[b] /= norm;
+    F.push(f);
+  }
+  const K = 10, AWAY = Math.round(1 / (HOP * BL)), nearest = [];
+  for (let i = 0; i < NBL; i++) {
+    const best = [];
+    for (let j = 0; j < NBL; j++) {
+      if (Math.abs(i - j) < AWAY) continue;
+      let d = 0; const a = F[i], b = F[j]; for (let x = 0; x < BANDS; x++) d += a[x] * b[x];
+      if (best.length < K) { best.push([d, j]); best.sort((p, q) => q[0] - p[0]); }
+      else if (d > best[K - 1][0]) { best[K - 1] = [d, j]; best.sort((p, q) => q[0] - p[0]); }
+    }
+    nearest.push(best.map(x => x[1]));
+    if (i % 200 === 199) await tick(30 + Math.round(i / NBL * 40));
+  }
+  const singer = [], background = [], vals = [];
+  for (let t = 0; t < T; t++) {
+    const i = Math.min(NBL - 1, Math.floor(t / BL)), r = t - i * BL, mix = S[t];
+    const sg = new Float32Array(KB), bg = new Float32Array(KB), srcs = (nearest[i] || []).map(j => S[j * BL + r]).filter(Boolean);
+    for (let k = 0; k < KB; k++) {
+      vals.length = 0; for (const x of srcs) vals.push(x[k]);
+      let m = mix[k];
+      if (vals.length) { vals.sort((p, q) => p - q); m = Math.min(mix[k], vals[vals.length >> 1]); }
+      bg[k] = m; sg[k] = mix[k] - m;
+    }
+    singer.push(sg); background.push(bg);
+    if (t % 500 === 499) await tick(70 + Math.round(t / T * 30));
+  }
+  return { singer, background };
+}
+
 // Pitch (MIDI number, fractional) and loudness every HOP seconds. Voices go down to about 75 Hz,
 // so the range is wider than the flute tuner's. Resolves { track, levels, seconds, truncated }.
 // opts.engine: "melody" (default: follows the main melody through accompaniment, see melodyTrack)
@@ -126,7 +184,7 @@ function partSpectrum(L, R, part, win, bufs) {
 
 // Votes for one frame's spectrum: Float32Array(NB), pitch bins of 20 cents from 75 Hz.
 function salience(mag, sr) {
-  const half = FFT_N / 2;
+  const half = mag.length;
   let max = 0;
   for (let k = 1; k < half; k++) if (mag[k] > max) max = mag[k];
   const out = new Float32Array(NB);
@@ -155,21 +213,26 @@ function salience(mag, sr) {
 }
 
 // o.stereo: { L, R, part: "singer" | "background" } follows that part of a stereo mix (data is
-// then the mid signal); without it, the whole mix.
+// then the mid signal); o.mags (one magnitude spectrum per frame, as from repetitionParts) with
+// o.part follows a part separated another way; without either, the whole mix.
 export async function melodyTrack(data, sr, o) {
   const hop = Math.round(sr * HOP), end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - FFT_N;
   const win = new Float32Array(FFT_N); for (let i = 0; i < FFT_N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_N - 1));
   const re = new Float64Array(FFT_N), im = new Float64Array(FFT_N), bufs = [0, 0, 0, 0].map(() => new Float64Array(FFT_N));
-  const st = o.stereo, sal = [], levels = [], yins = [];
+  const st = o.stereo, sal = [], levels = [], yins = [], mixSal = o.mags ? [] : null;
   for (let pos = 0, n = 0; pos < end; pos += hop, n++) {
     const frame = data.subarray(pos, pos + FFT_N);
-    const mag = st ? partSpectrum(st.L.subarray(pos, pos + FFT_N), st.R.subarray(pos, pos + FFT_N), st.part, win, bufs) : spectrum(frame, win, re, im);
+    const mag = o.mags ? o.mags[n] : st ? partSpectrum(st.L.subarray(pos, pos + FFT_N), st.R.subarray(pos, pos + FFT_N), st.part, win, bufs) : spectrum(frame, win, re, im);
+    if (!mag) break;
     sal.push(salience(mag, sr));
+    // A part separated by repetition shows which line to follow; the exact pitch is read from the
+    // whole mix near it (subtracting the background shifts the part's own peaks a little).
+    if (mixSal) mixSal.push(salience(spectrum(frame, win, re, im), sr));
     // A very confident single-pitch reading of the frame's middle, to check the octave below
     // (not for the background: the mid signal there is mostly the singer).
-    const y = st && st.part === "background" ? null : yin(frame.subarray(FFT_N / 2 - 512, FFT_N / 2 + 512), sr, 75, 2200, 0.1);
+    const y = (st && st.part === "background") || o.part === "background" ? null : yin(frame.subarray(FFT_N / 2 - 512, FFT_N / 2 + 512), sr, 75, 2200, 0.1);
     yins.push(y && y.clarity >= 0.93 ? 69 + 12 * Math.log2(y.f / 440) : null);
-    if (st) {
+    if (st || o.mags) {
       // The part's own loudness, from its spectrum (the mix's loudness would hide the other part's gaps).
       let sq = 0; for (let k = 1; k < mag.length; k++) sq += mag[k] * mag[k];
       levels.push(Math.sqrt(sq) / FFT_N);
@@ -228,6 +291,11 @@ export async function melodyTrack(data, sr, o) {
   let loud = 0; for (const l of levels) if (l > loud) loud = l;
   const sounding = strength.filter((x, t) => levels[t] > loud * 0.05).sort((x, y) => x - y);
   const ref = sounding.length ? sounding[Math.floor(sounding.length * 0.5)] : 0;
+  if (mixSal) for (let t = 0; t < T; t++) {
+    const v = mixSal[t], pb = path[t];
+    let best = pb; for (let b = Math.max(0, pb - 5); b <= Math.min(NB - 1, pb + 5); b++) if (v[b] > v[best]) best = b;
+    if (v[best] > 0) { path[t] = best; sal[t] = v; }
+  }
   const track = Array.from(path, (pb, t) => {
     if (levels[t] < loud * 0.02 || strength[t] < ref * 0.3) return null;
     const v = sal[t], a = pb > 0 ? v[pb - 1] : 0, c = pb < NB - 1 ? v[pb + 1] : 0, den = a - 2 * v[pb] + c;
@@ -241,7 +309,9 @@ export async function melodyTrack(data, sr, o) {
   // Breaks in the melody, such as the short gap before a repeated note: a dip in the loudness (clear
   // in a solo recording) or in the melody's own strength before the drum filter (clearer when
   // accompaniment fills the loudness). Their product dips when either does.
-  const own = Array.from(path, (pb, t) => levels[t] * orig[t][pb]);
+  let own = Array.from(path, (pb, t) => levels[t] * orig[t][pb]);
+  // A separated part flickers in loudness; a 9-frame median keeps it from splitting every note.
+  if (o.mags) { const raw = own; own = raw.map((x, t) => { const w = raw.slice(Math.max(0, t - 4), t + 5).sort((p, q) => p - q); return w[w.length >> 1]; }); }
   return { track: cleanTrack(track), levels: own, seconds: Math.max(0, end) / sr, truncated: data.length - FFT_N > end };
 }
 

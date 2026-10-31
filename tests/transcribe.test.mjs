@@ -206,6 +206,25 @@ await test("stereo song: singer, background and best to play", async () => {
   console.log("       stereo song, notes wrong: singer " + Math.round(sErr * 100) + "%, background " + Math.round(bErr * 100) + "%, best to play " + Math.round(err * 100) + "%");
 });
 
+// Mono: the singer by repetition (the harmonium and tabla repeat every 4 beats, the tune does not).
+await test("mono song: the singer by repetition, under harmonium and tabla (printed)", async () => {
+  const rows = [];
+  for (const level of [0.03, 0.06, 0.1, 0.15]) {
+    const tune = TWINKLE.concat(YAMAN.map(([x, b]) => [x, b * 2])), { data, sr } = synth(tune, { sa: 62, harmonium: level, tabla: level * 1.5 });
+    const whole = await T.pitchTrack(data, sr), parts = await T.repetitionParts(data, sr);
+    const sing = await T.pitchTrack(data, sr, { mags: parts.singer, part: "singer" });
+    // Strict (every repeated note counts) and the melody (repeats merged: S S -> S).
+    const dedup = a => a.filter((x, i) => i === 0 || x !== a[i - 1]);
+    const want = wantNotes(tune, 0), notesFor = tr => notesOf(T.transcribe(tr.track, tr.levels, { sa: 62, sameKey: false }).notation);
+    const pct = tr => Math.round(errorRate(notesFor(tr), want) * 100), mel = tr => Math.round(errorRate(dedup(notesFor(tr)), dedup(want)) * 100);
+    const w = pct(whole), sg = pct(sing);
+    rows.push(level + ": whole " + w + "% (melody " + mel(whole) + "%), singer " + sg + "% (melody " + mel(sing) + "%)");
+    if (process.env.SHOWMIX) console.log(level, T.transcribe(sing.track, sing.levels, { sa: 62, sameKey: false }).notes.map(x => (x.midi - 62) + "@" + x.t0.toFixed(1)).join(" "));
+    if (level === 0.1 && !process.env.NOASSERT) assert.ok(mel(sing) <= 20, "singer by repetition at 0.1: melody " + mel(sing) + "% wrong");
+  }
+  console.log("       harmonium + tabla, mono, notes wrong: " + rows.join("; "));
+});
+
 await test("a mono recording cannot be split", () => {
   const x = synth(TWINKLE, {}).data;
   assert.ok(T.stereoDown([x, x], 22050).side < 0.001);

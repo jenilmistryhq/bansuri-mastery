@@ -980,8 +980,11 @@ try {
     await sleep(200);
     const onD = (await page.$eval("#main textarea[aria-label^='Notation']", e => e.value)).replace(/[|_-]/g, " ").replace(/\s+/g, " ").trim();
     check(/n S R S n/.test(onD.replace(/\.n/g, "n").replace(/n'/g, "n")), "transcribe: on a D flute the same sound is written n S R S n [" + onD + "]");
-    // A mono file cannot be split into singer and background.
-    check(await page.$eval("#main .partseg .seg-btn:nth-child(2)", b => b.disabled).catch(() => false), "transcribe: Singer is greyed out for a mono recording");
+    // A mono file: the singer is told apart by repetition, and the page says so.
+    await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Singer").click());
+    await page.waitForFunction(() => /repetition/.test((document.querySelector("#main .partpick") || {}).textContent || "") && document.querySelector("#main .partpick .progressbar").hidden, { timeout: 30000 }).catch(() => {});
+    check(/repetition/.test(await page.$eval("#main .partpick", e => e.textContent).catch(() => "")) && /S/.test(await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "")), "transcribe: a mono recording's singer is found by repetition");
+    await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Whole song").click());
     // Kept in the app: the file is listed under Your recordings; Save keeps an edited notation,
     // and Open brings the recording back with it, without any file.
     await page.waitForFunction(() => /bansuri-transcribe-test/.test((document.querySelector("#main .caprow") || {}).textContent || ""), { timeout: 5000 }).catch(() => {});
@@ -1008,17 +1011,18 @@ try {
       const stPath = path.join(process.env.TEMP || process.env.TMPDIR || "/tmp", "bansuri-transcribe-stereo.wav");
       fs.writeFileSync(stPath, st2);
       await page.select("#main select[aria-label='Your flute']", "72").catch(() => {});
+      await page.evaluate(() => { document.querySelector("#main [role=status]").textContent = ""; });
       await (await page.$("#tr-file")).uploadFile(stPath);
       await page.waitForFunction(() => /^Done/.test((document.querySelector("#main [role=status]") || {}).textContent || ""), { timeout: 20000 }).catch(() => {});
       await page.waitForFunction(() => { const b = document.querySelector("#main .partseg .seg-btn:nth-child(2)"); return b && !b.disabled; }, { timeout: 5000 }).catch(() => {});
       const plainOf = () => page.$eval("#main textarea[aria-label^='Notation']", e => e.value.replace(/[|_,-]/g, " ").replace(/\s+/g, " ").trim());
       await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Singer").click());
-      await page.waitForFunction(() => /singer/i.test((document.querySelector("#main .partpick") || {}).textContent || "") && document.querySelector("#main .partpick .progressbar").hidden, { timeout: 20000 }).catch(() => {});
+      await page.waitForFunction(() => /^Only the singer/.test((document.querySelector("#main .partpick p") || {}).textContent || ""), { timeout: 30000 }).catch(() => {});
       await sleep(300);
       const sing = await plainOf().catch(() => "");
       await page.evaluate(() => [...document.querySelectorAll("#main .partseg .seg-btn")].find(b => b.textContent === "Background").click());
-      await sleep(1500);
-      await page.waitForFunction(() => document.querySelector("#main .partpick .progressbar").hidden, { timeout: 20000 }).catch(() => {});
+      await page.waitForFunction(() => /^Only the music/.test((document.querySelector("#main .partpick p") || {}).textContent || ""), { timeout: 30000 }).catch(() => {});
+      await sleep(300);
       const back = await plainOf().catch(() => "");
       check(/S R G R S/.test(sing) && !/P/.test(sing) && /P D N/.test(back) && !/G/.test(back), "transcribe: a stereo song splits into the singer (centre) and the background (sides) [" + sing + " / " + back + "]");
       fs.unlinkSync(stPath);

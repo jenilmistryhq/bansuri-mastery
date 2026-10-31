@@ -12,21 +12,22 @@ import { countdown } from "../core/live.js";
 import { mountBench } from "../bench/bench.js";
 import { WEST, codeOf, devaNotation, hzOf } from "../core/theory.js";
 import { listCaptures, getCapture, addCapture, patchCapture, deleteCapture, MAX as MAX_CAPTURES } from "../captures.js";
-import { stereoDown, bestRuns, monoDown, pitchTrack, transcribe, tonicMidi, fluteLabel, FLUTES, HOP } from "../transcribe.js";
+import { stereoDown, repetitionParts, bestRuns, monoDown, pitchTrack, transcribe, tonicMidi, fluteLabel, FLUTES, HOP } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
 const MAX_SECONDS = 360;
 // One note in a beat: an optional {kan}, lower-octave dots, the letter, upper-octave marks; or - or _.
 const NOTE_TOKEN = /\{[^}]*\}\.*[SrRgGmMPdDnN]'*|\.*[SrRgGmMPdDnN]'*|[-_]/g;
-// An AudioBuffer as a 16-bit mono WAV file, saved by the browser.
+// An AudioBuffer as a 16-bit WAV file with all its channels (a stereo recording stays stereo).
 function downloadWav(buf, name) {
-  const d = buf.getChannelData(0), n = d.length, out = new DataView(new ArrayBuffer(44 + n * 2));
+  const chs = Math.min(2, buf.numberOfChannels), ds = Array.from({ length: chs }, (_, c) => buf.getChannelData(c)), n = ds[0].length, bytes = n * chs * 2;
+  const out = new DataView(new ArrayBuffer(44 + bytes));
   const str = (o, t) => { for (let i = 0; i < t.length; i++) out.setUint8(o + i, t.charCodeAt(i)); };
-  let peak = 0; for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(d[i]));
+  let peak = 0; for (const d of ds) for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(d[i]));
   const k = peak > 0.98 ? 0.98 / peak : 1;
-  str(0, "RIFF"); out.setUint32(4, 36 + n * 2, true); str(8, "WAVEfmt "); out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, 1, true);
-  out.setUint32(24, buf.sampleRate, true); out.setUint32(28, buf.sampleRate * 2, true); out.setUint16(32, 2, true); out.setUint16(34, 16, true); str(36, "data"); out.setUint32(40, n * 2, true);
-  for (let i = 0; i < n; i++) out.setInt16(44 + i * 2, Math.max(-1, Math.min(1, d[i] * k)) * 32767, true);
+  str(0, "RIFF"); out.setUint32(4, 36 + bytes, true); str(8, "WAVEfmt "); out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, chs, true);
+  out.setUint32(24, buf.sampleRate, true); out.setUint32(28, buf.sampleRate * 2 * chs, true); out.setUint16(32, 2 * chs, true); out.setUint16(34, 16, true); str(36, "data"); out.setUint32(40, bytes, true);
+  for (let i = 0; i < n; i++) for (let c = 0; c < chs; c++) out.setInt16(44 + (i * chs + c) * 2, Math.max(-1, Math.min(1, ds[c][i] * k)) * 32767, true);
   const url = URL.createObjectURL(new Blob([out], { type: "audio/wav" }));
   const a = h("a", { href: url, download: name });
   document.body.append(a); a.click(); a.remove();
@@ -42,7 +43,7 @@ export async function render(main) {
   const cleanups = [];
   let audio = null, track = null, capture = null, bench = null, last = null, current = null;
   // The parts of a stereo recording (singer, background), worked out the first time each is chosen.
-  let stereo = null, parts = {}, partBusy = false;
+  let stereo = null, mono = null, rep = null, parts = {}, partBusy = false;
   const opt = { octave: 0, sameKey: true, layout: "phrases", main: true, part: "whole" };
 
   // ---- 1. Getting the sound ----
@@ -126,7 +127,7 @@ export async function render(main) {
     const ch = []; for (let i = 0; i < audio.numberOfChannels; i++) ch.push(audio.getChannelData(i));
     const { data, sr } = monoDown(ch, audio.sampleRate);
     const sd = stereoDown(ch, audio.sampleRate);
-    stereo = sd && sd.side > 0.02 ? sd : null; parts = {};
+    stereo = sd && sd.side > 0.02 ? sd : null; parts = {}; rep = null; mono = { data, sr };
     track = await pitchTrack(data, sr, { maxSeconds: MAX_SECONDS, onProgress: p => setBusy("Finding the melody... " + p + "%", p) });
     const first = transcribe(track.track, track.levels, { flute: saMidi() });
     if (first.notes.length < 3) { setBusy("No clear melody was found. It works best when one tune (a flute or a voice) is clearly louder than the rest.", null); return; }
@@ -141,7 +142,7 @@ export async function render(main) {
     if (!st) { opt.part = "whole"; syncSegs(); }
     if (st) {
       if ([...saSel.options].some(o => o.value === String(st.sa))) saSel.value = String(st.sa);
-      fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0; opt.main = st.main !== false; opt.part = stereo && st.part ? st.part : "whole";
+      fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0; opt.main = st.main !== false; opt.part = st.part || "whole";
       bpmIn.value = String(st.bpm); fromIn.value = String(st.from); toIn.value = String(st.to); subSel.value = String(st.sub || 2);
       syncSegs();
     }
@@ -184,21 +185,28 @@ export async function render(main) {
   partSeg.classList.add("partseg");
   const PART_TEXT = {
     whole: "The main melody of the whole mix: the singer where there is singing, otherwise the loudest instrument.",
-    singer: "Only the singer: the sound in the centre of the stereo mix (bass and drums are there too, but the melody follows the voice).",
-    background: "Only the music around the singer: the instruments to the left and right of the mix (intros, interludes, counter-melodies).",
+    singer: "Only the singer: in a stereo recording, the sound in the centre of the mix (bass and drums are there too, but the melody follows the voice).",
+    background: "Only the music around the singer: in a stereo recording, the instruments to the left and right of the mix (intros, interludes, counter-melodies).",
     best: "Made for the flute: the singer's line, the background melody filling the gaps, and every phrase moved into your flute's range.",
   };
+  const MONO_NOTE = "This recording is mono, so the parts are guessed by repetition instead: the music that repeats is taken as the background, what changes as the singer. This often fails: when every verse repeats the same tune, the singer's notes land in the background. A stereo recording (a browser tab, or the copy under Your recordings) splits far better.";
   async function needPart(name) {
     if (parts[name]) return parts[name];
     const bar = partProgress.firstChild;
     partProgress.hidden = false;
-    parts[name] = await pitchTrack(stereo.M, stereo.sr, { maxSeconds: MAX_SECONDS, stereo: { L: stereo.L, R: stereo.R, part: name }, onProgress: pc => { bar.style.width = pc + "%"; partNote.textContent = "Listening for the " + name + "... " + pc + "%"; } });
+    const show = (label, pc) => { bar.style.width = pc + "%"; partNote.textContent = label + pc + "%"; };
+    if (stereo) parts[name] = await pitchTrack(stereo.M, stereo.sr, { maxSeconds: MAX_SECONDS, stereo: { L: stereo.L, R: stereo.R, part: name }, onProgress: pc => show("Listening for the " + name + "... ", pc) });
+    else {
+      // Mono: separated once by repetition (both parts at once), then each part's melody.
+      if (!rep) rep = await repetitionParts(mono.data, mono.sr, { maxSeconds: MAX_SECONDS, onProgress: pc => show("Finding what repeats (the background)... ", pc) });
+      parts[name] = await pitchTrack(mono.data, mono.sr, { maxSeconds: MAX_SECONDS, mags: rep[name], part: name, onProgress: pc => show("Listening for the " + name + "... ", pc) });
+      if (parts.singer && parts.background) rep = null;
+    }
     partProgress.hidden = true;
     return parts[name];
   }
   async function choosePart() {
     if (partBusy) return;
-    if (opt.part !== "whole" && !stereo) { opt.part = "whole"; syncSegs(); }
     partBusy = true;
     try {
       if (opt.part === "singer" || opt.part === "best") await needPart("singer");
@@ -320,8 +328,8 @@ export async function render(main) {
   // Files: rendered offline (faster than playing), as 16-bit WAV.
   const fileName = title => (nameIn.value.trim() || "recording").replace(/[^A-Za-z0-9 _-]+/g, "").trim().replace(/\s+/g, "-").toLowerCase() + "-" + title.toLowerCase().replace(/\s+/g, "-") + ".wav";
   const SR = 44100;
-  async function renderMix(seconds, fill) {
-    const c = new OfflineAudioContext(1, Math.ceil(SR * (seconds + 0.6)), SR);
+  async function renderMix(seconds, fill, channels) {
+    const c = new OfflineAudioContext(channels || 1, Math.ceil(SR * (seconds + 0.6)), SR);
     fill(c);
     return c.startRendering();
   }
@@ -366,7 +374,7 @@ export async function render(main) {
     player("The recording", "The part chosen above.", () => audio && playOriginal(1), async () => {
       if (!audio) return null;
       const [a, b] = part();
-      return renderMix(b - a, c => renderOriginal(c, 1));
+      return renderMix(b - a, c => renderOriginal(c, 1), audio.numberOfChannels > 1 ? 2 : 1);
     }),
     player("The notation", "Its notes on your flute (Settings), in the recording's own timing; after an edit, as written at the tempo above.", () => {
       const tn = timedNotes();
@@ -421,8 +429,7 @@ export async function render(main) {
     const r = p === "best" && parts.singer && parts.background ? transcribe(null, null, { ...base, runs: bestRuns(parts.singer, parts.background), playable: true })
       : transcribe((src || track).track, (src || track).levels, base);
     // Which parts can be chosen: only a stereo recording can be split.
-    [...partSeg.children].forEach((btn, i) => { btn.disabled = i > 0 && !stereo; });
-    partNote.textContent = stereo ? PART_TEXT[p] : "This recording is mono (or the same in both channels), so the singer and the background cannot be told apart. A browser tab or a stereo file usually works.";
+    partNote.textContent = PART_TEXT[p] + (p !== "whole" && !stereo ? " " + MONO_NOTE : "");
     last = r;
     octOut.textContent = r.shift > 0 ? "+" + r.shift / 12 : String(r.shift / 12);
     editor.value = r.notation; drawView();

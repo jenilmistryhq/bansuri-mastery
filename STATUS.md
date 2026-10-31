@@ -1,8 +1,8 @@
 # Status (2026-10-31)
 
-- App version `db19ee7ab458`; last commit: ac09095 Transcribe: main melody only, no crackle, hidden saved notation, fresh code in open tabs
+- App version `55a3a20be03e`; last commit: 5bda3ac Transcribe: whole song, singer, background, or best to play
 - Course: 701 days, 11 milestones, 38 lessons
-- Hindi interface: 1990 of 2017 strings translated
+- Hindi interface: 1994 of 2021 strings translated
 - Hindi lessons: 38 of 38 lessons, 382 sections
 - Voice clips: English 13.2 MB, Hindi 27.2 MB; whole app 92.0 MB
 - Claims for a teacher to review: 63 (TEACHER-REVIEW-CLAIMS.md)
