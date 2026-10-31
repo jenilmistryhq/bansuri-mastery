@@ -1,8 +1,8 @@
 # Status (2026-10-31)
 
-- App version `2ca4beec88d6`; last commit: 240696c Transcribe: melody through accompaniment, Sa-relative naming, a clearer page
+- App version `6ecb34fa503d`; last commit: 4b0f251 Transcribe: plain aligned notation, downloads, octave fixes, tidy play-along
 - Course: 701 days, 11 milestones, 38 lessons
-- Hindi interface: 1959 of 1986 strings translated
+- Hindi interface: 1974 of 2001 strings translated
 - Hindi lessons: 38 of 38 lessons, 382 sections
 - Voice clips: English 13.2 MB, Hindi 27.2 MB; whole app 91.9 MB
 - Claims for a teacher to review: 63 (TEACHER-REVIEW-CLAIMS.md)

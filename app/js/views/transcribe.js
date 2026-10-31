@@ -11,6 +11,7 @@ import { parseNotation, buildEvents, playEvents } from "../core/notation.js";
 import { countdown } from "../core/live.js";
 import { mountBench } from "../bench/bench.js";
 import { WEST, codeOf, devaNotation, hzOf } from "../core/theory.js";
+import { listCaptures, getCapture, addCapture, patchCapture, deleteCapture, MAX as MAX_CAPTURES } from "../captures.js";
 import { monoDown, pitchTrack, transcribe, tonicMidi, fluteLabel, FLUTES, HOP } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
@@ -32,13 +33,14 @@ function downloadWav(buf, name) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+const fmtWhen = iso => new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const clock = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 
 export async function render(main) {
   const page = h("div", { class: "page trpage" });
   main.append(page);
   const cleanups = [];
-  let audio = null, track = null, capture = null, bench = null, last = null;
+  let audio = null, track = null, capture = null, bench = null, last = null, current = null;
   const opt = { octave: 0, sameKey: true, layout: "phrases" };
 
   // ---- 1. Getting the sound ----
@@ -76,7 +78,8 @@ export async function render(main) {
     rec.start(1000);
     await done;
     if (!chunks.length) { setBusy("Nothing was recorded.", null); return; }
-    await analyse(new Blob(chunks, { type: rec.mimeType || "audio/webm" }));
+    const stamp = new Date().toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    await keepAndAnalyse(new Blob(chunks, { type: rec.mimeType || "audio/webm" }), (label === "Listening" ? "Microphone " : "Tab ") + stamp, (Date.now() - started) / 1000);
   }
   cleanups.push(() => { if (capture) capture(); });
 
@@ -91,7 +94,15 @@ export async function render(main) {
     if (!await countdown(srcCard, { btn, label: "Get ready: start the music" })) { stream.getTracks().forEach(t => t.stop()); return; }
     await recordStream(stream, "Listening");
   };
-  fileIn.addEventListener("change", () => { const f = fileIn.files && fileIn.files[0]; if (f) analyse(f); fileIn.value = ""; });
+  fileIn.addEventListener("change", () => { const f = fileIn.files && fileIn.files[0]; if (f) keepAndAnalyse(f, f.name.replace(/\.[a-z0-9]+$/i, ""), 0); fileIn.value = ""; });
+  // Every capture or opened file is kept in the app (Your recordings), so it opens again later.
+  async function keepAndAnalyse(blob, name, seconds) {
+    current = null;
+    try { current = await addCapture(blob, name, seconds); nameIn.value = name; drawCaptures(); }
+    catch (e) { toast("Could not keep the recording in the app: " + (e.message || e)); }
+    await analyse(blob);
+    if (current && audio && !seconds) patchCapture(current.id, { seconds: Math.round(audio.duration) }).then(drawCaptures).catch(() => {});
+  }
   const tile = (ic, title, text, attrs) => h(attrs.for ? "label" : "button", Object.assign({ class: "srctile" }, attrs.for ? { for: attrs.for } : { type: "button", onclick: e => attrs.onclick(e.currentTarget) }),
     h("span", { class: "srcicon" }, icon(ic)), h("b", null, title), h("span", { class: "small muted" }, text));
   const sources = h("div", { class: "srctiles" },
@@ -105,7 +116,7 @@ export async function render(main) {
         h("li", null, "Play the video. Press Stop when the part has played (up to 6 minutes)."))) : null);
 
   // ---- Analysis ----
-  async function analyse(blob) {
+  async function analyse(blob, keep) {
     stopAll(); results.hidden = true;
     setBusy("Reading the sound...", 0);
     try { audio = await decodeAudioFile(blob); }
@@ -121,7 +132,16 @@ export async function render(main) {
     opt.octave = 0;
     setBusy("Done" + (track.truncated ? " (the first 6 minutes)" : "") + ". Check the notes below by ear: this is a draft.", null);
     results.hidden = false;
+    // A recording opened again comes back as it was saved: its settings, then its notation.
+    const st = keep && keep.settings;
+    if (st) {
+      if ([...saSel.options].some(o => o.value === String(st.sa))) saSel.value = String(st.sa);
+      fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0;
+      bpmIn.value = String(st.bpm); fromIn.value = String(st.from); toIn.value = String(st.to); subSel.value = String(st.sub || 2);
+      syncSegs();
+    }
     redraw();
+    if (keep && keep.notation) { editor.value = keep.notation; drawView(); }
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -132,7 +152,10 @@ export async function render(main) {
   const fluteSel = h("select", { class: "input", "aria-label": "Your flute" }, FLUTES.map(m => h("option", { value: String(m) }, fluteLabel(m))));
   fluteSel.value = String(Math.min(81, Math.max(60, saMidi())));
   // A row of choices; after a choice, `after` runs (by default the notation is made again).
+  const segSyncs = [];
+  const syncSegs = () => segSyncs.forEach(f => f());
   const seg = (name, items, get, set, after) => {
+    segSyncs.push(() => { btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); if (name === "Layout") detailField.hidden = get() !== "beats"; });
     const btns = items.map(([v, label]) => h("button", { type: "button", class: "seg-btn", "aria-pressed": String(get() === v), onclick: () => { set(v); btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); (after || redraw)(); } }, label));
     return h("div", { class: "seg", role: "group", "aria-label": name }, btns);
   };
@@ -345,22 +368,59 @@ export async function render(main) {
     requestAnimationFrame(() => drawPitchPlot(canvas, { frames: track.track.map(m => m === null ? null : { s: m - base, f: 0 }), hopS: HOP, segments: r.notes.map(n => ({ t0: n.t0, t1: n.t1, med: n.midi - base + n.cents / 100 })) }));
   }
 
-  // ---- Saved notations ----
-  const saved = h("div", { class: "stack" });
-  function save() {
-    const list = store(SAVED, []);
-    list.unshift({ name: nameIn.value.trim() || "Recording of " + today(), notation: notationText(), bpm: Number(bpmIn.value) || 80, flute: Number(fluteSel.value), date: today() });
-    storeSet(SAVED, list.slice(0, 30));
-    toast("Saved."); drawSaved();
+  // ---- Your recordings (kept in the app) ----
+  const capList = h("div", { class: "stack" });
+  const capUse = h("p", { class: "small muted" });
+  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
+  async function save() {
+    const name = nameIn.value.trim() || "Recording of " + today();
+    try {
+      if (current) await patchCapture(current.id, { name, notation: notationText(), settings: settingsNow(), saved: new Date().toISOString() });
+      else { const l = store(SAVED, []); l.unshift({ name, notation: notationText(), bpm: Number(bpmIn.value) || 80, flute: Number(fluteSel.value), date: today() }); storeSet(SAVED, l.slice(0, 30)); }
+      toast("Saved in the app."); drawCaptures();
+    } catch (e) { toast("Could not save: " + (e.message || e)); }
   }
-  function drawSaved() {
-    const list = store(SAVED, []);
-    saved.replaceChildren(...(list.length ? list.map((m, i) => h("div", { class: "savedrow" },
-      h("div", { class: "row between" }, h("b", null, m.name), h("span", { class: "small muted" }, m.bpm + " BPM, " + fluteLabel(m.flute || 72))),
-      h("pre", { class: "mono small" }, m.notation),
-      h("div", { class: "row" },
+  async function openCapture(id) {
+    const rec = await getCapture(id).catch(() => null);
+    if (!rec) { toast("That recording is no longer here."); drawCaptures(); return; }
+    current = rec; nameIn.value = rec.name;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    await analyse(rec.blob, rec);
+  }
+  async function drawCaptures() {
+    let list = [];
+    try { list = await listCaptures(); } catch (e) { capUse.textContent = "This browser cannot keep recordings."; }
+    const mb = list.reduce((a, c) => a + c.size, 0) / 1048576;
+    capUse.textContent = list.length ? list.length + " of " + MAX_CAPTURES + " kept in this browser (" + mb.toFixed(1) + " MB). The oldest goes when a new one comes in." : "";
+    const rows = list.map(c => {
+      const nameEl = h("b", null, c.name);
+      const rename = h("button", { type: "button", class: "btn small ghost", onclick: () => {
+        const input = h("input", { class: "input", value: c.name, maxlength: "60", "aria-label": "New name" });
+        const done = async () => { const v = input.value.trim(); if (v && v !== c.name) { await patchCapture(c.id, { name: v }); if (current && current.id === c.id) nameIn.value = v; } drawCaptures(); };
+        input.addEventListener("keydown", e => { if (e.key === "Enter") done(); if (e.key === "Escape") drawCaptures(); });
+        input.addEventListener("blur", done);
+        nameEl.replaceWith(input); input.focus(); input.select();
+      } }, "Rename");
+      return h("div", { class: "caprow" + (current && current.id === c.id ? " current" : "") },
+        h("div", { class: "capinfo" }, nameEl, h("span", { class: "small muted" }, fmtWhen(c.created) + " - " + clock(c.seconds || 0) + (c.notation ? " - notation saved" : ""))),
+        h("div", { class: "row tight" },
+          h("button", { type: "button", class: "btn small primary", onclick: () => openCapture(c.id) }, "Open"),
+          c.notation ? h("button", { type: "button", class: "btn small", onclick: () => openBench(c.notation, (c.settings && c.settings.bpm) || 80) }, "Play along") : null,
+          rename,
+          h("button", { type: "button", class: "btn small ghost", "aria-label": "Delete " + c.name, onclick: async e => {
+            const b = e.currentTarget;
+            if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Tap again to delete"; setTimeout(() => { b.dataset.armed = ""; b.textContent = "Delete"; }, 3000); return; }
+            await deleteCapture(c.id); if (current && current.id === c.id) current = null; drawCaptures();
+          } }, "Delete")));
+    });
+    // Notations saved before recordings were kept (text only).
+    const old = store(SAVED, []).map((m, i) => h("div", { class: "caprow" },
+      h("div", { class: "capinfo" }, h("b", null, m.name), h("span", { class: "small muted" }, "Notation only, " + m.bpm + " BPM")),
+      h("div", { class: "row tight" },
         h("button", { type: "button", class: "btn small", onclick: () => openBench(m.notation, m.bpm) }, "Play along"),
-        h("button", { type: "button", class: "btn small ghost", onclick: () => { const l = store(SAVED, []); l.splice(i, 1); storeSet(SAVED, l); drawSaved(); } }, "Delete")))) : [h("p", { class: "small muted" }, "Notations you save appear here.")]));
+        h("button", { type: "button", class: "btn small ghost", onclick: () => { const l = store(SAVED, []); l.splice(i, 1); storeSet(SAVED, l); drawCaptures(); } }, "Delete"))));
+    capList.replaceChildren(...rows, ...old);
+    if (!rows.length && !old.length) capList.append(h("p", { class: "small muted" }, "Recordings you make or open here are kept in the app, so you can open them again without a file."));
   }
 
   const results = h("div", { class: "stack trresults", hidden: true }, foundCard, notationCard, listenCard, alongCard);
@@ -369,9 +429,9 @@ export async function render(main) {
       h("p", { class: "muted" }, "Play a song, and the app writes its melody as sargam for your flute, to check by ear, fix and play along with."),
       h("details", { class: "small" }, h("summary", null, "What works well"),
         h("p", null, "Best: one clear melody, such as a solo flute or a voice, with a drone, tabla or soft music behind it. Hard: a melody no louder than the music behind it (a full film orchestra, harmonium chords as loud as the tune). Either way it is a draft: compare it with the recording and fix what is wrong. Slides and fast ornaments are simplified."),
-        h("p", null, "Everything happens on this device: the sound is not uploaded or kept. Use recordings you are allowed to use."))),
+        h("p", null, "Everything happens on this device: recordings are kept only in this browser (Your recordings, below), never uploaded. Use recordings you are allowed to use."))),
     srcCard, results,
-    h("section", { class: "card" }, h("h2", null, "Saved notations"), saved));
-  drawSaved();
+    h("section", { class: "card" }, h("h2", null, "Your recordings"), capUse, capList));
+  drawCaptures();
   return () => cleanups.forEach(f => f());
 }

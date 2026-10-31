@@ -1984,5 +1984,20 @@
 "Download: {x}": "डाउनलोड: {x}",
 "Letters": "अक्षर",
 "Could not make the file: {x}": "फ़ाइल नहीं बन सकी: {x}",
-"Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan).": "आपकी बाँसुरी के सा से सरगम: स्वर से पहले बिंदु यानी मंद्र सप्तक, बाद में ' यानी तार सप्तक। - स्वर को एक मात्रा और रोकता है, _ विराम है, | आवर्तन का अंत है, वाक्यांश में ठहराव खाली जगह से दिखता है, आगे छोटा स्वर कण स्वर है।"
+"Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan).": "आपकी बाँसुरी के सा से सरगम: स्वर से पहले बिंदु यानी मंद्र सप्तक, बाद में ' यानी तार सप्तक। - स्वर को एक मात्रा और रोकता है, _ विराम है, | आवर्तन का अंत है, वाक्यांश में ठहराव खाली जगह से दिखता है, आगे छोटा स्वर कण स्वर है।",
+"Could not keep the recording in the app: {x}": "रिकॉर्डिंग ऐप में नहीं रखी जा सकी: {x}",
+"Saved in the app.": "ऐप में सहेज लिया।",
+"Could not save: {x}": "सहेजा नहीं जा सका: {x}",
+"That recording is no longer here.": "वह रिकॉर्डिंग अब यहाँ नहीं है।",
+"{n} of {m} kept in this browser ({x} MB). The oldest goes when a new one comes in.": "इस ब्राउज़र में {m} में से {n} रखी हैं ({x} MB)। नई आने पर सबसे पुरानी हट जाती है।",
+"New name": "नया नाम",
+"Rename": "नाम बदलिए",
+"Open": "खोलिए",
+"Delete {x}": "{x} मिटाइए",
+"Tap again to delete": "मिटाने के लिए फिर दबाइए",
+"Notation only, {n} BPM": "सिर्फ़ स्वरलिपि, {n} BPM",
+"Recordings you make or open here are kept in the app, so you can open them again without a file.": "यहाँ बनाई या खोली गई रिकॉर्डिंग ऐप में रखी जाती हैं, ताकि आप उन्हें बिना फ़ाइल के फिर खोल सकें।",
+"Your recordings": "आपकी रिकॉर्डिंग",
+"{x} - {y} - notation saved": "{x} - {y} - स्वरलिपि सहेजी",
+"Everything happens on this device: recordings are kept only in this browser (Your recordings, below), never uploaded. Use recordings you are allowed to use.": "सब कुछ इसी डिवाइस पर होता है: रिकॉर्डिंग सिर्फ़ इसी ब्राउज़र में रखी जाती हैं (नीचे, आपकी रिकॉर्डिंग), कभी अपलोड नहीं होतीं। वही रिकॉर्डिंग इस्तेमाल कीजिए जिनकी आपको अनुमति है।"
 }

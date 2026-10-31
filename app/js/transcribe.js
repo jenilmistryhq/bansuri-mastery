@@ -395,8 +395,8 @@ function beatToken(items) {
 // Notes (with semis relative to the flute's Sa) to notation: notes snap to a grid of `sub` steps per
 // beat, held notes continue with "-", silences become "_", four beats to a bar, four bars to a line.
 // Bars of silence are left out, so long gaps do not fill the page.
-export function toNotation(notes, bpm, phase, sub, semiOf) {
-  if (!notes.length) return "";
+// The notes on a beat grid: one token per beat ("S", "SR", "-", "_"), shared by both layouts.
+function beatTokens(notes, bpm, phase, sub, semiOf) {
   const beat = 60 / bpm, step = beat / sub;
   const first = Math.floor(Math.round((notes[0].t0 - phase) / step) / sub) * sub;
   const slots = [];
@@ -418,6 +418,12 @@ export function toNotation(notes, bpm, phase, sub, semiOf) {
     for (let k = 0; k < sub; k++) items.push(slots[i + k] || "_");
     beats.push(beatToken(items));
   }
+  return beats;
+}
+
+export function toNotation(notes, bpm, phase, sub, semiOf) {
+  if (!notes.length) return "";
+  const beats = beatTokens(notes, bpm, phase, sub, semiOf);
   while (beats.length % 4) beats.push("_");
   const bars = [];
   for (let i = 0; i < beats.length; i += 4) {
@@ -430,21 +436,21 @@ export function toNotation(notes, bpm, phase, sub, semiOf) {
   return lines.join("\n");
 }
 
-// Phrases: the notes in order, one per beat, with "-" for each further beat a note is held (up
-// to three), "," at a pause and a new line at a longer pause. Easier to read than bars for
-// free-flowing music (alap, a slow song); the beats layout keeps the rhythm.
-export function toPhrases(notes, bpm, semiOf) {
-  const beat = 60 / bpm, lines = [];
-  let line = [];
-  notes.forEach((n, j) => {
-    const next = notes[j + 1], gap = next ? next.t0 - n.t1 : Infinity;
-    const held = (gap < 0.75 * beat ? next.t0 : n.t1) - n.t0;
-    line.push(noteCode(n, semiOf));
-    for (let k = 1; k < Math.min(4, Math.round(held / beat)); k++) line.push("-");
-    if (gap >= 1.2 || (gap >= 0.3 && line.length >= 12) || line.length >= 24) { lines.push(line.join(" ")); line = []; }
-    else if (gap >= 0.5) line.push(",");
-  });
-  if (line.length) lines.push(line.join(" "));
+// Phrases: the same beats as the bars layout (so the rhythm and the playback stay true: two
+// quick notes share a beat, "SR"), without bar lines; a new line at each pause of two beats or
+// more (the silence itself is left out), or after 16 beats at the next note.
+export function toPhrases(notes, bpm, phase, sub, semiOf) {
+  if (!notes.length) return "";
+  const beats = beatTokens(notes, bpm, phase, sub, semiOf), lines = [];
+  let line = [], rests = 0;
+  const flush = () => { while (line.length && line[line.length - 1] === "_") line.pop(); if (line.length) lines.push(line.join(" ")); line = []; };
+  for (const b of beats) {
+    if (b === "_") { rests++; if (rests === 2) flush(); else if (rests < 2 && line.length) line.push(b); continue; }
+    rests = 0;
+    if (line.length >= 16 && b !== "-") flush();
+    line.push(b);
+  }
+  flush();
   return lines.join("\n");
 }
 
@@ -509,6 +515,6 @@ export function transcribe(track, levels, opts) {
   return {
     notes, tune: Math.round(tune * 100), tonics, sa, bpm, phase: tempo.phase, shift, base,
     fit: fitOf(semis), flute: bestFlute(notes, sa),
-    notation: o.layout === "phrases" ? toPhrases(notes, bpm, semiOf) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf),
+    notation: o.layout === "phrases" ? toPhrases(notes, bpm, tempo.phase, o.sub, semiOf) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf),
   };
 }

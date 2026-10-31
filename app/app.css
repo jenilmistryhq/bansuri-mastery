@@ -792,3 +792,8 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .savedrow pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .trresults .card > .btn { justify-self: start; }
 .trresults .card > .row > .input { flex: 1 1 220px; }
+.caprow { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.caprow:first-child { border-top: 0; }
+.caprow.current .capinfo b { color: var(--accent); }
+.capinfo { display: grid; gap: 2px; min-width: 0; }
+.capinfo .input { max-width: 20rem; }

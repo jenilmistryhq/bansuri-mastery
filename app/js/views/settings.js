@@ -11,6 +11,7 @@ import { placementTest } from "../placement.js";
 import { listenMic, micStats } from "../core/listen.js";
 import { ac } from "../core/audio.js";
 import { listRecordings, saveRecording, clearRecordings, blobToDataUrl } from "../recorder.js";
+import { clearCaptures } from "../captures.js";
 import { sayButton, saveVoiceOffline, modelReady, voiceSizeMB, removeSavedVoice } from "../voice.js";
 import { fingSvg } from "../core/fingers.js";
 import { enableReminder, disableReminder, remindersSupported } from "../reminder.js";
@@ -339,6 +340,7 @@ export async function render(main) {
     if (reset.dataset.armed !== "1") { reset.dataset.armed = "1"; reset.textContent = "Tap again: this deletes progress and recordings"; setTimeout(() => { reset.dataset.armed = ""; reset.textContent = "Reset all progress"; }, 4000); return; }
     resetAll();
     try { await clearRecordings(); } catch (e) { /* no recordings store */ }
+    try { await clearCaptures(); } catch (e) { /* no transcribe recordings */ }
     toast("Progress reset.");
     location.hash = "#/today";
   });

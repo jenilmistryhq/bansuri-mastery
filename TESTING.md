@@ -5,6 +5,7 @@
 ```
 npm ci
 npx eslint .    # lint (CI runs it first)
+# The browser tests refuse downloads (exports are checked in memory), so nothing lands in Downloads.
 npm test        # unit tests, plan test, transcription accuracy test, headless-browser smoke test
 node tests/transcribe-real.mjs [--verbose]   # notation from real bansuri recordings (app/audio), scored (CI runs it)
 SITE_ROOT=_site node tests/smoke.mjs   # the same smoke test against the assembled site (CI does this)

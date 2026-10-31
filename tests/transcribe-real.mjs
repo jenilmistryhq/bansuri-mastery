@@ -20,6 +20,8 @@ await new Promise(r => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}/`;
 const executablePath = [process.env.CHROME_PATH, "C:/Program Files/Google/Chrome/Application/chrome.exe", "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", "/usr/bin/google-chrome", "/usr/bin/chromium"].filter(Boolean).find(p => fs.existsSync(p));
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required"] });
+// Exported files (CSV, backups, WAV) are checked in memory; the browser saves nothing to Downloads.
+await (await browser.target().createCDPSession()).send("Browser.setDownloadBehavior", { behavior: "deny" });
 const page = await browser.newPage();
 await page.goto(BASE + "blank");
 

@@ -38,6 +38,8 @@ await new Promise(r => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}/`;
 const exe = [process.env.CHROME_PATH, "C:/Program Files/Google/Chrome/Application/chrome.exe", "/usr/bin/google-chrome"].filter(Boolean).find(p => fs.existsSync(p));
 const browser = await puppeteer.launch({ executablePath: exe, headless: true });
+// Exported files (CSV, backups, WAV) are checked in memory; the browser saves nothing to Downloads.
+await (await browser.target().createCDPSession()).send("Browser.setDownloadBehavior", { behavior: "deny" });
 const page = await browser.newPage();
 // A fixed clock (the week strip, quests and dates depend on it) and no animations.
 await page.evaluateOnNewDocument(() => {

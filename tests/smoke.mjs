@@ -29,6 +29,8 @@ if (!executablePath) { console.error("No Chrome/Edge found; set CHROME_PATH."); 
 
 // Fake media devices give the tests a microphone (a generated tone) without a permission prompt.
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
+// Exported files (CSV, backups, WAV) are checked in memory; the browser saves nothing to Downloads.
+await (await browser.target().createCDPSession()).send("Browser.setDownloadBehavior", { behavior: "deny" });
 // The get-ready countdown (Settings, 5 s by default) is off in tests, except where a check turns it on.
 const newPage = browser.newPage.bind(browser);
 browser.newPage = async () => { const p = await newPage(); await p.evaluateOnNewDocument(() => { if (window.__countdownSeconds === undefined) window.__countdownSeconds = 0; }); return p; };
@@ -978,6 +980,17 @@ try {
     await sleep(200);
     const onD = (await page.$eval("#main textarea[aria-label^='Notation']", e => e.value)).replace(/[|_-]/g, " ").replace(/\s+/g, " ").trim();
     check(/n S R S n/.test(onD.replace(/\.n/g, "n").replace(/n'/g, "n")), "transcribe: on a D flute the same sound is written n S R S n [" + onD + "]");
+    // Kept in the app: the file is listed under Your recordings; Save keeps an edited notation,
+    // and Open brings the recording back with it, without any file.
+    await page.waitForFunction(() => /bansuri-transcribe-test/.test((document.querySelector("#main .caprow") || {}).textContent || ""), { timeout: 5000 }).catch(() => {});
+    check(/bansuri-transcribe-test/.test(await page.$eval("#main .caprow", e => e.innerText).catch(() => "")), "transcribe: the opened file is kept under Your recordings");
+    await page.evaluate(() => { const t = document.querySelector("#main textarea[aria-label^='Notation']"); t.value = "S R G R S - - - ||"; [...document.querySelectorAll("#main button")].find(b => b.textContent === "Save").click(); });
+    await page.waitForFunction(() => /notation saved/.test((document.querySelector("#main .caprow") || {}).textContent || ""), { timeout: 5000 }).catch(() => {});
+    await go("/transcribe");
+    await page.waitForSelector("#main .caprow .btn.primary", { timeout: 5000 }).catch(() => {});
+    await page.evaluate(() => document.querySelector("#main .caprow .btn.primary").click());
+    await page.waitForSelector(".trresults:not([hidden])", { timeout: 20000 }).catch(() => {});
+    check(/S R G R S - - - \|\|/.test(await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "")), "transcribe: Open brings the recording back with its saved notation");
     fs.unlinkSync(wavPath);
   });
   await section("Standalone bench pages", async () => {
