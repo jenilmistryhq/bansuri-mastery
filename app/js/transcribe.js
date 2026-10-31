@@ -667,16 +667,24 @@ export function bestFlute(notes, saMidi) {
 // (stretches made already, as from bestRuns) and playable (phrases moved into the flute's range) }.
 export function transcribe(track, levels, opts) {
   const o = Object.assign({ flute: 72, sameKey: true, sub: 2, octave: 0 }, opts || {});
+  // o.notes: notes given exactly (a MIDI file, or notes corrected by ear): used as they are.
+  if (o.notes) return fromNotes(o.notes.filter(n => n.t0 >= (o.from || 0) && n.t1 <= (o.to || Infinity)).map(n => ({ off: 0, cents: 0, lv: 1, ...n })), o, o.tonics);
   // Notes far from the melody's range (a drone or bass heard alone, a stray octave) are left out.
   const all = labelNotes(o.runs || stableRuns(track, levels)), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
   const from = o.from || 0, to = o.to || Infinity;
   const folded = foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
   // o.main (default): the main melody, plain; o.main false: every note found, with grace notes.
-  let notes = o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable);
-  const tonics = findTonic(notes);
+  return fromNotes(o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable), o);
+}
+
+// The rest of transcribe, from named notes: Sa, tempo, the flute's octave and the notation.
+// knownTonics: Sa candidates known already (a MIDI file's key signature), put first.
+function fromNotes(notes, o, knownTonics) {
+  let tonics = findTonic(notes);
+  if (knownTonics && knownTonics.length) tonics = knownTonics.concat(tonics.filter(c => !knownTonics.some(k => k.pc === c.pc)));
   const sa = o.sa !== undefined && o.sa !== null ? o.sa : tonics.length ? tonicMidi(tonics[0].pc, notes) : 72;
   const tune = notes.length ? notes.reduce((a, n) => a + n.off, 0) / notes.length : 0;
-  const tempo = o.bpm ? { bpm: o.bpm, phase: beatFit(notes, o.bpm).phase } : estimateTempo(notes);
+  const tempo = o.bpm ? { bpm: o.bpm, phase: o.phase !== undefined ? o.phase : beatFit(notes, o.bpm).phase } : estimateTempo(notes);
   const bpm = tempo.bpm;
   const base = o.sameKey ? o.flute : sa;
   const raw = notes.map(n => n.midi - base);

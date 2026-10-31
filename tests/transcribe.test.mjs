@@ -231,6 +231,41 @@ await test("a mono recording cannot be split", () => {
   assert.equal(T.stereoDown([x], 22050), null);
 });
 
+// A small MIDI file, written here: tempo 120, key of D major, a melody track (S R G m P - in D),
+// a chord track (lower, several notes at once) and a drum track.
+function midiFile() {
+  const vlq = n => { const b = [n & 0x7f]; while ((n >>= 7)) b.unshift((n & 0x7f) | 0x80); return b; };
+  const track = evs => { const body = []; for (const [dt, ...bytes] of evs) body.push(...vlq(dt), ...bytes); body.push(0, 0xff, 0x2f, 0); return [0x4d, 0x54, 0x72, 0x6b, body.length >>> 24, (body.length >> 16) & 255, (body.length >> 8) & 255, body.length & 255, ...body]; };
+  const name = s => [0xff, 0x03, s.length, ...[...s].map(c => c.charCodeAt(0))];
+  const meta = track([[0, 0xff, 0x51, 3, 0x07, 0xa1, 0x20], [0, 0xff, 0x59, 2, 2, 0], [0, 0xff, 0x58, 4, 4, 2, 24, 8]]);
+  const mel = [[0, ...name("Melody")]]; for (const [m, beats] of [[62, 1], [64, 1], [66, 1], [67, 1], [69, 2]]) { mel.push([0, 0x90, m, 90], [beats * 480, 0x80, m, 0]); }
+  const chords = [[0, ...name("Piano")], [0, 0xc1, 0]]; for (const c of [[50, 54, 57], [55, 59, 62]]) { c.forEach(m => chords.push([0, 0x91, m, 70])); c.forEach((m, i) => chords.push([i ? 0 : 1440, 0x81, m, 0])); }
+  const drums = [[0, ...name("Drums")]]; for (let i = 0; i < 6; i++) drums.push([0, 0x99, 36, 100], [480, 0x89, 36, 0]);
+  const head = [0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 1, 0, 4, 0x01, 0xe0];
+  return new Uint8Array([...head, ...meta, ...track(mel), ...track(chords), ...track(drums)]);
+}
+
+await test("MIDI: the melody track, its exact notes, the key and the tempo", async () => {
+  const M = await import("../app/js/midi.js");
+  const mf = M.parseMidi(midiFile());
+  assert.equal(mf.bpm, 120);
+  assert.equal(M.keyTonic(mf.key), 2, "key of D");
+  const best = mf.tracks.slice().sort((a, b) => M.melodyScore(b) - M.melodyScore(a))[0];
+  assert.equal(best.name, "Melody");
+  assert.deepEqual(best.notes.map(n => n.midi), [62, 64, 66, 67, 69]);
+  assert.ok(Math.abs(best.notes[4].t0 - 2) < 1e-6 && Math.abs(best.notes[4].t1 - 3) < 1e-6, "times in seconds at 120 BPM");
+  assert.equal(M.topLine(mf.tracks.find(t => t.name === "Piano").notes).length, 2, "chords reduce to their top notes");
+  const r = T.transcribe(null, null, { notes: best.notes, tonics: [{ pc: 2, score: 1 }], bpm: mf.bpm, phase: 0, sameKey: false, layout: "beats", sub: 2 });
+  assert.match(r.notation, /^S R G m \| P - /, r.notation);
+  assert.equal(((r.sa % 12) + 12) % 12, 2);
+});
+
+await test("notes corrected by ear are used exactly", () => {
+  const notes = [{ t0: 0, t1: 0.5, midi: 72 }, { t0: 0.5, t1: 1, midi: 75 }, { t0: 1, t1: 2, midi: 79 }];
+  const r = T.transcribe(null, null, { notes, sa: 72, sameKey: false, layout: "phrases", bpm: 120 });
+  assert.equal(r.notation.replace(/\s+/g, " ").trim(), "S g P -");
+});
+
 await test("notation helpers: beats compress, fit and flute names", () => {
   const notes = [{ t0: 0, t1: 0.6, midi: 72 }, { t0: 0.625, t1: 0.9, midi: 74 }, { t0: 0.9375, t1: 1.2, midi: 76 }];
   const text = T.toNotation(notes, 96, 0, 2, n => n.midi - 72);

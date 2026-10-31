@@ -1028,6 +1028,44 @@ try {
       fs.unlinkSync(stPath);
       await go("/transcribe");
     }
+    // A MIDI file: exact notes from the melody track, Sa from its key (D), its tempo; then Check by ear.
+    {
+      const vlq = n => { const b = [n & 0x7f]; while ((n >>= 7)) b.unshift((n & 0x7f) | 0x80); return b; };
+      const trk = evs => { const body = []; for (const [dt, ...bytes] of evs) body.push(...vlq(dt), ...bytes); body.push(0, 0xff, 0x2f, 0); return [0x4d, 0x54, 0x72, 0x6b, body.length >>> 24, (body.length >> 16) & 255, (body.length >> 8) & 255, body.length & 255, ...body]; };
+      const nm = s2 => [0xff, 0x03, s2.length, ...[...s2].map(c => c.charCodeAt(0))];
+      const mel = [[0, ...nm("Melody")]]; for (const [m, b] of [[62, 1], [64, 1], [66, 1], [67, 1], [69, 2], [67, 2]]) mel.push([0, 0x90, m, 90], [b * 480, 0x80, m, 0]);
+      const pad = [[0, ...nm("Strings")], [0, 0xc1, 48]]; for (const ch of [[50, 54, 57], [55, 59, 62]]) { ch.forEach(m => pad.push([0, 0x91, m, 60])); ch.forEach((m, i) => pad.push([i ? 0 : 1920, 0x81, m, 0])); }
+      const bytes = Buffer.from([0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 1, 0, 3, 0x01, 0xe0, ...trk([[0, 0xff, 0x51, 3, 0x07, 0xa1, 0x20], [0, 0xff, 0x59, 2, 2, 0]]), ...trk(mel), ...trk(pad)]);
+      const midPath = path.join(process.env.TEMP || process.env.TMPDIR || "/tmp", "bansuri-transcribe-test.mid");
+      fs.writeFileSync(midPath, bytes);
+      await page.evaluate(() => { document.querySelector("#main [role=status]").textContent = ""; });
+      await (await page.$("#tr-midi")).uploadFile(midPath);
+      await page.waitForFunction(() => /^Done: \d+ notes read/.test((document.querySelector("#main [role=status]") || {}).textContent || ""), { timeout: 20000 }).catch(() => {});
+      await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "My flute's own key").click());
+      await sleep(200);
+      const midNot = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "");
+      const trackLabel = await page.$eval("#main select[aria-label='MIDI track']", e => e.options[e.selectedIndex].textContent).catch(() => "");
+      const saLabel = await page.$eval("#main select[aria-label='Sa of the recording']", e => e.options[e.selectedIndex].textContent).catch(() => "");
+      check(/^S R G m \| P - m - \|\|/.test(midNot.trim()) && /Melody/.test(trackLabel) && /^D \(the file's key\)/.test(saLabel), "midi: the melody track's exact notes, Sa from the key [" + midNot.trim() + " / " + trackLabel + " / " + saLabel + "]");
+      // Check by ear: pick the first note with the keyboard, raise it a semitone, undo; delete one.
+      await page.focus("#main .earplot");
+      await page.keyboard.press("ArrowRight");
+      await page.keyboard.press("ArrowUp");
+      await sleep(150);
+      const raised = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
+      await page.keyboard.down("Control"); await page.keyboard.press("z"); await page.keyboard.up("Control");
+      await sleep(150);
+      const undone = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
+      await page.keyboard.press("Delete");
+      await sleep(150);
+      const deleted = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
+      check(/^r R G m/.test(raised) && /^S R G m/.test(undone) && /^R G m P/.test(deleted), "ear: a note picked with the keys is raised, the change undone, and a note deleted [" + raised.slice(0, 12) + " / " + undone.slice(0, 12) + " / " + deleted.slice(0, 12) + "]");
+      check(/Note \d+ of \d+/.test(await page.$eval("#main .earinfo", e => e.textContent).catch(() => "")), "ear: the picked note is described");
+      await page.click("#main button[aria-label='Hear the original around this note (Space)']");
+      await sleep(400);
+      await page.click("#main button[aria-label='Stop']");
+      fs.unlinkSync(midPath);
+    }
     fs.unlinkSync(wavPath);
   });
   await section("Standalone bench pages", async () => {

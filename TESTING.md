@@ -34,6 +34,7 @@ not hide the rest. It also covers:
 - the games with the synthetic microphone: a held note pops a balloon and offers a challenge link that opens the same game; steer by pitch runs a round; the jam points out a note outside the raga and turns the tanpura off when stopped; falling notes scores a right note and misses a wrong one; quests are tracked; make a melody turns tapped cells into notation; 5-minute practice logs at least 5 minutes; no microphone is left open;
 - voice and access: a natural-voice clip plays with a caption; "Talk to me" names a wrong note; notes shown as fingering pictures; Listen plays a song on the animated flute; the beat flash; Simple mode's big buttons and a hands-free session (the step is spoken, the meter starts itself, and playing Sa moves on); Hindi tabs and Hindi session steps;
 - an accessibility scan (axe-core, WCAG 2.1 A and AA) of the main screens: no serious or critical problems;
+- MIDI: a generated file's melody track gives its exact notes and Sa from its key; Check by ear raises a note picked with the keys, undoes it and deletes one;
 - notation from a recording: a generated WAV of S R G R S comes back as sargam with Sa = C, and as .n S R S .n on a D flute;
 - the Privacy page, My students (a pasted teacher link appears in the table), course codes hidden in lessons, and the Journal's reference kit;
 - phone layouts with iPhone 13 emulation.

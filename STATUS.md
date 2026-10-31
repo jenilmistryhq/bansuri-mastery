@@ -1,8 +1,8 @@
 # Status (2026-10-31)
 
-- App version `55a3a20be03e`; last commit: 5bda3ac Transcribe: whole song, singer, background, or best to play
+- App version `d55bda738459`; last commit: a2f2256 Transcribe: stereo downloads, and a repetition split for mono recordings
 - Course: 701 days, 11 milestones, 38 lessons
-- Hindi interface: 1994 of 2021 strings translated
+- Hindi interface: 2040 of 2067 strings translated
 - Hindi lessons: 38 of 38 lessons, 382 sections
 - Voice clips: English 13.2 MB, Hindi 27.2 MB; whole app 92.0 MB
 - Claims for a teacher to review: 63 (TEACHER-REVIEW-CLAIMS.md)
