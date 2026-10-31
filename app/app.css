@@ -798,3 +798,8 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .capinfo { display: grid; gap: 2px; min-width: 0; }
 .capinfo .input { max-width: 20rem; }
 .capnotation { flex-basis: 100%; margin: 4px 0 0; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 16rem; overflow-y: auto; }
+.partpick { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--accent); border-radius: var(--radius); background: var(--accent-soft); }
+.partseg { display: grid; grid-template-columns: repeat(4, 1fr); }
+.partseg .seg-btn { padding: 9px 8px; font-weight: 600; }
+.partseg .seg-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+@media (max-width: 560px) { .partseg { grid-template-columns: 1fr 1fr; } }

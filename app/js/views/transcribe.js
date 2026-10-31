@@ -12,7 +12,7 @@ import { countdown } from "../core/live.js";
 import { mountBench } from "../bench/bench.js";
 import { WEST, codeOf, devaNotation, hzOf } from "../core/theory.js";
 import { listCaptures, getCapture, addCapture, patchCapture, deleteCapture, MAX as MAX_CAPTURES } from "../captures.js";
-import { monoDown, pitchTrack, transcribe, tonicMidi, fluteLabel, FLUTES, HOP } from "../transcribe.js";
+import { stereoDown, bestRuns, monoDown, pitchTrack, transcribe, tonicMidi, fluteLabel, FLUTES, HOP } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
 const MAX_SECONDS = 360;
@@ -41,7 +41,9 @@ export async function render(main) {
   main.append(page);
   const cleanups = [];
   let audio = null, track = null, capture = null, bench = null, last = null, current = null;
-  const opt = { octave: 0, sameKey: true, layout: "phrases", main: true };
+  // The parts of a stereo recording (singer, background), worked out the first time each is chosen.
+  let stereo = null, parts = {}, partBusy = false;
+  const opt = { octave: 0, sameKey: true, layout: "phrases", main: true, part: "whole" };
 
   // ---- 1. Getting the sound ----
   const canTab = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) && !/Android|iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -123,6 +125,8 @@ export async function render(main) {
     catch (e) { setBusy("This browser could not read that sound. Try an mp3, m4a, wav or ogg file.", null); return; }
     const ch = []; for (let i = 0; i < audio.numberOfChannels; i++) ch.push(audio.getChannelData(i));
     const { data, sr } = monoDown(ch, audio.sampleRate);
+    const sd = stereoDown(ch, audio.sampleRate);
+    stereo = sd && sd.side > 0.02 ? sd : null; parts = {};
     track = await pitchTrack(data, sr, { maxSeconds: MAX_SECONDS, onProgress: p => setBusy("Finding the melody... " + p + "%", p) });
     const first = transcribe(track.track, track.levels, { flute: saMidi() });
     if (first.notes.length < 3) { setBusy("No clear melody was found. It works best when one tune (a flute or a voice) is clearly louder than the rest.", null); return; }
@@ -134,13 +138,14 @@ export async function render(main) {
     results.hidden = false;
     // A recording opened again comes back as it was saved: its settings, then its notation.
     const st = keep && keep.settings;
+    if (!st) { opt.part = "whole"; syncSegs(); }
     if (st) {
       if ([...saSel.options].some(o => o.value === String(st.sa))) saSel.value = String(st.sa);
-      fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0; opt.main = st.main !== false;
+      fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0; opt.main = st.main !== false; opt.part = stereo && st.part ? st.part : "whole";
       bpmIn.value = String(st.bpm); fromIn.value = String(st.from); toIn.value = String(st.to); subSel.value = String(st.sub || 2);
       syncSegs();
     }
-    redraw();
+    if (opt.part !== "whole") await choosePart(); else redraw();
     if (keep && keep.notation) { editor.value = keep.notation; drawView(); }
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -173,7 +178,36 @@ export async function render(main) {
   const group = (title, ...kids) => h("fieldset", { class: "trgroup" }, h("legend", null, title), ...kids);
   [saSel, fluteSel, subSel].forEach(el => el.addEventListener("change", () => { if (el === fluteSel) opt.octave = 0; redraw(); }));
   [bpmIn, fromIn, toIn].forEach(el => el.addEventListener("change", redraw));
-  const foundCard = h("section", { class: "card" }, h("h2", null, "2. What the app found"), chips,
+  const partNote = h("p", { class: "small muted" });
+  const partProgress = h("div", { class: "progressbar thin", hidden: true }, h("i", { style: { width: "0%" } }));
+  const partSeg = seg("Which notation", [["whole", "Whole song"], ["singer", "Singer"], ["background", "Background"], ["best", "Best to play"]], () => opt.part, v => { opt.part = v; opt.octave = 0; }, () => choosePart());
+  partSeg.classList.add("partseg");
+  const PART_TEXT = {
+    whole: "The main melody of the whole mix: the singer where there is singing, otherwise the loudest instrument.",
+    singer: "Only the singer: the sound in the centre of the stereo mix (bass and drums are there too, but the melody follows the voice).",
+    background: "Only the music around the singer: the instruments to the left and right of the mix (intros, interludes, counter-melodies).",
+    best: "Made for the flute: the singer's line, the background melody filling the gaps, and every phrase moved into your flute's range.",
+  };
+  async function needPart(name) {
+    if (parts[name]) return parts[name];
+    const bar = partProgress.firstChild;
+    partProgress.hidden = false;
+    parts[name] = await pitchTrack(stereo.M, stereo.sr, { maxSeconds: MAX_SECONDS, stereo: { L: stereo.L, R: stereo.R, part: name }, onProgress: pc => { bar.style.width = pc + "%"; partNote.textContent = "Listening for the " + name + "... " + pc + "%"; } });
+    partProgress.hidden = true;
+    return parts[name];
+  }
+  async function choosePart() {
+    if (partBusy) return;
+    if (opt.part !== "whole" && !stereo) { opt.part = "whole"; syncSegs(); }
+    partBusy = true;
+    try {
+      if (opt.part === "singer" || opt.part === "best") await needPart("singer");
+      if (opt.part === "background" || opt.part === "best") await needPart("background");
+    } finally { partBusy = false; }
+    redraw();
+  }
+  const partCard = h("div", { class: "partpick" }, h("span", { class: "small" }, h("b", null, "Which notation")), partSeg, partNote, partProgress);
+  const foundCard = h("section", { class: "card" }, h("h2", null, "2. What the app found"), partCard, chips,
     h("details", { class: "trplot" }, h("summary", null, "See the pitch line"), canvas,
       h("p", { class: "small muted" }, "Dots are the melody's pitch every 20 ms; bars are the notes found. Slides and grace notes shorter than 80 ms are not notes of their own.")),
     h("div", { class: "trgroups" },
@@ -382,7 +416,13 @@ export async function render(main) {
   function redraw() {
     if (!track) return;
     const flute = Number(fluteSel.value), [a, b] = part();
-    const r = transcribe(track.track, track.levels, { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b });
+    const p = opt.part, src = p === "singer" || p === "background" ? parts[p] : track;
+    const base = { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b };
+    const r = p === "best" && parts.singer && parts.background ? transcribe(null, null, { ...base, runs: bestRuns(parts.singer, parts.background), playable: true })
+      : transcribe((src || track).track, (src || track).levels, base);
+    // Which parts can be chosen: only a stereo recording can be split.
+    [...partSeg.children].forEach((btn, i) => { btn.disabled = i > 0 && !stereo; });
+    partNote.textContent = stereo ? PART_TEXT[p] : "This recording is mono (or the same in both channels), so the singer and the background cannot be told apart. A browser tab or a stereo file usually works.";
     last = r;
     octOut.textContent = r.shift > 0 ? "+" + r.shift / 12 : String(r.shift / 12);
     editor.value = r.notation; drawView();
@@ -399,14 +439,14 @@ export async function render(main) {
     if (flute !== mine) tips.push(h("p", null, "The notation player and play-along use your flute in Settings (" + fluteLabel(mine) + "). ", h("button", { type: "button", class: "linkbtn", onclick: () => { setSettings({ saNote: flute % 12, saOct: Math.floor(flute / 12) - 1 }); toast("Your flute is now " + fluteLabel(flute) + "."); redraw(); } }, "Make " + fluteLabel(flute) + " my flute"), "."));
     hints.replaceChildren(...tips);
     hints.hidden = !tips.length;
-    const base = r.base - r.shift;
-    requestAnimationFrame(() => drawPitchPlot(canvas, { frames: track.track.map(m => m === null ? null : { s: m - base, f: 0 }), hopS: HOP, segments: r.notes.map(n => ({ t0: n.t0, t1: n.t1, med: n.midi - base + n.cents / 100 })) }));
+    const zero = r.base - r.shift, line = (p === "best" ? parts.singer : src) || track;
+    requestAnimationFrame(() => drawPitchPlot(canvas, { frames: line.track.map(m => m === null ? null : { s: m - zero, f: 0 }), hopS: HOP, segments: r.notes.map(n => ({ t0: n.t0, t1: n.t1, med: n.midi - zero + n.cents / 100 })) }));
   }
 
   // ---- Your recordings (kept in the app) ----
   const capList = h("div", { class: "stack" });
   const capUse = h("p", { class: "small muted" });
-  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
+  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
   async function save() {
     const name = nameIn.value.trim() || "Recording of " + today();
     try {

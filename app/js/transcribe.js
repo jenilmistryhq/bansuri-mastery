@@ -22,6 +22,24 @@ export function monoDown(channels, sr) {
   return { data: out, sr: sr / k };
 }
 
+// Left, right and mid at about 22-24 kHz, scaled together, and how much the channels differ (side
+// energy against mid energy): under about 2% the recording is effectively mono and cannot be split.
+export function stereoDown(channels, sr) {
+  if (channels.length < 2) return null;
+  const k = sr > 32000 ? 2 : 1, n = Math.floor(channels[0].length / k);
+  const L = new Float32Array(n), R = new Float32Array(n), M = new Float32Array(n);
+  let peak = 0, em = 0, es = 0;
+  for (let i = 0; i < n; i++) {
+    let l = 0, r = 0;
+    for (let j = 0; j < k; j++) { l += channels[0][i * k + j]; r += channels[1][i * k + j]; }
+    l /= k; r /= k; L[i] = l; R[i] = r; M[i] = (l + r) / 2;
+    peak = Math.max(peak, Math.abs(l), Math.abs(r));
+    em += M[i] * M[i]; es += (l - r) * (l - r) / 4;
+  }
+  if (peak > 0) for (let i = 0; i < n; i++) { L[i] *= 0.5 / peak; R[i] *= 0.5 / peak; M[i] *= 0.5 / peak; }
+  return { L, R, M, sr: sr / k, side: em ? es / em : 0 };
+}
+
 // Pitch (MIDI number, fractional) and loudness every HOP seconds. Voices go down to about 75 Hz,
 // so the range is wider than the flute tuner's. Resolves { track, levels, seconds, truncated }.
 // opts.engine: "melody" (default: follows the main melody through accompaniment, see melodyTrack)
@@ -76,14 +94,41 @@ function fft(re, im) {
   }
 }
 
-// Votes for one frame: Float32Array(NB), pitch bins of 20 cents from 75 Hz.
-function salience(frame, sr, win, re, im) {
+// The magnitude spectrum of one windowed frame (FFT_N / 2 bins).
+function spectrum(frame, win, re, im) {
   re.fill(0); im.fill(0);
   for (let i = 0; i < frame.length; i++) re[i] = frame[i] * win[i];
   fft(re, im);
-  const half = FFT_N / 2, mag = new Float32Array(half);
+  const mag = new Float32Array(FFT_N / 2);
+  for (let k = 1; k < FFT_N / 2; k++) mag[k] = Math.hypot(re[k], im[k]);
+  return mag;
+}
+
+// Singer or background, from a stereo frame. In a stereo mix the singer is almost always in the
+// centre (the same in both channels) and many instruments are to the sides. Per frequency bin, the
+// centre share is how small the left-right difference is against the sum: "singer" keeps the
+// centre part of the mix, "background" the rest. Bass and drums are usually central too (they go
+// with the singer; the melody tracker mostly ignores drums). Returns the magnitude spectrum.
+function partSpectrum(L, R, part, win, bufs) {
+  const [lr, li, rr, ri] = bufs;
+  lr.fill(0); li.fill(0); rr.fill(0); ri.fill(0);
+  for (let i = 0; i < FFT_N; i++) { lr[i] = L[i] * win[i]; rr[i] = R[i] * win[i]; }
+  fft(lr, li); fft(rr, ri);
+  const mag = new Float32Array(FFT_N / 2);
+  for (let k = 1; k < FFT_N / 2; k++) {
+    const mr = (lr[k] + rr[k]) / 2, mi = (li[k] + ri[k]) / 2, sr_ = (lr[k] - rr[k]) / 2, si = (li[k] - ri[k]) / 2;
+    const m = Math.hypot(mr, mi), sd = Math.hypot(sr_, si), ratio = m > 1e-9 ? sd / m : 1;
+    const centre = ratio <= 0.3 ? 1 : ratio >= 0.6 ? 0 : (0.6 - ratio) / 0.3;
+    mag[k] = m * (part === "singer" ? centre : 1 - centre);
+  }
+  return mag;
+}
+
+// Votes for one frame's spectrum: Float32Array(NB), pitch bins of 20 cents from 75 Hz.
+function salience(mag, sr) {
+  const half = FFT_N / 2;
   let max = 0;
-  for (let k = 1; k < half; k++) { mag[k] = Math.hypot(re[k], im[k]); if (mag[k] > max) max = mag[k]; }
+  for (let k = 1; k < half; k++) if (mag[k] > max) max = mag[k];
   const out = new Float32Array(NB);
   if (max < 1e-4) return out;
   const peaks = [];
@@ -109,20 +154,30 @@ function salience(frame, sr, win, re, im) {
   return out;
 }
 
+// o.stereo: { L, R, part: "singer" | "background" } follows that part of a stereo mix (data is
+// then the mid signal); without it, the whole mix.
 export async function melodyTrack(data, sr, o) {
   const hop = Math.round(sr * HOP), end = Math.min(data.length, Math.floor(sr * o.maxSeconds)) - FFT_N;
   const win = new Float32Array(FFT_N); for (let i = 0; i < FFT_N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FFT_N - 1));
-  const re = new Float64Array(FFT_N), im = new Float64Array(FFT_N);
-  const sal = [], levels = [], yins = [];
+  const re = new Float64Array(FFT_N), im = new Float64Array(FFT_N), bufs = [0, 0, 0, 0].map(() => new Float64Array(FFT_N));
+  const st = o.stereo, sal = [], levels = [], yins = [];
   for (let pos = 0, n = 0; pos < end; pos += hop, n++) {
     const frame = data.subarray(pos, pos + FFT_N);
-    sal.push(salience(frame, sr, win, re, im));
-    // A very confident single-pitch reading of the frame's middle, to check the octave below.
-    const y = yin(frame.subarray(FFT_N / 2 - 512, FFT_N / 2 + 512), sr, 75, 2200, 0.1);
+    const mag = st ? partSpectrum(st.L.subarray(pos, pos + FFT_N), st.R.subarray(pos, pos + FFT_N), st.part, win, bufs) : spectrum(frame, win, re, im);
+    sal.push(salience(mag, sr));
+    // A very confident single-pitch reading of the frame's middle, to check the octave below
+    // (not for the background: the mid signal there is mostly the singer).
+    const y = st && st.part === "background" ? null : yin(frame.subarray(FFT_N / 2 - 512, FFT_N / 2 + 512), sr, 75, 2200, 0.1);
     yins.push(y && y.clarity >= 0.93 ? 69 + 12 * Math.log2(y.f / 440) : null);
-    const mid = frame.subarray(FFT_N / 2 - hop / 2, FFT_N / 2 + hop / 2);
-    let sq = 0; for (let i = 0; i < mid.length; i++) sq += mid[i] * mid[i];
-    levels.push(Math.sqrt(sq / mid.length));
+    if (st) {
+      // The part's own loudness, from its spectrum (the mix's loudness would hide the other part's gaps).
+      let sq = 0; for (let k = 1; k < mag.length; k++) sq += mag[k] * mag[k];
+      levels.push(Math.sqrt(sq) / FFT_N);
+    } else {
+      const mid = frame.subarray(FFT_N / 2 - hop / 2, FFT_N / 2 + hop / 2);
+      let sq = 0; for (let i = 0; i < mid.length; i++) sq += mid[i] * mid[i];
+      levels.push(Math.sqrt(sq / mid.length));
+    }
     if (n % 200 === 199) { if (o.onProgress) o.onProgress(Math.round(pos / end * 90)); await new Promise(res => setTimeout(res, 0)); }
   }
   const T = sal.length;
@@ -351,13 +406,42 @@ const noteCode = (n, semiOf) => (n.kan !== undefined ? "{" + codeOf(semiOf({ mid
 // Main melody only: what a listener would sing back. Leaves out notes outside the melody's main
 // range (an instrument above or below the singer in an interlude), weak and unsure stretches, and
 // notes shorter than 100 ms (slides and quick ornaments).
-export function mainMelody(notes) {
+// anyRange: keep every range (Best to play moves whole phrases into range instead).
+export function mainMelody(notes, anyRange) {
   if (notes.length < 8) return notes;
   const byPitch = notes.slice().sort((a, b) => a.midi - b.midi), tot = notes.reduce((x, n) => x + n.t1 - n.t0, 0);
   const pct = q => { let acc = 0; for (const n of byPitch) { acc += n.t1 - n.t0; if (acc >= q * tot) return n.midi; } return byPitch[byPitch.length - 1].midi; };
   const lo = pct(0.1) - 3, hi = pct(0.9) + 3;
   const lvs = notes.map(n => n.lv || 0).sort((a, b) => a - b), medLv = lvs[lvs.length >> 1];
-  return notes.filter(n => n.midi >= lo && n.midi <= hi && n.t1 - n.t0 >= 0.1 && !(medLv > 0 && (n.lv || 0) < 0.2 * medLv));
+  return notes.filter(n => (anyRange || (n.midi >= lo && n.midi <= hi)) && n.t1 - n.t0 >= 0.1 && !(medLv > 0 && (n.lv || 0) < 0.2 * medLv));
+}
+
+// Best to play: the singer's line where the singer sings, the background melody in the gaps of two
+// seconds or more (intros and interludes), as one list of stretches to name together (one tuning
+// for both). Each part is a { track, levels } from pitchTrack.
+export function bestRuns(singer, background) {
+  const s = stableRuns(singer.track, singer.levels), b = stableRuns(background.track, background.levels);
+  const gaps = [];
+  let prev = 0;
+  for (const r of s) { if (r.t0 - prev >= 2) gaps.push([prev + 0.3, r.t0 - 0.3]); prev = Math.max(prev, r.t1); }
+  gaps.push([prev + 0.3, Infinity]);
+  const fill = b.filter(r => gaps.some(([a, z]) => r.t0 >= a && r.t1 <= z));
+  return s.concat(fill).sort((x, y) => x.t0 - y.t0);
+}
+
+// Each phrase (notes up to a pause of 0.6 s) moves as a whole by octaves into the flute's range,
+// so the tune keeps its shape and no note is left out of reach. semis: from the flute's Sa.
+export function phraseOctaves(notes, semiOf) {
+  const out = [];
+  let i = 0;
+  while (i < notes.length) {
+    let j = i + 1;
+    while (j < notes.length && notes[j].t0 - notes[j - 1].t1 < 0.6) j++;
+    const ph = notes.slice(i, j), shift = bestOctave(ph.map(semiOf));
+    for (const n of ph) out.push({ ...n, midi: n.midi + shift });
+    i = j;
+  }
+  return out;
 }
 
 // Octave slips: a melody rarely leaps more than about an octave and straight back, so a note
@@ -509,15 +593,16 @@ export function bestFlute(notes, saMidi) {
 // of the flute's Sa), sameKey (true: play along with the recording; false: keep the recording's
 // sargam on the flute's own Sa), bpm, sub (steps per beat: 1, 2 or 4), octave (extra shift),
 // layout ("beats" or "phrases"), from and to (seconds: only that part of the recording), main
-// (true by default: the main melody only; false: every note found, with grace notes) }.
+// (true by default: the main melody only; false: every note found, with grace notes), runs
+// (stretches made already, as from bestRuns) and playable (phrases moved into the flute's range) }.
 export function transcribe(track, levels, opts) {
   const o = Object.assign({ flute: 72, sameKey: true, sub: 2, octave: 0 }, opts || {});
   // Notes far from the melody's range (a drone or bass heard alone, a stray octave) are left out.
-  const all = labelNotes(stableRuns(track, levels)), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
+  const all = labelNotes(o.runs || stableRuns(track, levels)), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
   const from = o.from || 0, to = o.to || Infinity;
   const folded = foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
   // o.main (default): the main melody, plain; o.main false: every note found, with grace notes.
-  const notes = o.main === false ? graceNotes(folded) : mainMelody(folded);
+  let notes = o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable);
   const tonics = findTonic(notes);
   const sa = o.sa !== undefined && o.sa !== null ? o.sa : tonics.length ? tonicMidi(tonics[0].pc, notes) : 72;
   const tune = notes.length ? notes.reduce((a, n) => a + n.off, 0) / notes.length : 0;
@@ -527,6 +612,8 @@ export function transcribe(track, levels, opts) {
   const raw = notes.map(n => n.midi - base);
   const shift = bestOctave(raw) + o.octave;
   const semiOf = n => n.midi - base + shift;
+  // o.playable (Best to play): every phrase moved by octaves into the flute's range.
+  if (o.playable) notes = phraseOctaves(notes, semiOf);
   const semis = notes.map(semiOf);
   notes.forEach((n, k) => { n.semi = semis[k]; });
   return {

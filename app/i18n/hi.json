@@ -2004,5 +2004,16 @@
 "Every note": "हर स्वर",
 "Show notation": "स्वरलिपि दिखाइए",
 "Hide notation": "स्वरलिपि छिपाइए",
-"Its notes on your flute (Settings), in the recording's own timing; after an edit, as written at the tempo above.": "इसके स्वर आपकी बाँसुरी (सेटिंग्स) पर, रिकॉर्डिंग की अपनी लय में; बदलाव के बाद, जैसा लिखा है, ऊपर की लय पर।"
+"Its notes on your flute (Settings), in the recording's own timing; after an edit, as written at the tempo above.": "इसके स्वर आपकी बाँसुरी (सेटिंग्स) पर, रिकॉर्डिंग की अपनी लय में; बदलाव के बाद, जैसा लिखा है, ऊपर की लय पर।",
+"Which notation": "कौन सी स्वरलिपि",
+"Whole song": "पूरा गीत",
+"Singer": "गायक",
+"Background": "पीछे का संगीत",
+"Best to play": "बजाने के लिए सबसे अच्छी",
+"The main melody of the whole mix: the singer where there is singing, otherwise the loudest instrument.": "पूरे गीत की मुख्य धुन: जहाँ गाना है वहाँ गायक, बाक़ी जगह सबसे ऊँचा वाद्य।",
+"Only the singer: the sound in the centre of the stereo mix (bass and drums are there too, but the melody follows the voice).": "सिर्फ़ गायक: स्टीरियो मिक्स के बीच की आवाज़ (बेस और ड्रम भी वहीं होते हैं, पर धुन आवाज़ के पीछे चलती है)।",
+"Only the music around the singer: the instruments to the left and right of the mix (intros, interludes, counter-melodies).": "सिर्फ़ गायक के आसपास का संगीत: मिक्स में बाएँ और दाएँ के वाद्य (शुरुआत, बीच के संगीत के टुकड़े, साथ की धुनें)।",
+"Made for the flute: the singer's line, the background melody filling the gaps, and every phrase moved into your flute's range.": "बाँसुरी के लिए बनी: गायक की धुन, बीच की खाली जगहों में पीछे के संगीत की धुन, और हर वाक्यांश आपकी बाँसुरी की पहुँच में।",
+"Listening for the {x}... {n}%": "{x} को सुना जा रहा है... {n}%",
+"This recording is mono (or the same in both channels), so the singer and the background cannot be told apart. A browser tab or a stereo file usually works.": "यह रिकॉर्डिंग मोनो है (या दोनों चैनल एक जैसे हैं), इसलिए गायक और पीछे का संगीत अलग नहीं हो सकते। ब्राउज़र टैब या स्टीरियो फ़ाइल से आमतौर पर हो जाता है।"
 }

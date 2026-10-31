@@ -166,6 +166,52 @@ await test("octave slips fold back; real leaps stay", () => {
   assert.deepEqual(T.foldOctaves(mk([60, 64, 67, 72, 67, 64, 60])).map(n => n.midi), [60, 64, 67, 72, 67, 64, 60]);
 });
 
+// A stereo song: a violin-like intro and outro panned left, a singer in the centre (with the
+// drum and drone, also central, as in most mixes), and a soft panned pad under the singing.
+const INTRO = [[7, 1], [9, 1], [11, 1], [12, 2]], OUTRO = [[12, 1], [11, 1], [9, 1], [7, 2]];
+function stereoSong() {
+  const sr = 22050, beat = 60 / 96, sa = 62;
+  const violin = { sa, bpm: 96, vibrato: 15, harmonics: [1, 0.7, 0.5, 0.35, 0.2], noise: 0.005 };
+  const intro = synth(INTRO, { ...violin, lead: 0.4 }).data, singer = synth(TWINKLE, { sa, bpm: 96, lead: 4 }).data;
+  const outroAt = 4 + 16 * beat + 1, outro = synth(OUTRO, { ...violin, lead: outroAt }).data;
+  const pad = synth([[0, 16]], { sa: sa - 12, bpm: 96, lead: 4, vibrato: 0, harmonics: [1, 0.5, 0.3], noise: 0 }).data;
+  const drums = synth([[null, 30]], { sa, bpm: 96, lead: 0.4, tabla: 0.05, drone: 0.03, noise: 0 }).data;
+  const n = Math.max(intro.length, singer.length, outro.length, drums.length), L = new Float32Array(n), R = new Float32Array(n);
+  const at = (x, i) => (i < x.length ? x[i] : 0);
+  for (let i = 0; i < n; i++) {
+    const side = at(intro, i) + at(outro, i), mid = at(singer, i) + at(drums, i);
+    L[i] = mid + 0.9 * side + 0.25 * at(pad, i); R[i] = mid + 0.2 * side + 0.05 * at(pad, i);
+  }
+  return { channels: [L, R], sr, outroAt };
+}
+const partRun = async (st, part, opts) => {
+  const { track, levels } = await T.pitchTrack(st.M, st.sr, part ? { stereo: { L: st.L, R: st.R, part } } : {});
+  return { track, levels, r: T.transcribe(track, levels, { sameKey: false, ...opts }) };
+};
+
+await test("stereo song: singer, background and best to play", async () => {
+  const song = stereoSong(), st = T.stereoDown(song.channels, song.sr);
+  assert.ok(st.side > 0.02, "a stereo mix is seen as stereo: " + st.side);
+  const singer = await partRun(st, "singer", { sa: 62 }), back = await partRun(st, "background", { sa: 62 });
+  const sErr = errorRate(notesOf(singer.r.notation), wantNotes(TWINKLE, 0));
+  assert.ok(sErr <= 0.15, "singer: " + Math.round(sErr * 100) + "% wrong: " + singer.r.notation);
+  const bNotes = notesOf(back.r.notation), bWant = wantNotes(INTRO, 0).concat(wantNotes(OUTRO, 0));
+  const bErr = errorRate(bNotes, bWant);
+  assert.ok(bErr <= 0.25, "background: " + Math.round(bErr * 100) + "% wrong: " + back.r.notation);
+  const best = T.transcribe(null, null, { sa: 62, sameKey: false, runs: T.bestRuns(singer, back), playable: true });
+  const want = wantNotes(INTRO, 0).concat(wantNotes(TWINKLE, 0), wantNotes(OUTRO, 0));
+  const got = notesOf(best.notation), err = Math.min(errorRate(got, want), errorRate(got.map(x => ((x % 12) + 12) % 12), want.map(x => x % 12)));
+  assert.ok(err <= 0.2, "best to play: " + Math.round(err * 100) + "% wrong: " + best.notation);
+  assert.equal(best.fit.below + best.fit.reg3, 0, "best to play stays in the flute's range");
+  console.log("       stereo song, notes wrong: singer " + Math.round(sErr * 100) + "%, background " + Math.round(bErr * 100) + "%, best to play " + Math.round(err * 100) + "%");
+});
+
+await test("a mono recording cannot be split", () => {
+  const x = synth(TWINKLE, {}).data;
+  assert.ok(T.stereoDown([x, x], 22050).side < 0.001);
+  assert.equal(T.stereoDown([x], 22050), null);
+});
+
 await test("notation helpers: beats compress, fit and flute names", () => {
   const notes = [{ t0: 0, t1: 0.6, midi: 72 }, { t0: 0.625, t1: 0.9, midi: 74 }, { t0: 0.9375, t1: 1.2, midi: 76 }];
   const text = T.toNotation(notes, 96, 0, 2, n => n.midi - 72);
