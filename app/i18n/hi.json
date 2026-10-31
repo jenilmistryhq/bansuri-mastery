@@ -1999,5 +1999,10 @@
 "Recordings you make or open here are kept in the app, so you can open them again without a file.": "यहाँ बनाई या खोली गई रिकॉर्डिंग ऐप में रखी जाती हैं, ताकि आप उन्हें बिना फ़ाइल के फिर खोल सकें।",
 "Your recordings": "आपकी रिकॉर्डिंग",
 "{x} - {y} - notation saved": "{x} - {y} - स्वरलिपि सहेजी",
-"Everything happens on this device: recordings are kept only in this browser (Your recordings, below), never uploaded. Use recordings you are allowed to use.": "सब कुछ इसी डिवाइस पर होता है: रिकॉर्डिंग सिर्फ़ इसी ब्राउज़र में रखी जाती हैं (नीचे, आपकी रिकॉर्डिंग), कभी अपलोड नहीं होतीं। वही रिकॉर्डिंग इस्तेमाल कीजिए जिनकी आपको अनुमति है।"
+"Everything happens on this device: recordings are kept only in this browser (Your recordings, below), never uploaded. Use recordings you are allowed to use.": "सब कुछ इसी डिवाइस पर होता है: रिकॉर्डिंग सिर्फ़ इसी ब्राउज़र में रखी जाती हैं (नीचे, आपकी रिकॉर्डिंग), कभी अपलोड नहीं होतीं। वही रिकॉर्डिंग इस्तेमाल कीजिए जिनकी आपको अनुमति है।",
+"Main melody": "मुख्य धुन",
+"Every note": "हर स्वर",
+"Show notation": "स्वरलिपि दिखाइए",
+"Hide notation": "स्वरलिपि छिपाइए",
+"Its notes on your flute (Settings), in the recording's own timing; after an edit, as written at the tempo above.": "इसके स्वर आपकी बाँसुरी (सेटिंग्स) पर, रिकॉर्डिंग की अपनी लय में; बदलाव के बाद, जैसा लिखा है, ऊपर की लय पर।"
 }

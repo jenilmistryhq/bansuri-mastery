@@ -1,8 +1,8 @@
 # Status (2026-10-31)
 
-- App version `6ecb34fa503d`; last commit: 4b0f251 Transcribe: plain aligned notation, downloads, octave fixes, tidy play-along
+- App version `f8ce2bbf6a82`; last commit: e3400e7 Transcribe keeps recordings in the app; tests never touch Downloads; rhythmic phrases
 - Course: 701 days, 11 milestones, 38 lessons
-- Hindi interface: 1974 of 2001 strings translated
+- Hindi interface: 1979 of 2006 strings translated
 - Hindi lessons: 38 of 38 lessons, 382 sections
 - Voice clips: English 13.2 MB, Hindi 27.2 MB; whole app 91.9 MB
 - Claims for a teacher to review: 63 (TEACHER-REVIEW-CLAIMS.md)

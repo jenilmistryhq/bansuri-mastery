@@ -988,6 +988,9 @@ try {
     await page.waitForFunction(() => /notation saved/.test((document.querySelector("#main .caprow") || {}).textContent || ""), { timeout: 5000 }).catch(() => {});
     await go("/transcribe");
     await page.waitForSelector("#main .caprow .btn.primary", { timeout: 5000 }).catch(() => {});
+    const hiddenFirst = await page.$("#main .capnotation") === null;
+    await page.evaluate(() => [...document.querySelectorAll("#main .caprow button")].find(b => b.textContent === "Show notation").click());
+    check(hiddenFirst && /S R G R S/.test(await page.$eval("#main .capnotation", e => e.textContent).catch(() => "")), "transcribe: a saved notation stays hidden until Show notation");
     await page.evaluate(() => document.querySelector("#main .caprow .btn.primary").click());
     await page.waitForSelector(".trresults:not([hidden])", { timeout: 20000 }).catch(() => {});
     check(/S R G R S - - - \|\|/.test(await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "")), "transcribe: Open brings the recording back with its saved notation");

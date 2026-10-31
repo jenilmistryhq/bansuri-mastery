@@ -1013,15 +1013,32 @@ function playEvents(ev, beats, opts) {
   const c = ac(), beatS = 60 / (Number(opts.bpm) || 72);
   const countIn = opts.click && opts.countIn ? opts.countIn : 0;
   // opts.at: an exact audio time to start (a loop continuing on the beat); otherwise just after now.
-  const tStart = opts.at ? Math.max(opts.at, c.currentTime + 0.02) : c.currentTime + 0.25, t0 = tStart + countIn * beatS, voices = [], timers = [];
+  const tStart = opts.at ? Math.max(opts.at, c.currentTime + 0.02) : c.currentTime + 0.25, t0 = tStart + countIn * beatS, timers = [];
+  let voices = [];
   ev.forEach(e => {
-    const f = hzOf(e.semi), at = t0 + e.start;
+    const at = t0 + e.start;
     if (opts.onNote) timers.push(setTimeout(() => opts.onNote(e), Math.max(0, (at - c.currentTime) * 1000)));
     // A prompt shortly before each note (opts.lead seconds), like karaoke: the next fingering appears in time to place it.
     if (opts.onPreview) timers.push(setTimeout(() => opts.onPreview(e), Math.max(0, (at - (opts.lead || 0.3) - c.currentTime) * 1000)));
-    if (opts.mute) return;
+  });
+  // Notes and clicks are made a little ahead of time (AHEAD seconds), not all at once: a long piece
+  // scheduled in one go builds thousands of audio nodes and the sound crackles.
+  const AHEAD = 1.5;
+  // Clicks go into their own bus, so the click can be switched on mid-piece.
+  const clickBus = c.createGain(); clickBus.gain.value = opts.click ? 1 : 0; clickBus.connect(master());
+  for (let i = 0; i < countIn; i++) click(tStart + i * beatS, i === 0 ? "sam" : "tick", clickBus);
+  const bts = beats || [];
+  let ie = 0, ib = 0;
+  const pump = () => {
+    const horizon = c.currentTime + AHEAD;
+    for (; ie < ev.length && t0 + ev[ie].start < horizon; ie++) if (!opts.mute) voiceFor(ev[ie]);
+    for (; ib < bts.length && t0 + bts[ib].t < horizon; ib++) click(t0 + bts[ib].t, bts[ib].down ? "sam" : "tick", clickBus);
+    voices = voices.filter(v => v.end > c.currentTime - 0.5);
+  };
+  function voiceFor(e) {
+    const f = hzOf(e.semi), at = t0 + e.start, keep = v => { v.end = at + e.dur; voices.push(v); };
     // Duet: a second, quieter flute plays the same line opts.duet semitones away (an octave below).
-    if (opts.duet) { const d = makeVoice(hzOf(e.semi + opts.duet), at, { level: 0.14 }); d.stop(at + e.dur - 0.01); voices.push(d); }
+    if (opts.duet) { const d = makeVoice(hzOf(e.semi + opts.duet), at, { level: 0.14 }); d.stop(at + e.dur - 0.01); keep(d); }
     let v;
     if (e.kan !== null && e.kan !== undefined) {
       const k = Math.min(0.08, e.dur * 0.3);
@@ -1031,20 +1048,19 @@ function playEvents(ev, beats, opts) {
     } else {
       v = makeVoice(f, at, { andolan: e.andolan });
     }
-    v.stop(at + e.dur - 0.01); voices.push(v);
-  });
-  // Clicks are always scheduled, into their own bus, so the click can be switched on mid-piece.
-  const clickBus = c.createGain(); clickBus.gain.value = opts.click ? 1 : 0; clickBus.connect(master());
-  for (let i = 0; i < countIn; i++) click(tStart + i * beatS, i === 0 ? "sam" : "tick", clickBus);
-  (beats || []).forEach(bt => click(t0 + bt.t, bt.down ? "sam" : "tick", clickBus));
+    v.stop(at + e.dur - 0.01); keep(v);
+  }
+  pump();
+  const pumper = setInterval(pump, 250);
   if (opts.onCount && countIn) for (let i = 0; i < countIn; i++) timers.push(setTimeout(() => opts.onCount(countIn - i), Math.max(0, (tStart + i * beatS - c.currentTime) * 1000)));
   const lastEnd = ev.length ? ev[ev.length - 1].start + ev[ev.length - 1].dur : 0;
   const total = beats ? Math.max(lastEnd, beats.length * beatS) : lastEnd;
-  timers.push(setTimeout(() => { if (opts.onEnd) opts.onEnd(); }, (t0 - c.currentTime + total) * 1000 + 300));
+  timers.push(setTimeout(() => { clearInterval(pumper); if (opts.onEnd) opts.onEnd(); }, (t0 - c.currentTime + total) * 1000 + 300));
   let stopped = false;
   const stop = function () {
     if (stopped) return; stopped = true;
     const now = c.currentTime;
+    clearInterval(pumper);
     voices.forEach(v => v.stop(now)); timers.forEach(clearTimeout);
     clickBus.disconnect();
   };

@@ -41,7 +41,7 @@ export async function render(main) {
   main.append(page);
   const cleanups = [];
   let audio = null, track = null, capture = null, bench = null, last = null, current = null;
-  const opt = { octave: 0, sameKey: true, layout: "phrases" };
+  const opt = { octave: 0, sameKey: true, layout: "phrases", main: true };
 
   // ---- 1. Getting the sound ----
   const canTab = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) && !/Android|iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -136,7 +136,7 @@ export async function render(main) {
     const st = keep && keep.settings;
     if (st) {
       if ([...saSel.options].some(o => o.value === String(st.sa))) saSel.value = String(st.sa);
-      fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0;
+      fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0; opt.main = st.main !== false;
       bpmIn.value = String(st.bpm); fromIn.value = String(st.from); toIn.value = String(st.to); subSel.value = String(st.sub || 2);
       syncSegs();
     }
@@ -177,7 +177,8 @@ export async function render(main) {
     h("details", { class: "trplot" }, h("summary", null, "See the pitch line"), canvas,
       h("p", { class: "small muted" }, "Dots are the melody's pitch every 20 ms; bars are the notes found. Slides and grace notes shorter than 80 ms are not notes of their own.")),
     h("div", { class: "trgroups" },
-      group("The recording", field("Sa", saSel), h("div", { class: "row tight" }, field("From (s)", fromIn), field("To (s)", toIn))),
+      group("The recording", field("Sa", saSel), h("div", { class: "row tight" }, field("From (s)", fromIn), field("To (s)", toIn)),
+        h("div", { class: "field" }, h("span", null, "Notes"), seg("Notes", [[true, "Main melody"], [false, "Every note"]], () => opt.main, v => { opt.main = v; }))),
       group("Your flute", field("Flute", fluteSel), h("div", { class: "field" }, h("span", null, "Write it in"), keySeg), h("div", { class: "field" }, h("span", null, "Octave"), octave)),
       group("Rhythm", h("div", { class: "field" }, h("span", null, "Layout"), layoutSeg),
         h("div", { class: "row tight" }, field("Tempo (BPM)", bpmIn),
@@ -267,14 +268,20 @@ export async function render(main) {
     return { src, seconds: b - a, stop: () => { try { src.stop(); } catch (e) { /* already stopped */ } } };
   };
   // The notes found, at their own times, each at its swara's pitch in the recording's tuning.
+  // Made a little ahead of time, not all at once (hundreds of voices at once make the sound crackle).
   const playFound = (at, a, b) => {
-    const voices = [];
-    for (const n of last.notes) {
-      if (n.t1 < a || n.t0 > b) continue;
-      const v = makeVoice(440 * Math.pow(2, (n.midi + n.off - 69) / 12), at + Math.max(0, n.t0 - a), { level: 0.16 });
-      v.stop(at + Math.max(0.05, n.t1 - a)); voices.push(v);
-    }
-    return () => voices.forEach(v => v.stop());
+    const notes = last.notes.filter(n => n.t1 >= a && n.t0 <= b), c = ac();
+    let i = 0, voices = [];
+    const pump = () => {
+      for (; i < notes.length && at + notes[i].t0 - a < c.currentTime + 1.5; i++) {
+        const n = notes[i], v = makeVoice(440 * Math.pow(2, (n.midi + n.off - 69) / 12), at + Math.max(0, n.t0 - a), { level: 0.16 });
+        v.end = at + n.t1 - a; v.stop(at + Math.max(0.05, n.t1 - a)); voices.push(v);
+      }
+      voices = voices.filter(v => v.end > c.currentTime - 0.5);
+    };
+    pump();
+    const timer = setInterval(pump, 250);
+    return () => { clearInterval(timer); voices.forEach(v => v.stop()); };
   };
   // Files: rendered offline (faster than playing), as 16-bit WAV.
   const fileName = title => (nameIn.value.trim() || "recording").replace(/[^A-Za-z0-9 _-]+/g, "").trim().replace(/\s+/g, "-").toLowerCase() + "-" + title.toLowerCase().replace(/\s+/g, "-") + ".wav";
@@ -296,6 +303,30 @@ export async function render(main) {
       v.stop(Math.max(0.05, n.t1 - a));
     }
   };
+  // The notes as found (unedited notation): times from the start of the chosen part, held through
+  // short gaps the way the notation reads, and pitched from the flute's Sa (n.semi).
+  function timedNotes() {
+    if (!last || notationText() !== last.notation) return null;
+    const [a, b] = part(), list = last.notes.filter(n => n.t1 >= a && n.t0 <= b);
+    if (!list.length) return null;
+    const notes = list.map((n, i) => { const next = list[i + 1], end = next && next.t0 - n.t1 < 0.25 ? next.t0 : n.t1; return { semi: n.semi, t0: Math.max(0, n.t0 - a), t1: end - a }; });
+    return { notes, seconds: notes[notes.length - 1].t1 + 0.3 };
+  }
+  // Played a little ahead of time, like the other players.
+  function playTimed(tn) {
+    const c = ac(), at = c.currentTime + 0.1;
+    let i = 0, voices = [];
+    const pump = () => {
+      for (; i < tn.notes.length && at + tn.notes[i].t0 < c.currentTime + 1.5; i++) {
+        const n = tn.notes[i], v = makeVoice(hzOf(n.semi), at + n.t0);
+        v.end = at + n.t1; v.stop(at + Math.max(n.t0 + 0.08, n.t1)); voices.push(v);
+      }
+      voices = voices.filter(v => v.end > c.currentTime - 0.5);
+    };
+    pump();
+    const timer = setInterval(pump, 250);
+    return { seconds: tn.seconds, stop: () => { clearInterval(timer); voices.forEach(v => v.stop()); } };
+  }
   const listenCard = h("section", { class: "card" }, h("h2", null, "4. Listen and compare"),
     h("p", { class: "small muted" }, "Hear the recording, then the notation. Together, every wrong note stands out."),
     player("The recording", "The part chosen above.", () => audio && playOriginal(1), async () => {
@@ -303,12 +334,16 @@ export async function render(main) {
       const [a, b] = part();
       return renderMix(b - a, c => renderOriginal(c, 1));
     }),
-    player("The notation", "As written, at the tempo above, on your flute (Settings).", () => {
+    player("The notation", "Its notes on your flute (Settings), in the recording's own timing; after an edit, as written at the tempo above.", () => {
+      const tn = timedNotes();
+      if (tn) return playTimed(tn);
       const bpm = Number(bpmIn.value) || 80, b = buildEvents(parseNotation(notationText()).tokens, bpm);
       if (!b.ev.length) { toast("The notation has no notes."); return null; }
       const stop = playEvents(b.ev, b.beats, { bpm, click: false });
       return { seconds: b.total, stop };
     }, async () => {
+      const tn = timedNotes();
+      if (tn) return renderMix(tn.seconds, c => tn.notes.forEach(n => { const v = makeVoice(hzOf(n.semi), n.t0, { ctx: c, dest: c.destination }); v.stop(Math.max(n.t0 + 0.08, n.t1)); }));
       const bpm = Number(bpmIn.value) || 80, b = buildEvents(parseNotation(notationText()).tokens, bpm);
       if (!b.ev.length) { toast("The notation has no notes."); return null; }
       return renderMix(b.total, c => {
@@ -347,7 +382,7 @@ export async function render(main) {
   function redraw() {
     if (!track) return;
     const flute = Number(fluteSel.value), [a, b] = part();
-    const r = transcribe(track.track, track.levels, { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, sub: Number(subSel.value), octave: opt.octave, layout: opt.layout, from: a, to: b });
+    const r = transcribe(track.track, track.levels, { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b });
     last = r;
     octOut.textContent = r.shift > 0 ? "+" + r.shift / 12 : String(r.shift / 12);
     editor.value = r.notation; drawView();
@@ -371,7 +406,7 @@ export async function render(main) {
   // ---- Your recordings (kept in the app) ----
   const capList = h("div", { class: "stack" });
   const capUse = h("p", { class: "small muted" });
-  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
+  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value) });
   async function save() {
     const name = nameIn.value.trim() || "Recording of " + today();
     try {
@@ -386,6 +421,16 @@ export async function render(main) {
     current = rec; nameIn.value = rec.name;
     window.scrollTo({ top: 0, behavior: "smooth" });
     await analyse(rec.blob, rec);
+  }
+  // A saved notation stays hidden until asked for: the button shows it under the row.
+  function notationToggle(text) {
+    const btn = h("button", { type: "button", class: "btn small ghost", "aria-expanded": "false", onclick: () => {
+      const row = btn.closest(".caprow"), shown = row.querySelector(".capnotation");
+      if (shown) { shown.remove(); btn.textContent = "Show notation"; btn.setAttribute("aria-expanded", "false"); return; }
+      row.append(h("pre", { class: "mono small capnotation" }, text));
+      btn.textContent = "Hide notation"; btn.setAttribute("aria-expanded", "true");
+    } }, "Show notation");
+    return btn;
   }
   async function drawCaptures() {
     let list = [];
@@ -405,6 +450,7 @@ export async function render(main) {
         h("div", { class: "capinfo" }, nameEl, h("span", { class: "small muted" }, fmtWhen(c.created) + " - " + clock(c.seconds || 0) + (c.notation ? " - notation saved" : ""))),
         h("div", { class: "row tight" },
           h("button", { type: "button", class: "btn small primary", onclick: () => openCapture(c.id) }, "Open"),
+          c.notation ? notationToggle(c.notation) : null,
           c.notation ? h("button", { type: "button", class: "btn small", onclick: () => openBench(c.notation, (c.settings && c.settings.bpm) || 80) }, "Play along") : null,
           rename,
           h("button", { type: "button", class: "btn small ghost", "aria-label": "Delete " + c.name, onclick: async e => {
@@ -416,7 +462,7 @@ export async function render(main) {
     // Notations saved before recordings were kept (text only).
     const old = store(SAVED, []).map((m, i) => h("div", { class: "caprow" },
       h("div", { class: "capinfo" }, h("b", null, m.name), h("span", { class: "small muted" }, "Notation only, " + m.bpm + " BPM")),
-      h("div", { class: "row tight" },
+      h("div", { class: "row tight" }, notationToggle(m.notation),
         h("button", { type: "button", class: "btn small", onclick: () => openBench(m.notation, m.bpm) }, "Play along"),
         h("button", { type: "button", class: "btn small ghost", onclick: () => { const l = store(SAVED, []); l.splice(i, 1); storeSet(SAVED, l); drawCaptures(); } }, "Delete"))));
     capList.replaceChildren(...rows, ...old);

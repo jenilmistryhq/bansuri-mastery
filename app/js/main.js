@@ -255,6 +255,11 @@ async function boot() {
       // Once the app is showing, the rest of the course is saved for offline use in the background.
       navigator.serviceWorker.ready.then(r => { if (r.active) r.active.postMessage({ type: "CACHE_REST" }); }).catch(() => {});
       if (reg.waiting && navigator.serviceWorker.controller) offerUpdate(reg.waiting);
+      // A tab left open keeps its old code: look for a new version every 30 minutes and on
+      // coming back to the tab; it takes over at the next screen change.
+      const check = () => reg.update().catch(() => {});
+      setInterval(check, 30 * 60 * 1000);
+      document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
       reg.addEventListener("updatefound", () => {
         const w = reg.installing;
         if (w) w.addEventListener("statechange", () => { if (w.state === "installed" && navigator.serviceWorker.controller) offerUpdate(w); });

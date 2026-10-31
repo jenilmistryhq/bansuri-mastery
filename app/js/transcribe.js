@@ -250,7 +250,8 @@ export function stableRuns(track, levels) {
     if (p && !r.cut && r.i0 - p.i1 <= 4 && Math.abs(median(p.vals) - median(r.vals)) < 0.4 && track.slice(p.i1 + 1, r.i0).every(v => v !== null)) { p.i1 = r.i1; p.vals = p.vals.concat(r.vals); }
     else joined.push({ ...r });
   }
-  return joined.map(r => ({ t0: r.i0 * HOP, t1: (r.i1 + 1) * HOP, p: median(r.vals) }));
+  // lv: how strong the melody was in the stretch (its median level), to drop weak, unsure ones.
+  return joined.map(r => ({ t0: r.i0 * HOP, t1: (r.i1 + 1) * HOP, p: median(r.vals), lv: median(levels.slice(r.i0, r.i1 + 1)) }));
 }
 
 // Names each stretch as a note. Players drift (a flute warms up, a singer sags) and real
@@ -279,7 +280,7 @@ export function labelNotes(runs) {
     let s = 0; for (let k = 1; k < S; k++) if (cost[k] < cost[s]) s = k;
     const path = new Array(n); path[n - 1] = s;
     for (let j = n - 1; j > 0; j--) { s = back[j - 1][s]; path[j - 1] = s; }
-    return runs.map((r, j) => { const o = OFF[path[j]], q = Math.round(r.p - o); return { t0: r.t0, t1: r.t1, midi: q, cents: Math.round((r.p - o - q) * 100), off: o }; });
+    return runs.map((r, j) => { const o = OFF[path[j]], q = Math.round(r.p - o); return { t0: r.t0, t1: r.t1, midi: q, cents: Math.round((r.p - o - q) * 100), off: o, lv: r.lv }; });
   };
   const first = pass(null);
   const share = new Array(12).fill(0); let tot = 0;
@@ -346,6 +347,18 @@ export function beatFit(notes, bpm) {
 
 // A note's code, with its grace note (kan) in braces before it: {G}R.
 const noteCode = (n, semiOf) => (n.kan !== undefined ? "{" + codeOf(semiOf({ midi: n.kan })) + "}" : "") + codeOf(semiOf(n));
+
+// Main melody only: what a listener would sing back. Leaves out notes outside the melody's main
+// range (an instrument above or below the singer in an interlude), weak and unsure stretches, and
+// notes shorter than 100 ms (slides and quick ornaments).
+export function mainMelody(notes) {
+  if (notes.length < 8) return notes;
+  const byPitch = notes.slice().sort((a, b) => a.midi - b.midi), tot = notes.reduce((x, n) => x + n.t1 - n.t0, 0);
+  const pct = q => { let acc = 0; for (const n of byPitch) { acc += n.t1 - n.t0; if (acc >= q * tot) return n.midi; } return byPitch[byPitch.length - 1].midi; };
+  const lo = pct(0.1) - 3, hi = pct(0.9) + 3;
+  const lvs = notes.map(n => n.lv || 0).sort((a, b) => a - b), medLv = lvs[lvs.length >> 1];
+  return notes.filter(n => n.midi >= lo && n.midi <= hi && n.t1 - n.t0 >= 0.1 && !(medLv > 0 && (n.lv || 0) < 0.2 * medLv));
+}
 
 // Octave slips: a melody rarely leaps more than about an octave and straight back, so a note
 // further than 9 semitones from the notes around it (the median of up to four on each side) moves
@@ -436,21 +449,21 @@ export function toNotation(notes, bpm, phase, sub, semiOf) {
   return lines.join("\n");
 }
 
-// Phrases: the same beats as the bars layout (so the rhythm and the playback stay true: two
-// quick notes share a beat, "SR"), without bar lines; a new line at each pause of two beats or
-// more (the silence itself is left out), or after 16 beats at the next note.
-export function toPhrases(notes, bpm, phase, sub, semiOf) {
-  if (!notes.length) return "";
-  const beats = beatTokens(notes, bpm, phase, sub, semiOf), lines = [];
-  let line = [], rests = 0;
-  const flush = () => { while (line.length && line[line.length - 1] === "_") line.pop(); if (line.length) lines.push(line.join(" ")); line = []; };
-  for (const b of beats) {
-    if (b === "_") { rests++; if (rests === 2) flush(); else if (rests < 2 && line.length) line.push(b); continue; }
-    rests = 0;
-    if (line.length >= 16 && b !== "-") flush();
-    line.push(b);
-  }
-  flush();
+// Phrases: the notes in order, easy to read: "-" for each further beat a note is held (up to
+// three), "," at a pause and a new line at a longer pause. The exact timing is kept with the notes
+// (the page plays them as found); the bars layout writes the rhythm into the text.
+export function toPhrases(notes, bpm, semiOf) {
+  const beat = 60 / bpm, lines = [];
+  let line = [];
+  notes.forEach((n, j) => {
+    const next = notes[j + 1], gap = next ? next.t0 - n.t1 : Infinity;
+    const held = (gap < 0.75 * beat ? next.t0 : n.t1) - n.t0;
+    line.push(noteCode(n, semiOf));
+    for (let k = 1; k < Math.min(4, Math.round(held / beat)); k++) line.push("-");
+    if (gap >= 1.2 || (gap >= 0.3 && line.length >= 12) || line.length >= 24) { lines.push(line.join(" ")); line = []; }
+    else if (gap >= 0.5) line.push(",");
+  });
+  if (line.length) lines.push(line.join(" "));
   return lines.join("\n");
 }
 
@@ -495,13 +508,16 @@ export function bestFlute(notes, saMidi) {
 // Everything above, in one call. opts: { sa (MIDI of the recording's Sa, else detected), flute (MIDI
 // of the flute's Sa), sameKey (true: play along with the recording; false: keep the recording's
 // sargam on the flute's own Sa), bpm, sub (steps per beat: 1, 2 or 4), octave (extra shift),
-// layout ("beats" or "phrases"), from and to (seconds: only that part of the recording) }.
+// layout ("beats" or "phrases"), from and to (seconds: only that part of the recording), main
+// (true by default: the main melody only; false: every note found, with grace notes) }.
 export function transcribe(track, levels, opts) {
   const o = Object.assign({ flute: 72, sameKey: true, sub: 2, octave: 0 }, opts || {});
   // Notes far from the melody's range (a drone or bass heard alone, a stray octave) are left out.
   const all = labelNotes(stableRuns(track, levels)), mids = all.map(n => n.midi).sort((a, b) => a - b), mid = mids[mids.length >> 1];
   const from = o.from || 0, to = o.to || Infinity;
-  const notes = graceNotes(foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to)));
+  const folded = foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
+  // o.main (default): the main melody, plain; o.main false: every note found, with grace notes.
+  const notes = o.main === false ? graceNotes(folded) : mainMelody(folded);
   const tonics = findTonic(notes);
   const sa = o.sa !== undefined && o.sa !== null ? o.sa : tonics.length ? tonicMidi(tonics[0].pc, notes) : 72;
   const tune = notes.length ? notes.reduce((a, n) => a + n.off, 0) / notes.length : 0;
@@ -512,9 +528,10 @@ export function transcribe(track, levels, opts) {
   const shift = bestOctave(raw) + o.octave;
   const semiOf = n => n.midi - base + shift;
   const semis = notes.map(semiOf);
+  notes.forEach((n, k) => { n.semi = semis[k]; });
   return {
     notes, tune: Math.round(tune * 100), tonics, sa, bpm, phase: tempo.phase, shift, base,
     fit: fitOf(semis), flute: bestFlute(notes, sa),
-    notation: o.layout === "phrases" ? toPhrases(notes, bpm, tempo.phase, o.sub, semiOf) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf),
+    notation: o.layout === "phrases" ? toPhrases(notes, bpm, semiOf) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf),
   };
 }
