@@ -102,7 +102,7 @@ export const RAGA_KINDS = {
   // Play freely within a raga. { name, notes: [pc], aroh: [pc], avroh: [pc], strong: [pc], seconds }
   improv: { make(s, api) {
     const secs = s.seconds || 40;
-    let unsub = null, timer = 0, reads = [], t0 = null, lastFlag = null;
+    let unsub = null, timer = 0, reads = [], t0 = null, lastFlag = null, runNote = null, runStart = 0;
     const allowed = new Set(s.notes);
     const trail = h("div", { class: "lesson-trail mono", "aria-live": "off" });
     const flag = h("p", { class: "small", "aria-live": "polite" });
@@ -128,15 +128,19 @@ export const RAGA_KINDS = {
     }
     btn.addEventListener("click", async () => {
       if (unsub) { finish(); return; }
-      reads = []; t0 = null; trail.textContent = ""; out.replaceChildren(); flag.textContent = "";
+      reads = []; t0 = null; runNote = null; lastFlag = null; trail.textContent = ""; out.replaceChildren(); flag.textContent = "";
       const u = await openMic(btn.parentElement, btn, r => {
         if (t0 === null && r.semi !== null) t0 = r.t;
         if (t0 === null) return;
         reads.push({ t: r.t - t0, semi: r.semi, near: r.near });
-        if (r.semi === null) return;
-        const p = pc(r.near);
+        // A note counts once it has lasted 0.15 s (as in the result): passing frames between
+        // notes are not flagged.
+        const n = r.semi === null ? null : r.near;
+        if (n !== runNote) { runNote = n; runStart = r.t; return; }
+        if (n === null || r.t - runStart < 0.15) return;
+        const p = pc(n);
         if (!allowed.has(p) && lastFlag !== p) { lastFlag = p; flag.textContent = codeOf(p) + " is not in " + s.name + "."; flag.className = "small warn"; }
-        if (trail.textContent.split(" ").pop() !== codeOf(r.near)) trail.textContent = (trail.textContent + " " + codeOf(r.near)).trim().split(" ").slice(-14).join(" ");
+        if (trail.textContent.split(" ").pop() !== codeOf(n)) trail.textContent = (trail.textContent + " " + codeOf(n)).trim().split(" ").slice(-14).join(" ");
       });
       if (!u) { msg.textContent = "The microphone is not available here."; api.ready(); return; }
       unsub = u; btn.replaceChildren(icon("stop"), " Stop");
