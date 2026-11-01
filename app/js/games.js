@@ -13,11 +13,11 @@ import { t as tr } from "./core/i18n.js";
 
 // Accessibility settings for the games: speed (slow, normal, fast), no clock, and cues for playing
 // without looking (the next note is spoken, progress is heard as ticks).
-const speedOf = () => ({ slow: 0.65, normal: 1, fast: 1.3 })[getSettings().gameSpeed] || 1;
-const cuesOn = () => getSettings().cues;
+export const speedOf = () => ({ slow: 0.65, normal: 1, fast: 1.3 })[getSettings().gameSpeed] || 1;
+export const cuesOn = () => getSettings().cues;
 function tick(high) { try { const c = ac(), t = c.currentTime + 0.01; click(t, high ? "tali" : "tick"); muteListening(t + 0.12); } catch (e) { /* audio unavailable */ } }
 // A note's label on a canvas: the fingering picture, or the letter.
-function canvasNote(g, x, y, semi, size, col) {
+export function canvasNote(g, x, y, semi, size, col) {
   if (picturesOn()) drawFing(g, x, y, semi, size || 20);
   else { g.fillStyle = col; const l = codeOf(semi); g.fillText(l, x - g.measureText(l).width / 2, y + 5); }
 }
@@ -42,12 +42,12 @@ export function nextNote(set, prev, rnd) {
   return set[Math.max(0, Math.min(set.length - 1, i + dir * step))];
 }
 
-const colors = () => {
+export const colors = () => {
   const css = getComputedStyle(document.documentElement), v = (k, d) => (css.getPropertyValue(k) || "").trim() || d;
   return { ink: v("--ink", "#1b2420"), muted: v("--muted", "#56645d"), line: v("--line", "#cfd6ca"), accent: v("--accent", "#0d6a6e"), good: v("--good", "#2e7a3a"), bad: v("--bad", "#b3261e"), warn: v("--warn", "#9a6512"), bamboo: v("--bamboo", "#c9a552"), surface: v("--surface", "#f9faf6"), sunken: v("--sunken", "#e3e8de") };
 };
 
-function fitCanvas(canvas, aspect) {
+export function fitCanvas(canvas, aspect) {
   const w = canvas.parentElement ? canvas.parentElement.clientWidth : 600, dpr = window.devicePixelRatio || 1;
   // On a phone the field is taller than it is on a wide screen, so the game is not a thin strip.
   const W = Math.max(280, Math.min(900, w)), H = Math.round(W < 560 ? Math.min(W * aspect * 1.8, window.innerHeight * 0.55) : W * aspect);
@@ -56,11 +56,11 @@ function fitCanvas(canvas, aspect) {
   return { g, W, H };
 }
 
-function chime(good) { try { const c = ac(), t = c.currentTime + 0.01; click(t, good ? "tali" : "khali"); } catch (e) { /* audio unavailable */ } }
+export function chime(good) { try { const c = ac(), t = c.currentTime + 0.01; click(t, good ? "tali" : "khali"); } catch (e) { /* audio unavailable */ } }
 
 // Shared microphone handling with the same safety as the other widgets: a late subscription
 // (after a stop or a second start) is closed at once.
-function mic(el) {
+export function mic(el) {
   const life = { gen: 0, unsub: null };
   return {
     async start(onReading, btn) {
@@ -77,7 +77,7 @@ function mic(el) {
   };
 }
 
-function setPicker(saved) {
+export function setPicker(saved) {
   const sel = h("select", { class: "input", "aria-label": "Notes", style: { width: "auto" } }, NOTE_SETS.map(([k, label]) => h("option", { value: k }, label)));
   sel.value = saved && NOTE_SETS.some(s => s[0] === saved) ? saved : "srg";
   return sel;
@@ -357,7 +357,7 @@ export function fallingNotes(opts) {
 // ---------- Jam with the band ----------
 // Tanpura and tabla play in a raga; you improvise. Notes in the raga light up; a note outside it is
 // pointed out with the nearest raga notes. opts: { ragas: [{ name, notes: [semi], first, phrases }] }
-const THEKAS = {
+export const THEKAS = {
   keherwa: { name: "Keherwa (8)", bols: "Dha Ge Na Ti Na Ka Dhi Na".split(" ") },
   dadra: { name: "Dadra (6)", bols: "Dha Dhi Na Dha Ti Na".split(" ") },
   teentaal: { name: "Teentaal (16)", bols: "Dha Dhin Dhin Dha Dha Dhin Dhin Dha Dha Tin Tin Ta Ta Dhin Dhin Dha".split(" ") },

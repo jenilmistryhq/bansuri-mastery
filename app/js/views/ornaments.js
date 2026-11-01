@@ -3,8 +3,8 @@
 // together with what to change (ornaments.js measures the attempt). Best results are kept in this
 // browser (bansuri.ornaments).
 import { h, store, storeSet, today, icon } from "../util.js";
-import { codeOf, hzOf } from "../core/theory.js";
-import { makeVoice, ac } from "../core/audio.js";
+import { codeOf } from "../core/theory.js";
+import { playCurve } from "../core/audio.js";
 import { relSemi } from "../core/pitch.js";
 import { listenMic } from "../core/listen.js";
 import { micIntro, countdown } from "../core/live.js";
@@ -12,19 +12,6 @@ import { ORNAMENTS, targetCurve, analyse, cleanReadings } from "../ornaments.js"
 
 const KEY = "bansuri.ornaments";
 const name = s => codeOf(s);
-
-// Play a target curve on the flute voice (speed 1 or 0.5).
-function playCurve(pts, speed) {
-  const c = ac(), t0 = c.currentTime + 0.08, k = 1 / speed, step = 2;
-  const v = makeVoice(hzOf(pts[0].semi), t0);
-  for (let i = step; i < pts.length; i += step) {
-    const a = pts[i - step], b = pts[i];
-    v.ramp(hzOf(a.semi), hzOf(b.semi), t0 + a.t * k, (b.t - a.t) * k);
-  }
-  const end = t0 + pts[pts.length - 1].t * k + 0.05;
-  v.stop(end);
-  return { voice: v, start: t0, seconds: end - c.currentTime };
-}
 
 export async function render(main) {
   const page = h("div", { class: "page ornpage" });

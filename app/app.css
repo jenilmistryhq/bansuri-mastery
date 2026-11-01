@@ -410,6 +410,15 @@ dialog.modal::backdrop { background: rgba(0,0,0,0.4); }
 .gamecard b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
 .game-card { border-color: var(--accent); }
 .game-stage { width: 100%; }
+.wn-tiles { flex-wrap: wrap; gap: 8px; }
+.wn-tile { min-width: 56px; display: grid; justify-items: center; gap: 2px; }
+.bingo { display: grid; grid-template-columns: repeat(3, minmax(64px, 110px)); gap: 8px; }
+.bingo-cell { min-height: 64px; font-size: 1.3rem; font-family: var(--mono); }
+.samtap { min-height: 96px; font-size: 1.3rem; }
+.sambeats { gap: 6px; flex-wrap: wrap; }
+.sambeat { min-width: 30px; text-align: center; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); font-family: var(--mono); }
+.sambeat.sam { font-weight: 700; }
+.sambeat.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .game-canvas { display: block; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); touch-action: none; max-width: 100%; }
 .questlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .questlist li { display: flex; gap: 10px; align-items: center; }

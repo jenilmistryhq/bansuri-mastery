@@ -110,8 +110,11 @@ export function analyseMeend(rs, e, name) {
   }
   // Going the wrong way first, and overshooting the end.
   const after = v.filter(r => r.t >= t1 && r.t <= t1 + 0.4), over = after.length ? Math.max(...after.map(r => (r.semi - e.to) * dir)) : 0;
+  // The glide is timed between bands around the two notes, so a one-semitone meend measures shorter:
+  // the shortest acceptable glide scales with the interval (a real jump takes 30-60 ms).
+  const minGlide = 0.3 * Math.min(1, Math.abs(e.to - e.from) / 2);
   const checks = [
-    ok(glide >= 0.3 && glide <= 2, glide < 0.3 ? "Too quick (" + Math.round(glide * 1000) + " ms): that is a jump, not a meend. Slide the finger more slowly, about a second." : glide > 2 ? "Very slow (" + glide.toFixed(1) + " s): keep it under two seconds." : "Glide length " + glide.toFixed(1) + " s: good."),
+    ok(glide >= minGlide && glide <= 2, glide < minGlide ? "Too quick (" + Math.round(glide * 1000) + " ms): that is a jump, not a meend. Slide the finger more slowly, about a second." : glide > 2 ? "Very slow (" + glide.toFixed(1) + " s): keep it under two seconds." : "Glide length " + glide.toFixed(1) + " s: good."),
     ok(gap <= 0.1, gap > 0.1 ? "The sound broke during the glide: keep the air going while the finger slides." : "No break in the sound."),
     ok(step === null, step !== null ? "It stopped on " + name(step) + " on the way: a meend passes through the notes between without resting." : "Smooth: no step on the way."),
     ok(over <= 0.4, over > 0.4 ? "Went past " + name(e.to) + " and came back: slow down as you arrive." : "Landed on " + name(e.to) + " without overshooting."),
@@ -159,7 +162,7 @@ export function analyseMurki(rs, e, name) {
   const checks = [
     ok(missing === 0, missing ? "Not all the notes were heard in order: play " + want.map(name).join(" ") + ". (Very fast notes can run together for the microphone: try it a little slower.)" : "All the notes, in order."),
     ok(extra <= 1, extra > 1 ? "Extra notes crept in: keep the cluster to the notes shown." : "No extra notes."),
-    ok(each <= 0.2, each > 0.2 ? "About " + Math.round(each * 1000) + " ms a note: lighter and quicker, so it is one gesture." : "Quick and light: about " + Math.round(each * 1000) + " ms a note."),
+    ok(each <= (e.maxEach || 0.2), each > (e.maxEach || 0.2) ? "About " + Math.round(each * 1000) + " ms a note: lighter and quicker, so it is one gesture." : "Quick and light: about " + Math.round(each * 1000) + " ms a note."),
     ok(!breaks, breaks ? "The sound broke inside the murki: one breath for the whole cluster." : "One breath, no break."),
   ];
   return result(checks, { each: Math.round(each * 1000), missing, extra }, "murki");

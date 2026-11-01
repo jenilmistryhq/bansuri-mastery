@@ -5,6 +5,8 @@ import { getDay, current, phaseOf } from "../course.js";
 import { fetchDoc } from "../content.js";
 import { questState } from "../fun.js";
 import { pitchSteer, balloon, fallingNotes, jam, NOTE_SETS } from "../games.js";
+import { meendBridge, kanFlick, murkiChase, andolanLamp, nameOrnament, swellFade, tonguedBeats } from "../games3.js";
+import { boat, glideRoad, lanterns, bullseye, threeFloors, wrongNote, bingo, higherLower, catchSam } from "../games2.js";
 import { phraseCheck } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
 import { parseSongs } from "./songs.js";
@@ -106,11 +108,27 @@ export async function render(main, { params, view }) {
       open("Falling notes", () => fallingNotes({ songs: songs.filter(s => s.ready).concat(songs.filter(s => !s.ready)) }));
     }],
     jam: ["Jam with the band", "Tanpura and tabla in a raga: improvise, and the app keeps you in the raga.", async () => { const ragas = await ragasP; open("Jam with the band", () => jam({ ragas })); }],
+    boat: ["Long-breath boat", "Sail while you hold one long, steady note; in tune, it sails twice as fast.", () => open("Long-breath boat", () => boat())],
+    road: ["Glide road", "Keep your pitch on a road that holds and glides between notes (meend).", () => open("Glide road", () => glideRoad())],
+    lanterns: ["Light the lanterns", "Play a lantern's note to light it before it fades.", () => open("Light the lanterns", () => lanterns())],
+    bullseye: ["Bullseye", "Hold a note: the arrow lands as far from the centre as you are out of tune.", () => open("Bullseye", () => bullseye())],
+    floors: ["Three floors", "A lift between the octaves: play the note on the floor shown.", () => open("Three floors", () => threeFloors())],
+    wrong: ["Spot the wrong note", "A phrase plays twice with one note changed. Which one? (no microphone)", () => open("Spot the wrong note", () => wrongNote())],
+    bingo: ["Sargam bingo", "Notes play over the drone: mark them on your card. (no microphone)", () => open("Sargam bingo", () => bingo())],
+    higherlower: ["Higher or lower", "Is the second note higher, lower or the same? (no microphone)", () => open("Higher or lower", () => higherLower())],
+    sam: ["Catch the sam", "Tap on beat 1 of each cycle of the taal, even when it is not stressed. (no microphone)", () => open("Catch the sam", () => catchSam())],
+    meendbridge: ["Meend bridge", "Six glides between notes: no step, no break, landing on the note.", () => open("Meend bridge", () => meendBridge())],
+    kanflick: ["Kan flick", "A flick of the grace note before each note; clean kans build a streak.", () => open("Kan flick", () => kanFlick())],
+    murkichase: ["Murki chase", "Quick turns of notes; each clean murki makes the next one faster.", () => open("Murki chase", () => murkiChase())],
+    andolanlamp: ["Andolan lamp", "Swing komal Re, Ga or Dha slowly below its place and back.", () => open("Andolan lamp", () => andolanLamp())],
+    swell: ["Swell and fade", "Louder, then softer, on one note, without the pitch moving.", () => open("Swell and fade", () => swellFade())],
+    tongue: ["Tongued beats", "Tongue a short Sa on every beat of the metronome, evenly.", () => open("Tongued beats", () => tonguedBeats())],
+    nameorn: ["Name the ornament", "Hear a phrase: meend, kan, murki, andolan or a plain note? (no microphone)", () => open("Name the ornament", () => nameOrnament())],
     compose: ["Make a melody", "Build a tune from a raga's notes, play it, and challenge a friend.", () => { location.hash = "#/compose"; }],
     quick: ["5-minute practice", "Short on time? A long tone, a game and a song.", () => { location.hash = "#/quick"; }],
   };
   // Which game helps with which quest.
-  const FOR_QUEST = { hold: "balloon", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
+  const FOR_QUEST = { ornament: "meendbridge", swell: "swell", boat: "boat", bullseye: "bullseye", wrong: "wrong", sam: "sam", road: "road", hold: "boat", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
   const qs = questState(), left = qs.list.filter(q => !q.done && FOR_QUEST[q.id]);
   const pick = left.length ? FOR_QUEST[left[0].id] : "balloon";
   const [pTitle, pText, pGo] = GAMES[pick];
@@ -123,7 +141,10 @@ export async function render(main, { params, view }) {
 
   // The other games.
   const card = (title, text, onClick) => h("button", { type: "button", class: "gamecard", onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
-  page.append(h("h2", { class: "grouphead" }, "More to play"), h("section", { class: "games" }, Object.entries(GAMES).filter(([k]) => k !== pick).map(([, g]) => card(g[0], g[1], g[2]))));
+  const GROUPS = [["With your flute", ["steer", "balloon", "falling", "jam", "boat", "road", "lanterns", "bullseye", "floors"]],
+    ["Ornaments and technique", ["meendbridge", "kanflick", "murkichase", "andolanlamp", "swell", "tongue"]],
+    ["By ear (no microphone)", ["nameorn", "wrong", "bingo", "higherlower", "sam"]], ["Make and practise", ["compose", "quick"]]];
+  for (const [head, keys] of GROUPS) page.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, keys.filter(k => k !== pick).map(k => card(GAMES[k][0], GAMES[k][1], GAMES[k][2]))));
 
   // Collection.
   const coll = h("details", { class: "card" }, h("summary", null, h("b", null, "Your collection: songs and ragas")), h("p", { class: "small muted" }, "Songs and ragas unlock as the course reaches them. A song is mastered when you mark it \"I can play it\" or get 2 stars on it."));

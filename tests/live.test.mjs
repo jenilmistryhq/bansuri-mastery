@@ -216,7 +216,9 @@ await test("quests: the same three all day, and results complete them once", asy
   // Steer is "once": a high score completes it; a second one adds no more XP.
   const q = questState().list.find(x => x.id !== "session");
   const results = { hold: { type: "hold", seconds: 30 }, echo: { type: "echo", correct: true }, steer: { type: "game", game: "steer", score: 99 }, balloon: { type: "game", game: "balloon", score: 99 },
-    falling: { type: "game", game: "falling", stars: 3 }, jam: { type: "game", game: "jam", minutes: 5 }, tap: { type: "tap", within: 0.9 }, song: { type: "play", n: 10, ok: 10 } };
+    falling: { type: "game", game: "falling", stars: 3 }, jam: { type: "game", game: "jam", minutes: 5 }, tap: { type: "tap", within: 0.9 }, song: { type: "play", n: 10, ok: 10 },
+    boat: { type: "game", game: "boat", score: 99 }, bullseye: { type: "game", game: "bullseye", score: 99 }, road: { type: "game", game: "road", score: 99 }, wrong: { type: "game", game: "wrong", score: 9 },
+    sam: { type: "game", game: "sam", hits: 7 }, ornament: { type: "game", game: "kanflick", score: 90 }, swell: { type: "game", game: "swell", score: 90 } };
   const before = questState().xp;
   for (let i = 0; i < 3; i++) advanceQuests(results[q.id]);
   const after = questState();
@@ -224,6 +226,9 @@ await test("quests: the same three all day, and results complete them once", asy
   assert.ok(after.xp >= before + 20 && after.xp <= before + 44, "XP once (plus a possible bonus)");
   advanceQuests(results[q.id]);
   assert.equal(questState().xp, after.xp);
+  // Every quest in the pool can be completed by some result.
+  const { POOL } = await import("../app/js/fun.js");
+  for (const def of POOL) assert.ok(results[def.id] && def.step(results[def.id], def.goal(s)) > 0, "a result completes the " + def.id + " quest");
   assert.equal(advanceQuests({ type: "nothing" }).length, 0);
 });
 

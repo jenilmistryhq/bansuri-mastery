@@ -238,6 +238,19 @@ export function toneDemo(level, seconds) {
   return v;
 }
 
+// Play a pitch curve ([{ t, semi }], from 0 s) on the flute voice, at a speed (1 or 0.5).
+export function playCurve(pts, speed) {
+  const c = ac(), t0 = c.currentTime + 0.08, k = 1 / (speed || 1), step = 2;
+  const v = makeVoice(hzOf(pts[0].semi), t0);
+  for (let i = step; i < pts.length; i += step) {
+    const a = pts[i - step], b = pts[i];
+    v.ramp(hzOf(a.semi), hzOf(b.semi), t0 + a.t * k, (b.t - a.t) * k);
+  }
+  const end = t0 + pts[pts.length - 1].t * k + 0.05;
+  v.stop(end);
+  return { voice: v, start: t0, seconds: end - c.currentTime };
+}
+
 export function playNote(semi, dur) {
   const c = ac(), t = c.currentTime + 0.02;
   const v = makeVoice(hzOf(semi), t);

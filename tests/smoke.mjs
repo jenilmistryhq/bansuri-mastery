@@ -829,6 +829,67 @@ try {
       check(/Your best: \d of 4/.test(ornText), "ornaments: the best result is kept");
       await tone(null);
 
+      // More games: each opens from Play and plays a short round (synthetic microphone, or taps).
+      const openGame = async title => {
+        await lp.goto(BASE + "#/play", { waitUntil: "networkidle0" });
+        await lp.waitForFunction(t => [...document.querySelectorAll("#main button")].some(b => b.textContent.includes(t)), { timeout: 8000 }, title);
+        await lp.evaluate(t => [...document.querySelectorAll("#main button")].find(b => b.textContent.includes(t)).click(), title);
+        await lp.waitForSelector("#main .game-card:not([hidden]) .game", { timeout: 5000 });
+      };
+      const gameBtn = label => lp.evaluate(l => { const b = [...document.querySelectorAll("#main .game-card button")].find(x => x.textContent.trim() === l); if (b) b.click(); return !!b; }, label);
+      const gameText = () => lp.$eval("#main .game-card", e => e.textContent);
+      const waitText = (re, ms) => lp.waitForFunction(r => new RegExp(r).test(document.querySelector("#main .game-card").textContent), { timeout: ms || 8000 }, re.source).catch(() => {});
+      await openGame("Long-breath boat"); await gameBtn("Start"); await waitText(/Sail!/); await tone(0); await sleep(2500); await tone(null); await gameBtn("Stop"); await waitText(/sailed/);
+      check(/sailed [1-9]\d* m/.test(await gameText()), "games: Long-breath boat sails while a steady note is held");
+      await openGame("Bullseye"); await gameBtn("Start"); await waitText(/Hold this note:/); await tone(0); await waitText(/points/, 6000); await tone(null);
+      check(/S: [-+]?\d+ cents, (10|8) points/.test(await gameText()), "games: Bullseye scores a held, in-tune Sa near the centre (" + ((await gameText()).match(/S: [^.]*points/) || ["?"])[0] + ")");
+      await gameBtn("Stop");
+      await openGame("Glide road"); await gameBtn("Start"); await waitText(/Start on this note:/); await tone(0); await sleep(2600); await tone(null); await gameBtn("Stop"); await waitText(/On the road \d+%\./);
+      check(/On the road [1-9]\d*%\./.test(await gameText()), "games: Glide road counts the time on the road");
+      await openGame("Three floors"); await gameBtn("Start"); await waitText(/Play this note:/); await tone(0); await waitText(/Next note:/, 4000); await tone(null);
+      check(/Next note:/.test(await gameText()), "games: Three floors moves on when the note is played on its floor");
+      await gameBtn("Stop");
+      await openGame("Light the lanterns"); await gameBtn("Start"); await sleep(800); await gameBtn("Stop"); await waitText(/lanterns lit/);
+      check(/lanterns lit/.test(await gameText()), "games: Light the lanterns starts and ends a round");
+      await openGame("Spot the wrong note"); await gameBtn("Start"); await sleep(400);
+      await lp.evaluate(() => document.querySelectorAll("#main .wn-tile")[1].click());
+      check(/Right: note|Not that one: note/.test(await gameText()), "games: Spot the wrong note judges a tapped note");
+      await gameBtn("Stop");
+      await openGame("Higher or lower"); await gameBtn("Start"); await sleep(300); await gameBtn("Higher");
+      check(/Right! Score|It went|They were/.test(await gameText()), "games: Higher or lower judges an answer");
+      await gameBtn("Stop");
+      await openGame("Sargam bingo"); await gameBtn("Start"); await waitText(/Call 1:/, 5000);
+      const cells = await lp.$$eval("#main .bingo-cell", b => b.length);
+      await lp.evaluate(() => document.querySelector("#main .bingo-cell").click());
+      check(cells === 9 && /Not that one|Call/.test(await gameText()), "games: Sargam bingo deals a card of 9 and judges a tap");
+      await gameBtn("Stop");
+      await openGame("Catch the sam"); await gameBtn("Start"); await sleep(300);
+      await lp.evaluate(() => document.querySelector("#main .samtap").dispatchEvent(new PointerEvent("pointerdown", { bubbles: true })));
+      check(/Listen to the first cycle/.test(await gameText()), "games: Catch the sam asks to listen to the first cycle before tapping");
+      await gameBtn("Stop");
+      check(/Sam caught 0 of 7/.test(await gameText()), "games: Catch the sam stops and reports");
+      // Ornament and technique games.
+      await openGame("Meend bridge");
+      await lp.evaluate(() => { const c = document.querySelector("#main .game-card input[type=checkbox]"); if (c.checked) c.click(); });
+      await gameBtn("Start"); await waitText(/Your turn:/); await tone(2); await sleep(1300); await tone(null); await waitText(/points\./, 6000);
+      check(/\d of \d points\./.test(await gameText()), "games: Meend bridge judges an attempt with the trainer's checks");
+      await gameBtn("Stop");
+      await openGame("Kan flick"); await gameBtn("Start"); await sleep(300); await gameBtn("Stop");
+      check(/Score 0 of 0 \(0%\)|Score \d+ of \d+/.test(await gameText()), "games: Kan flick starts and stops");
+      await openGame("Andolan lamp");
+      await lp.evaluate(() => { const c = document.querySelector("#main .game-card input[type=checkbox]"); if (c.checked) c.click(); });
+      await gameBtn("Start"); await waitText(/Your turn:/); await tone(3); await sleep(3500); await tone(null); await waitText(/points\./, 7000);
+      check(/\d of 4 points\./.test(await gameText()) && /swing|Swing/.test(await gameText()), "games: Andolan lamp says what the swing lacked (a steady tone has none)");
+      await gameBtn("Stop");
+      await openGame("Swell and fade"); await gameBtn("Start"); await waitText(/clock starts/); await tone(0); await waitText(/of 100|whole six/, 10000); await tone(null);
+      check(/Score \d+ of 100\. Pitch moved \d+ cents\./.test(await gameText()) && /bigger difference/.test(await gameText()), "games: Swell and fade scores the note and asks for more loudness change (the test tone is constant)");
+      await openGame("Tongued beats"); await gameBtn("Start"); await waitText(/Count in/); await sleep(500); await gameBtn("Stop");
+      check(/Notes on the beat: 0 of 16\./.test(await gameText()), "games: Tongued beats stops and reports");
+      await openGame("Name the ornament"); await gameBtn("Start"); await sleep(300); await gameBtn("Kan");
+      check(/Right\.|Not quite\./.test(await gameText()) && /: /.test(await gameText()), "games: Name the ornament judges an answer and explains it");
+      await gameBtn("Stop");
+      await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+
       // Hindi: the interface, and a session step, in Hindi.
       await setSet({ lang: "hi" });
       await lp.goto(BASE + "#/session/2", { waitUntil: "networkidle0" });
