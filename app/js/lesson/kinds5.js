@@ -35,6 +35,40 @@ export function notesFromReadings(rs, minSec = 0.15) {
 }
 
 export const RAGA_KINDS = {
+  // Read Bhatkhande notation: a Devanagari letter (or a few) drawn with its marks; choose the
+  // course notation. { rounds: [{ tokens: [{ t, mark }], options, answer, why }] }
+  // mark: "komal" (line under), "tivra" (tick above), "mandra" (dot below), "taar" (dot above),
+  // "meend" (arc above the group).
+  bhatkhande: { make(s, api) {
+    let i = 0, right = 0, missed = false;
+    const tally = h("p", { class: "small muted" });
+    const line = h("div", { class: "bk-line", lang: "hi" });
+    const opts = h("div", { class: "lesson-chips" });
+    const out = h("div");
+    function show() {
+      const r = s.rounds[i]; missed = false; out.replaceChildren();
+      tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length;
+      line.className = "bk-line" + (r.arc ? " bk-arc" : "");
+      line.replaceChildren(...r.tokens.map(tk => h("span", { class: "bk-tok" + (tk.mark ? " bk-" + tk.mark : "") }, tk.t)));
+      opts.replaceChildren(...r.options.map(o => {
+        const b = h("button", { type: "button", class: "lesson-chip mono" }, o);
+        b.addEventListener("click", () => {
+          if (o !== r.answer) { missed = true; b.classList.add("wrong"); b.disabled = true; ding(false); return; }
+          if (!missed) right++;
+          b.classList.add("picked"); opts.querySelectorAll("button").forEach(x => { x.disabled = true; }); ding(true);
+          const last = i === s.rounds.length - 1;
+          const next = last ? null : h("button", { type: "button", class: "btn" }, "Next one");
+          if (next) next.addEventListener("click", () => { i++; show(); });
+          out.replaceChildren(...[r.why ? h("div", { class: "lesson-reveal good" }, h("b", null, "Right."), h("p", null, r.why)) : null, next].filter(Boolean));
+          if (last) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
+        });
+        return b;
+      }));
+    }
+    show();
+    return { el: h("div", { class: "stack lesson-center" }, tally, line, opts, out) };
+  } },
+
   // Hear a scale, then choose its notes from the 12. { notes: [semi] (the answer), play: [semi] }
   pick: { make(s, api) {
     const chosen = new Set();

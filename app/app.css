@@ -1068,3 +1068,10 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-trail { min-height: 1.6em; font-size: 1.1rem; letter-spacing: 0.04em; }
 .small.warn { color: var(--warn); font-weight: 600; }
 .lesson-shown { font-size: 1.3rem; padding: 6px 14px; border-radius: var(--radius); background: var(--sunken); }
+.bk-line { display: flex; gap: 14px; font-size: 2.4rem; padding: 18px 22px 22px; border-radius: var(--radius); background: var(--sunken); position: relative; }
+.bk-tok { position: relative; line-height: 1.2; }
+.bk-komal { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 8px; }
+.bk-tivra::before { content: ""; position: absolute; left: 50%; top: -10px; width: 3px; height: 12px; background: currentColor; }
+.bk-mandra::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 7px; height: 7px; margin-left: -3px; border-radius: 50%; background: currentColor; }
+.bk-taar::before { content: ""; position: absolute; left: 50%; top: -8px; width: 7px; height: 7px; margin-left: -3px; border-radius: 50%; background: currentColor; }
+.bk-arc::before { content: ""; position: absolute; left: 18%; right: 18%; top: 6px; height: 14px; border: 3px solid currentColor; border-bottom: 0; border-radius: 50% 50% 0 0 / 100% 100% 0 0; }

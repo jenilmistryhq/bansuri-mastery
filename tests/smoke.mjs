@@ -1546,6 +1546,7 @@ try {
         else if (kind === "pick") { await clickL(".lesson-stage button", /^Check$/); await waitReady(1000); if (!(await isReady())) await clickL(".lesson-stage button", /^Check$/); }
         else if (kind === "ornament") { await clickL(".lesson-stage button", /Try it/); await intro(); await sleep(300); const seq = notes.length ? notes : [target]; for (const n of seq) { await tone(hzOf(n)); await sleep(700); } await tone(0); await waitReady(12000); }
         else if (kind === "improv") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(300); for (const n of notes.length ? notes : [0, 2, 4, 2, 0]) { await tone(hzOf(n)); await sleep(500); } await tone(0); await waitReady(8000); }
+        else if (kind === "bhatkhande") { for (let k = 0; k < 30 && !(await isReady()); k++) { await lp.evaluate(() => { const b = [...document.querySelectorAll(".lesson-stage .lesson-chip")].find(x => !x.disabled); if (b) b.click(); }); await sleep(60); await clickL(".lesson-stage button", /Next one/); await sleep(60); } }
         else if (kind === "higherlower") { for (let i = 0; i < 20 && !(await isReady()); i++) { await clickL(".lesson-stage button", /Play|Next pair/); await sleep(120); await clickL(".lesson-chip", /Higher/); await sleep(80); } }
         else if (kind === "custom") {
           // Custom steps: a skip link, or the main button (then wait).
