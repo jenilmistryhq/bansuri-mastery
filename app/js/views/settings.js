@@ -191,7 +191,14 @@ export async function render(main) {
     h("option", { value: "common" }, "M is shuddha Ma, M# is tivra Ma (most notation websites)"));
   maSel.value = getSettings().maStyle;
   maSel.addEventListener("change", () => { setSettings({ maStyle: maSel.value }); toast("Ma is now written " + (maSel.value === "common" ? "M (shuddha) and M# (tivra)." : "m (shuddha) and M (tivra).")); });
+  const tunSel = h("select", { id: "st-tuning", class: "input" },
+    h("option", { value: "equal" }, "Equal tuning, like a keyboard or tuner app (default)"),
+    h("option", { value: "just" }, "Tuned to the tanpura: Ga a little lower, Pa pure (just intonation)"));
+  tunSel.value = getSettings().intonation;
+  tunSel.addEventListener("change", () => setSettings({ intonation: tunSel.value }));
   page.append(h("section", { class: "card" }, h("h2", null, "Display and sound"),
+    h("label", { class: "field", for: "st-tuning" }, "Tuning the app plays and checks", tunSel),
+    h("p", { class: "small muted" }, "Tuned to the tanpura, each swara is a pure ratio from Sa: Ga 14 cents and Ni 12 cents below equal tuning, komal Ga 16 above, and so on. It sounds sweeter against the drone. Real players sit somewhere between the two, and some ragas shade particular swaras (Bhairav's komal Re and Dha swing with andolan): let the tuner get you close, then trust your ear and recordings."),
     h("label", { class: "field", for: "st-theme" }, "Theme", theme),
     h("label", { class: "field", for: "st-ma" }, "How Ma is written in notation from recordings and in pasted notation", maSel),
     h("label", { class: "check", for: "st-deva" }, devaBox, "Show sargam in Devanagari too (सा रे ग) in the score and the listening exercises"),

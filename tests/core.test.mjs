@@ -1,9 +1,9 @@
 // Tests for the pure core modules (no DOM). Run: node tests/core.test.mjs
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { codeOf, fingOf, lessonFor, octName } from "../app/js/core/theory.js";
+import { codeOf, fingOf, lessonFor, octName, tuneCents, hzOf } from "../app/js/core/theory.js";
 import { parseNotation, buildEvents, analyzeRange, PRESETS } from "../app/js/core/notation.js";
-import { getSettings, saHz } from "../app/js/core/settings.js";
+import { getSettings, setSettings, saHz } from "../app/js/core/settings.js";
 import { CHECK_PLANS, verdict, segmentsFrom, compareToExpected, cleanFrames, tuningOffset, playableOnly } from "../app/js/core/pitch.js";
 
 let passed = 0;
@@ -18,8 +18,18 @@ const fmt = ev => ev.map(e => `${codeOf(e.semi)}@${+e.start.toFixed(2)}/${+e.dur
 
 test("settings defaults without a browser", () => {
   assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false, lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1,
-    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false });
+    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal" });
   assert.ok(Math.abs(saHz() - 523.25) < 0.01);
+});
+
+test("tuning: equal by default, tanpura (just) when chosen", () => {
+  assert.equal(tuneCents(4), 0);
+  setSettings({ intonation: "just" });
+  try {
+    assert.equal(tuneCents(4), -14); assert.equal(tuneCents(16), -14); assert.equal(tuneCents(7), 2);
+    assert.ok(Math.abs(hzOf(7) / hzOf(0) - 1.5) < 0.002, "Pa is a pure fifth");
+    assert.ok(Math.abs(hzOf(4) / hzOf(0) - 1.25) < 0.002, "Ga is 5/4");
+  } finally { setSettings({ intonation: "equal" }); }
 });
 
 test("codeOf / octName", () => {

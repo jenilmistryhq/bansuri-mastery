@@ -314,7 +314,7 @@ const SETTINGS_KEY = "bansuri.settings";
 // starts listening or recording; 0 = none).
 const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
   lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
-  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false });
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal" });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -345,7 +345,10 @@ function cleanSettings(s) {
     // Ma in notation: "app" (m shuddha, M tivra) or "common" (M shuddha, M# tivra, as most websites).
     maStyle: s.maStyle === "common" ? "common" : "app",
     // Focus mode: no games, points, levels or badges; practice and listening only.
-    focus: s.focus === true
+    focus: s.focus === true,
+    // The tuning notes are judged and played in: "equal" (like a keyboard) or "just" (tuned to
+    // the tanpura: whole-number ratios from Sa, as many teachers tune by ear).
+    intonation: s.intonation === "just" ? "just" : "equal"
   };
 }
 
@@ -461,7 +464,18 @@ function lessonFor(s) {
   return 9;
 }
 
-function hzOf(semi) { return saHz() * Math.pow(2, semi / 12); }
+// Tuned to the tanpura (just intonation): each swara as a whole-number ratio from Sa (r 16/15,
+// R 9/8, g 6/5, G 5/4, m 4/3, M 45/32, P 3/2, d 8/5, D 5/3, n 9/5, N 15/8), in cents from equal
+// tuning. These are arithmetic; how far real singers and players go towards them varies
+// (studies find Hindustani intonation close to equal tuning, with some swaras shaded by raga).
+const JUST_CENTS = [0, 12, 4, 16, -14, -2, -10, 2, 14, -16, 18, -12];
+// The target of a note in the chosen tuning, in cents from equal tuning.
+function tuneCents(semi) {
+  let s = null; try { s = getSettings(); } catch (e) { s = null; }
+  return s && s.intonation === "just" ? JUST_CENTS[pcOf(Math.round(semi))] : 0;
+}
+
+function hzOf(semi) { return saHz() * Math.pow(2, (semi + tuneCents(semi) / 100) / 12); }
 
 function westOf(semi) {
   const m = saMidi() + semi;
@@ -943,13 +957,14 @@ function parseNotation(text, maStyle) {
     if (/^(X|x|0|[2-9])$/.test(raw)) { tokens.push({ type: "mark", text: raw }); return; }
     if (raw === ",") { tokens.push({ type: "breath", text: "," }); return; }
     if (!/^[.SrRgGmMPdDnN'\-_{}~()^,|]+$/.test(raw)) { skipped.push(raw); tokens.push({ type: "skip", text: raw }); return; }
-    const items = []; let i = 0, kan = null, glide = false, breathAfter = false;
+    const items = []; let i = 0, kan = null, murki = null, glide = false, breathAfter = false;
     while (i < raw.length) {
       const ch = raw[i];
+      // Grace notes in braces: one is a kan, two or more a murki (a quick turn into the note).
       if (ch === "{") {
-        const j = raw.indexOf("}", i);
-        const k = noteAt(j > i ? raw.slice(i + 1, j) : "", 0);
-        kan = k ? k.semi : null; i = j > i ? j + 1 : raw.length; continue;
+        const j = raw.indexOf("}", i), inner = j > i ? raw.slice(i + 1, j) : "", list = [];
+        for (let q = 0; q < inner.length;) { const k = noteAt(inner, q); if (k) { list.push(k.semi); q = k.next; } else q++; }
+        kan = list.length ? list[0] : null; murki = list.length > 1 ? list : null; i = j > i ? j + 1 : raw.length; continue;
       }
       if (ch === "(" || ch === ")" || ch === "|") { i++; continue; }
       if (ch === "~") { glide = true; i++; continue; }
@@ -959,7 +974,7 @@ function parseNotation(text, maStyle) {
       if (ch === ",") { breathAfter = true; i++; continue; }
       const n = noteAt(raw, i);
       if (!n) { i++; continue; }
-      items.push({ semi: n.semi, kan, glide }); kan = null; glide = false; i = n.next;
+      items.push({ semi: n.semi, kan, murki, glide }); kan = null; murki = null; glide = false; i = n.next;
     }
     if (items.length) tokens.push({ type: "beat", text: raw, items, breathAfter });
     else if (breathAfter) tokens.push({ type: "breath", text: raw });
@@ -993,7 +1008,7 @@ function buildEvents(tokens, bpm) {
       if (it.hold) { if (cur) cur.dur += sub; }
       else if (it.rest) { cur = null; }
       else {
-        cur = { semi: it.semi, start: st, dur: sub, kan: it.kan, from: it.glide && prev !== null ? prev : null, andolan: !!it.andolan, ti };
+        cur = { semi: it.semi, start: st, dur: sub, kan: it.kan, murki: it.murki || null, from: it.glide && prev !== null ? prev : null, andolan: !!it.andolan, ti };
         ev.push(cur); prev = it.semi;
       }
     });
@@ -1052,7 +1067,12 @@ function playEvents(ev, beats, opts) {
     // Duet: a second, quieter flute plays the same line opts.duet semitones away (an octave below).
     if (opts.duet) { const d = makeVoice(hzOf(e.semi + opts.duet), at, { level: 0.14 }); d.stop(at + e.dur - 0.01); keep(d); }
     let v;
-    if (e.kan !== null && e.kan !== undefined) {
+    if (e.murki && e.murki.length > 1) {
+      // A murki: each grace note for a moment, then the note.
+      const d = Math.min(0.06, e.dur * 0.6 / e.murki.length), m = e.murki;
+      v = makeVoice(hzOf(m[0]), at, { andolan: e.andolan });
+      for (let q = 0; q < m.length; q++) v.jump(hzOf(m[q]), q + 1 < m.length ? hzOf(m[q + 1]) : f, at + q * d, d);
+    } else if (e.kan !== null && e.kan !== undefined) {
       const k = Math.min(0.08, e.dur * 0.3);
       v = makeVoice(hzOf(e.kan), at, { andolan: e.andolan }); v.jump(hzOf(e.kan), f, at, k);
     } else if (e.from !== null && e.from !== undefined) {
@@ -1275,7 +1295,7 @@ function compareToExpected(segments, expected) {
   expected = expected || [];
   const row = (sg, exp, status) => {
     if (!sg) return { expected: exp, near: null, cents: null, held: 0, status: "missing", verdict: ["Missing", "bad"] };
-    const near = Math.round(sg.med), cents = Math.round((sg.med - near) * 100), held = sg.t1 - sg.t0;
+    const near = Math.round(sg.med), cents = Math.round((sg.med - near) * 100 - tuneCents(near)), held = sg.t1 - sg.t0;
     const v = status === "extra" ? ["Extra", "info"] : status === "different" ? ["Different note", "bad"] : verdict(cents);
     return { expected: exp === undefined ? null : exp, near, cents, held, t0: sg.t0, t1: sg.t1, status, verdict: v };
   };
@@ -1349,7 +1369,7 @@ async function startMicTuner(onReading) {
     if (r && r.clarity > 0.85) {
       hist.push(relSemi(r.f)); if (hist.length > 6) hist.shift();
       const s = hist.slice().sort((a, b) => a - b)[hist.length >> 1], near = Math.round(s);
-      onReading({ semi: s, near, cents: Math.round((s - near) * 100), f: r.f });
+      onReading({ semi: s, near, cents: Math.round((s - near) * 100 - tuneCents(near)), f: r.f });
     }
     raf = requestAnimationFrame(loop);
   };
@@ -1392,7 +1412,8 @@ async function openMic() {
       if (y && y.clarity > 0.85) {
         m.hist.push(relSemi(y.f)); if (m.hist.length > 5) m.hist.shift();
         const semi = m.hist.slice().sort((a, b) => a - b)[m.hist.length >> 1], near = Math.round(semi);
-        r = { t, semi, near, cents: Math.round((semi - near) * 100), f: y.f, level, clarity: y.clarity };
+        // Cents from the note's target in the chosen tuning (Settings: equal or tanpura).
+        r = { t, semi, near, cents: Math.round((semi - near) * 100 - tuneCents(near)), f: y.f, level, clarity: y.clarity };
         m.stats.voiced++;
       } else m.hist = [];
       m.stats.frames++; m.stats.peak = Math.max(m.stats.peak, level);
@@ -1442,7 +1463,7 @@ function holdTracker(opts) {
       const playable = r && r.semi !== null && r.semi > -7.5 && r.semi < 26.5;
       let ok = false;
       if (playable) {
-        if (o.target !== null && o.target !== undefined) ok = Math.abs(r.semi - o.target) * 100 <= o.cents;
+        if (o.target !== null && o.target !== undefined) ok = Math.abs((r.semi - o.target) * 100 - tuneCents(o.target)) <= o.cents;
         else ok = anchor === null || Math.abs(r.semi - anchor) * 100 <= o.cents;
       }
       if (ok) {
@@ -1806,7 +1827,7 @@ function holdMeter(opts) {
       if (!cur) cur = { start: r.t, frames: 0, cents: 0, clarity: 0, notes: [] };
       cur.frames++; cur.secs = r.t - cur.start; cur.clarity += r.clarity || 0;
       const t0 = targets[idx];
-      cur.cents += t0 === null ? r.cents : (r.semi - t0) * 100;
+      cur.cents += t0 === null ? r.cents : (r.semi - t0) * 100 - tuneCents(t0);
       const e = cur.notes.find(x => x[0] === r.near); if (e) e[1]++; else cur.notes.push([r.near, 1]);
       noteBig.replaceChildren(...[].concat(lvNote(r.near)));
       const ok = Math.abs(r.cents) <= o.cents;

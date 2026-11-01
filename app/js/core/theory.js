@@ -1,5 +1,5 @@
 // Notes, names and the 6-hole bansuri fingering chart (Sa = top 3 holes closed).
-import { saHz, saMidi } from "./settings.js";
+import { saHz, saMidi, getSettings } from "./settings.js";
 
 export const SEMI = { S: 0, r: 1, R: 2, g: 3, G: 4, m: 5, M: 6, P: 7, d: 8, D: 9, n: 10, N: 11 };
 export const LETTERS = ["S", "r", "R", "g", "G", "m", "M", "P", "d", "D", "n", "N"];
@@ -65,7 +65,18 @@ export function lessonFor(s) {
   return 9;
 }
 
-export function hzOf(semi) { return saHz() * Math.pow(2, semi / 12); }
+// Tuned to the tanpura (just intonation): each swara as a whole-number ratio from Sa (r 16/15,
+// R 9/8, g 6/5, G 5/4, m 4/3, M 45/32, P 3/2, d 8/5, D 5/3, n 9/5, N 15/8), in cents from equal
+// tuning. These are arithmetic; how far real singers and players go towards them varies
+// (studies find Hindustani intonation close to equal tuning, with some swaras shaded by raga).
+export const JUST_CENTS = [0, 12, 4, 16, -14, -2, -10, 2, 14, -16, 18, -12];
+// The target of a note in the chosen tuning, in cents from equal tuning.
+export function tuneCents(semi) {
+  let s = null; try { s = getSettings(); } catch (e) { s = null; }
+  return s && s.intonation === "just" ? JUST_CENTS[pcOf(Math.round(semi))] : 0;
+}
+
+export function hzOf(semi) { return saHz() * Math.pow(2, (semi + tuneCents(semi) / 100) / 12); }
 
 export function westOf(semi) {
   const m = saMidi() + semi;

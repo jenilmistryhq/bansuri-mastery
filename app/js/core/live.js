@@ -1,7 +1,7 @@
 // Interactive exercises that listen to the real flute: a long-tone meter, a phrase check, an
 // echo game (the app plays, you play it back) and a beat-tapping game. Plain DOM, styled by the
 // lv- classes in bench.css, so the app and the standalone Practice Bench share them.
-import { codeOf, nameOf, westOf, hzOf, WEST } from "./theory.js";
+import { codeOf, nameOf, westOf, hzOf, WEST, tuneCents } from "./theory.js";
 import { ac, master, makeVoice, playNote, tanpura, click } from "./audio.js";
 import { setSettings, getSettings } from "./settings.js";
 import { noteLabel } from "./fingers.js";
@@ -227,7 +227,7 @@ export function holdMeter(opts) {
       if (!cur) cur = { start: r.t, frames: 0, cents: 0, clarity: 0, notes: [] };
       cur.frames++; cur.secs = r.t - cur.start; cur.clarity += r.clarity || 0;
       const t0 = targets[idx];
-      cur.cents += t0 === null ? r.cents : (r.semi - t0) * 100;
+      cur.cents += t0 === null ? r.cents : (r.semi - t0) * 100 - tuneCents(t0);
       const e = cur.notes.find(x => x[0] === r.near); if (e) e[1]++; else cur.notes.push([r.near, 1]);
       noteBig.replaceChildren(...[].concat(lvNote(r.near)));
       const ok = Math.abs(r.cents) <= o.cents;

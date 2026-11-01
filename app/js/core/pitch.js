@@ -1,6 +1,6 @@
 // Pitch detection (YIN), recording analysis, live microphone tuner and the pitch plot.
 import { saHz } from "./settings.js";
-import { codeOf, pcOf } from "./theory.js";
+import { codeOf, pcOf, tuneCents } from "./theory.js";
 import { ac } from "./audio.js";
 
 export const CHECK_PLANS = [
@@ -194,7 +194,7 @@ export function compareToExpected(segments, expected) {
   expected = expected || [];
   const row = (sg, exp, status) => {
     if (!sg) return { expected: exp, near: null, cents: null, held: 0, status: "missing", verdict: ["Missing", "bad"] };
-    const near = Math.round(sg.med), cents = Math.round((sg.med - near) * 100), held = sg.t1 - sg.t0;
+    const near = Math.round(sg.med), cents = Math.round((sg.med - near) * 100 - tuneCents(near)), held = sg.t1 - sg.t0;
     const v = status === "extra" ? ["Extra", "info"] : status === "different" ? ["Different note", "bad"] : verdict(cents);
     return { expected: exp === undefined ? null : exp, near, cents, held, t0: sg.t0, t1: sg.t1, status, verdict: v };
   };
@@ -268,7 +268,7 @@ export async function startMicTuner(onReading) {
     if (r && r.clarity > 0.85) {
       hist.push(relSemi(r.f)); if (hist.length > 6) hist.shift();
       const s = hist.slice().sort((a, b) => a - b)[hist.length >> 1], near = Math.round(s);
-      onReading({ semi: s, near, cents: Math.round((s - near) * 100), f: r.f });
+      onReading({ semi: s, near, cents: Math.round((s - near) * 100 - tuneCents(near)), f: r.f });
     }
     raf = requestAnimationFrame(loop);
   };

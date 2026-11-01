@@ -3,6 +3,7 @@
 // readings as plain objects { t, semi, near, cents }, so it is unit-tested without a microphone.
 import { ac } from "./audio.js";
 import { yin, relSemi } from "./pitch.js";
+import { tuneCents } from "./theory.js";
 
 let micShared = null, micPending = null, micMuteUntil = 0;
 
@@ -30,7 +31,8 @@ async function openMic() {
       if (y && y.clarity > 0.85) {
         m.hist.push(relSemi(y.f)); if (m.hist.length > 5) m.hist.shift();
         const semi = m.hist.slice().sort((a, b) => a - b)[m.hist.length >> 1], near = Math.round(semi);
-        r = { t, semi, near, cents: Math.round((semi - near) * 100), f: y.f, level, clarity: y.clarity };
+        // Cents from the note's target in the chosen tuning (Settings: equal or tanpura).
+        r = { t, semi, near, cents: Math.round((semi - near) * 100 - tuneCents(near)), f: y.f, level, clarity: y.clarity };
         m.stats.voiced++;
       } else m.hist = [];
       m.stats.frames++; m.stats.peak = Math.max(m.stats.peak, level);
@@ -80,7 +82,7 @@ export function holdTracker(opts) {
       const playable = r && r.semi !== null && r.semi > -7.5 && r.semi < 26.5;
       let ok = false;
       if (playable) {
-        if (o.target !== null && o.target !== undefined) ok = Math.abs(r.semi - o.target) * 100 <= o.cents;
+        if (o.target !== null && o.target !== undefined) ok = Math.abs((r.semi - o.target) * 100 - tuneCents(o.target)) <= o.cents;
         else ok = anchor === null || Math.abs(r.semi - anchor) * 100 <= o.cents;
       }
       if (ok) {
