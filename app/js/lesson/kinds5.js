@@ -2,7 +2,7 @@
 // (hear an ornament's shape, play it, see what the analyser heard: ornaments.js) and improv (play
 // freely within a raga; notes it leaves out are named as they happen, and the rests are judged:
 // ragagrammar.js alapCheck).
-import { h, icon } from "../util.js";
+import { h, icon, store, storeSet } from "../util.js";
 import { listenMic } from "../core/listen.js";
 import { micIntro, countdown } from "../core/live.js";
 import { playCurve, playNote } from "../core/audio.js";
@@ -34,7 +34,107 @@ export function notesFromReadings(rs, minSec = 0.15) {
   return out.map(({ semi, t0 }) => ({ semi, t0 }));
 }
 
+// A 16-beat melody (cells: semi | "hold" | null) judged by L30's tools: the question (beats 1-8)
+// ends on an open note, the answer (9-16) ends on Sa. Returns { questionOpen, answerHome, filled }.
+export function melodyCheck(cells) {
+  const last = arr => { for (let i = arr.length - 1; i >= 0; i--) if (typeof arr[i] === "number") return arr[i]; return null; };
+  const q = last(cells.slice(0, 8)), a = last(cells.slice(8));
+  const pc = n => ((n % 12) + 12) % 12;
+  return { questionOpen: q !== null && pc(q) !== 0, answerHome: a !== null && pc(a) === 0, filled: cells.filter(c => c !== null).length };
+}
+
 export const RAGA_KINDS = {
+  // Call and response: the app plays a question; you answer on the flute and come home to Sa.
+  // { questions: [[semi]] }
+  answer: { make(s, api) {
+    let i = 0, unsub = null, reads = [], t0 = null, homes = 0, timer = 0;
+    const tally = h("p", { class: "small muted" });
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" });
+    const play = h("button", { type: "button", class: "btn" }, icon("play"), " Hear the question");
+    const btn = h("button", { type: "button", class: "btn primary big" }, icon("mic"), " Answer");
+    const out = h("div");
+    const q = () => s.questions[i];
+    play.addEventListener("click", () => q().forEach((n, k) => setTimeout(() => playNote(n, 0.5), k * 520)));
+    function show() { tally.textContent = "Question " + (i + 1) + " of " + s.questions.length; msg.textContent = "Hear the question (it ends open), then answer: about four notes, ending on Sa."; out.replaceChildren(); }
+    const stop = () => { clearInterval(timer); if (unsub) { unsub(); unsub = null; } btn.replaceChildren(icon("mic"), " Answer"); };
+    function judge() {
+      stop();
+      const notes = notesFromReadings(reads);
+      if (!notes.length) { msg.textContent = "No answer was heard. Press Answer, then play."; return; }
+      const end = notes[notes.length - 1].semi, home = ((end % 12) + 12) % 12 === 0;
+      msg.textContent = "";
+      if (home) homes++;
+      ding(home);
+      const next = i < s.questions.length - 1 ? h("button", { type: "button", class: "btn" }, "Next question") : null;
+      if (next) next.addEventListener("click", () => { i++; show(); });
+      out.replaceChildren(...[h("div", { class: "lesson-reveal " + (home ? "good" : "warn") }, h("b", null, home ? "Home: your answer ends on Sa." : "Your answer ends on " + codeOf(end) + ": it still sounds open."),
+        h("p", { class: "mono" }, notes.map(n => codeOf(n.semi)).join(" "))), next].filter(Boolean));
+      if (!next) { api.data[s.id] = { homes, of: s.questions.length }; api.save(); api.ready(); }
+    }
+    btn.addEventListener("click", async () => {
+      if (unsub) { judge(); return; }
+      reads = []; t0 = null;
+      const u = await openMic(btn.parentElement, btn, r => {
+        if (t0 === null && r.semi !== null) t0 = r.t;
+        if (t0 === null) return;
+        reads.push({ t: r.t - t0, semi: r.semi, near: r.near });
+      });
+      if (!u) { msg.textContent = "The microphone is not available here."; api.ready(); return; }
+      unsub = u; btn.replaceChildren(icon("stop"), " Done"); msg.textContent = "Answer now...";
+      // The answer ends after 1.2 s of silence, or after 8 s.
+      timer = setInterval(() => {
+        if (!reads.length) return;
+        const lastSound = [...reads].reverse().find(r => r.semi !== null);
+        const now = reads[reads.length - 1].t;
+        if ((lastSound && now - lastSound.t > 1.2) || now > 8) judge();
+      }, 200);
+    });
+    show();
+    return { el: h("div", { class: "stack lesson-center" }, tally, play, msg, btn, out), destroy: stop };
+  } },
+
+  // Compose 16 beats: a question (8) and an answer (8). Tap a beat, then a note (or Hold, or Rest).
+  // { notes: [semi] (the palette) }. Saved to the melodies in Play, Make a melody.
+  compose: { make(s, api) {
+    const cells = Array(16).fill(null);
+    let at = 0;
+    const cellsEl = h("div", { class: "lesson-comp" }, cells.map((_, k) => {
+      const b = h("button", { type: "button", class: "lesson-cell", "aria-label": "Beat " + (k + 1) }, "");
+      b.addEventListener("click", () => { at = k; draw(); });
+      return b;
+    }));
+    const set = v => { cells[at] = v; if (typeof v === "number") playNote(v, 0.4); at = Math.min(15, at + 1); draw(); };
+    const hold = h("button", { type: "button", class: "lesson-chip" }, "Hold");
+    const rest = h("button", { type: "button", class: "lesson-chip" }, "Rest");
+    hold.addEventListener("click", () => set("hold"));
+    rest.addEventListener("click", () => set(null));
+    const palette = h("div", { class: "lesson-chips" }, s.notes.map(n => { const b = h("button", { type: "button", class: "lesson-chip mono" }, codeOf(n)); b.addEventListener("click", () => set(n)); return b; }), hold, rest);
+    const checks = h("div", { class: "stack" });
+    const play = h("button", { type: "button", class: "btn" }, icon("play"), " Play it");
+    const save = h("button", { type: "button", class: "btn primary" }, "Save it");
+    play.addEventListener("click", () => {
+      const beat = 60 / 70;
+      cells.forEach((c, k) => { if (typeof c !== "number") return; let len = 1; while (cells[k + len] === "hold") len++; setTimeout(() => playNote(c, beat * len * 0.95), k * beat * 1000); });
+    });
+    save.addEventListener("click", () => {
+      const l = store("bansuri.compose.saved", []), name = "Melody " + (l.length + 1);
+      const notation = cells.map((c, k) => (c === null ? "_" : c === "hold" ? "-" : codeOf(c)) + ((k + 1) % 4 === 0 && k < 15 ? " |" : "")).join(" ") + " ||";
+      l.push({ name, cells: cells.slice(), notation }); storeSet("bansuri.compose.saved", l.slice(-20));
+      api.data[s.id] = { notation }; api.save(); api.ready(); ding(true);
+      save.textContent = "Saved as " + name;
+    });
+    function draw() {
+      cellsEl.querySelectorAll(".lesson-cell").forEach((b, k) => { const c = cells[k]; b.textContent = c === null ? "" : c === "hold" ? "-" : codeOf(c); b.classList.toggle("now", k === at); });
+      const r = melodyCheck(cells);
+      checks.replaceChildren(
+        h("div", { class: "notice" + (r.questionOpen ? " good" : "") }, h("b", null, r.questionOpen ? "OK " : "To do "), "The question (beats 1-8) ends on an open note: R, G, P or D."),
+        h("div", { class: "notice" + (r.answerHome ? " good" : "") }, h("b", null, r.answerHome ? "OK " : "To do "), "The answer (beats 9-16) comes home to Sa."));
+      save.disabled = !(r.questionOpen && r.answerHome && r.filled >= 10);
+    }
+    draw();
+    return { el: h("div", { class: "stack lesson-center" }, cellsEl, palette, checks, h("div", { class: "row" }, play, save)) };
+  } },
+
   // Read Bhatkhande notation: a Devanagari letter (or a few) drawn with its marks; choose the
   // course notation. { rounds: [{ tokens: [{ t, mark }], options, answer, why }] }
   // mark: "komal" (line under), "tivra" (tick above), "mandra" (dot below), "taar" (dot above),

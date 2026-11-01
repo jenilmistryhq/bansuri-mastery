@@ -5,6 +5,7 @@ const S = await import("../app/js/lesson/steps.js");
 const K = await import("../app/js/lesson/kinds2.js");
 const K3 = await import("../app/js/lesson/kinds3.js");
 const K4 = await import("../app/js/lesson/kinds4.js");
+const K5 = await import("../app/js/lesson/kinds5.js");
 const P = await import("../app/js/lesson/player.js");
 const { M0 } = await import("../app/js/lessons/m0.js");
 const { LESSONS, lessonForDay } = await import("../app/js/lessons/index.js");
@@ -136,5 +137,16 @@ test("half-hole: covered is Ga, open is tivra Ma, the sweet spot is shuddha Ma",
 });
 test("bend: a reading is on a target within the tolerance", () => {
   assert.ok(K4.onTarget(-18, -20) && K4.onTarget(5, 0) && !K4.onTarget(-10, -20) && !K4.onTarget(null, 0));
+});
+test("composition: the question ends open, the answer comes home to Sa", () => {
+  const m = [0, 2, 4, 7, 4, "hold", 2, "hold", 4, 7, 9, 7, 4, 2, 0, "hold"];
+  assert.deepEqual(K5.melodyCheck(m), { questionOpen: true, answerHome: true, filled: 16 });
+  assert.equal(K5.melodyCheck([0, 2, 4, 0, "hold", null, null, null, 2, 4, 2, 4, null, null, null, null]).questionOpen, false, "a question ending on Sa is closed");
+  assert.equal(K5.melodyCheck(m.slice(0, 8).concat([4, 2, 4, "hold", null, null, null, null])).answerHome, false);
+});
+test("notes from readings: a note counts once it lasts, passing frames do not", () => {
+  const rs = []; let t = 0;
+  for (const [n, d] of [[0, 0.5], [1, 0.06], [2, 0.4], [null, 0.3], [2, 0.4]]) for (let x = 0; x < d; x += 0.03) { rs.push({ t, semi: n, near: n }); t += 0.03; }
+  assert.deepEqual(K5.notesFromReadings(rs).map(n => n.semi), [0, 2, 2], "the 60 ms r is a passing frame; a gap starts a new note");
 });
 console.log("lesson tests: " + n + " passed");

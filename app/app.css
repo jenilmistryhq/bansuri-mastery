@@ -1075,3 +1075,6 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .bk-mandra::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 7px; height: 7px; margin-left: -3px; border-radius: 50%; background: currentColor; }
 .bk-taar::before { content: ""; position: absolute; left: 50%; top: -8px; width: 7px; height: 7px; margin-left: -3px; border-radius: 50%; background: currentColor; }
 .bk-arc::before { content: ""; position: absolute; left: 18%; right: 18%; top: 6px; height: 14px; border: 3px solid currentColor; border-bottom: 0; border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
+.lesson-comp { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; width: min(520px, 100%); }
+.lesson-cell { min-height: 44px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); font: 600 1rem var(--mono); cursor: pointer; }
+.lesson-cell.now { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
