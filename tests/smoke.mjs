@@ -74,7 +74,9 @@ const progress = () => page.evaluate(() => JSON.parse(localStorage.getItem("bans
 
 try {
   // Each section runs on its own: a failure is reported and the next section still runs.
+  // SECTION=<regex> runs only the sections whose name matches it (for working on one part).
   async function section(name, fn) {
+    if (process.env.SECTION && !new RegExp(process.env.SECTION).test(name)) return;
     console.log(name);
     try { await fn(); } catch (e) { failures++; console.log("  FAIL " + name + ": " + (e && e.message ? e.message.split("\n")[0] : e)); }
   }
@@ -1323,6 +1325,140 @@ try {
     check(/clear but small/.test(fbText) && /long tones on sa/.test(fbText), "review: the student's app shows the ratings and the task");
     await go("/today");
     check(/from your teacher/.test(await text()) && /long tones on sa/.test(await text()), "review: the practice task is on Today");
+  });
+  await section("Day 0 lesson (interactive)", async () => {
+    // The whole lesson, as a learner does it: a synthetic microphone plays Sa for the flute finder
+    // and the time capsule; timers run fast (window.__lessonTime). Its own browser context, so its
+    // storage (a fresh learner) does not touch the other sections' pages.
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const lp = await ctx.newPage();
+    await collectI18n(lp);
+    lp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    lp.on("console", m => { if (m.type() === "error") errors.push("console: " + m.text()); });
+    await lp.evaluateOnNewDocument(() => {
+      const voices = []; let current = 0;
+      const apply = (v, hz) => { const t = v.c.currentTime; if (hz) { v.o.frequency.setValueAtTime(hz, t); v.g.gain.setTargetAtTime(0.4, t, 0.005); } else v.g.gain.setTargetAtTime(0, t, 0.005); };
+      window.__tone = hz => { current = hz; voices.forEach(v => apply(v, hz)); };
+      navigator.mediaDevices.getUserMedia = async () => {
+        const c = new AudioContext(), o = c.createOscillator(), g = c.createGain(), d = c.createMediaStreamDestination();
+        o.type = "triangle"; g.gain.value = 0; o.connect(g); g.connect(d); o.start();
+        const v = { c, o, g, stream: d.stream }; voices.push(v); apply(v, current);
+        return d.stream;
+      };
+      window.__lessonTime = 0.05;
+    });
+    const tone = hz => lp.evaluate(f => window.__tone(f), hz);
+    const clickL = (sel, re) => lp.evaluate((sel, src) => { const b = [...document.querySelectorAll(sel)].find(x => new RegExp(src).test(x.textContent) && !x.disabled && !x.hidden); if (b) b.click(); return !!b; }, sel, re.source);
+    const tapPart = id => lp.evaluate(id => document.querySelector(`[data-part="${id}"]`).dispatchEvent(new MouseEvent("click", { bubbles: true })), id);
+    const ready = () => lp.$eval(".lesson-next", b => !b.disabled);
+    const title = () => lp.$eval(".lesson-title", e => e.textContent);
+    const next = async () => {
+      const t0 = await title();
+      await lp.evaluate(() => document.querySelector(".lesson-next").click());
+      await lp.waitForFunction(t => { const e = document.querySelector(".lesson-title"); return !e || e.textContent !== t; }, { timeout: 4000 }, t0).catch(() => {});
+      await sleep(150);
+    };
+    await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    await lp.evaluate(() => { localStorage.clear(); localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 })); });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .firstrun a.btn");
+    check(await lp.$eval("#main .firstrun a.btn", a => a.getAttribute("href")) === "#/lesson/m0", "Day 0: Start Day 0 opens the lesson");
+    await lp.goto(BASE + "#/lesson/m0", { waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .lesson-cover");
+    check(/Meet your flute/.test(await lp.$eval("#main .lesson-cover h1", e => e.textContent)) && await lp.$$eval("#main .lesson-chapters li", l => l.length) === 6, "lesson: the cover names the lesson and its six chapters");
+    await clickL("#main button", /^Start$/);
+    await lp.waitForSelector(".lesson-title");
+
+    // 1. The hook: a guess, then the answer explained.
+    check(await ready() === false, "lesson: Continue waits until the step is done");
+    await clickL(".lesson-option", /small reed/);
+    check(await lp.$(".lesson-reveal.warn") !== null && await ready(), "lesson hook: a wrong guess is explained, and the lesson goes on");
+    await next();
+    // 2. The parts: one slip, then every part.
+    const NAMES = { "The blowing hole": "blow", "The cork end (closed)": "cork", "The open end": "open", "A binding (thread wrap)": "bind" };
+    let slip = false;
+    for (let i = 0; i < 8; i++) {
+      const want = await lp.$eval(".lesson-q b", e => e.textContent);
+      const id = NAMES[want] || "h" + /(\d)$/.exec(want)[1];
+      if (!slip) { await tapPart(id === "open" ? "cork" : "open"); slip = true; check(/You tapped/.test(await lp.$eval(".lesson-stage", e => e.textContent)), "lesson parts: a wrong part says what was tapped"); }
+      await tapPart(id); await sleep(60);
+    }
+    check(/All found, with one slip/.test(await lp.$eval(".lesson-q", e => e.textContent)) && await ready(), "lesson parts: every part found, the slip counted");
+    await next();
+    // 3. The holes: a gap leaks; the top three closed is Sa.
+    await tapPart("h1"); await tapPart("h3"); await clickL("button", /^Blow$/);
+    check(/leaks/.test(await lp.$eval(".lesson-stage .lesson-q", e => e.textContent)) && !(await ready()), "lesson holes: a gap between closed holes is not a note");
+    await tapPart("h2"); await clickL("button", /^Blow$/);
+    check(await lp.$eval(".lesson-note", e => e.textContent) === "S" && await ready(), "lesson holes: holes 1-3 closed play Sa, and the step is done");
+    await next();
+    // 4. The flute check: a problem found gets its advice.
+    await lp.evaluate(() => { const cards = document.querySelectorAll(".lesson-card"); cards.forEach((c, i) => [...c.querySelectorAll("button")][i === 3 ? 1 : 0].click()); });
+    check(/splinter/.test(await lp.$eval(".lesson-card.found", e => e.textContent)) && await ready(), "lesson check: a splinter found gets TS-12's advice");
+    await next();
+    // 5. The side, then holding the flute.
+    await clickL(".lesson-choice", /Pointing left/);
+    check(await ready(), "lesson: the holding side is chosen");
+    await next();
+    await clickL("button", /Start 30/); await sleep(800);
+    await lp.evaluate(() => document.querySelectorAll(".lesson-stage input[type=checkbox]").forEach(c => c.click()));
+    check(await ready(), "lesson hold: the timer, then the three checks");
+    await next();
+    // 6. The flute finder hears Sa.
+    await clickL(".lesson-stage button", /Listen for my Sa/);
+    await lp.waitForSelector(".lesson-stage .lv-intro .lv-primary", { timeout: 3000 }).then(b => b.click()).catch(() => {});
+    await sleep(300); await tone(523.251);
+    await lp.waitForFunction(() => [...document.querySelectorAll(".lesson-stage button")].some(b => /Use this for my flute/.test(b.textContent) && !b.hidden), { timeout: 10000 }).catch(() => {});
+    await clickL(".lesson-stage button", /Use this for my flute/);
+    await tone(0);
+    check(await ready(), "lesson finder: the flute's Sa is found (C5) and used");
+    await next();
+    // 7. The drone; 8. the metronome.
+    await clickL("button", /Play the drone/); await sleep(4500);
+    check(await ready(), "lesson drone: ten seconds of listening (four, in the test) done");
+    await next();
+    await clickL(".lesson-stage button", /^Start$/);
+    await sleep(3500);
+    for (let i = 0; i < 8; i++) { await lp.evaluate(() => document.querySelector(".lesson-pad").dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))); await sleep(833); }
+    await lp.waitForFunction(() => !document.querySelector(".lesson-next").disabled, { timeout: 6000 }).catch(() => {});
+    check(/taps/.test(await lp.$eval(".lesson-stage .lesson-q", e => e.textContent)) && await ready(), "lesson metronome: a round of taps is scored");
+    await next();
+    // 9. The time capsule is recorded into the Journal.
+    await tone(523.251);
+    await clickL(".lesson-stage button", /Record 6 seconds/);
+    await lp.waitForFunction(() => /Saved in your Journal/.test(document.querySelector(".lesson-stage").textContent), { timeout: 12000 }).catch(() => {});
+    await tone(0);
+    check(await ready(), "lesson: the Day 0 time capsule is recorded");
+    await next();
+    // 10. Safety: a wrong answer explains; then all four right.
+    await clickL(".lesson-option", /deep breaths/);
+    check(/over-breathing|breathing out more air/.test(await lp.$eval(".lesson-stage", e => e.textContent)) && !(await ready()), "lesson safety: a wrong answer explains why, and must be put right");
+    for (const re of [/Stop, stay seated/, /doctor or physiotherapist/, /In its bag/, /six days/]) { await clickL(".lesson-option", re); await sleep(100); await clickL("button", /Next question/); await sleep(100); }
+    check(await ready() && !/null/.test(await lp.$eval(".lesson-stage", e => e.textContent)), "lesson safety: all four answered");
+    await next();
+    // 11. The practice plan.
+    await lp.evaluate(() => document.querySelectorAll(".lesson-chips").forEach(g => g.children[1].click()));
+    check(await ready(), "lesson plan: when, how long and where are chosen");
+    await next();
+    // 12. The reward, then Day 0 is done and M0 passed.
+    check(/Setup complete/.test(await title()) && await lp.$$eval(".lesson-done li.ok", l => l.length) === 8, "lesson reward: every item is ticked");
+    await clickL(".lesson-next", /Finish Day 0/);
+    await lp.waitForSelector(".lesson-end", { timeout: 5000 }).catch(() => {});
+    const st = await lp.evaluate(() => JSON.parse(localStorage.getItem("bansuri.progress")));
+    check(st.current === 1 && st.milestones.M0.status === "passed" && st.days[0].done, "lesson: finishing passes M0 and opens Day 1");
+    check(/Holding side: left/.test(st.log.map(l => l.note).join(" ")), "lesson: the choices are written in the practice log");
+    check(/Day 1 is open/.test(await lp.$eval(".lesson-end", e => e.textContent)), "lesson: the end screen says Day 1 is open");
+    await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" }); await sleep(300);
+    check(!(await lp.$('#main a[href="#/lesson/m0"]')), "Today (Day 1) no longer offers the Day 0 lesson");
+    // Hindi: the cover and the first step.
+    await lp.evaluate(() => localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0, lang: "hi" })));
+    await lp.goto(BASE + "#/lesson/m0", { waitUntil: "networkidle0" });
+    await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .lesson-cover"); await sleep(300);
+    check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector("#main h1").textContent) && [...document.querySelectorAll("#main .lesson-cover button, #main .lesson-cover a")].every(b => /[\u0900-\u097F]/.test(b.textContent))), "hindi: the lesson cover is in Hindi");
+    await lp.evaluate(() => document.querySelector("#main .lesson-cover .btn.primary").click());
+    await lp.waitForSelector(".lesson-title"); await sleep(300);
+    check(await lp.evaluate(() => [...document.querySelectorAll(".lesson-title, .lesson-q, .lesson-option")].every(e => /[\u0900-\u097F]/.test(e.textContent))), "hindi: the lesson's first step is in Hindi");
+    await ctx.close();
   });
   await section("Tone check", async () => {
     await go("/tone");

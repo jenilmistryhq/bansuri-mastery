@@ -12,6 +12,8 @@ import { speak, sayButton } from "../voice.js";
 import { stepMeta, plainText } from "../steps.js";
 import { plainCodes } from "../codes.js";
 import { newsCard } from "../news.js";
+import { lessonForDay } from "../lessons/index.js";
+import { lessonRecord } from "../lesson/player.js";
 import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard, teacherTaskCard } from "./today-cards.js";
 
 // First run: how the learner likes to learn, in pictures and both languages, so it works without
@@ -30,13 +32,21 @@ function howCard() {
       tile("hand", "Simple mode", "Three big buttons; the app talks you through everything", () => done({ talk: true, simple: true, notesAs: "pictures" }))));
 }
 
+// The interactive lesson of a day, while it is not finished (Day 0: "Meet your flute").
+function lessonDue(n) {
+  const l = lessonForDay(n);
+  if (!l) return null;
+  const r = lessonRecord(l.id);
+  return r && r.done ? null : l;
+}
+
 // Simple mode: three big choices and today's quests, no reading needed.
 function simpleToday(page, cur, day) {
   const big = (href, ic, label, ref, cls) => h("a", { class: "simpletile " + (cls || ""), href, onclick: () => speak(ref) }, icon(ic), h("b", null, label));
   page.append(
     h("section", { class: "hero simplehero" }, h("span", { class: "eyebrow" }, "Day " + cur), h("h1", null, day && day.title ? day.title : "Today"), sayButton(["welcome"], "Listen")),
     h("div", { class: "simpletiles" },
-      big(day && day.kind === "milestone" ? "#/milestone/" + day.milestone : "#/session/" + cur, "play", "Start practice", "session_start", "primary"),
+      big(lessonDue(cur) ? "#/lesson/" + lessonDue(cur).id : day && day.kind === "milestone" ? "#/milestone/" + day.milestone : "#/session/" + cur, "play", "Start practice", "session_start", "primary"),
       big("#/play", "star", "Play a game", "steer_intro"),
       big("#/listen", "listen", "Listen", "listen_intro"),
       big("#/quick", "today", "5 minutes", "quick_intro")));
@@ -67,8 +77,8 @@ function firstRun(day) {
   return h("section", { class: "hero firstrun" },
     h("h1", null, "Learn the bansuri, one day at a time"),
     h("p", { class: "muted" }, "A short guided session each day. The app listens to your flute and tells you how it went."),
-    h("a", { class: "btn primary big", href: "#/session/0" }, "Start Day 0"),
-    h("p", { class: "small muted" }, "About " + (day.minutes || 45) + " minutes: get to know your flute and find its Sa. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), "."));
+    h("a", { class: "btn primary big", href: lessonForDay(0) ? "#/lesson/" + lessonForDay(0).id : "#/session/0" }, "Start Day 0"),
+    h("p", { class: "small muted" }, "About " + (lessonForDay(0) ? lessonForDay(0).minutes : day.minutes || 45) + " minutes: get to know your flute and find its Sa. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), "."));
 }
 
 function welcome() {
@@ -109,7 +119,14 @@ export async function render(main, { params, view }) {
     statusChip = null; // the page itself says this is today
     const msOpen = day.milestone && milestoneState(day.milestone).status !== "passed";
     const sessionLabel = blocksDone ? (blocksDone === day.blocks.length ? "Finish today's session" : "Resume") : (n === 0 ? "Start Day 0" : "Start today's session");
-    if (msOpen && day.kind === "milestone") {
+    const lesson = lessonDue(n);
+    if (lesson) {
+      // A day taught by an interactive lesson: the lesson is the day (and passes its milestone).
+      const r = lessonRecord(lesson.id);
+      action = h("div", { class: "row" },
+        h("a", { class: "btn primary big", href: "#/lesson/" + lesson.id }, r && r.at > 0 ? "Continue the lesson" : "Start the lesson: " + lesson.title),
+        h("a", { class: "btn ghost", href: "#/session/" + n }, "The reading version"));
+    } else if (msOpen && day.kind === "milestone") {
       // A test day: the test is the main action, the session is rehearsal.
       const ms = milestoneState(day.milestone);
       action = h("div", { class: "row" },

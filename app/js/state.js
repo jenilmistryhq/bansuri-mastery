@@ -102,7 +102,7 @@ export function resetAll() { state = fresh(); save(); }
 // Backup: a JSON document. Recordings are added by the caller (backup.js) when requested.
 // Besides progress and settings it carries what the learner made: My songs, saved notations,
 // compositions, learned songs, students and coach history (STORES, as stored).
-const STORES = ["bansuri.feedback", "bansuri.review.requests", "bansuri.tone.history", "bansuri.tone.checks", "bansuri.ornaments", "bansuri.ornament.models", "bansuri.mysongs", "bansuri.transcribed", "bansuri.compose.saved", "bansuri.songs.learned", "bansuri.students", "bansuri.coach.history"];
+const STORES = ["bansuri.feedback", "bansuri.review.requests", "bansuri.tone.history", "bansuri.tone.checks", "bansuri.ornaments", "bansuri.ornament.models", "bansuri.mysongs", "bansuri.transcribed", "bansuri.compose.saved", "bansuri.songs.learned", "bansuri.students", "bansuri.coach.history", "bansuri.lessons"];
 export function backupObject() {
   const stores = {};
   for (const k of STORES) { try { const v = localStorage.getItem(k); if (v !== null) stores[k] = v; } catch (e) { /* storage unavailable */ } }

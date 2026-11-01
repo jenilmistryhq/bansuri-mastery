@@ -58,6 +58,7 @@ const ICONS = {
   file: "M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6",
   star: "M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9z",
   read: "M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z",
+  x: "M6 6l12 12M18 6L6 18",
 };
 export const ICON_PATHS = ICONS;
 export function icon(name, label) {

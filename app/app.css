@@ -905,3 +905,107 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .rvtask p { margin: 4px 0 0; }
 .rvplayer { width: 100%; max-width: 32rem; }
 .teachertask { border-color: var(--accent); }
+
+/* ---------- Interactive lessons (views/lesson.js, lesson/player.js, lesson/steps.js) ---------- */
+.lessonpage { max-width: 760px; }
+.lesson-cover h1 { margin: 4px 0 6px; }
+.lesson-chapters { margin: 8px 0 14px; padding-left: 1.4rem; display: grid; gap: 4px; }
+.lesson { display: flex; flex-direction: column; gap: 14px; min-height: calc(100vh - 140px); }
+.lesson-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.lesson-close { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: grid; place-items: center; cursor: pointer; }
+.lesson-close svg { width: 18px; height: 18px; }
+.lesson-bar { display: flex; gap: 4px; align-items: center; }
+.lesson-bar i { flex: 1; height: 8px; border-radius: 4px; background: var(--sunken); transition: background 200ms; }
+.lesson-bar i.gap { margin-left: 6px; }
+.lesson-bar i.on { background: var(--accent); }
+.lesson-bar i.now { box-shadow: 0 0 0 2px var(--accent-soft); }
+.lesson-count { font-variant-numeric: tabular-nums; min-width: 3.2rem; text-align: right; }
+.lesson-chapter { font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.lesson-stage { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.lesson-title { margin: 0; font-size: 1.6rem; line-height: 1.2; outline: none; }
+.lesson-intro { margin: 0; color: var(--muted); max-width: 62ch; }
+.lesson-q { margin: 0; font-size: 1.05rem; font-weight: 500; }
+.lesson-foot { position: sticky; bottom: 0; display: flex; justify-content: space-between; gap: 10px; padding: 12px 0; background: linear-gradient(to top, var(--bg) 70%, transparent); }
+.lesson-foot > .btn.ghost[hidden] + .lesson-next { margin-left: auto; }
+.lesson-next { min-width: 11rem; justify-content: center; }
+.lesson-next:disabled { opacity: 0.45; cursor: default; }
+.lesson-next.lesson-go { animation: lesson-pop 320ms ease-out; }
+@keyframes lesson-pop { 0% { transform: scale(0.96); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
+.lesson-center { align-items: center; justify-items: center; text-align: center; }
+.lesson-options, .lesson-choices { display: grid; gap: 10px; }
+.lesson-choices { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.lesson-option, .lesson-choice, .lesson-chip { font: inherit; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius); padding: 12px 14px; text-align: left; cursor: pointer; min-height: 48px; }
+.lesson-option:hover:not(:disabled), .lesson-choice:hover, .lesson-chip:hover { border-color: var(--accent); }
+.lesson-option.right, .lesson-choice.picked, .lesson-chip.picked { border-color: var(--accent); background: var(--accent-soft); }
+.lesson-option.wrong { border-color: var(--bad); opacity: 0.7; }
+.lesson-option.wrong.picked { opacity: 1; }
+.lesson-choice { display: flex; flex-direction: column; gap: 4px; }
+.lesson-sidepic svg { width: 100%; height: auto; display: block; }
+.lesson-reveal { border-radius: var(--radius); padding: 12px 14px; border: 1.5px solid var(--good); background: color-mix(in srgb, var(--good) 10%, var(--surface)); }
+.lesson-reveal.warn { border-color: var(--warn); background: color-mix(in srgb, var(--warn) 10%, var(--surface)); }
+.lesson-reveal p { margin: 4px 0 0; }
+.lesson-cards { display: grid; gap: 10px; }
+.lesson-card { border: 1.5px solid var(--line); border-radius: var(--radius); padding: 12px 14px; background: var(--surface); display: grid; gap: 8px; }
+.lesson-card p { margin: 0; }
+.lesson-card.ok { border-color: var(--good); }
+.lesson-card.found { border-color: var(--warn); }
+.lesson-fix { color: var(--warn); font-weight: 600; }
+.lesson-group { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
+.lesson-group legend { font-weight: 600; margin-bottom: 4px; }
+.lesson-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.lesson-chip { border-radius: 999px; padding: 8px 16px; min-height: 44px; }
+.lesson-timer { width: 150px; height: 150px; border-radius: 50%; display: grid; place-content: center; text-align: center;
+  background: conic-gradient(var(--accent) calc(var(--p, 0) * 360deg), var(--sunken) 0); position: relative; }
+.lesson-timer::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: var(--surface); }
+.lesson-timer > * { position: relative; }
+.lesson-timer-n { font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.lesson-pad { width: 160px; height: 160px; border-radius: 50%; border: 3px solid var(--accent); background: var(--surface); color: var(--ink); font: inherit; font-size: 1.3rem; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.lesson-pad:disabled { opacity: 0.5; }
+.lesson-pad.hit { background: var(--accent-soft); transform: scale(0.97); }
+.lesson-lights { display: flex; gap: 10px; }
+.lesson-lights i { width: 16px; height: 16px; border-radius: 50%; background: var(--sunken); }
+.lesson-lights i.on { background: var(--accent); }
+.lesson-wave { display: flex; gap: 6px; align-items: center; height: 60px; }
+.lesson-wave i { width: 8px; height: 16px; border-radius: 4px; background: var(--accent-soft); }
+.lesson-wave.on i { background: var(--accent); animation: lesson-wave 1.6s ease-in-out infinite; }
+.lesson-wave.on i:nth-child(2n) { animation-delay: 0.2s; }
+.lesson-wave.on i:nth-child(3n) { animation-delay: 0.45s; }
+@keyframes lesson-wave { 0%, 100% { height: 14px; } 50% { height: 54px; } }
+.lesson-flute { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px; }
+.lesson-flute svg { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; }
+.lesson-noterow { justify-content: space-between; align-items: center; }
+.lesson-note { font-size: 2.4rem; font-family: var(--mono); line-height: 1; }
+.lesson-blow { min-width: 9rem; justify-content: center; }
+.lesson-found { display: flex; flex-wrap: wrap; gap: 6px; }
+.lesson-done { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lesson-done li { display: flex; gap: 10px; align-items: center; }
+.lesson-done li.later { color: var(--muted); }
+.lesson-tick { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); flex-shrink: 0; }
+.lesson-done li.later .lesson-tick { background: var(--sunken); }
+.lesson-tick svg { width: 15px; height: 15px; }
+.lesson-burst { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); margin: 0 auto; }
+.lesson-burst svg { width: 40px; height: 40px; }
+.lesson-teaser { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-radius: var(--radius); padding: 14px; background: var(--sunken); }
+.lesson-teaser > .btn { flex-shrink: 0; white-space: nowrap; }
+.lesson-end { text-align: center; display: grid; gap: 10px; justify-items: center; }
+/* The flute drawing */
+.fl-body { fill: var(--bamboo); }
+.fl-node { stroke: var(--node); stroke-width: 3; }
+.fl-cork { fill: var(--bamboo-deep); }
+.fl-bind { fill: var(--finger-edge); }
+.fl-hole { fill: var(--hole); }
+.fl-open { fill: var(--hole); }
+.fl-num { fill: var(--muted); font: 600 15px var(--body); }
+.fl-hit { fill: transparent; }
+.fl-part { cursor: pointer; outline: none; }
+.fl-part:focus-visible .fl-hit, .fl-part:hover .fl-hit { fill: color-mix(in srgb, var(--accent) 18%, transparent); }
+.fl-part.fl-found .fl-hit { fill: color-mix(in srgb, var(--good) 30%, transparent); }
+.fl-finger { stroke: var(--hole); stroke-width: 2; }
+.fl-pad { fill: var(--finger); stroke: var(--finger-edge); stroke-width: 2.5; opacity: 0; transition: opacity 120ms; }
+.fl-part.fl-closed .fl-pad { opacity: 1; }
+@media (max-width: 560px) {
+  .lesson-title { font-size: 1.35rem; }
+  .lesson-foot .lesson-next { flex: 1; }
+  .lesson-noterow .lesson-blow { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .lesson-next.lesson-go, .lesson-wave.on i { animation: none; } .lesson-bar i { transition: none; } }
