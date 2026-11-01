@@ -337,7 +337,7 @@ export async function render(main, { params }) {
       const orig = h("details", { class: "small muted origtext" }, h("summary", null, "Original wording"), p.cloneNode(true));
       p.replaceWith(h("p", { class: "steptext" }, t), orig);
     });
-    card.append(...parts);
+    card.append(...parts.filter(Boolean));
     makePlayable(card);
     cards[b.id] = card;
     page.append(card);
