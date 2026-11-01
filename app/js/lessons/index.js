@@ -9,6 +9,7 @@ import { M9 } from "./m9.js";
 import { M12 } from "./m12.js";
 import { M15 } from "./m15.js";
 import { M43 } from "./m43.js";
+import { M50 } from "./m50.js";
 
-export const LESSONS = { m0: M0, m1: M1, m2: M2, m3: M3, m4: M4, m8: M8, m9: M9, m12: M12, m15: M15, m43: M43 };
+export const LESSONS = { m0: M0, m1: M1, m2: M2, m3: M3, m4: M4, m8: M8, m9: M9, m12: M12, m15: M15, m43: M43, m50: M50 };
 export const lessonForDay = n => Object.values(LESSONS).find(l => l.day === n) || null;

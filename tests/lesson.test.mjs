@@ -117,4 +117,12 @@ test("beats: two notes a few cents apart waver; in tune, they do not", () => {
   assert.ok(Math.abs(L.beatRate(-30, 523.25) - 9) < 0.2, "30 cents at Sa: about 9 beats a second");
   assert.ok(L.beatRate(10, 523.25) < L.beatRate(20, 523.25), "closer is slower");
 });
+test("taal: claps on sam and tali, waves on khali; presses scored by kind and time", () => {
+  assert.deepEqual(K3.taalActions("teentaal"), [{ beat: 1, act: "clap" }, { beat: 5, act: "clap" }, { beat: 9, act: "wave" }, { beat: 13, act: "clap" }]);
+  assert.deepEqual(K3.taalActions("keherwa").map(a => a.act), ["clap", "wave"]);
+  for (const [k, t] of Object.entries(K3.TAALS)) assert.equal(t.bols.length, t.beats, k + ": one bol a beat");
+  const exp = [{ t: 0, act: "clap" }, { t: 2, act: "wave" }, { t: 4, act: "clap" }];
+  assert.deepEqual(K3.clapScore([{ t: 0.1, act: "clap" }, { t: 2.05, act: "wave" }, { t: 4.2, act: "clap" }], exp), { hit: 3, of: 3, wrong: 0 });
+  assert.deepEqual(K3.clapScore([{ t: 0, act: "clap" }, { t: 2, act: "clap" }], exp), { hit: 1, of: 3, wrong: 1 }, "a clap on khali is wrong");
+});
 console.log("lesson tests: " + n + " passed");

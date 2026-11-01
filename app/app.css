@@ -1043,3 +1043,12 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-center > .lesson-options .lesson-option { text-align: left; }
 .lesson-beat.bar { background: none; min-width: 0.6rem; color: var(--muted); }
 .lesson-beat.blank { outline: 2px dashed var(--accent); }
+.lesson-taalwrap { position: relative; width: 240px; height: 240px; }
+.lesson-taal { position: absolute; inset: 0; }
+.lesson-taalbeat { position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; margin: -15px; border-radius: 50%; background: var(--sunken); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem;
+  transform: rotate(calc(var(--i) * 360deg / var(--n))) translateY(-100px) rotate(calc(var(--i) * -360deg / var(--n))); }
+.lesson-taalbeat.mark { background: var(--accent-soft); border: 2px solid var(--accent); }
+.lesson-taalbeat.khali { border-style: dashed; }
+.lesson-taalbeat.now { background: var(--accent); color: var(--accent-ink); }
+.lesson-bol { position: absolute; inset: 0; display: grid; place-items: center; font-size: 1.6rem; }
+.lesson-act { min-width: 7rem; justify-content: center; }

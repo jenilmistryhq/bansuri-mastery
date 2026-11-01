@@ -2,7 +2,7 @@
 // the L08 rubric made audible), rubric (score yourself, then one keep and one fix) and order
 // (put notes in order by ear, each tap sounding its note).
 import { h, icon } from "../util.js";
-import { ac, makeVoice, TONE_LEVELS, playCurve, master } from "../core/audio.js";
+import { ac, makeVoice, TONE_LEVELS, playCurve, master, tablaBol } from "../core/audio.js";
 import { hzOf, codeOf } from "../core/theory.js";
 import { ding } from "./sound.js";
 
@@ -37,10 +37,83 @@ function shuffled(list) {
   return a;
 }
 
+// The taals of L15: beats, and the marks at section starts (X sam, 2 and 3 tali: clap; 0 khali: wave).
+export const TAALS = {
+  keherwa: { beats: 8, marks: { 1: "X", 5: "0" }, bols: "Dha Ge Na Ti Na Ka Dhi Na".split(" ") },
+  dadra: { beats: 6, marks: { 1: "X", 4: "0" }, bols: "Dha Dhi Na Dha Ti Na".split(" ") },
+  teentaal: { beats: 16, marks: { 1: "X", 5: "2", 9: "0", 13: "3" }, bols: "Dha Dhin Dhin Dha Dha Dhin Dhin Dha Dha Tin Tin Ta Ta Dhin Dhin Dha".split(" ") },
+};
+// Clap or wave on each marked beat: [{ beat (1..n), act: "clap"|"wave" }] for one cycle.
+export const taalActions = name => Object.entries(TAALS[name].marks).map(([b, m]) => ({ beat: Number(b), act: m === "0" ? "wave" : "clap" }));
+// Presses [{ t, act }] against the expected [{ t, act }] (seconds): each expected one takes the
+// nearest unused press of the same kind within 0.3 s. Returns { hit, of, wrong }.
+export function clapScore(presses, expected) {
+  const used = new Set();
+  let hit = 0;
+  for (const e of expected) {
+    let best = -1, d = 0.3;
+    presses.forEach((p, i) => { const x = Math.abs(p.t - e.t); if (!used.has(i) && p.act === e.act && x <= d) { d = x; best = i; } });
+    if (best >= 0) { used.add(best); hit++; }
+  }
+  return { hit, of: expected.length, wrong: presses.length - used.size };
+}
+
 // Beats per second between two notes a few cents apart (at Sa's frequency).
 export const beatRate = (cents, hz) => Math.abs(hz * (Math.pow(2, cents / 1200) - 1));
 
 export const LISTEN_KINDS = {
+  // Keep a taal with the hands: the tabla plays its theka round a beat clock; clap on sam and
+  // tali, wave on khali. The last cycle can be silent: keep the count inside and land on sam.
+  // { taal, bpm, cycles, silent (last cycles without the tabla) }
+  clapwave: { make(s, api) {
+    const T = TAALS[s.taal], n = T.beats, cycles = s.cycles || 3, silent = s.silent || 0;
+    const gap = 60 / (s.bpm || 60) * (window.__lessonTime ? 0.25 : 1);
+    let presses = [], timers = [], running = false;
+    const dots = h("div", { class: "lesson-taal", style: "--n:" + n, "aria-hidden": "true" }, Array.from({ length: n }, (_, i) => {
+      const m = T.marks[i + 1];
+      return h("span", { class: "lesson-taalbeat" + (m ? " mark" : "") + (m === "0" ? " khali" : ""), style: "--i:" + i }, m || "");
+    }));
+    const bol = h("b", { class: "lesson-bol", "aria-live": "off" }, "");
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, "Press Start. Clap on X, 2 and 3; wave on 0. Count the other beats on your fingers.");
+    const clap = h("button", { type: "button", class: "btn big lesson-act", disabled: true }, "Clap");
+    const wave = h("button", { type: "button", class: "btn big lesson-act", disabled: true }, "Wave");
+    const start = h("button", { type: "button", class: "btn primary" }, "Start");
+    const press = act => { if (running) presses.push({ t: ac().currentTime, act }); };
+    clap.addEventListener("click", () => press("clap"));
+    wave.addEventListener("click", () => press("wave"));
+    start.addEventListener("click", () => {
+      if (running) return;
+      running = true; presses = []; start.disabled = true; clap.disabled = wave.disabled = false;
+      const c = ac(), t0 = c.currentTime + 0.4, expected = [];
+      for (let cy = 0; cy < cycles; cy++) {
+        const quiet = cy >= cycles - silent;
+        for (let b = 0; b < n; b++) {
+          const t = t0 + (cy * n + b) * gap;
+          if (!quiet) tablaBol(t, T.bols[b], gap, b === 0);
+          if (T.marks[b + 1]) expected.push({ t, act: T.marks[b + 1] === "0" ? "wave" : "clap" });
+          timers.push(setTimeout(() => {
+            dots.querySelectorAll(".now").forEach(x => x.classList.remove("now"));
+            dots.children[b].classList.add("now");
+            bol.textContent = quiet ? (b === 0 ? "?" : "") : T.bols[b];
+            if (quiet && b === 0 && cy === cycles - silent) msg.textContent = "Silent now: keep counting, and clap on sam.";
+          }, (t - c.currentTime) * 1000));
+        }
+      }
+      // The sam after the last cycle closes the round: arriving there counts too.
+      const end = t0 + cycles * n * gap;
+      expected.push({ t: end, act: "clap" });
+      timers.push(setTimeout(() => {
+        running = false; start.disabled = false; start.textContent = "Again"; clap.disabled = wave.disabled = true;
+        dots.querySelectorAll(".now").forEach(x => x.classList.remove("now")); bol.textContent = "";
+        const r = clapScore(presses, expected), good = r.hit >= r.of - 1 && r.wrong <= 2;
+        ding(good);
+        msg.textContent = (good ? "In the cycle: " : "") + r.hit + " of " + r.of + " claps and waves in place" + (r.wrong ? ", " + r.wrong + " extra." : ".") + (good ? "" : " Try again: say the beats aloud.");
+        api.data[s.id] = { hit: r.hit, of: r.of }; api.save(); api.ready();
+      }, (end - c.currentTime + 0.6) * 1000));
+    });
+    return { el: h("div", { class: "stack lesson-center" }, h("div", { class: "lesson-taalwrap" }, dots, bol), msg, h("div", { class: "row" }, clap, wave), start), destroy() { timers.forEach(clearTimeout); running = false; } };
+  } },
+
   // Air speed and the octave: the same fingering, slow air gives the low note, faster and
   // narrower air flips it up an octave (the second register). { note (semitones, register 1) }
   overblow: { make(s, api) {
