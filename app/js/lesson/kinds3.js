@@ -3,13 +3,25 @@
 // (put notes in order by ear, each tap sounding its note).
 import { h, icon } from "../util.js";
 import { ac, makeVoice, TONE_LEVELS, playCurve, master } from "../core/audio.js";
-import { hzOf } from "../core/theory.js";
+import { hzOf, codeOf } from "../core/theory.js";
 import { ding } from "./sound.js";
 
 // A held Sa (or another note) of a tone level (1 airy .. 4 clear), off by some cents.
-function sound({ semi = 0, level = 4, cents = 0, seconds = 2.2 }, at = 0) {
+function sound({ semi = 0, level = 4, cents = 0, seconds = 2.2, seq = null, dur = 0.5, gap = 0, crisp = false }, at = 0) {
   try {
     const c = ac(), t = c.currentTime + 0.05 + at;
+    if (seq) {
+      if (!gap) {
+        // Slurred: one breath, only the pitch changes.
+        const v = makeVoice(hzOf(seq[0]), t, TONE_LEVELS[level]);
+        seq.forEach((n, i) => { if (i) v.ramp(hzOf(seq[i - 1]), hzOf(n), t + i * dur - 0.012, 0.012); });
+        v.stop(t + seq.length * dur);
+      } else {
+        // Separated: each note its own start; a tongued start is crisper (less breath, no scoop).
+        seq.forEach((n, i) => { const at2 = t + i * dur; const v = makeVoice(hzOf(n), at2, crisp ? { breath: 0.3, body: 1 } : TONE_LEVELS[3]); v.stop(at2 + dur - gap); });
+      }
+      return;
+    }
     const v = makeVoice(hzOf(semi) * Math.pow(2, cents / 1200), t, TONE_LEVELS[level] || TONE_LEVELS[4]);
     v.stop(t + seconds);
   } catch (e) { /* audio unavailable */ }
@@ -29,6 +41,32 @@ function shuffled(list) {
 export const beatRate = (cents, hz) => Math.abs(hz * (Math.pow(2, cents / 1200) - 1));
 
 export const LISTEN_KINDS = {
+  // Air speed and the octave: the same fingering, slow air gives the low note, faster and
+  // narrower air flips it up an octave (the second register). { note (semitones, register 1) }
+  overblow: { make(s, api) {
+    let v = null, cur = null, flips = 0, timer = 0;
+    const low = s.note === undefined ? -5 : s.note;
+    const slider = h("input", { type: "range", min: "0", max: "100", step: "1", value: "20", "aria-label": "Air speed", class: "lesson-slider" });
+    const name = h("b", { class: "lesson-note" }, "-");
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, "Press Blow, then slide the air speed up, slowly.");
+    const blow = h("button", { type: "button", class: "btn primary" }, icon("play"), " Blow");
+    const reg = () => (Number(slider.value) >= 60 ? 2 : 1);
+    const play = () => {
+      const r = reg(), semi = r === 2 ? low + 12 : low, c = ac(), t = c.currentTime + 0.02;
+      if (v) v.stop(t + 0.04);
+      v = makeVoice(hzOf(semi), t, { breath: 1 + Number(slider.value) / 25 });
+      v.stop(t + 30);
+      name.textContent = codeOf(semi);
+      if (cur && cur !== r) { flips++; msg.textContent = r === 2 ? "Flip! Same fingers, an octave higher: the second register." : "Back down: slower, warmer air, the low note."; }
+      if (flips >= 2 && !api.data[s.id]) { ding(true); api.data[s.id] = { flips }; api.save(); api.ready(); }
+      cur = r;
+    };
+    const stop = () => { clearInterval(timer); if (v) { v.stop(ac().currentTime + 0.05); v = null; } cur = null; blow.replaceChildren(icon("play"), " Blow"); };
+    blow.addEventListener("click", () => { if (v) { stop(); return; } play(); blow.replaceChildren(icon("stop"), " Stop"); });
+    slider.addEventListener("input", () => { if (v && reg() !== cur) play(); });
+    return { el: h("div", { class: "stack lesson-center" }, name, h("label", { class: "lesson-sliderwrap" }, slider, h("span", { class: "small muted lesson-humscale" }, h("span", null, "slow, warm air"), h("span", null, "fast, narrow air"))), msg, blow), destroy: stop };
+  } },
+
   // Two notes together: one is Sa, the other can be slid. Off by a little, they "beat" (wah-wah);
   // the closer, the slower, until it stops. { start (cents), hold (seconds still) }
   beats: { make(s, api) {
@@ -112,7 +150,8 @@ export const LISTEN_KINDS = {
     }
     playA.addEventListener("click", () => sound(r().a));
     playB.addEventListener("click", () => sound(r().b));
-    both.addEventListener("click", () => { sound(r().a); sound(r().b, 2.6); });
+    const len = x => (x.seq ? x.seq.length * (x.dur || 0.5) : x.seconds || 2.2);
+    both.addEventListener("click", () => { sound(r().a); sound(r().b, len(r().a) + 0.4); });
     const pick = which => {
       if (answered) return;
       answered = true;

@@ -1536,6 +1536,7 @@ try {
         else if (kind === "rubric") await lp.evaluate(() => document.querySelectorAll(".lesson-stage .lesson-chips").forEach(g => g.children[1].click()));
         else if (kind === "order") { for (let k = 0; k < 40 && !(await isReady()); k++) await lp.evaluate(() => { const bs = [...document.querySelectorAll(".lesson-stage .lesson-chip:not(:disabled)")]; if (bs.length) bs[Math.floor(Math.random() * bs.length)].click(); }); }
         else if (kind === "complete") { for (let k = 0; k < 30 && !(await isReady()); k++) { await lp.evaluate(() => { const b = [...document.querySelectorAll(".lesson-stage .lesson-chip")].find(x => !x.disabled); if (b) b.click(); }); await sleep(60); await clickL(".lesson-stage button", /Next pattern/); await sleep(60); } }
+        else if (kind === "overblow") { await clickL(".lesson-stage button", /Blow/); for (const v of ["80", "20", "80"]) { await lp.evaluate(v => { const r = document.querySelector(".lesson-stage input[type=range]"); r.value = v; r.dispatchEvent(new Event("input", { bubbles: true })); }, v); await sleep(150); } await waitReady(3000); await clickL(".lesson-stage button", /Stop/); }
         else if (kind === "higherlower") { for (let i = 0; i < 20 && !(await isReady()); i++) { await clickL(".lesson-stage button", /Play|Next pair/); await sleep(120); await clickL(".lesson-chip", /Higher/); await sleep(80); } }
         else if (kind === "custom") {
           // Custom steps: a skip link, or the main button (then wait).
