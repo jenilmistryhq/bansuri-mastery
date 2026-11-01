@@ -614,7 +614,9 @@ export function tempoRange(grid) {
 }
 
 // A note's code: "~" when it is reached by a slide (meend), its grace note (kan) in braces: ~{G}R.
-const noteCode = (n, semiOf) => (n.glide ? "~" : "") + (n.kan !== undefined ? "{" + codeOf(semiOf({ midi: n.kan })) + "}" : "") + codeOf(semiOf(n));
+// Grace notes in braces: one is a kan, more a murki ({G R}S is written {GR}S); "^" after a note is
+// andolan (a slow swing of the note).
+const noteCode = (n, semiOf) => (n.glide ? "~" : "") + (n.murki ? "{" + n.murki.map(m => codeOf(semiOf({ midi: m }))).join("") + "}" : n.kan !== undefined ? "{" + codeOf(semiOf({ midi: n.kan })) + "}" : "") + codeOf(semiOf(n)) + (n.andolan ? "^" : "");
 
 // Main melody only: what a listener would sing back. Leaves out notes outside the melody's main
 // range (an instrument above or below the singer in an interlude), weak and unsure stretches, and
@@ -713,17 +715,45 @@ export function foldOctaves(notes) {
 
 // Quick grace notes: a note under 130 ms that runs straight into a longer note close by becomes
 // that note's kan, as a player would write it, instead of a note of its own.
+// Two or three such quick notes in a row before the longer note are a murki (a quick turn).
 export function graceNotes(notes) {
   const out = [];
   for (let j = 0; j < notes.length; j++) {
-    const n = notes[j], next = notes[j + 1];
-    if (next && n.t1 - n.t0 < 0.13 && next.t0 - n.t1 < 0.05 && next.t1 - next.t0 >= 0.15 && next.midi !== n.midi && Math.abs(next.midi - n.midi) <= 4) {
-      notes[j + 1] = { ...next, kan: n.midi, t0: n.t0 };
-      continue;
+    // A run of quick notes (each under 130 ms, joined) straight into a longer note close by.
+    let k = j;
+    while (k < notes.length && k - j < 3 && notes[k].t1 - notes[k].t0 < 0.13 && notes[k + 1] && notes[k + 1].t0 - notes[k].t1 < 0.05) k++;
+    const target = notes[k];
+    if (k > j && target && target.t1 - target.t0 >= 0.15) {
+      const grace = notes.slice(j, k).map(n => n.midi);
+      if (grace.every(m => Math.abs(m - target.midi) <= 4) && grace[grace.length - 1] !== target.midi) {
+        notes[k] = { ...target, kan: grace[0], murki: grace.length > 1 ? grace : undefined, t0: notes[j].t0 };
+        j = k - 1;
+        continue;
+      }
     }
-    out.push(n);
+    out.push(notes[j]);
   }
   return out;
+}
+
+// Andolan: a held note (0.6 s or more) whose pitch swings slowly, 0.7 to 3.5 times a second,
+// by a quarter of a semitone to a semitone and a half. A singer's or flute's vibrato swings
+// faster (5 to 7 times a second) and is left alone. Marks .andolan = true.
+export function markAndolan(notes, track) {
+  for (const n of notes) {
+    if (n.t1 - n.t0 < 0.6) continue;
+    const v = [];
+    for (let i = Math.ceil(n.t0 / HOP); i < n.t1 / HOP; i++) if (track[i] !== null && track[i] !== undefined) v.push(track[i]);
+    if (v.length < 0.8 * (n.t1 - n.t0) / HOP) continue;
+    // Smoothed over 100 ms (vibrato mostly averages out), then centred on the note's median.
+    const sm = v.map((_, i) => { let s = 0, c = 0; for (let k = Math.max(0, i - 2); k <= Math.min(v.length - 1, i + 2); k++) { s += v[k]; c++; } return s / c; });
+    const med = sm.slice().sort((a, b) => a - b)[sm.length >> 1], d = sm.map(x => x - med);
+    let cross = 0, side = 0;
+    for (const x of d) { const s = x > 0.06 ? 1 : x < -0.06 ? -1 : 0; if (s && side && s !== side) cross++; if (s) side = s; }
+    const swings = cross / 2 / (v.length * HOP), sorted = d.slice().sort((a, b) => a - b), amp = sorted[Math.floor(sorted.length * 0.9)] - sorted[Math.floor(sorted.length * 0.1)];
+    if (swings >= 0.7 && swings <= 3.5 && amp >= 0.25 && amp <= 1.5) n.andolan = true;
+  }
+  return notes;
 }
 
 // One beat's items to the shortest notation that means the same: [S, -] -> S, [S, -, R, -] -> SR.
@@ -1070,8 +1100,10 @@ export function transcribe(track, levels, opts) {
   const from = o.from || 0, to = o.to || Infinity;
   const folded = foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
   // o.main (default): the main melody, plain; o.main false: every note found, with grace notes.
-  const list = steadyRegister(o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable));
-  return fromNotes(track ? markGlides(list, track) : list, o);
+  // Grace notes (kan, murki) attach to their note first, so the main melody keeps them as ornaments
+  // instead of dropping them as too short.
+  const list = steadyRegister(o.main === false ? graceNotes(folded) : mainMelody(graceNotes(folded), o.playable));
+  return fromNotes(track ? markAndolan(markGlides(list, track), track) : list, o);
 }
 
 // The rest of transcribe, from named notes: Sa, tempo, the flute's octave and the notation.

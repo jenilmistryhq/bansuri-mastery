@@ -367,4 +367,19 @@ await test("taal: cycles with vibhags and marks, the taal found from the accents
   assert.deepEqual(N.buildEvents(N.parseNotation("G m M P").tokens, 60).ev.map(e => e.semi), [4, 5, 6, 7], "the app's Ma");
 });
 
+await test("ornaments: andolan (a slow swing) is marked, vibrato is not; murki read and written", () => {
+  const track = new Array(400).fill(null);
+  // 0-2 s: G swinging twice a second by +-35 cents (andolan); 3-5 s: G with 5.5 Hz vibrato.
+  for (let i = 0; i < 100; i++) track[i] = 64 + 0.35 * Math.sin(2 * Math.PI * 2 * i * T.HOP);
+  for (let i = 150; i < 250; i++) track[i] = 64 + 0.3 * Math.sin(2 * Math.PI * 5.5 * i * T.HOP);
+  const notes = T.markAndolan([{ t0: 0, t1: 2, midi: 64 }, { t0: 3, t1: 5, midi: 64 }], track);
+  assert.deepEqual(notes.map(n => !!n.andolan), [true, false]);
+  const g = T.graceNotes([{ t0: 0, t1: 0.08, midi: 62 }, { t0: 0.09, t1: 0.17, midi: 60 }, { t0: 0.18, t1: 0.26, midi: 59 }, { t0: 0.27, t1: 0.9, midi: 60 }]);
+  assert.equal(g.length, 1); assert.deepEqual(g[0].murki, [62, 60, 59]);
+  const r = T.transcribe(null, null, { notes: g, sa: 60, sameKey: false, layout: "phrases", bpm: 60 });
+  assert.match(r.notation, /^\{RS\.N\}S/);
+  const ev = buildEvents(parseNotation("{RS.N}S - G^ -").tokens, 60).ev;
+  assert.deepEqual(ev[0].murki, [2, 0, -1]); assert.equal(ev[1].andolan, true);
+});
+
 console.log("transcribe tests: " + passed + " passed");

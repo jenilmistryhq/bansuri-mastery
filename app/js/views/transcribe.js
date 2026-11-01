@@ -22,7 +22,7 @@ import { bestRuns, transcribe, tonicMidi, fluteLabel, FLUTES, HOP, scoreTake, TA
 const SAVED = "bansuri.transcribed";
 const MAX_SECONDS = 360;
 // One note in a beat: an optional {kan}, lower-octave dots, the letter, upper-octave marks; or - or _.
-const NOTE_TOKEN = /~?(?:\{[^}]*\})?\.*[SrRgGmMPdDnN]'*|[-_]/g;
+const NOTE_TOKEN = /~?(?:\{[^}]*\})?\.*[SrRgGmMPdDnN]#?'*\^?|[-_]/g;
 // An AudioBuffer as a 16-bit WAV file with all its channels (a stereo recording stays stereo).
 function wavBlob(buf) {
   const chs = Math.min(2, buf.numberOfChannels), ds = Array.from({ length: chs }, (_, c) => buf.getChannelData(c)), n = ds[0].length, bytes = n * chs * 2;
@@ -545,7 +545,7 @@ export async function render(main) {
       h("div", { class: "row tight" }, scriptSeg, editBtn,
         h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(showText(notationText())); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"))),
     view, editor,
-    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar or vibhag (X sam, 0 khali, 2 and 3 the other taalis), a pause in a phrase is marked with a gap, a small note in front is a grace note (kan), ~ before a note is a slide into it (meend). The time in front of a line plays that line of the recording."),
+    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar or vibhag (X sam, 0 khali, 2 and 3 the other taalis), a pause in a phrase is marked with a gap, a small note in front is a grace note (kan) and several a murki, ~ before a note is a slide into it (meend), ^ after a note is andolan (a slow swing). The time in front of a line plays that line of the recording."),
     h("div", { class: "row" }, nameIn, h("button", { type: "button", class: "btn", onclick: () => save() }, "Save")),
     h("div", { class: "row tight" },
       h("button", { type: "button", class: "btn small", onclick: () => addToSongs() }, icon("note"), " Add to Songs"),

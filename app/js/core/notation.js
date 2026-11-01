@@ -56,13 +56,14 @@ export function parseNotation(text, maStyle) {
     if (/^(X|x|0|[2-9])$/.test(raw)) { tokens.push({ type: "mark", text: raw }); return; }
     if (raw === ",") { tokens.push({ type: "breath", text: "," }); return; }
     if (!/^[.SrRgGmMPdDnN'\-_{}~()^,|]+$/.test(raw)) { skipped.push(raw); tokens.push({ type: "skip", text: raw }); return; }
-    const items = []; let i = 0, kan = null, glide = false, breathAfter = false;
+    const items = []; let i = 0, kan = null, murki = null, glide = false, breathAfter = false;
     while (i < raw.length) {
       const ch = raw[i];
+      // Grace notes in braces: one is a kan, two or more a murki (a quick turn into the note).
       if (ch === "{") {
-        const j = raw.indexOf("}", i);
-        const k = noteAt(j > i ? raw.slice(i + 1, j) : "", 0);
-        kan = k ? k.semi : null; i = j > i ? j + 1 : raw.length; continue;
+        const j = raw.indexOf("}", i), inner = j > i ? raw.slice(i + 1, j) : "", list = [];
+        for (let q = 0; q < inner.length;) { const k = noteAt(inner, q); if (k) { list.push(k.semi); q = k.next; } else q++; }
+        kan = list.length ? list[0] : null; murki = list.length > 1 ? list : null; i = j > i ? j + 1 : raw.length; continue;
       }
       if (ch === "(" || ch === ")" || ch === "|") { i++; continue; }
       if (ch === "~") { glide = true; i++; continue; }
@@ -72,7 +73,7 @@ export function parseNotation(text, maStyle) {
       if (ch === ",") { breathAfter = true; i++; continue; }
       const n = noteAt(raw, i);
       if (!n) { i++; continue; }
-      items.push({ semi: n.semi, kan, glide }); kan = null; glide = false; i = n.next;
+      items.push({ semi: n.semi, kan, murki, glide }); kan = null; murki = null; glide = false; i = n.next;
     }
     if (items.length) tokens.push({ type: "beat", text: raw, items, breathAfter });
     else if (breathAfter) tokens.push({ type: "breath", text: raw });
@@ -106,7 +107,7 @@ export function buildEvents(tokens, bpm) {
       if (it.hold) { if (cur) cur.dur += sub; }
       else if (it.rest) { cur = null; }
       else {
-        cur = { semi: it.semi, start: st, dur: sub, kan: it.kan, from: it.glide && prev !== null ? prev : null, andolan: !!it.andolan, ti };
+        cur = { semi: it.semi, start: st, dur: sub, kan: it.kan, murki: it.murki || null, from: it.glide && prev !== null ? prev : null, andolan: !!it.andolan, ti };
         ev.push(cur); prev = it.semi;
       }
     });
@@ -165,7 +166,12 @@ export function playEvents(ev, beats, opts) {
     // Duet: a second, quieter flute plays the same line opts.duet semitones away (an octave below).
     if (opts.duet) { const d = makeVoice(hzOf(e.semi + opts.duet), at, { level: 0.14 }); d.stop(at + e.dur - 0.01); keep(d); }
     let v;
-    if (e.kan !== null && e.kan !== undefined) {
+    if (e.murki && e.murki.length > 1) {
+      // A murki: each grace note for a moment, then the note.
+      const d = Math.min(0.06, e.dur * 0.6 / e.murki.length), m = e.murki;
+      v = makeVoice(hzOf(m[0]), at, { andolan: e.andolan });
+      for (let q = 0; q < m.length; q++) v.jump(hzOf(m[q]), q + 1 < m.length ? hzOf(m[q + 1]) : f, at + q * d, d);
+    } else if (e.kan !== null && e.kan !== undefined) {
       const k = Math.min(0.08, e.dur * 0.3);
       v = makeVoice(hzOf(e.kan), at, { andolan: e.andolan }); v.jump(hzOf(e.kan), f, at, k);
     } else if (e.from !== null && e.from !== undefined) {
