@@ -3,7 +3,7 @@
 // apart, as in L04's table), higherlower (ear) and tapquiz (questions answered on the flute).
 import { h, icon } from "../util.js";
 import { listenMic } from "../core/listen.js";
-import { micIntro, countdown, holdMeter } from "../core/live.js";
+import { micIntro, countdown, holdMeter, phraseCheck } from "../core/live.js";
 import { yin, relSemi } from "../core/pitch.js";
 import { ac, click, tanpura, playNote } from "../core/audio.js";
 import { fluteSvg } from "./flute.js";
@@ -69,7 +69,8 @@ export function rhythmScore(taps, expected) {
 export function lineOnsets(text) {
   const beats = text.trim().split(/\s+/).filter(x => x !== "|" && x !== "||");
   const onsets = [];
-  beats.forEach((b, i) => { if (b === "-" || b === "_") return; const n = b.length; for (let k = 0; k < n; k++) onsets.push(i + k / n); });
+  // Each character of a beat is an equal part of it; "_" (silence) and "-" (held) start nothing.
+  beats.forEach((b, i) => { const n = b.length; for (let k = 0; k < n; k++) if (b[k] !== "-" && b[k] !== "_") onsets.push(i + k / n); });
   return { onsets, beats: beats.length };
 }
 // How far a hummed pitch is from Sa in any octave, in cents (-600..600).
@@ -171,11 +172,11 @@ export const MORE_KINDS = {
     const target = s.target || 0, times = s.times || 1;
     const tally = h("span", { class: "lesson-tally", hidden: times < 2 });
     const head = h("b", { class: "lesson-verdict" }, "Ready");
-    const tip = h("p", { class: "lesson-q", "aria-live": "polite" }, "Close holes 1-3. Press Start, then blow gently across the blowing hole.");
+    const tip = h("p", { class: "lesson-q", "aria-live": "polite" }, s.start || "Close holes 1-3. Press Start, then blow gently across the blowing hole.");
     const clock = h("span", { class: "small muted" });
     const btn = h("button", { type: "button", class: "btn primary big" }, icon("mic"), " Start");
     const box = h("div", { class: "lesson-sound" }, head, tip);
-    const got = h("div", { class: "lesson-reveal good", hidden: true }, h("b", null, times > 1 ? "Found it again and again." : "Your first sound on Sa!"), h("p", null, times > 1 ? "That is the skill: finding the sweet spot quickly. It gets faster every day." : "Take the flute away, then find the sweet spot again, quickly. Five times."));
+    const got = h("div", { class: "lesson-reveal good", hidden: true }, h("b", null, times > 1 ? "Found it again and again." : target ? "There it is!" : "Your first sound on Sa!"), h("p", null, times > 1 ? "That is the skill: finding the sweet spot quickly. It gets faster every day." : "Take the flute away, then find the sweet spot again, quickly. Five times."));
     const showTally = () => { tally.textContent = count + " of " + times; };
     showTally();
     const stop = () => { if (unsub) { unsub(); unsub = null; } clearInterval(timer); btn.replaceChildren(icon("mic"), found ? " Again" : " Start"); };
@@ -188,7 +189,11 @@ export const MORE_KINDS = {
         if (v === "note") { run += last === null ? 0 : r.t - last; } else run = 0;
         last = r.t;
         box.className = "lesson-sound " + v;
-        if (!(v === "note" && !armed && !found)) { head.textContent = VERDICT[v][0]; tip.textContent = VERDICT[v][1]; }
+        if (!(v === "note" && !armed && !found)) {
+          if (target && v === "note") { head.textContent = "There it is!"; tip.textContent = VERDICT.note[1]; }
+          else if (target && v === "other") { head.textContent = "A note, but not this one"; tip.textContent = "Check the fingering, and that every closed hole is fully covered."; }
+          else { head.textContent = VERDICT[v][0]; tip.textContent = VERDICT[v][1]; }
+        }
         if (v === "quiet" || v === "air") armed = true; // a break in the note: the next one counts
         if (v === "note" && run >= 0.5 && armed && !found) {
           armed = false; count++; showTally(); ding(true);
@@ -215,11 +220,22 @@ export const MORE_KINDS = {
   // between. { target, seconds, cents, times, giveUp }
   hold: { make(s, api) {
     let timer = 0;
-    const meter = holdMeter({ targets: Array(s.times || 1).fill(s.target), seconds: s.seconds, cents: s.cents || 30, onPass: () => { api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
     const later = h("button", { type: "button", class: "linkbtn", hidden: true }, "Not yet? Go on, and try again tomorrow");
+    const meter = holdMeter({ targets: s.targets || Array(s.times || 1).fill(s.target), seconds: s.seconds, cents: s.cents || 30, onPass: () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
     later.addEventListener("click", () => { api.data[s.id] = { passed: false }; api.save(); later.hidden = true; api.ready(); });
     timer = setTimeout(() => { later.hidden = false; }, (s.giveUp || 45) * 1000 * (window.__lessonTime || 1));
     return { el: h("div", { class: "stack" }, meter.el, later), destroy() { clearTimeout(timer); meter.destroy(); } };
+  } },
+
+  // Play a written phrase; the microphone marks each note as it is heard. { phrase: [semi], reps, giveUp }
+  phrase: { make(s, api) {
+    let timer = 0;
+    const play = () => s.phrase.forEach((n, i) => setTimeout(() => playNote(n, 0.55), i * 600));
+    const later = h("button", { type: "button", class: "linkbtn", hidden: true }, "Not yet? Go on, and try again tomorrow");
+    const pc = phraseCheck({ phrase: s.phrase, reps: s.reps || 1, hear: play, onPass: () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
+    later.addEventListener("click", () => { api.data[s.id] = { passed: false }; api.save(); later.hidden = true; api.ready(); });
+    timer = setTimeout(() => { later.hidden = false; }, (s.giveUp || 60) * 1000 * (window.__lessonTime || 1));
+    return { el: h("div", { class: "stack" }, pc.el, later), destroy() { clearTimeout(timer); pc.destroy(); } };
   } },
 
   // Hear Sa from the drone, then hum it from memory (in any octave). The drone stops before the
@@ -287,7 +303,7 @@ export const MORE_KINDS = {
     const flash = k => { const l = lights.children[k % 4]; l.classList.add("on"); timers.push(setTimeout(() => l.classList.remove("on"), 140)); };
     const line = () => lineOnsets(s.lines[i]);
     function showLine() {
-      show.replaceChildren(...s.lines[i].trim().split(/\s+/).map(b => h("span", { class: "lesson-beat" }, b)));
+      show.replaceChildren(...s.lines[i].trim().split(/\s+/).filter(b => b !== "|" && b !== "||").map(b => h("span", { class: "lesson-beat" }, b)));
       msg.textContent = "Line " + (i + 1) + " of " + s.lines.length + ". Four clicks count you in; tap each note as it starts. Hold a note through its \"-\"; tap nothing on a \"_\".";
     }
     start.addEventListener("click", () => {

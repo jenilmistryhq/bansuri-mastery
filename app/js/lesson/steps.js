@@ -239,7 +239,8 @@ export const STEP_KINDS = {
     const sub = h("span", { class: "small muted" });
     const found = h("div", { class: "lesson-found", "aria-label": "Notes you found" });
     const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.start || "Tap holes to close them, then press Blow.");
-    const fl = fluteSvg({ side: api.data.side || "right", numbers: true, holes: true, onTap: () => update() });
+    const fl = fluteSvg({ side: api.data.side || (typeof s.side === "function" ? s.side() : s.side) || "right", numbers: true, holes: true, onTap: () => update() });
+    if (s.startPattern) fl.setPattern(s.startPattern);
     const blow = h("button", { type: "button", class: "btn primary big lesson-blow" }, "Blow");
     function update() {
       const semi = noteOfPattern(fl.pattern());

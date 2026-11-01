@@ -72,7 +72,7 @@ export const LISTEN_KINDS = {
     const out = h("div");
     play.addEventListener("click", () => playCurve(s.rounds[i].curve, 1));
     function show() {
-      missed = false; tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length; out.replaceChildren();
+      missed = false; q.textContent = s.rounds[i].q || s.q || "What does this long tone do?"; tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length; out.replaceChildren();
       opts.replaceChildren(...s.rounds[i].options.map(op => {
         const b = h("button", { type: "button", class: "lesson-option" }, op.text);
         b.addEventListener("click", () => {
@@ -167,16 +167,16 @@ export const LISTEN_KINDS = {
     let k = 0, slips = 0;
     const line = h("div", { class: "lesson-line mono" }, s.items.map(() => h("span", { class: "lesson-beat" }, "?")));
     const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.prompt || "Tap the notes in order, from the lowest.");
-    const hear = h("button", { type: "button", class: "btn" }, icon("play"), " Hear them in order");
-    hear.addEventListener("click", () => s.items.forEach((it, i) => setTimeout(() => sound({ semi: it.semi, seconds: 0.45 }), i * 420)));
+    const hear = s.items.some(it => it.semi === undefined) ? null : h("button", { type: "button", class: "btn" }, icon("play"), " Hear them in order");
+    if (hear) hear.addEventListener("click", () => s.items.forEach((it, i) => setTimeout(() => sound({ semi: it.semi, seconds: 0.45 }), i * 420)));
     const pool = h("div", { class: "lesson-chips" }, shuffled(s.items).map(it => {
       const b = h("button", { type: "button", class: "lesson-chip mono" }, it.label);
       b.addEventListener("click", () => {
-        sound({ semi: it.semi, seconds: 0.5 });
+        if (it.semi !== undefined) sound({ semi: it.semi, seconds: 0.5 });
         if (it !== s.items[k]) { slips++; b.classList.add("wrong"); setTimeout(() => b.classList.remove("wrong"), 400); return; }
         line.children[k].textContent = it.label; line.children[k].classList.add("now");
         b.disabled = true; k++;
-        if (k === s.items.length) { ding(true); msg.textContent = slips ? s.items.length + " notes in order. Say them aloud as they rise: that is sargam." : "In order, first time. Say them aloud as they rise: that is sargam."; api.data[s.id] = { slips }; api.save(); api.ready(); }
+        if (k === s.items.length) { ding(true); msg.textContent = s.done || (slips ? s.items.length + " notes in order. Say them aloud as they rise: that is sargam." : "In order, first time. Say them aloud as they rise: that is sargam."); api.data[s.id] = { slips }; api.save(); api.ready(); }
       });
       return b;
     }));
