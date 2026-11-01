@@ -43,6 +43,43 @@ The jump `m` (half-hole, register 1) to `D` (register 2) is hard. Drill `m D m D
 | Rageshri | Shuddha Ga |
 | Kafi | Pa strong, plain stepwise movement |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh: S g m D n S' ([Wikipedia](https://en.wikipedia.org/wiki/Bageshri))
+- Avaroh: S' n D m P D g m g R S (Pa only inside the D m P D figure) ([Wikipedia](https://en.wikipedia.org/wiki/Bageshri))
+- Pakad: D n S, m, m P D, m g R S (source's commas and lowercase 's' may indicate lower-octave D n) ([Wikipedia](https://en.wikipedia.org/wiki/Bageshri))
+- Aroh: S .n .D .n S, S g m D, g m n D; g m D n S' ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Avaroh: S' n D m, m P D m g, m g R S; .D .n S ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Pakad: S g m D, g m n D; m P D m g ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Chalan: S .n .D, .D .n S; S g m; g m D; g m n D; g m D n S'; S g m; m g R S; S' n D m; m P D m g; m g R S; .D .n S; m g R S ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+
+**Resting notes (nyas) and strong notes**
+
+- Shuddha Ma is the vadi and the central resting tone in both ascent and descent ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Ma is central throughout ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Vadi Ma, samavadi Sa (vadi named; the page does not call it a resting note) ([Wikipedia](https://en.wikipedia.org/wiki/Bageshri))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Pa and Re are varjit in aroh ([Wikipedia](https://en.wikipedia.org/wiki/Bageshri))
+- Many artists omit Re in aroh ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Traditionally Pa is restricted to the descending figure m P D m g (modern renditions use it more freely, e.g. D n R S n D P m) ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Distinct from Kafi-family ragas: Bageshri's Ga is not Kafi's Ga ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+
+**Intonation and ornaments**
+
+- Shuddha Dha sits about 886 cents above Sa (lower than the 900-cent equal-tempered Dha), near a pure major third above Ma ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+- Bageshri uses its own set of shrutis, unlike the Kafi-type ragas; Ga in particular differs from Kafi's ([ragajunglism](https://ragajunglism.org/ragas/bageshri/))
+
+**Disputed:** Pa and Re in the ascent: Wikipedia leaves both out of the aroh; ragajunglism says many artists omit Re, and that Pa is traditionally limited to phrases like m P D m g but used more freely today.
+
+*Notation note: Wikipedia's Hindustani lines already use lowercase for komal and lowercase m for shuddha Ma (matches output). Wikipedia's pakad 'D n s,' uses commas/lowercase s that may mark the lower octave; kept as written. ragajunglism writes no octave marks; octave dots/apostrophes added by inference from melodic direction (e.g. aroh 'SnDnS' read as S .n .D .n S). ragajunglism uses uppercase=shuddha, lowercase=komal, m=shuddha Ma, M=tivra Ma, which matches the output convention. Quotes have curly quotes and dashes normalized to ASCII.*
+
 ## Listening
 
 All recordings: [Listening Library: Bageshri](../08-LISTENING-LIBRARY.md#bageshri).

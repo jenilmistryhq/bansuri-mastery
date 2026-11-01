@@ -43,6 +43,52 @@ Practise `g m g m` slowly.
 | Patdeep | Shuddha Ni instead of komal Ni |
 | Bageshri | Night raga; Pa used sparingly; `m D n S'` ascent |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Five notes in ascent, all seven in descent; Ga and Ni komal throughout. Aroh .n S g m P n S', avaroh S' n D P m g R S ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Ascents begin on lower komal Ni, go to Sa, then expand to Ma: .n S m or .n S g m ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Lingering on Ma in the ascent establishes the raga ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Phrase expansion: .n S m, m g, g m P m g, m P m g R S ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Aroh: .n S g m, g m P n S' ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Avaroh: S' n D P m g, P m g m P, m g R S ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Pakad: .n S m; g m P n D P; .n S m g R S ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Chalan: .n S g R; S .n S m; m P; g m P n D P; m P g m P S' n; n S'; P n S' g' R' S'; S' n D P; D P m P m g; m; m P m g; m g R S ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+
+**Resting notes (nyas) and strong notes**
+
+- Ma is a nyas swara with elaboration around it ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Phrases return to rest on Ma before resolving to Sa ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Ma is stronger than Pa and the more frequent resting tone ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Endings tend toward the straight descent m g R S ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Improvisations often begin on lower komal Ni ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Re and Dha are passing notes (alpatva) in descent, not points of focus ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Do not pause or sustain on Re or Dha ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Re and Dha are omitted in aroh ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Vs Dhanashri: Bhimpalasi emphasizes Ma, Dhanashri emphasizes Pa ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Vs Dhanashree family: Bhimpalasi focuses on Ma rather than Pa ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Vs Patdeep: same movement but Patdeep uses shuddha Ni instead of komal Ni ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Vs Dhani: Dhani omits Re and Dha in both directions ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+
+**Intonation and ornaments**
+
+- Slow meend from Pa or Ma down to komal Ga ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Subtle andolan on komal Ga ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Komal Ga is sung with a kan (grace) of Ma ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Komal Ni is sung with a kan from Sa ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Dha is approached from komal Ni, Re from komal Ga (from above) ([Wikipedia](https://en.wikipedia.org/wiki/Bhimpalasi))
+- Dha and Re ornamented from above: (n)D; (g)R ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+- Shivkumar Sharma tunes Re and komal Ni slightly closer to Sa ([ragajunglism](https://ragajunglism.org/ragas/bhimpalasi/))
+
+*Notation note: Wikipedia marks komal with underline/macron (G, N) or lowercase g, uses capital M for shuddha Ma, and a dot below for lower octave; converted to g, n, m, .n. The Wikipedia phrase-expansion quote was extracted with the underline on the first N lost; source has N. ragajunglism: lowercase m = shuddha Ma, lowercase g/n = komal, no octave marks (octaves inferred).*
+
 ## Listening
 
 All recordings: [Listening Library: Bhimpalasi](../08-LISTENING-LIBRARY.md#bhimpalasi).

@@ -46,6 +46,39 @@ The tricky move is `M` (all open, register 1) to `D` (register 2) in `M D N S'`.
 | Shuddha Kalyan | Bhupali-like ascent (no M, N) |
 | Bhupali | Same thaat, but no M and N at all |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh: S R G M P D N S' ([Wikipedia](https://en.wikipedia.org/wiki/Yaman_%28raga%29))
+- Pakad: .N R G R S P M G R S ([Wikipedia](https://en.wikipedia.org/wiki/Yaman_%28raga%29))
+- Zig-zag (vakra) movement; ascent may begin from lower Ni or Dha rather than Sa ([Wikipedia](https://en.wikipedia.org/wiki/Yaman_%28raga%29))
+- Aroh: .D .N R G M D N S' ([ragajunglism](https://ragajunglism.org/ragas/yaman/))
+- Pakad: .D .N R, G M D; P M G R S ([ragajunglism](https://ragajunglism.org/ragas/yaman/))
+- Chalan: .N .D .N R G; R S; G M D N; S' N D N D P; M (G) R G; G M P (M G) R; G R S ([ragajunglism](https://ragajunglism.org/ragas/yaman/))
+
+**Resting notes (nyas) and strong notes**
+
+- Pa is a prominent resting swara (G M P; N D P M P) ([ragajunglism](https://ragajunglism.org/ragas/yaman/))
+- Vadi Ga, samvadi Ni (vadi named; not called a resting note) ([Wikipedia](https://en.wikipedia.org/wiki/Yaman_%28raga%29))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Sa and Pa are omitted or weak in aroh ([Wikipedia](https://en.wikipedia.org/wiki/Yaman_%28raga%29))
+- Sa and Pa omitted in ascending motions (.N .D .N R; M G M D) ([ragajunglism](https://ragajunglism.org/ragas/yaman/))
+- Tivra Ma and Ni create suspense when held ([ragajunglism](https://ragajunglism.org/ragas/yaman/))
+- Vs Yaman Kalyan: shuddha Ma (e.g. G m G R S) turns Yaman into Yaman Kalyan; Yaman uses only tivra Ma ([Wikipedia](https://en.wikipedia.org/wiki/Yaman_%28raga%29))
+- Yaman Kalyan adds shuddha Ma in descent ([ragajunglism](https://ragajunglism.org/ragas/yaman/))
+
+**Intonation and ornaments**
+
+- The sources say nothing specific about this raga's intonation: tune to the drone and copy the recordings.
+
+*Notation note: Wikipedia's Yaman page uses lowercase m for TIVRA Ma and capital M for shuddha Ma (the reverse of the output convention); converted (its 'P m G' -> P M G, its 'G M G R S' -> G m G R S). ragajunglism uses M = tivra Ma (matches output); octaves inferred (e.g. 'DNR' as .D .N R). Curly quotes normalized.*
+
 ## Listening
 
 All recordings: [Listening Library: Yaman](../08-LISTENING-LIBRARY.md#yaman).

@@ -50,6 +50,46 @@ The only technical challenge is the jump from `G` (register 1) to `P` (register 
 | Shivranjani | Komal `g` instead of `G` | Very different mood (sad, longing) |
 | Mohanam (Carnatic) | Yes | Carnatic counterpart with different ornamentation |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh: S R G P D S' ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Pakad: S R G R S .D S R G ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Pakad variant: G R P G G R S R .D S ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Elaboration phrases: S R G R S .D .P; .P .D S R G R G; S R P G; G P D P D D S' ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Upper elaboration: P G P D P D S' R' G' R' G'; return G' R' S' D P G R S ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Aroh: S R G P D S'; avaroh: S' D P G R S R, .D S ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Pakad: S R S, S \ .D S; S G R G, G R S ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Chalan (Parrikar): S (S).D; S R G; G R S; (S).D S; S (G)R G; G R P G; P R G; S R; R G R; S R S; G R G P; P G D P (P)G; G P R G; G R; S R S; (S).D S ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+
+**Resting notes (nyas) and strong notes**
+
+- Sa, Ga, Pa (the major triad) are nyas ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Nyas locations Sa, Re, Ga, Pa (Parrikar) ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Re is also an important stopping tone ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Ma and Ni are not used ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Some performers hint (abhasi) at shuddha Ni and tivra Ma for a Kalyan flavour, only in passing ornaments ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Tivra Ma and shuddha Ni only as brief suggestions inside descending ornaments ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Vs Deshkar: same scale (Bilawal thaat); Deshkar flips the Ga-Dha vadi-samvadi to Dha-Ga ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Deshkar has the same scale as Bhupali ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Vs Shivranjani: Shivranjani is Bhupali with komal Ga ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+
+**Intonation and ornaments**
+
+- Slide when descending from Sa to Dha and from Pa to Ga ([Wikipedia](https://en.wikipedia.org/wiki/Bhupali))
+- Re, Ga and Dha are approached from above with slides ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Kan of Sa on Dha (Parrikar) ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+- Bhupali's Re has a specific shade, different from Shuddha Kalyan's Re (Kirti Vashee) ([ragajunglism](https://ragajunglism.org/ragas/bhupali/))
+
+*Notation note: Wikipedia marks lower octave with a trailing '1' (D1, P1), converted to .D, .P. ragajunglism writes no octave marks and uses '\' for a descending glide (shown escaped in quotes); lower-octave Dha in 'S\DS' and '(S)DS' inferred. Some Wikipedia elaboration lines were combined into one item; the quote supports only the line quoted. The en dashes in ragajunglism's 'Sa-Re-Ga-Pa' and 'Ga-Dha' were normalized to hyphens.*
+
 ## Listening
 
 All recordings: [Listening Library: Bhupali](../08-LISTENING-LIBRARY.md#bhupali).

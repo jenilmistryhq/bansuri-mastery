@@ -46,6 +46,44 @@ is the hardest move. Drill `m P m P` slowly.
 | Durga (Khamaj variant) | A rarer older form; Darbar describes it as almost extinct |
 | Malhar-family phrases | `m R P` turns in Malhar ragas can sound similar; Durga has no Ni |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh: S R m P D S' ([Wikipedia](https://en.wikipedia.org/wiki/Durga_%28raga%29))
+- Pakad: R m P D, m R ([Wikipedia](https://en.wikipedia.org/wiki/Durga_%28raga%29))
+- Signature phrase S R, .D S (absent in Malhar) ([Wikipedia](https://en.wikipedia.org/wiki/Durga_%28raga%29))
+- Aroh: S R m R, m D S' ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+- Avaroh: S' D P D m, m R S, .D S ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+- Pakad: R R m R; .D .D S; .D m P D S' (octaves uncertain) ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+- Chalan (Tanarang): R m P D; P D m; m P D D m; D m P D S'; D D S'; S' D D m; m P D; m R .D S ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+- Pa may be skipped to bring out m D S' ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+
+**Resting notes (nyas) and strong notes**
+
+- Ma is strong throughout (vadi Ma, samvadi Sa) ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Pa should not be a resting note in avaroh ([Wikipedia](https://en.wikipedia.org/wiki/Durga_%28raga%29))
+- Some avoid Pa as a resting tone in avaroh, though it is needed elsewhere ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+- Ga and Ni are not used ([Wikipedia](https://en.wikipedia.org/wiki/Durga_%28raga%29))
+- Vs Malhar (same notes): Durga distinguished by S R .D S ([Wikipedia](https://en.wikipedia.org/wiki/Durga_%28raga%29))
+- Vs Jaldhar Kedar: Jaldhar Kedar uses wide Kedar-ang leaps ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+- Vs Shuddha Malhar: Shuddha Malhar uses more fluid ornaments in the S R m P region ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+
+**Intonation and ornaments**
+
+- Clear, direct slides, e.g. D m \ R; m R m D / S' ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+- Substantial staccato articulation (Deepak Raja) ([ragajunglism](https://ragajunglism.org/ragas/durga/))
+
+**Disputed:** Wikipedia gives two different avrohs for Durga, so neither is used here; the card's own aroh and avroh stand.
+
+*Notation note: Wikipedia and ragajunglism both use lowercase m for shuddha Ma (matches output). Wikipedia gives two inconsistent avarohas ('Sa Dha Ma, Pa Dha Ma, Re Dha. Sa' vs 'Sa Dha Pa Ma Re Sa'); neither was used. Octaves in ragajunglism sargam inferred.*
+
 ## Listening
 
 All recordings: [Listening Library: Durga](../08-LISTENING-LIBRARY.md#durga).

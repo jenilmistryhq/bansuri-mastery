@@ -38,6 +38,35 @@ komal Ga instead of shuddha Ga, and the mood changes completely.
 | Bhupali | Shuddha Ga instead of komal Ga |
 | Carnatic Sivaranjani | Same note set; different ornamentation (Wikipedia describes the Carnatic version separately) |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Hindustani form: pentatonic S R g P D S' / S' D P g R S ([Wikipedia](https://en.wikipedia.org/wiki/Shivaranjani))
+- Uses vakra (zig-zag) phrases ([Wikipedia](https://en.wikipedia.org/wiki/Shivaranjani))
+- Aroh S R g P D S'; avaroh S' D P g R S ([ragajunglism](https://ragajunglism.org/ragas/shivranjani/))
+- Pakad (variable): S R g P D; P g R S .D S ([ragajunglism](https://ragajunglism.org/ragas/shivranjani/))
+- Chalan (Tanarang): S R g P D, P D P g R, R g R S R .D S ([ragajunglism](https://ragajunglism.org/ragas/shivranjani/))
+- Vakra motions: .D .P .D S g R; S R g R g R; S R S .D S ([ragajunglism](https://ragajunglism.org/ragas/shivranjani/))
+
+**Resting notes (nyas) and strong notes**
+
+- The sources do not name resting notes for this raga.
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Ma (and Ni) absent; no Ma keeps it away from Kafi-ang ([ragajunglism](https://ragajunglism.org/ragas/shivranjani/))
+- Vs Bhupali: Shivranjani is Bhupali with komal Ga ([ragajunglism](https://ragajunglism.org/ragas/shivranjani/))
+
+**Intonation and ornaments**
+
+- The sources say nothing specific about this raga's intonation: tune to the drone and copy the recordings.
+
+*Notation note: Wikipedia's 'Shivaranjani' article is mostly Carnatic; only its Hindustani scale line and two general sentences were used. ragajunglism: lowercase g = komal Ga; octaves inferred (e.g. 'SRSDS' as S R S .D S).*
+
 ## Listening
 
 All recordings: [Listening Library: Shivranjani](../08-LISTENING-LIBRARY.md#shivranjani).

@@ -38,6 +38,43 @@ in-tune half-holing.
 | Tilak Kamod | Same thaat; uses `P N S' R' G'`-type phrases and mandra emphasis differently |
 | Sorath | Very close to Des; differences are subtle and taught differently by different schools |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh: .N S R, m P N, S' (audav-sampurna: five notes in aroh) ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Avaroh: S' n D, P D m G R, P m G, R G .N S ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Pakad: R, m P N, S' R' n D P, m G R ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Stepwise pentatonic ascent: S R m P N S' ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Aroh: S R m P, n D P, m P N S'; avaroh: S' n D P, m G R, G .N S ([ragajunglism](https://ragajunglism.org/ragas/desh/))
+- Pakad: R R m P; n D P; R m G R ([ragajunglism](https://ragajunglism.org/ragas/desh/))
+- Chalan: .N S R m G R; R R m m P; R m P n D P; m P N N S'; N S' R'; R G .N S; R n D P; P D m G R; m G R; R G .N S ([ragajunglism](https://ragajunglism.org/ragas/desh/))
+
+**Resting notes (nyas) and strong notes**
+
+- Re is a frequent resting note and melodic centre ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Re and Pa are the dominant swaras (sources differ on which is vadi) ([ragajunglism](https://ragajunglism.org/ragas/desh/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Ga and Dha are omitted in aroh ([ragajunglism](https://ragajunglism.org/ragas/desh/))
+- Komal Ga only as brief touches in the upper octave ([ragajunglism](https://ragajunglism.org/ragas/desh/))
+- Close to Tilak Kamod; needs care to keep separate ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Very similar to Khamaj ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+
+**Intonation and ornaments**
+
+- Meend from Ma to Re through Ga is a key feature ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Shuddha Ni in aroh, komal Ni in avaroh ([Wikipedia](https://en.wikipedia.org/wiki/Desh_%28raga%29))
+- Descents with komal Ni wrap Ga and Dha in smooth ornamental motion ([ragajunglism](https://ragajunglism.org/ragas/desh/))
+
+**Disputed:** The vadi: Wikipedia names Re (and Re as the resting centre); ragajunglism says Re and Pa dominate and that authorities disagree about the vadi.
+
+*Notation note: Wikipedia (article titled 'Desh (raga)'; 'Des_(raga)' returned 404) marks komal Ni as lowercase 'ni' but also writes 'ma' lowercase in places while stating all other notes are shuddha; 'ma' and 'Ma' both converted to m (shuddha). Octave marks for Wikipedia's aroh/avaroh/pakad and for ragajunglism's chalan (no octave marks in source) were inferred; e.g. 'RGNS' read as R G .N S. ragajunglism's 'des' URL is Des Malhar, so the 'desh' page was used.*
+
 ## Listening
 
 All recordings: [Listening Library: Des](../08-LISTENING-LIBRARY.md#des-desh).

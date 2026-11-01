@@ -35,6 +35,35 @@ register 2) tends to be weak if holes 1-4 leak.
 | Bhupali | Dha instead of Ni |
 | Carnatic Hamsadhwani | The original; heavier gamaka ornamentation |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh S R G P N S', avaroh S' N P G R S; pakad G P N S' N P G ([Wikipedia](https://en.wikipedia.org/wiki/Hamsadhvani))
+- Pakad: .P .N S; S G R ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+- Chalan (Bor/Vyas): .P .N S (G)R; R G P (G)R; (S)R G; R S R; G P; G P N; P N S'; P N S' G' R'; (R')G'(R')S'; N P G P (G)R; R G (R)S ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+- The bare Pa-Ni pairing pulls strongly toward Sa ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+
+**Resting notes (nyas) and strong notes**
+
+- Sa-Pa axis anchors the raga ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+- Shuddha Re is prominent in both directions ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Ma and Dha are omitted ([Wikipedia](https://en.wikipedia.org/wiki/Hamsadhvani))
+- Sustained shuddha Ni creates tension (use with care) ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+- Close to Shankara (Hamsadhwani plus Dha) ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+
+**Intonation and ornaments**
+
+- Detailed ornaments concentrate in the S R G P region ([ragajunglism](https://ragajunglism.org/ragas/hansadhwani/))
+
+*Notation note: Wikipedia's article is Carnatic-centred (title 'Hamsadhvani'); its Hindustani-form scale S R G P N S' is all shuddha. ragajunglism's slug is 'hansadhwani' ('hamsadhwani' returned 404); its pakad 'PNS' read as lower-octave .P .N S by inference. Parentheses = grace/touch notes (inferred).*
+
 ## Listening
 
 All recordings: [Listening Library: Hamsadhwani](../08-LISTENING-LIBRARY.md#hamsadhwani).

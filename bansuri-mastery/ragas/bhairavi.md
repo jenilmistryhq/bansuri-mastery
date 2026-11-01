@@ -46,6 +46,45 @@ and `n` (`XXX XHO`, register 2).
 | Asavari | Shuddha Re (in the main form) |
 | Malkauns | No Re and no Pa |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Re and Pa are occasionally skipped in aroh: S g m d P or g m d n S' ([Wikipedia](https://en.wikipedia.org/wiki/Bhairavi_%28Hindustani%29))
+- In avaroh Re and Pa are held long (deergh): S' n d P or P m g m r r S ([Wikipedia](https://en.wikipedia.org/wiki/Bhairavi_%28Hindustani%29))
+- In avaroh Ga is skipped (example given as g m r S) ([Wikipedia](https://en.wikipedia.org/wiki/Bhairavi_%28Hindustani%29))
+- Aroh: S r g m d n S' ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- Avaroh: S' n d P m g r S ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- Pakad (variable): S g m P d P; R g m g r S ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- Chalan: S .n S g m d P; m g m P; d m P m g; d n S' r' g' r' S'; g m d n S'; S' r' n S' n d P; d P m P m g; S r g m; g r S ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- The m d P figure is prominent ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- Endings often use both Re's, e.g. R (g m g) r S ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+
+**Resting notes (nyas) and strong notes**
+
+- Pa is a resting tone in descent (g m d P; S' n d P) ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- Ma is an important note ([Wikipedia](https://en.wikipedia.org/wiki/Bhairavi_%28Hindustani%29))
+- Shuddha Ma is consistently strong ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Komal Re and Pa can be weak or omitted in aroh ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- Bhairavi allows any of the 12 swaras (mishra use) ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- Scalar neighbour: Asavari is Bhairavi with shuddha Re ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+
+**Intonation and ornaments**
+
+- Komal Re and komal Dha are oscillated (andolan) ([Wikipedia](https://en.wikipedia.org/wiki/Bhairavi_%28Hindustani%29))
+- Komal Ga may be oscillated or ornamented with neighbouring notes ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+- A shake on komal Ga unique to Bhairavi ([ragajunglism](https://ragajunglism.org/ragas/bhairavi/))
+
+**Disputed:** Which swara swings: Wikipedia names komal Re and Dha; ragajunglism stresses a shake on komal Ga that it calls unique to Bhairavi. Listen for both.
+
+*Notation note: Wikipedia's Bhairavi examples mix capitals and lowercase without a key (e.g. 'S G m d P', 'S' N d P'); since Bhairavi's Ga and Ni are komal, G and N in these examples were converted to g and n. Wikipedia's 'In Avroh, Gandhar is skipped, like: G m r S' contains Ga in its own example; kept verbatim, meaning unclear (probably Ga is skipped between m and r). ragajunglism's 'R' in R(gmg)rS is shuddha Re (a mishra touch). Octave marks added by inference.*
+
 ## Listening
 
 All recordings: [Listening Library: Bhairavi](../08-LISTENING-LIBRARY.md#bhairavi).

@@ -45,6 +45,43 @@ with a drone, listening for a steady note before adding andolan.
 | Ahir Bhairav | Komal Ni and shuddha Dha in the upper half |
 | Ramkali | Adds tivra Ma and komal Ni in some phrases |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Pakad: G m d d P, G m r r S (Wikipedia gives no komal marks; komal Re/Dha applied from the scale given at ragajunglism) ([Wikipedia](https://en.wikipedia.org/wiki/Bhairav_%28raga%29))
+- Chalan: S G m P d d P m G m r S ([Wikipedia](https://en.wikipedia.org/wiki/Bhairav_%28raga%29))
+- Aroh: S r G m P d N S' ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Avaroh: S' N d P m G r S ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Paired pakads: G m G r~ S and N S' N d~ P (~ = oscillation on komal Re / komal Dha) ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Chalan: S (G)r; (G)r S; (N)d N S'; N S G m; G m (G)r S; S r G m P; P G m (N)d; d P - Re and Dha are touched from the note above ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Improvisations often conclude with the phrase G (m G) r~ S ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+
+**Resting notes (nyas) and strong notes**
+
+- Sa, Ma and Pa resolve tension (resting points) ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Komal Re can be omitted in aroh (e.g. N S G m) ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Pa is stronger in descent than in ascent ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Not to be confused with Bhairavi ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Same scale as Kalingda (Hindustani) and Mayamalavagowla (Carnatic); mood differs in performance ([Wikipedia](https://en.wikipedia.org/wiki/Bhairav_%28raga%29))
+- Wikipedia says Bhairav shares its notes with Ahir Bhairav (see conflicts in report) ([Wikipedia](https://en.wikipedia.org/wiki/Bhairav_%28raga%29))
+
+**Intonation and ornaments**
+
+- Dense andolan (slow oscillation) on komal Re and komal Dha ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Oscillations on komal Re and Dha ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+- Some performers mix in subtle shades of komal Ni ([ragajunglism](https://ragajunglism.org/ragas/bhairav/))
+
+**Disputed:** Wikipedia says Bhairav shares its notes with Ahir Bhairav; ragajunglism describes Ahir Bhairav with komal Ni, so the two do not have the same notes.
+
+*Notation note: Wikipedia writes sargam syllables with no komal marks (Sa Re Ga Ma Pa Dha Ni); komal r/d were applied using ragajunglism's scale S r G m P d N S, so Wikipedia-derived sargam is a conversion, not a literal reading. ragajunglism's '\' before r/d (shown as an escaped backslash in quotes) appears to mark a descending glide into the note, '~' oscillation, parentheses a grace/touch note; meanings inferred, not defined by the page. Octave marks added by inference.*
+
 ## Listening
 
 All recordings: [Listening Library: Bhairav](../08-LISTENING-LIBRARY.md#bhairav).

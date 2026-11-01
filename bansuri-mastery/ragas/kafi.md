@@ -44,6 +44,43 @@ full phrases.
 | Bhimpalasi | Same thaat; Re and Dha are skipped in ascent; afternoon raga |
 | Shivranjani | Only S R g P D |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh S R g m P D n S', avaroh S' n D P m g R S (Ga and Ni komal) ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+- Typical opening: m P D P m g R, g R S, .n .D S ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+- Characteristic phrases end on Re: S R g m P D n; S, R g m P, m P D (m) g ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+- Chalan (start): S S R R g g m m P - - D m P g R R n D n P D m P S' n D P m g R S ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+- Aroh: S R g m P D n S' ([ragajunglism](https://ragajunglism.org/ragas/kafi/))
+- Pakad: m P D; m P (m)g R ([ragajunglism](https://ragajunglism.org/ragas/kafi/))
+- Chalan: S R g m P; m P D (m)g R; g R S R m P; P n P m P g R S; m P m g R g ([ragajunglism](https://ragajunglism.org/ragas/kafi/))
+
+**Resting notes (nyas) and strong notes**
+
+- Phrases characteristically terminate on Re ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+- Re is a common stopping tone in descent ([ragajunglism](https://ragajunglism.org/ragas/kafi/))
+- Pa is a focal point; strong Pa-Sa axis ([ragajunglism](https://ragajunglism.org/ragas/kafi/))
+- Vadi Pa, samvadi Re ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Some skip komal Ga in aroh ([ragajunglism](https://ragajunglism.org/ragas/kafi/))
+- Shuddha Ni and shuddha Ga are occasionally used (not avoided) ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+- Outside notes allowed, e.g. shuddha Ni in m P D N S' ([ragajunglism](https://ragajunglism.org/ragas/kafi/))
+- Mixing gives Mishra Kafi; pure Kafi is rarely heard ([Wikipedia](https://en.wikipedia.org/wiki/Kafi_%28raga%29))
+
+**Intonation and ornaments**
+
+- The sources say nothing specific about this raga's intonation: tune to the drone and copy the recordings.
+
+**Disputed:** Emphasis: Wikipedia stresses phrases ending on Re; ragajunglism makes Pa the focal point, with Re as a stopping tone in the descent. Both can be heard in performances.
+
+*Notation note: Wikipedia's Kafi sargam uses capital M for shuddha Ma (converted to m), lowercase g/n for komal, and a trailing dot for lower octave ('n. D.' -> .n .D). Its chalan line is internally inconsistent (contains both G and g, N and n); converted using komal g/n throughout and flagged here. Quote of the long chalan was truncated to stay under 25 words. ragajunglism octaves inferred.*
+
 ## Listening
 
 All recordings: [Listening Library: Kafi](../08-LISTENING-LIBRARY.md#kafi).

@@ -43,6 +43,36 @@ different.
 | Jhinjhoti | Same thaat; more emphasis in the lower octave |
 | Tilak Kamod | Same thaat; different phrase shapes |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh: S G m P D N S' ([Wikipedia](https://en.wikipedia.org/wiki/Khamaj_%28raga%29))
+- Shuddha Ni in aroh, komal Ni in avaroh (avaroh S' n D P m G R S) ([Wikipedia](https://en.wikipedia.org/wiki/Khamaj_%28raga%29))
+- Aroh: S G m P; G m P D N S' ([ragajunglism](https://ragajunglism.org/ragas/khamaj/))
+- Avaroh: S' n D P; D m G; m G R S ([ragajunglism](https://ragajunglism.org/ragas/khamaj/))
+- Pakad: S G m P; n D P; D m G ([ragajunglism](https://ragajunglism.org/ragas/khamaj/))
+- Chalan (Parrikar): S G m P D n D; S' n D; m D m G; m P D m G; S' n D P D m G ([ragajunglism](https://ragajunglism.org/ragas/khamaj/))
+- n D P and D m G are the essential motions ([ragajunglism](https://ragajunglism.org/ragas/khamaj/))
+
+**Resting notes (nyas) and strong notes**
+
+- The sources do not name resting notes for this raga.
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Re is skipped in aroh (S G m P) ([ragajunglism](https://ragajunglism.org/ragas/khamaj/))
+- Komal Ga and tivra Ma also appear frequently as outside notes ([ragajunglism](https://ragajunglism.org/ragas/khamaj/))
+
+**Intonation and ornaments**
+
+- The sources say nothing specific about this raga's intonation: tune to the drone and copy the recordings.
+
+*Notation note: Wikipedia's Khamaj scale uses capital M for shuddha Ma (converted to m). Its pakad 'N D M P D M G' was not used: the dot-below on N could mean lower octave or komal and the page does not say. ragajunglism: m = shuddha Ma, n = komal Ni; octaves inferred.*
+
 ## Listening
 
 All recordings: [Listening Library: Khamaj](../08-LISTENING-LIBRARY.md#khamaj).

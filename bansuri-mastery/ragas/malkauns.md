@@ -48,6 +48,44 @@ mandra B. See [L26](../lessons/L26-keys-transposition-and-limits.md) before atte
 | Chandrakauns | Shuddha Ni instead of komal Ni |
 | Bageshri | Uses Re and Pa; different mood |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Pakad: g m d m g m g S ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Aroh: .n S g m, d n S' ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+- Avaroh: S' n d m g S, .d .n S ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+- Pakad: .n .d .n S; m g m g S ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+- Developed mostly in the lower octave, slow tempo ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Komal Ni is generally the starting note (graha) ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+
+**Resting notes (nyas) and strong notes**
+
+- Any of the five notes can be a pausing note ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Vadi Ma, samvadi Sa ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Ma-Sa axis stands out; Ma has the strongest pull ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+- All five notes serve as starting and resting tones in both directions ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- Re and Pa are completely omitted ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Lighter ornaments (murki, khatka) are avoided in favour of meend, gamak, andolan ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Vs Chandrakauns: Chandrakauns is Malkauns with shuddha Ni ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+
+**Intonation and ornaments**
+
+- Komal Ga is about 316 cents above Sa (6/5 ratio) ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Komal Ga and komal Dha are played with andolan ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- Malkauns komal Ni differs in pitch from Bhimpalasi's komal Ni ([Wikipedia](https://en.wikipedia.org/wiki/Malkauns))
+- d and g often decorated from above: (n)d and (m)g ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+- Wide meend and slides, e.g. S (m g) m ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+- Shruti choices avoid extreme deviations ([ragajunglism](https://ragajunglism.org/ragas/malkauns/))
+
+*Notation note: Wikipedia marks komal with underline/dot-below (G, D, N) and writes shuddha Ma as M; converted to g, d, n, m. ragajunglism uses lowercase for komal and m for shuddha Ma; octaves inferred (e.g. 'ndnS' as .n .d .n S). Dash in the Wikipedia omission quote normalized to a hyphen.*
+
 ## Listening
 
 All recordings: [Listening Library: Malkauns](../08-LISTENING-LIBRARY.md#malkauns).

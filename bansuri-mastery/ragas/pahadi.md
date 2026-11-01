@@ -39,6 +39,32 @@ for `.P` (`XXX XXX`). Colour notes: `m` (`HOO OOO`), `n` (`XXX XHO`, register 2)
 | Bhupali | Same core notes; Bhupali is strictly classical, centred higher (Ga/Dha), no extra notes |
 | Deshkar | Same core notes; centred in the upper half |
 
+## Movement and resting notes (sourced)
+
+From the sources linked on each line, written in this course's sargam. Octave marks were added where a
+source leaves them out, so check phrases by ear against the recordings below. Paraphrased, not quoted.
+
+**Movement (chalan)**
+
+- Aroh S R G P D S'; avaroh S' D P G R S ([ragajunglism](https://ragajunglism.org/ragas/pahadi))
+- Pakad (variable): G P D S, D P G g G S (likely lower-octave start; octave not marked) ([ragajunglism](https://ragajunglism.org/ragas/pahadi))
+- Open-form (mishra) chalan: .S .D; .D .N .P .D; .G .P .D S; .D S R G; R G m G; R S .N .D; .P m G (octaves uncertain); also P D S R; G m G g G; G P D S; D P G g G S ([ragajunglism](https://ragajunglism.org/ragas/pahadi))
+
+**Resting notes (nyas) and strong notes**
+
+- S R G P D are the predominant stopping tones ([ragajunglism](https://ragajunglism.org/ragas/pahadi))
+
+**Used sparingly, and how it differs from similar ragas**
+
+- No avoided notes: any swara may be used tastefully ([ragajunglism](https://ragajunglism.org/ragas/pahadi))
+- Vs Shivranjani: Shivranjani is Pahadi with komal Ga ([ragajunglism](https://ragajunglism.org/ragas/pahadi))
+
+**Intonation and ornaments**
+
+- Komal Ga inserted as a playful G (g G) ornament ([ragajunglism](https://ragajunglism.org/ragas/pahadi))
+
+*Notation note: No Wikipedia article for raga Pahadi could be fetched (Pahadi_(raga), Pahari_(raga), Pahadi_(Hindustani_raga) all 404; 'Pahadi' is a disambiguation page). ragajunglism only; it writes no octave marks and Pahadi is often played in the lower octave, so octave placement in the chalan is a guess (the first part rendered with lower-octave dots, ambiguous). m = shuddha Ma, g = komal Ga.*
+
 ## Listening
 
 All recordings: [Listening Library: Pahadi](../08-LISTENING-LIBRARY.md#pahadi).
