@@ -29,3 +29,20 @@ FNG Fingering
 | FNG-14 | Leaps | Jump between registers and wide intervals cleanly (for example `.P` to `S'`) | Many melodies leap an octave or more | FNG-05 | 3 | High | Octave leap drill 10/10 clean at 60 BPM | P3 | [L22](../lessons/L22-taar-saptak.md) |
 | FNG-15 | Alternate fingerings | Use cross/alternate fingerings to correct tuning or ease fast passages | Some notes on some flutes are out of tune with the standard fingering | FNG-08, PIT-08 | 4 | Medium | Find and verify (tuner) one alternate for `m` and one for a komal note on your flute | P4 | [L25](../lessons/L25-komal-swaras-and-12-notes.md) |
 | FNG-16 | Breath attacks | Start notes with a soft "hu/ha" breath push instead of the tongue | Characteristic soft Hindustani articulation; basis for breath gamak | FNG-11 | 2 | Medium | Repeated `S S S S` separated with breath only, clean | P2 | [L13](../lessons/L13-articulation-tonguing-and-slurs.md) |
+
+## 7-hole and 8-hole bansuri (Disputed)
+
+This course and the app chart the 6-hole bansuri only. Flutes with a 7th hole (played with the
+little finger of the lower hand) and 8-hole designs exist, but sources disagree about what the
+extra holes are for, and makers place them differently, so the app does not chart them.
+
+- **Disputed:** one seller describes the 7th hole as mainly for accuracy in the upper octaves,
+  occasionally used for lower Ni ([Lark in the Morning](https://www.larkinthemorning.com/products/flpg)).
+- **Disputed:** a forum post relaying a teacher ties the 7th (and sometimes an 8th) hole to the
+  lower-octave tivra Ma or Ga ([Chiff and Fipple forum](https://forums.chiffandfipple.com/t/newbie-question-re-indian-flute/6872)).
+- **Disputed:** one maker's 8-hole design reaches a half step lower, to lower-octave shuddha Ma
+  ([Anubodh](https://www.anubodh.com/page.php?bpid=8)).
+
+**Recommendation:** if you play a 7- or 8-hole flute, learn its extra holes from its maker's chart
+and your teacher. Every 6-hole fingering in this course still applies to it with the extra holes
+closed.
