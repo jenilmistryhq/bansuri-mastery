@@ -1063,3 +1063,7 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-swellguide.run i { animation: lesson-sweep var(--secs, 8s) linear forwards; }
 @keyframes lesson-sweep { to { width: 100%; } }
 .lesson-beat.wrongslot { background: color-mix(in srgb, var(--bad) 25%, var(--surface)); }
+.lesson-twelve { max-width: 420px; justify-content: center; }
+.lesson-chip.missed { outline: 2px dashed var(--warn); }
+.lesson-trail { min-height: 1.6em; font-size: 1.1rem; letter-spacing: 0.04em; }
+.small.warn { color: var(--warn); font-weight: 600; }

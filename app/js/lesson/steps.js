@@ -10,6 +10,7 @@ import { ding } from "./sound.js";
 import { MORE_KINDS } from "./kinds2.js";
 import { LISTEN_KINDS } from "./kinds3.js";
 import { PITCH_KINDS } from "./kinds4.js";
+import { RAGA_KINDS } from "./kinds5.js";
 import { decodeAudioFile, toneProfile } from "../core/pitch.js";
 import { MEASURES, BAND, BAND_CLS, bandOf } from "../views/tone.js";
 
@@ -32,6 +33,7 @@ export const STEP_KINDS = {
   ...MORE_KINDS,
   ...LISTEN_KINDS,
   ...PITCH_KINDS,
+  ...RAGA_KINDS,
   // Listen to a recording, then guess. { audio, prompt, options: [{ text, right }], yes, no, explain }
   listen: { make(s, api) {
     // s.audio (a recording) or s.seq (notes, played on the flute voice).

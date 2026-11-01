@@ -1542,6 +1542,9 @@ try {
         else if (kind === "bend") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(300); for (const c of [0, -20, 0, 20, 0]) { await tone(NOTE * Math.pow(2, c / 1200)); await sleep(1700); } await tone(0); await waitReady(3000); }
         else if (kind === "swell") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(200); await tone(NOTE); await waitReady(14000); await tone(0); }
         else if (kind === "dictate") { for (let k = 0; k < 12 && !(await isReady()); k++) { for (let j = 0; j < 9; j++) await lp.evaluate(() => { const b = document.querySelector(".lesson-stage .lesson-chips .lesson-chip"); if (b) b.click(); }); await clickL(".lesson-stage button", /^Check$/); await sleep(80); for (let j = 0; j < 9; j++) await clickL(".lesson-stage button", /^Undo$/); await clickL(".lesson-stage button", /Next phrase/); await sleep(80); } }
+        else if (kind === "pick") { await clickL(".lesson-stage button", /^Check$/); await waitReady(1000); if (!(await isReady())) await clickL(".lesson-stage button", /^Check$/); }
+        else if (kind === "ornament") { await clickL(".lesson-stage button", /Try it/); await intro(); await sleep(300); await tone(NOTE); await waitReady(12000); await tone(0); }
+        else if (kind === "improv") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(300); for (const n of notes.length ? notes : [0, 2, 4, 2, 0]) { await tone(hzOf(n)); await sleep(500); } await tone(0); await waitReady(8000); }
         else if (kind === "higherlower") { for (let i = 0; i < 20 && !(await isReady()); i++) { await clickL(".lesson-stage button", /Play|Next pair/); await sleep(120); await clickL(".lesson-chip", /Higher/); await sleep(80); } }
         else if (kind === "custom") {
           // Custom steps: a skip link, or the main button (then wait).
