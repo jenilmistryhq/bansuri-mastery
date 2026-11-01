@@ -17,7 +17,7 @@ import { ding } from "../lesson/steps.js";
 const sidePic = side => () => h("span", { class: "lesson-sidepic" }, fluteSvg({ side, numbers: false }).el);
 
 // Let the app hear the flute's Sa (or keep C, the default, for now).
-function findSa(s, api) {
+export function findSa(s, api) {
   const finder = fluteFinder({ onApply: () => { api.data.sa = "found"; api.save(); api.ready(); } });
   const st = getSettings();
   const keep = h("button", { type: "button", class: "linkbtn" }, "No sound yet? Skip: the app stays in " + WEST[st.saNote] + " for now");

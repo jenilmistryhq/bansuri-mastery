@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 const F = await import("../app/js/lesson/flute.js").catch(e => { console.error(e); process.exit(1); });
 const S = await import("../app/js/lesson/steps.js");
 const K = await import("../app/js/lesson/kinds2.js");
+const K3 = await import("../app/js/lesson/kinds3.js");
 const P = await import("../app/js/lesson/player.js");
 const { M0 } = await import("../app/js/lessons/m0.js");
 const { LESSONS, lessonForDay } = await import("../app/js/lessons/index.js");
@@ -109,5 +110,11 @@ test("hum: any octave of Sa is Sa; the distance is the shorter way round", () =>
   assert.equal(K.centsFromSa(11.7), -30, "just below the upper Sa");
   assert.equal(K.centsFromSa(6), 600);
   assert.equal(K.centsFromSa(null), null);
+});
+test("beats: two notes a few cents apart waver; in tune, they do not", () => {
+  const L = K3;
+  assert.equal(L.beatRate(0, 523.25), 0);
+  assert.ok(Math.abs(L.beatRate(-30, 523.25) - 9) < 0.2, "30 cents at Sa: about 9 beats a second");
+  assert.ok(L.beatRate(10, 523.25) < L.beatRate(20, 523.25), "closer is slower");
 });
 console.log("lesson tests: " + n + " passed");

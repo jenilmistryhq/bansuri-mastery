@@ -5,7 +5,7 @@ import { h, icon } from "../util.js";
 import { listenMic } from "../core/listen.js";
 import { micIntro, countdown, holdMeter } from "../core/live.js";
 import { yin, relSemi } from "../core/pitch.js";
-import { ac, click, tanpura } from "../core/audio.js";
+import { ac, click, tanpura, playNote } from "../core/audio.js";
 import { fluteSvg } from "./flute.js";
 import { ding, playPair } from "./sound.js";
 
@@ -211,10 +211,11 @@ export const MORE_KINDS = {
     return { el: h("div", { class: "stack lesson-center" }, box, tally, got, h("div", { class: "row" }, btn), clock), destroy: stop };
   } },
 
-  // Hold a note on the live ring (core/live.js holdMeter). { target, seconds, cents, giveUp }
+  // Hold a note on the live ring (core/live.js holdMeter), once or several times with a rest
+  // between. { target, seconds, cents, times, giveUp }
   hold: { make(s, api) {
     let timer = 0;
-    const meter = holdMeter({ targets: [s.target], seconds: s.seconds, cents: s.cents || 30, onPass: () => { api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
+    const meter = holdMeter({ targets: Array(s.times || 1).fill(s.target), seconds: s.seconds, cents: s.cents || 30, onPass: () => { api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
     const later = h("button", { type: "button", class: "linkbtn", hidden: true }, "Not yet? Go on, and try again tomorrow");
     later.addEventListener("click", () => { api.data[s.id] = { passed: false }; api.save(); later.hidden = true; api.ready(); });
     timer = setTimeout(() => { later.hidden = false; }, (s.giveUp || 45) * 1000 * (window.__lessonTime || 1));
@@ -227,16 +228,18 @@ export const MORE_KINDS = {
     let stream = null, timer = 0, held = 0, last = 0, droneT = 0, fallbackT = 0;
     const needle = h("i", { class: "lv-needle" });
     const bar = h("div", { class: "lv-bar lesson-humbar" }, h("i", { class: "lv-mid" }), needle);
-    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, "First listen: the drone plays Sa for six seconds.");
-    const listen = h("button", { type: "button", class: "btn" }, icon("play"), " Hear Sa");
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.target ? "First listen: the note plays for three seconds." : "First listen: the drone plays Sa for six seconds.");
+    const listen = h("button", { type: "button", class: "btn" }, icon("play"), s.target ? " Hear it" : " Hear Sa");
     const hum = h("button", { type: "button", class: "btn primary big", disabled: true }, icon("mic"), " Hum it");
     const done = h("button", { type: "button", class: "linkbtn", hidden: true }, "I hummed it; go on");
     done.addEventListener("click", () => { api.data[s.id] = { matched: false }; api.save(); done.hidden = true; api.ready(); });
     const stopMic = () => { clearInterval(timer); if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } };
     listen.addEventListener("click", () => {
-      stopMic(); tanpura.start(); msg.textContent = "Listen to Sa, the low hum under everything. Hum it quietly in your head.";
+      stopMic();
+      if (s.target) { playNote(s.target, 3); msg.textContent = "Listen to the note. Hum it quietly in your head."; }
+      else { tanpura.start(); msg.textContent = "Listen to Sa, the low hum under everything. Hum it quietly in your head."; }
       clearTimeout(droneT);
-      droneT = setTimeout(() => { if (tanpura.isOn()) tanpura.stop(); hum.disabled = false; msg.textContent = "Now hum that Sa from memory, any octave that is comfortable."; }, 6000 * (window.__lessonTime ? 0.1 : 1));
+      droneT = setTimeout(() => { if (tanpura.isOn()) tanpura.stop(); hum.disabled = false; msg.textContent = s.target ? "Now hum that note from memory, any octave that is comfortable." : "Now hum that Sa from memory, any octave that is comfortable."; }, (s.target ? 3000 : 6000) * (window.__lessonTime ? 0.1 : 1));
     });
     hum.addEventListener("click", async () => {
       if (stream) { stopMic(); hum.replaceChildren(icon("mic"), " Hum it"); return; }
@@ -255,15 +258,15 @@ export const MORE_KINDS = {
         const y = Math.sqrt(sq / buf.length) > 0.01 ? yin(buf, c.sampleRate, 70, 1000) : null;
         const now = performance.now() / 1000;
         if (!y || !y.f) { held = 0; last = now; needle.className = "lv-needle"; return; }
-        const cents = centsFromSa(relSemi(y.f));
+        const cents = centsFromSa(relSemi(y.f) - (s.target || 0));
         needle.style.left = (50 + Math.max(-50, Math.min(50, cents / 2))) + "%";
         const ok = Math.abs(cents) <= 40;
         needle.className = "lv-needle " + (ok ? "lv-good" : "lv-warn");
         held = ok ? held + (last ? now - last : 0) : 0; last = now;
-        msg.textContent = ok ? "That is Sa. Hold it..." : cents < 0 ? "A little low: slide your hum up." : "A little high: slide your hum down.";
+        msg.textContent = ok ? (s.target ? "That is the note. Hold it..." : "That is Sa. Hold it...") : cents < 0 ? "A little low: slide your hum up." : "A little high: slide your hum down.";
         if (held >= (s.seconds || 2)) {
           stopMic(); hum.replaceChildren(icon("mic"), " Hum it again"); ding(true); done.hidden = true; clearTimeout(fallbackT);
-          msg.textContent = "Your voice found Sa. Hearing Sa inside you is what keeps a flute in tune.";
+          msg.textContent = s.target ? "Your voice found the note." : "Your voice found Sa. Hearing Sa inside you is what keeps a flute in tune.";
           api.data[s.id] = { matched: true }; api.save(); api.ready();
         }
       }, 60);
