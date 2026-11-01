@@ -357,6 +357,56 @@ export const LISTEN_KINDS = {
     return { el: h("div", { class: "stack lesson-center" }, tally, line, opts, out) };
   } },
 
+  // Dictation: hear a phrase, write it by tapping note names (each tap sounds), then check it.
+  // { rounds: [[semi]], notes: [{ label, semi }] (the keys) }
+  dictate: { make(s, api) {
+    let i = 0, written = [], tries = 0, right = 0, closed = false;
+    const tally = h("p", { class: "small muted" });
+    const slots = h("div", { class: "lesson-line mono" });
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" });
+    const out = h("div");
+    const target = () => s.rounds[i];
+    const label = n => (s.notes.find(x => x.semi === n) || {}).label || "?";
+    const hear = h("button", { type: "button", class: "btn primary" }, icon("play"), " Hear the phrase");
+    hear.addEventListener("click", () => target().forEach((n, k) => setTimeout(() => sound({ semi: n, seconds: 0.5 }), k * 560)));
+    const undo = h("button", { type: "button", class: "btn" }, "Undo");
+    const check = h("button", { type: "button", class: "btn" }, "Check");
+    const keys = h("div", { class: "lesson-chips" }, s.notes.map(nt => {
+      const b = h("button", { type: "button", class: "lesson-chip mono" }, nt.label);
+      b.addEventListener("click", () => { sound({ semi: nt.semi, seconds: 0.45 }); if (!closed && written.length < target().length) { written.push(nt.semi); draw(); } });
+      return b;
+    }));
+    function draw(marks) {
+      slots.replaceChildren(...target().map((_, k) => h("span", { class: "lesson-beat" + (marks ? (marks[k] ? " now" : " wrongslot") : written[k] !== undefined ? "" : " blank") }, written[k] !== undefined ? label(written[k]) : "?")));
+      check.disabled = closed || written.length < target().length;
+      undo.disabled = closed;
+    }
+    function show() {
+      written = []; tries = 0; closed = false; out.replaceChildren();
+      tally.textContent = "Phrase " + (i + 1) + " of " + s.rounds.length + ": " + target().length + " notes";
+      msg.textContent = "Hear it, sing it, then write it: the first note against Sa, then up or down, step or leap.";
+      draw();
+    }
+    undo.addEventListener("click", () => { if (closed) return; written.pop(); draw(); });
+    check.addEventListener("click", () => {
+      tries++;
+      const marks = target().map((n, k) => written[k] === n), ok = marks.every(Boolean);
+      draw(marks); ding(ok);
+      if (!ok) { msg.textContent = marks.filter(x => !x).length + " notes to fix (in red). Listen again, then Undo back to the first wrong one."; if (tries < 3) return; }
+      if (ok && tries === 1) right++;
+      closed = true; // this phrase is finished: only Next phrase (or Hear) from here
+      const last = i === s.rounds.length - 1;
+      const next = last ? null : h("button", { type: "button", class: "btn" }, "Next phrase");
+      if (next) next.addEventListener("click", () => { i++; show(); });
+      msg.textContent = ok ? "Verified: every note matches." : "The answer: " + target().map(label).join(" ") + ". Play it to hear it.";
+      if (!ok) { written = target().slice(); draw(target().map(() => true)); }
+      out.replaceChildren(...[next].filter(Boolean));
+      if (last) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
+    });
+    show();
+    return { el: h("div", { class: "stack lesson-center" }, tally, hear, slots, msg, keys, h("div", { class: "row" }, undo, check), out) };
+  } },
+
   // Put notes in order by ear: tap the names in order; each tap plays its note.
   // { items: [{ label, semi }] (in the right order), prompt }
   order: { make(s, api) {

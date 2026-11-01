@@ -12,6 +12,7 @@ import { M43 } from "./m43.js";
 import { M50 } from "./m50.js";
 import { M64 } from "./m64.js";
 import { M85 } from "./m85.js";
+import { M99 } from "./m99.js";
 
-export const LESSONS = { m0: M0, m1: M1, m2: M2, m3: M3, m4: M4, m8: M8, m9: M9, m12: M12, m15: M15, m43: M43, m50: M50, m64: M64, m85: M85 };
+export const LESSONS = { m0: M0, m1: M1, m2: M2, m3: M3, m4: M4, m8: M8, m9: M9, m12: M12, m15: M15, m43: M43, m50: M50, m64: M64, m85: M85, m99: M99 };
 export const lessonForDay = n => Object.values(LESSONS).find(l => l.day === n) || null;

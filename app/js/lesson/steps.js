@@ -1,7 +1,7 @@
 // The kinds of lesson step. Each make(step, api) returns { el, destroy? } and calls api.ready()
 // once the step has been done; api.data keeps what the learner chose (saved with the lesson).
 import { h, icon } from "../util.js";
-import { ac, makeVoice, click } from "../core/audio.js";
+import { ac, makeVoice, click, playNote } from "../core/audio.js";
 import { codeOf, nameOf, hzOf, FING } from "../core/theory.js";
 import { startRecording, recordingSupported, saveRecording, newId } from "../recorder.js";
 import { today } from "../util.js";
@@ -34,7 +34,9 @@ export const STEP_KINDS = {
   ...PITCH_KINDS,
   // Listen to a recording, then guess. { audio, prompt, options: [{ text, right }], yes, no, explain }
   listen: { make(s, api) {
-    const audio = new Audio(s.audio);
+    // s.audio (a recording) or s.seq (notes, played on the flute voice).
+    const timers = [];
+    const audio = s.seq ? { paused: true, currentTime: 0, play() { this.paused = false; s.seq.forEach((n, i) => timers.push(setTimeout(() => { if (n !== null) playNote(n, 0.5); if (i === s.seq.length - 1) { this.paused = true; timers.push(setTimeout(() => this.onend && this.onend(), 500)); } }, i * 520))); return Promise.resolve(); }, pause() { timers.forEach(clearTimeout); this.paused = true; }, addEventListener(e, f) { this.onend = f; } } : new Audio(s.audio);
     const play = h("button", { type: "button", class: "btn lesson-play" }, icon("play"), " Hear it");
     audio.addEventListener("ended", () => play.replaceChildren(icon("play"), " Hear it again"));
     play.addEventListener("click", () => { if (audio.paused) { audio.currentTime = 0; audio.play().catch(() => {}); play.replaceChildren(icon("pause"), " Pause"); } else { audio.pause(); play.replaceChildren(icon("play"), " Hear it"); } });

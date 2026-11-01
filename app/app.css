@@ -1062,3 +1062,4 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-bendmark { z-index: 1; box-shadow: 0 0 0 2px var(--surface); }
 .lesson-swellguide.run i { animation: lesson-sweep var(--secs, 8s) linear forwards; }
 @keyframes lesson-sweep { to { width: 100%; } }
+.lesson-beat.wrongslot { background: color-mix(in srgb, var(--bad) 25%, var(--surface)); }
