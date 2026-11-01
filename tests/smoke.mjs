@@ -1152,6 +1152,29 @@ try {
     await page.evaluate(() => { const st = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); st.focus = false; localStorage.setItem("bansuri.settings", JSON.stringify(st)); });
     await page.reload({ waitUntil: "networkidle0" });
   });
+  await section("Teacher review", async () => {
+    // The student asks; the link is caught where it would be shared or copied.
+    await go("/review");
+    await page.evaluate(() => { window.__sent = []; navigator.share = undefined; navigator.canShare = undefined; navigator.clipboard.writeText = t => { window.__sent.push(t); return Promise.resolve(); }; });
+    await page.type("#main input[aria-label='Title']", "Raga Yaman alap");
+    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Send to my teacher/.test(b.textContent)).click());
+    await page.waitForFunction(() => window.__sent.length, { timeout: 5000 }).catch(() => {});
+    const reqLink = (await page.evaluate(() => window.__sent[0] || "")).match(/#\/review\/[A-Za-z0-9_-]+/);
+    check(!!reqLink, "review: the student's request becomes a link");
+    // The teacher rates and sends the reply.
+    await go(reqLink ? reqLink[0].slice(1) : "/review/x");
+    await page.evaluate(() => { window.__sent = []; navigator.share = undefined; navigator.clipboard.writeText = t => { window.__sent.push(t); return Promise.resolve(); }; });
+    await page.evaluate(() => { document.querySelector("#rv-tone-3").click(); document.querySelector("#rv-pitch-4").click(); const t = document.querySelector("#main textarea[aria-label='Practice task']"); t.value = "Long tones on Sa, 10 minutes a day"; [...document.querySelectorAll("#main button")].find(b => /Send the review/.test(b.textContent)).click(); });
+    await page.waitForFunction(() => window.__sent.length, { timeout: 5000 }).catch(() => {});
+    const fbLink = (await page.evaluate(() => window.__sent[0] || "")).match(/#\/feedback\/[A-Za-z0-9_-]+/);
+    check(!!fbLink && /raga yaman alap/.test(await text()), "review: the teacher sees the request and makes a reply link");
+    // The student opens the reply: saved, and the task is on Today.
+    await go(fbLink ? fbLink[0].slice(1) : "/feedback/x");
+    const fbText = await text();
+    check(/clear but small/.test(fbText) && /long tones on sa/.test(fbText), "review: the student's app shows the ratings and the task");
+    await go("/today");
+    check(/from your teacher/.test(await text()) && /long tones on sa/.test(await text()), "review: the practice task is on Today");
+  });
   await section("Tone check", async () => {
     await go("/tone");
     check(/how does your note sound/.test(await text()), "tone: the page opens");
@@ -1176,7 +1199,7 @@ try {
   await section("Accessibility (axe-core: WCAG 2.1 A and AA rules)", async () => {
     {
       const axeSrc = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "node_modules", "axe-core", "axe.min.js"), "utf8");
-      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/tone", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
+      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/tone", "/review", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
         await go(route);
         await sleep(400);
         await page.evaluate(axeSrc);

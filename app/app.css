@@ -856,3 +856,19 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 
 /* Focus mode: practice and listening only (Settings) */
 .focus .levelpill, .focus .profile-level, .focus .questline, .focus .levelbadge, .focus .xpfloat { display: none !important; }
+/* Teacher review */
+.rvrow { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; margin: 0 0 10px; display: grid; gap: 8px; }
+.rvrow legend { font-weight: 700; padding: 0 4px; }
+.rvlevels { display: grid; gap: 4px; }
+.rvlevel { display: flex; gap: 8px; align-items: baseline; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+.rvlevel:has(input:checked) { background: var(--accent-soft); }
+.rvlevel b { min-width: 1.2em; }
+.rvtable { width: 100%; border-collapse: collapse; }
+.rvtable th, .rvtable td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.rvdots { display: inline-flex; gap: 3px; }
+.rvdot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--accent); }
+.rvdot.on { background: var(--accent); }
+.rvtask { padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 6px; }
+.rvtask p { margin: 4px 0 0; }
+.rvplayer { width: 100%; max-width: 32rem; }
+.teachertask { border-color: var(--accent); }

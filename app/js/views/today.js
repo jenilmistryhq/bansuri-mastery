@@ -12,7 +12,7 @@ import { speak, sayButton } from "../voice.js";
 import { stepMeta, plainText } from "../steps.js";
 import { plainCodes } from "../codes.js";
 import { newsCard } from "../news.js";
-import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard } from "./today-cards.js";
+import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard, teacherTaskCard } from "./today-cards.js";
 
 // First run: how the learner likes to learn, in pictures and both languages, so it works without
 // reading English. Each choice can be changed later in Settings.
@@ -150,6 +150,8 @@ export async function render(main, { params, view }) {
   const mainCol = h("div", { class: "todaymain" }), side = h("aside", { class: "todayside", "aria-label": "Your progress and extras" });
   page.append(h("div", { class: "todaygrid" }, mainCol, side));
   if (isToday && !firstTime) {
+    const task = teacherTaskCard();
+    if (task) mainCol.append(task);
     const fix = fixToday();
     if (fix) mainCol.append(fix);
     const rc = reviewsCard(cleanups);

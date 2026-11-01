@@ -10,6 +10,7 @@ import { mountBench } from "../bench/bench.js";
 import { fetchDoc } from "../content.js";
 import { dayResults, lastPlayedDay } from "../livestats.js";
 import { questState } from "../fun.js";
+import { currentTask, markTaskDone } from "../review.js";
 import { codeOf } from "../core/theory.js";
 import { getSettings } from "../core/settings.js";
 import { icon } from "../util.js";
@@ -156,6 +157,18 @@ export function quickActions() {
     a("#/songs", "note", "Songs"), a("#/listen", "listen", "Listen"), a("#/quick", "today", "5 minutes"));
 }
 
+
+// The practice task from the teacher's latest review (review.js), until marked done.
+export function teacherTaskCard() {
+  const f = currentTask();
+  if (!f) return null;
+  const overdue = f.due && f.due < today();
+  const done = h("button", { type: "button", class: "btn small", onclick: () => { markTaskDone(f.id); card.remove(); } }, icon("check"), " Done");
+  const card = h("section", { class: "card teachertask" }, h("div", { class: "row between" }, h("h2", null, "From your teacher"), f.due ? h("span", { class: "chip " + (overdue ? "warn" : "info") }, (overdue ? "Review was due " : "Next review by ") + f.due) : null),
+    h("p", null, f.task), h("p", { class: "small muted" }, (f.teacher ? f.teacher + " on " : "On ") + f.what),
+    h("div", { class: "row tight" }, done, h("a", { class: "btn small ghost", href: "#/review" }, "Ask for the next review")));
+  return card;
+}
 
 export function reviewsCard(cleanups) {
   const due = dueReviews();

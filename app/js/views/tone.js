@@ -7,6 +7,7 @@ import { codeOf, hzOf } from "../core/theory.js";
 import { makeVoice, ac } from "../core/audio.js";
 import { toneProfile, decodeAudioFile } from "../core/pitch.js";
 import { countdown } from "../core/live.js";
+import { handOff } from "../reviewhandoff.js";
 
 const HISTORY = "bansuri.tone.history", CHECKS = "bansuri.tone.checks";
 // Measured on the reference player (Freesound "sankalp", a competent player, not a master:
@@ -43,7 +44,7 @@ const CHECKLIST = [
 export async function render(main) {
   const page = h("div", { class: "page tonepage" });
   main.append(page);
-  let note = 0, recorder = null, stream = null, lastUrl = null;
+  let note = 0, recorder = null, stream = null, lastUrl = null, lastBlob = null;
   const cleanups = [() => { if (recorder && recorder.state !== "inactive") recorder.stop(); if (stream) stream.getTracks().forEach(t => t.stop()); if (lastUrl) URL.revokeObjectURL(lastUrl); }];
 
   const noteSel = h("select", { class: "input", "aria-label": "Note to hold" }, NOTES.map(([s, l]) => h("option", { value: String(s) }, l)));
@@ -68,6 +69,7 @@ export async function render(main) {
     await done;
     stream.getTracks().forEach(t => t.stop());
     const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
+    lastBlob = blob;
     if (lastUrl) URL.revokeObjectURL(lastUrl);
     lastUrl = URL.createObjectURL(blob);
     status.textContent = "Measuring...";
@@ -99,7 +101,12 @@ export async function render(main) {
         h("tbody", null, rows))),
       weak.length ? h("div", { class: "stack" }, h("h3", null, "What to work on"), weak.map(({ m }) => h("p", null, h("b", null, m.name + ": "), m.tip))) : h("p", null, icon("check"), " Every measure is good. Now record yourself and compare with a master's recording by ear: that is where the last part of tone lives."),
       lastUrl ? h("div", { class: "row tight" }, h("button", { type: "button", class: "btn small", onclick: () => new Audio(lastUrl).play().catch(() => {}) }, icon("play"), " Hear your note"),
-        h("button", { type: "button", class: "btn small", onclick: () => new Audio("app/audio/" + (note < -6 ? "bansuri-sa-lower-octave-sankalp.mp3" : "bansuri-sa-middle-octave-sankalp.mp3")).play().catch(() => {}) }, icon("play"), " Hear the reference player")) : null);
+        h("button", { type: "button", class: "btn small", onclick: () => new Audio("app/audio/" + (note < -6 ? "bansuri-sa-lower-octave-sankalp.mp3" : "bansuri-sa-middle-octave-sankalp.mp3")).play().catch(() => {}) }, icon("play"), " Hear the reference player"),
+        h("button", { type: "button", class: "btn small primary", onclick: () => {
+          const ext = /ogg/.test(lastBlob && lastBlob.type) ? "ogg" : /mp4/.test(lastBlob && lastBlob.type) ? "m4a" : "webm";
+          handOff({ title: "held " + codeOf(note), file: lastBlob ? new File([lastBlob], "tone-check-" + today() + "." + ext, { type: lastBlob.type }) : null, measures: { ...p, noteName: codeOf(note) } });
+          location.hash = "#/review";
+        } }, "Ask my teacher")) : null);
     if (fresh) { hist.unshift({ date: today(), note, p, score }); storeSet(HISTORY, hist.slice(0, 60)); drawHistory(); }
   }
 

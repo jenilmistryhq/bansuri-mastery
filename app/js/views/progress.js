@@ -5,6 +5,8 @@ import { totals, streaks, practiceDates, getPlan, getDay, current, milestoneStat
 import { rules } from "../badges.js";
 import { holdSummary } from "../livestats.js";
 import { codeOf } from "../core/theory.js";
+import { RUBRIC, feedback as feedbackList } from "../review.js";
+import { reviewCard } from "./feedback.js";
 import { getSettings } from "../core/settings.js";
 import { levelBar, levelsTable, xpRules } from "../levelui.js";
 import { emblem } from "../ui.js";
@@ -271,6 +273,16 @@ export async function render(main) {
       return [h("div", { class: "badges" }, got.concat(todo.slice(0, 3)).map(badge)),
         todo.length > 3 ? h("details", null, h("summary", null, "All " + list.length + " badges"), h("div", { class: "badges" }, todo.slice(3).map(badge))) : null];
     })()));
+
+  // Teacher reviews: the latest in full, and each point's ratings over time.
+  const fbs = feedbackList();
+  page.append(h("section", { class: "card", id: "reviews" }, h("div", { class: "row between" }, h("h2", null, "Teacher reviews"), h("a", { class: "btn small", href: "#/review" }, "Ask for a review")),
+    fbs.length ? [h("p", { class: "small muted" }, "Latest: " + fbs[0].what + " (" + fbs[0].date + ")"),
+      h("table", { class: "rvtable" }, h("tbody", null, RUBRIC.filter(r => fbs.some(f => f.scores[r.key])).map(r => h("tr", null, h("th", { scope: "row" }, r.name),
+        h("td", { class: "mono" }, fbs.slice(0, 6).reverse().map(f => f.scores[r.key] || "-").join("  ")))))),
+      h("p", { class: "small muted" }, "Ratings from the oldest to the newest of your last six reviews, 1 to 5."),
+      h("details", null, h("summary", null, "The latest review in full"), reviewCard(fbs[0]))]
+      : h("p", { class: "muted" }, "Record yourself and send it to your teacher: their ratings and tasks appear here and on Today.")));
 
   // Share.
   const nameIn = h("input", { class: "input", id: "sh-name", maxlength: "40", placeholder: "Your first name (optional)", value: store("bansuri.shareName", "") });

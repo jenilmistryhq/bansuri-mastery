@@ -53,7 +53,7 @@ const ROUTES = [
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"],
-  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/transcribe$/, "transcribe"], [/^\/tone$/, "tone"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
+  [/^\/play$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/transcribe$/, "transcribe"], [/^\/tone$/, "tone"], [/^\/review$/, "review"], [/^\/review\/([A-Za-z0-9_-]+)$/, "review"], [/^\/feedback\/([A-Za-z0-9_-]+)$/, "feedback"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
 // Five tabs; related screens sit together under one tab, with a small menu at the top of each.
 const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["play", "#/play", "Play"], ["progress", "#/progress", "Me"]];
@@ -62,10 +62,10 @@ const GROUPS = {
   plan: [["plan", "#/plan", "Course map"], ["library", "#/library", "Library"]],
   bench: [["bench", "#/bench", "Bench"], ["coach", "#/coach", "Coach"], ["listen", "#/listen", "Listen"], ["songs", "#/songs", "Songs"], ["transcribe", "#/transcribe", "Transcribe"], ["tone", "#/tone", "Tone check"]],
   play: [["play", "#/play", "Games"], ["compose", "#/compose", "Make a melody"], ["quick", "#/quick", "5 minutes"]],
-  progress: [["progress", "#/progress", "Progress"], ["journal", "#/journal", "Journal"], ["settings", "#/settings", "Settings"]],
+  progress: [["progress", "#/progress", "Progress"], ["journal", "#/journal", "Journal"], ["review", "#/review", "Teacher review"], ["settings", "#/settings", "Settings"]],
 };
 // Which tab a screen belongs to.
-const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", transcribe: "bench", tone: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress", move: "progress", privacy: "progress", students: "progress" };
+const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", transcribe: "bench", tone: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress", move: "progress", privacy: "progress", students: "progress", review: "progress", feedback: "progress" };
 // Simple mode: three big choices, no reading needed.
 const NAV_FOCUS = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["listen", "#/listen", "Listen"], ["progress", "#/progress", "Me"]];
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];

@@ -1,5 +1,5 @@
 {
- "version": "60eeb645586b",
+ "version": "57fb85fecc02",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -70,6 +70,8 @@
   "app/js/posture.js",
   "app/js/recorder.js",
   "app/js/reminder.js",
+  "app/js/review.js",
+  "app/js/reviewhandoff.js",
   "app/js/separate-worker.js",
   "app/js/state.js",
   "app/js/steps.js",
@@ -82,6 +84,7 @@
   "app/js/views/coach.js",
   "app/js/views/compose.js",
   "app/js/views/eartools.js",
+  "app/js/views/feedback.js",
   "app/js/views/journal.js",
   "app/js/views/library.js",
   "app/js/views/listen.js",
@@ -93,6 +96,7 @@
   "app/js/views/progress.js",
   "app/js/views/quick.js",
   "app/js/views/reader.js",
+  "app/js/views/review.js",
   "app/js/views/session.js",
   "app/js/views/settings.js",
   "app/js/views/share.js",
