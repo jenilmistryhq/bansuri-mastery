@@ -1,7 +1,8 @@
 // Song benchmark: how much of a trusted notation (a tutorial's) the app writes, song by song. The
 // goal is 90% of the notes right (letter and octave; rhythm and grace notes not counted).
 //
-//   node tests/song-bench.mjs <folder> [--pitch ours|rmvpe|fcpe] [--source mix|vocals] [--show]
+//   node tests/song-bench.mjs <folder> [--pitch ours|rmvpe|fcpe] [--source mix|vocals] [--show] [--why] [--dump]
+//     [--oracle] [--sa-mix] [--notes TAG [--repitch]] [--consistency] [--selftest]
 //
 // The folder holds, per song, the audio (name.wav) and its notation (name.txt). The audio stays
 // outside the project (songs are copyrighted); so do the separated vocals (name.vocals.wav), made
@@ -122,6 +123,22 @@ function ops(want, got, j) {
   return out;
 }
 const why = { del: 0, ins: 0, sub: 0, pairs: {} };
+// --consistency: per reference note, what the app wrote at each place the line was found; a
+// position where most places agree on another note than the reference is "systematic" (the
+// recording and the notation differ there), the rest "random" (the app's own slips).
+function aligned(want, got, j) {
+  const m = want.length, lo = Math.max(0, j - 2 * m), D = [];
+  for (let i = 0; i <= m; i++) { D.push(new Array(j - lo + 1).fill(0)); D[i][0] = i; }
+  for (let i = 1; i <= m; i++) for (let k = 1; k <= j - lo; k++) D[i][k] = Math.min(D[i - 1][k - 1] + (want[i - 1] === got[lo + k - 1] ? 0 : 1), D[i - 1][k] + 1, D[i][k - 1] + 1);
+  let k = j - lo; for (let x = 0; x <= j - lo; x++) if (D[m][x] < D[m][k]) k = x;
+  const out = new Array(m).fill(null); let i = m;
+  while (i > 0 && k > 0) {
+    if (D[i][k] === D[i - 1][k - 1] + (want[i - 1] === got[lo + k - 1] ? 0 : 1)) { out[i - 1] = got[lo + k - 1]; i--; k--; }
+    else if (D[i][k] === D[i - 1][k] + 1) { out[i - 1] = "-"; i--; } else k--;
+  }
+  return out;
+}
+const cons = { right: 0, systematic: 0, random: 0 };
 // Every place (local minimum of edits) with at most 40% wrong; places closer than half a line merge.
 function places(want, got) {
   const e = endsAt(want, got), out = [], limit = Math.floor(want.length * 0.4);
@@ -196,18 +213,39 @@ for (const txt of songs) {
   if (!fs.existsSync(wav)) { console.log("(no audio for " + path.basename(txt) + ")"); continue; }
   const ref = readRef(txt);
   const { chs, sr } = SOURCE === "vocals" ? await vocalsOf(wav) : readWav(wav);
-  const tr = await trackOf(chs, sr);
+  // --notes TAG: notes made elsewhere (name.TAG.notes.json, [{ t0, t1, midi }], e.g. by a note
+  // transcription model), named and scored by the app's own steps; else the app's pitch line.
+  const ext = arg("--notes", null), extFile = ext && wav.replace(/\.wav$/i, "." + ext + ".notes.json");
+  if (ext && !fs.existsSync(extFile)) { console.log("(no " + path.basename(extFile) + ")"); continue; }
+  const given = ext ? JSON.parse(fs.readFileSync(extFile, "utf8")).map((n, i) => ({ ...n, id: "x" + i })) : null;
+  // --repitch: keep the given notes' start and end, but take each pitch from the app's own pitch
+  // line (its median inside the note) and name it with the app's drifting tuning.
+  const tr = given && !flag("--repitch") ? { track: [], levels: [] } : await trackOf(chs, sr);
+  let runs = null;
+  if (given && flag("--repitch")) {
+    runs = [];
+    for (const n of given) {
+      const v = []; let lv = 0;
+      for (let i = Math.ceil(n.t0 / T.HOP); i < n.t1 / T.HOP && i < tr.track.length; i++) if (tr.track[i] !== null) { v.push(tr.track[i]); lv += tr.levels[i]; }
+      if (v.length < 2) continue;
+      v.sort((a, b) => a - b);
+      // The pitch line can sit an octave from the model's note: the model's octave wins.
+      let p = v[v.length >> 1]; p += 12 * Math.round((n.midi - p) / 12);
+      runs.push({ t0: n.t0, t1: n.t1, p, lv: lv / v.length });
+    }
+  }
+  const tx = o => runs ? T.transcribe(tr.track, tr.levels, { ...o, runs }) : given ? T.transcribe(null, null, { ...o, notes: given.map(n => ({ ...n })) }) : T.transcribe(tr.track, tr.levels, o);
   // --sa-mix: Sa from the whole recording (the music names the key), notes from --source.
   let mixSa = null;
   if (flag("--sa-mix") && SOURCE === "vocals") { const w = readWav(wav), m = T.monoDown(w.chs, w.sr), t2 = await T.pitchTrack(m.data, m.sr, { maxSeconds: 600 }); mixSa = T.transcribe(t2.track, t2.levels, { sameKey: false }).tonics[0].pc; if (ref.sa === null || ref.sa < 0) ref.sa = mixSa; }
   const opts = { sameKey: false, layout: "phrases", from: ref.from, to: ref.to, main: !flag("--every") };
-  const first = T.transcribe(tr.track, tr.levels, opts);
+  const first = tx(opts);
   // The reference Sa, in the octave the app chose for its own Sa (only the pitch class is given).
   // --oracle: also score with every Sa, to tell a wrong Sa from wrong notes.
   if (flag("--oracle")) {
     const res = [];
     for (let pc = 0; pc < 12; pc++) {
-      const rr = T.transcribe(tr.track, tr.levels, { ...opts, sa: T.tonicMidi(pc, first.notes) });
+      const rr = tx({ ...opts, sa: T.tonicMidi(pc, first.notes) });
       res.push({ pc, s: scoreOf(ref, rr.notes.map(n => n.midi - rr.sa)) });
     }
     res.sort((a, b) => b.s.typ - a.s.typ);
@@ -215,7 +253,7 @@ for (const txt of songs) {
     console.log("  best Sa would be " + NAMES[res[0].pc] + ": typical " + Math.round(res[0].s.typ * 100) + "%" + (res[0].pc === first.sa % 12 ? " (the app's own Sa)" : "") + "; next " + NAMES[res[1].pc] + " " + Math.round(res[1].s.typ * 100) + "%");
   }
   const sa = ref.sa !== null && ref.sa >= 0 ? T.tonicMidi(ref.sa, first.notes) : first.sa;
-  const r = ref.sa !== null && ref.sa >= 0 ? T.transcribe(tr.track, tr.levels, { ...opts, sa }) : first;
+  const r = ref.sa !== null && ref.sa >= 0 ? tx({ ...opts, sa }) : first;
   const got0 = r.notes.map(n => n.midi - r.sa), shift = [0, -12, 12].map(k => ({ k, s: scoreAt(ref, got0.map(x => x + k)).typ })).sort((a, b) => b.s - a.s)[0].k;
   const got = got0.map(x => x + shift);
   let right = 0, total = 0, bestRight = 0, bestTotal = 0;
@@ -223,6 +261,15 @@ for (const txt of songs) {
   for (const [li, line] of ref.lines.entries()) {
     const ps = taken.filter(c => c.li === li).map(c => ({ j: c.z, e: c.e })), n = line.notes.length;
     const best = ps.length ? Math.min(...ps.map(p => p.e)) : n;
+    if (flag("--consistency") && ps.length >= 2) {
+      const al = ps.map(p => aligned(line.notes, got, p.j));
+      line.notes.forEach((w, q) => {
+        const vals = al.map(a => a[q]), cnt = {};
+        for (const v of vals) cnt[v] = (cnt[v] || 0) + 1;
+        const [top, c] = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
+        for (const v of vals) { if (v === w) cons.right++; else if (String(v) === top && top !== String(w) && c >= Math.max(2, vals.length * 0.6)) cons.systematic++; else cons.random++; }
+      });
+    }
     if (ps.length) for (const p of ps) {
       right += n - p.e; total += n;
       const o = ops(line.notes, got, p.j);
@@ -240,5 +287,6 @@ for (const txt of songs) {
   if (flag("--show")) console.log(rows.join("\n"));
 }
 if (flag("--why")) console.log("errors in the places found: " + why.del + " notes missing, " + why.ins + " extra, " + why.sub + " wrong; most common wrong (want>got): " + Object.entries(why.pairs).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => k + " x" + v).join(", "));
+if (flag("--consistency")) { const t = cons.right + cons.systematic + cons.random; console.log("notes in lines found 2+ times: " + Math.round(cons.right / t * 100) + "% as written, " + Math.round(cons.systematic / t * 100) + "% the same other note at most repeats (recording and notation differ), " + Math.round(cons.random / t * 100) + "% other slips"); }
 if (oracle.length) console.log("with the best Sa for each song: typical " + Math.round(oracle.reduce((a, b) => a + b, 0) / oracle.length * 100) + "%");
 if (count) console.log("ALL " + count + " songs: typical " + Math.round(sumTyp / count * 100) + "%, best " + Math.round(sumBest / count * 100) + "% (goal: 90% typical)");
