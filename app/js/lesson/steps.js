@@ -9,6 +9,7 @@ import { fluteSvg, partName, noteOfPattern } from "./flute.js";
 import { ding } from "./sound.js";
 import { MORE_KINDS } from "./kinds2.js";
 import { LISTEN_KINDS } from "./kinds3.js";
+import { PITCH_KINDS } from "./kinds4.js";
 import { decodeAudioFile, toneProfile } from "../core/pitch.js";
 import { MEASURES, BAND, BAND_CLS, bandOf } from "../views/tone.js";
 
@@ -30,6 +31,7 @@ export function beatScore(taps, beats) {
 export const STEP_KINDS = {
   ...MORE_KINDS,
   ...LISTEN_KINDS,
+  ...PITCH_KINDS,
   // Listen to a recording, then guess. { audio, prompt, options: [{ text, right }], yes, no, explain }
   listen: { make(s, api) {
     const audio = new Audio(s.audio);

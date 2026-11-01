@@ -1053,3 +1053,12 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-bol { position: absolute; inset: 0; display: grid; place-items: center; font-size: 1.6rem; }
 .lesson-act { min-width: 7rem; justify-content: center; }
 .lesson-half { width: min(260px, 100%); height: auto; }
+.lesson-bendbar { width: min(420px, 100%); position: relative; }
+.lesson-bendmark { position: absolute; top: -6px; width: 4px; height: calc(100% + 12px); margin-left: -2px; background: var(--accent); border-radius: 2px; transition: left 200ms; }
+.lesson-chip.done { background: var(--accent-soft); border-color: var(--good); }
+.lesson-swellguide { width: min(420px, 100%); height: 60px; position: relative; background: var(--accent-soft); border-radius: var(--radius); overflow: hidden;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%); }
+.lesson-swellguide i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); }
+.lesson-bendmark { z-index: 1; box-shadow: 0 0 0 2px var(--surface); }
+.lesson-swellguide.run i { animation: lesson-sweep var(--secs, 8s) linear forwards; }
+@keyframes lesson-sweep { to { width: 100%; } }

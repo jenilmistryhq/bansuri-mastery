@@ -4,6 +4,7 @@ const F = await import("../app/js/lesson/flute.js").catch(e => { console.error(e
 const S = await import("../app/js/lesson/steps.js");
 const K = await import("../app/js/lesson/kinds2.js");
 const K3 = await import("../app/js/lesson/kinds3.js");
+const K4 = await import("../app/js/lesson/kinds4.js");
 const P = await import("../app/js/lesson/player.js");
 const { M0 } = await import("../app/js/lessons/m0.js");
 const { LESSONS, lessonForDay } = await import("../app/js/lessons/index.js");
@@ -132,5 +133,8 @@ test("half-hole: covered is Ga, open is tivra Ma, the sweet spot is shuddha Ma",
     assert.ok(Math.abs(K3.halfHoleSemi(sweet, sweet) - 5) < 1e-9);
     assert.ok(K3.halfHoleSemi(sweet + 0.05, sweet) < 5 && K3.halfHoleSemi(sweet - 0.05, sweet) > 5, "more cover, lower");
   }
+});
+test("bend: a reading is on a target within the tolerance", () => {
+  assert.ok(K4.onTarget(-18, -20) && K4.onTarget(5, 0) && !K4.onTarget(-10, -20) && !K4.onTarget(null, 0));
 });
 console.log("lesson tests: " + n + " passed");

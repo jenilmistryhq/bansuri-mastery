@@ -1539,6 +1539,8 @@ try {
         else if (kind === "overblow") { await clickL(".lesson-stage button", /Blow/); for (const v of ["80", "20", "80"]) { await lp.evaluate(v => { const r = document.querySelector(".lesson-stage input[type=range]"); r.value = v; r.dispatchEvent(new Event("input", { bubbles: true })); }, v); await sleep(150); } await waitReady(3000); await clickL(".lesson-stage button", /Stop/); }
         else if (kind === "clapwave") { await clickL(".lesson-stage .btn.primary", /Start/); await waitReady(30000); }
         else if (kind === "halfhole") { await clickL(".lesson-stage button", /Play/); for (let v = 100; v >= 0 && !(await isReady()); v -= 2) { await lp.evaluate(v => { const r = document.querySelector(".lesson-stage input[type=range]"); r.value = String(v); r.dispatchEvent(new Event("input", { bubbles: true })); }, v); if (/^m$/.test(await lp.$eval(".lesson-stage .lesson-note", e => e.textContent))) { await waitReady(2500); } } await clickL(".lesson-stage button", /Stop/); }
+        else if (kind === "bend") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(300); for (const c of [0, -20, 0, 20, 0]) { await tone(NOTE * Math.pow(2, c / 1200)); await sleep(1700); } await tone(0); await waitReady(3000); }
+        else if (kind === "swell") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(200); await tone(NOTE); await waitReady(14000); await tone(0); }
         else if (kind === "higherlower") { for (let i = 0; i < 20 && !(await isReady()); i++) { await clickL(".lesson-stage button", /Play|Next pair/); await sleep(120); await clickL(".lesson-chip", /Higher/); await sleep(80); } }
         else if (kind === "custom") {
           // Custom steps: a skip link, or the main button (then wait).
