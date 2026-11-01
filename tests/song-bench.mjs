@@ -52,7 +52,8 @@ function readRef(file) {
     const kv = /^(sa|from|to)\s*:\s*(\S+)(?:\s+(to)\s*:\s*(\S+))?/i.exec(l);
     if (kv) { const set = (k, v) => { if (k.toLowerCase() === "sa") ref.sa = NAMES.indexOf(v.replace("b", "").toUpperCase()); else ref[k.toLowerCase()] = Number(v); }; set(kv[1], kv[2]); if (kv[3]) set(kv[3], kv[4]); continue; }
     const notes = parseLine(l);
-    if (notes.length >= 3) ref.lines.push({ text: l, notes });
+    // A line written twice (a repeated part) is one line: its places count once.
+    if (notes.length >= 3 && !ref.lines.some(x => x.notes.join() === notes.join())) ref.lines.push({ text: l, notes });
   }
   return ref;
 }
@@ -133,6 +134,60 @@ function places(want, got) {
   return out;
 }
 
+// Typical and best scores of a note list (semitones from Sa) against a reference. The whole
+// notation may sit an octave higher or lower than the reference's (which octave Sa is written in
+// is a choice for the flute's range, made with the page's Octave buttons): the best of the three.
+function scoreOf(ref, got) {
+  return [0, -12, 12].map(k => scoreAt(ref, got.map(x => x + k))).sort((a, b) => b.typ - a.typ)[0];
+}
+// Each stretch of the app's notes counts for one line at most: all places of all lines are taken
+// closest first (fewest wrong for their length), and a place overlapping one taken already is
+// left out. So a perfect transcription scores 100% (--selftest checks it).
+function claim(ref, got) {
+  const cands = [];
+  ref.lines.forEach((line, li) => { for (const p of places(line.notes, got)) cands.push({ li, a: Math.max(0, p.j - line.notes.length), z: p.j, e: p.e, n: line.notes.length }); });
+  cands.sort((x, y) => x.e / x.n - y.e / y.n || y.n - x.n);
+  const taken = [], used = new Uint8Array(got.length + 1);
+  for (const c of cands) {
+    let free = true;
+    for (let k = c.a; k < c.z && free; k++) if (used[k]) free = false;
+    if (!free) continue;
+    for (let k = c.a; k < c.z; k++) used[k] = 1;
+    taken.push(c);
+  }
+  return taken;
+}
+// Lines that are versions of one sung line (a tutorial writes both: they differ in under a quarter
+// of their notes) form a group; a group none of whose lines is found counts once as 0% right.
+function groups(ref) {
+  const g = ref.lines.map((_, i) => i);
+  const dist = (a, b) => { const e = endsAt(a, b); return Math.min(...e.slice(Math.max(0, b.length - 2))); };
+  for (let i = 0; i < ref.lines.length; i++) for (let j = 0; j < i; j++) {
+    const a = ref.lines[i].notes, b = ref.lines[j].notes;
+    if (Math.abs(a.length - b.length) <= 2 && dist(a, b) < 0.25 * Math.max(a.length, b.length)) { const from = g[i], to = g[j]; for (let k = 0; k < g.length; k++) if (g[k] === from) g[k] = to; }
+  }
+  return g;
+}
+function scoreAt(ref, got) {
+  const taken = claim(ref, got), grp = groups(ref);
+  let right = 0, total = 0;
+  for (const c of taken) { right += c.n - c.e; total += c.n; }
+  for (const id of new Set(grp)) {
+    const members = ref.lines.filter((_, i) => grp[i] === id);
+    if (!taken.some(c => grp[c.li] === id)) total += Math.max(...members.map(l => l.notes.length));
+  }
+  return { typ: total ? right / total : 0, best: 0, taken };
+}
+const oracle = [];
+// --selftest: the reference itself, three times over, must score 100%.
+if (flag("--selftest")) {
+  for (const f of fs.readdirSync(DIR).filter(f => /\.txt$/i.test(f))) {
+    const ref = readRef(path.join(DIR, f)), got = [];
+    for (let k = 0; k < 3; k++) for (const l of ref.lines) got.push(...l.notes);
+    console.log(f + ": " + Math.round(scoreAt(ref, got).typ * 100) + "% for a perfect transcription");
+  }
+  process.exit(0);
+}
 const songs = fs.readdirSync(DIR).filter(f => /\.txt$/i.test(f)).map(f => path.join(DIR, f));
 let sumTyp = 0, sumBest = 0, count = 0;
 console.log("pitch: " + PITCH + ", source: " + SOURCE);
@@ -142,16 +197,31 @@ for (const txt of songs) {
   const ref = readRef(txt);
   const { chs, sr } = SOURCE === "vocals" ? await vocalsOf(wav) : readWav(wav);
   const tr = await trackOf(chs, sr);
+  // --sa-mix: Sa from the whole recording (the music names the key), notes from --source.
+  let mixSa = null;
+  if (flag("--sa-mix") && SOURCE === "vocals") { const w = readWav(wav), m = T.monoDown(w.chs, w.sr), t2 = await T.pitchTrack(m.data, m.sr, { maxSeconds: 600 }); mixSa = T.transcribe(t2.track, t2.levels, { sameKey: false }).tonics[0].pc; if (ref.sa === null || ref.sa < 0) ref.sa = mixSa; }
   const opts = { sameKey: false, layout: "phrases", from: ref.from, to: ref.to, main: !flag("--every") };
   const first = T.transcribe(tr.track, tr.levels, opts);
   // The reference Sa, in the octave the app chose for its own Sa (only the pitch class is given).
+  // --oracle: also score with every Sa, to tell a wrong Sa from wrong notes.
+  if (flag("--oracle")) {
+    const res = [];
+    for (let pc = 0; pc < 12; pc++) {
+      const rr = T.transcribe(tr.track, tr.levels, { ...opts, sa: T.tonicMidi(pc, first.notes) });
+      res.push({ pc, s: scoreOf(ref, rr.notes.map(n => n.midi - rr.sa)) });
+    }
+    res.sort((a, b) => b.s.typ - a.s.typ);
+    oracle.push(res[0].s.typ);
+    console.log("  best Sa would be " + NAMES[res[0].pc] + ": typical " + Math.round(res[0].s.typ * 100) + "%" + (res[0].pc === first.sa % 12 ? " (the app's own Sa)" : "") + "; next " + NAMES[res[1].pc] + " " + Math.round(res[1].s.typ * 100) + "%");
+  }
   const sa = ref.sa !== null && ref.sa >= 0 ? T.tonicMidi(ref.sa, first.notes) : first.sa;
   const r = ref.sa !== null && ref.sa >= 0 ? T.transcribe(tr.track, tr.levels, { ...opts, sa }) : first;
-  const got = r.notes.map(n => n.midi - r.sa);
+  const got0 = r.notes.map(n => n.midi - r.sa), shift = [0, -12, 12].map(k => ({ k, s: scoreAt(ref, got0.map(x => x + k)).typ })).sort((a, b) => b.s - a.s)[0].k;
+  const got = got0.map(x => x + shift);
   let right = 0, total = 0, bestRight = 0, bestTotal = 0;
-  const rows = [];
-  for (const line of ref.lines) {
-    const ps = places(line.notes, got), n = line.notes.length;
+  const rows = [], taken = claim(ref, got);
+  for (const [li, line] of ref.lines.entries()) {
+    const ps = taken.filter(c => c.li === li).map(c => ({ j: c.z, e: c.e })), n = line.notes.length;
     const best = ps.length ? Math.min(...ps.map(p => p.e)) : n;
     if (ps.length) for (const p of ps) {
       right += n - p.e; total += n;
@@ -164,10 +234,11 @@ for (const txt of songs) {
     // --dump: what the app wrote at each place (its notes, with times), to see what goes wrong.
     if (flag("--dump")) for (const p of ps) { const a = Math.max(0, p.j - n - 2), z = Math.min(r.notes.length, p.j + 2); rows.push("       " + p.e + " wrong at " + r.notes[a].t0.toFixed(1) + "s: " + r.notes.slice(a, z).map(q => name(q.midi - r.sa) + "(" + Math.round((q.t1 - q.t0) * 100) + ")").join(" ")); }
   }
-  const typ = right / total, bst = bestRight / bestTotal;
+  const sc = scoreAt(ref, got), typ = sc.typ, bst = bestRight / bestTotal;
   sumTyp += typ; sumBest += bst; count++;
   console.log(ref.title + ": typical " + Math.round(typ * 100) + "%, best " + Math.round(bst * 100) + "% | app's Sa " + NAMES[first.sa % 12] + (ref.sa !== null && ref.sa >= 0 ? ", reference Sa " + NAMES[ref.sa] + (first.sa % 12 === ref.sa ? " (same)" : " (DIFFERENT: scored on the reference Sa)") : "") + " | " + r.notes.length + " notes");
   if (flag("--show")) console.log(rows.join("\n"));
 }
 if (flag("--why")) console.log("errors in the places found: " + why.del + " notes missing, " + why.ins + " extra, " + why.sub + " wrong; most common wrong (want>got): " + Object.entries(why.pairs).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => k + " x" + v).join(", "));
+if (oracle.length) console.log("with the best Sa for each song: typical " + Math.round(oracle.reduce((a, b) => a + b, 0) / oracle.length * 100) + "%");
 if (count) console.log("ALL " + count + " songs: typical " + Math.round(sumTyp / count * 100) + "%, best " + Math.round(sumBest / count * 100) + "% (goal: 90% typical)");

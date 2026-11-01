@@ -375,7 +375,7 @@ export function stableRuns(track, levels) {
     const lv = levels.slice(r.i0, r.i1 + 1), med = lv.slice().sort((a, b) => a - b)[lv.length >> 1];
     let start = r.i0, cut = false;
     for (let i = r.i0 + MIN_NOTE; i <= r.i1 - MIN_NOTE; i++) {
-      if (levels[i] < 0.45 * med && levels[i] <= levels[i - 1] && levels[i] <= levels[i + 1]) { split.push({ i0: start, i1: i - 1, vals: r.vals.slice(start - r.i0, i - r.i0), cut }); start = i + 1; cut = true; i += MIN_NOTE; }
+      if ((levels[i] < 0.45 * med || valley(levels, i, r.i0, r.i1)) && levels[i] <= levels[i - 1] && levels[i] <= levels[i + 1]) { split.push({ i0: start, i1: i - 1, vals: r.vals.slice(start - r.i0, i - r.i0), cut }); start = i + 1; cut = true; i += MIN_NOTE; }
     }
     split.push({ i0: start, i1: r.i1, vals: r.vals.slice(start - r.i0), cut });
   }
@@ -409,6 +409,16 @@ function slides(track) {
     if (ok && steps >= 4) out[i] = 1;
   }
   return out;
+}
+
+// A syllable break inside a held pitch: the level at i is a valley at least VALLEY times lower
+// than the peaks on both sides within 200 ms (a consonant between two vowels on one note: "Hap-py").
+const VALLEY = 1.6;
+function valley(levels, i, a, z) {
+  let l = 0, r = 0;
+  for (let k = Math.max(a, i - 10); k < i; k++) l = Math.max(l, levels[k]);
+  for (let k = i + 1; k <= Math.min(z, i + 10); k++) r = Math.max(r, levels[k]);
+  return levels[i] * VALLEY < Math.min(l, r);
 }
 
 // Names each stretch as a note. Players drift (a flute warms up, a singer sags) and real
@@ -453,8 +463,9 @@ export function labelNotes(runs, ref) {
 }
 
 // The recording's Sa: each pitch class is scored by how well the notes' durations fit where Sa,
-// Pa and the other swaras usually sit, plus a bonus for the first and last held notes (scales,
-// songs and alap usually start or end on Sa). Returns all 12, most likely first: [{ pc, score }].
+// Pa and the other swaras usually sit, and by how much of the melody falls in the scale it makes
+// (below), with a little for the last held note. Returns all 12, most likely first: [{ pc, score }].
+const SCALE_FITS = [[0, 2, 4, 5, 7, 9, 11], [0, 2, 4, 6, 7, 9, 11], [0, 2, 4, 5, 7, 9, 10], [0, 2, 3, 5, 7, 9, 10]];
 const SA_TEMPLATE = [1, -0.3, 0.25, 0.1, 0.25, 0.2, 0.02, 0.75, 0.1, 0.25, 0.15, 0.25];
 export function findTonic(notes) {
   const hist = new Array(12).fill(0);
@@ -462,13 +473,21 @@ export function findTonic(notes) {
   for (const n of notes) { const d = Math.min(n.t1 - n.t0, 2); hist[((n.midi % 12) + 12) % 12] += d; tot += d; }
   if (!tot) return [];
   for (let i = 0; i < 12; i++) hist[i] /= tot;
-  const held = notes.filter(n => n.t1 - n.t0 >= 0.25);
-  const firstPc = held.length ? ((held[0].midi % 12) + 12) % 12 : -1, lastPc = held.length ? ((held[held.length - 1].midi % 12) + 12) % 12 : -1;
+  const held = notes.filter(n => n.t1 - n.t0 >= 0.25), lastPc = held.length ? ((held[held.length - 1].midi % 12) + 12) % 12 : -1;
+  // A little for the last held note (a whole tune ends on Sa); more pulls a part-recording's Sa
+  // to wherever it stopped (0.05 kept all real recordings and 12 of the 14 songs right).
+  const LAST_BONUS = 0.05;
   return Array.from({ length: 12 }, (_, pc) => {
     let s = 0;
     for (let k = 0; k < 12; k++) s += hist[(pc + k) % 12] * SA_TEMPLATE[k];
-    if (pc === firstPc) s += 0.05;
-    if (pc === lastPc) s += 0.15;
+    // How much of the melody fits the scale this Sa makes: Bilawal (all shuddh), or Kalyan,
+    // Khamaj or Kafi a little less. Tutorials pick the Sa that needs the fewest komal notes, and a
+    // melody resting on Ga, Pa or Dha otherwise pulls the Sa there (measured on 14 songs against
+    // their tutorials: 12 right, against 8 without this).
+    const fitOf = sc => sc.reduce((a, k) => a + hist[(pc + k) % 12], 0);
+    s += Math.max(fitOf(SCALE_FITS[0]), ...SCALE_FITS.slice(1).map(sc => fitOf(sc) - 0.05));
+    if (pc === lastPc) s += LAST_BONUS;
+
     return { pc, score: Math.round(s * 1000) / 1000 };
   }).sort((a, b) => b.score - a.score);
 }
@@ -607,7 +626,20 @@ export function mainMelody(notes, anyRange) {
   const pct = q => { let acc = 0; for (const n of byPitch) { acc += n.t1 - n.t0; if (acc >= q * tot) return n.midi; } return byPitch[byPitch.length - 1].midi; };
   const lo = pct(0.1) - 3, hi = pct(0.9) + 3;
   const lvs = notes.map(n => n.lv || 0).sort((a, b) => a - b), medLv = lvs[lvs.length >> 1];
-  return notes.filter(n => (anyRange || (n.midi >= lo && n.midi <= hi)) && n.t1 - n.t0 >= 0.1 && !(medLv > 0 && (n.lv || 0) < 0.2 * medLv));
+  const kept = notes.filter(n => (anyRange || (n.midi >= lo && n.midi <= hi)) && n.t1 - n.t0 >= 0.1 && !(medLv > 0 && (n.lv || 0) < 0.2 * medLv));
+  return fragments(kept, 0.15);
+}
+
+// Fragments: a short note (under `short` s) straight after a longer one, on the same pitch or a
+// semitone away, is the end of that note (its decay or a bend), not a note: the longer note keeps it.
+function fragments(notes, short) {
+  const out = [];
+  for (const n of notes) {
+    const p = out[out.length - 1];
+    if (p && n.t1 - n.t0 < short && n.t0 - p.t1 < 0.06 && Math.abs(n.midi - p.midi) <= 1 && p.t1 - p.t0 > n.t1 - n.t0) { p.t1 = n.t1; continue; }
+    out.push({ ...n });
+  }
+  return out;
 }
 
 // Best to play: the singer's line where the singer sings, the background melody in the gaps of two
@@ -633,6 +665,26 @@ export function phraseOctaves(notes, semiOf) {
     while (j < notes.length && notes[j].t0 - notes[j - 1].t1 < 0.6) j++;
     const ph = notes.slice(i, j), shift = bestOctave(ph.map(semiOf));
     for (const n of ph) out.push({ ...n, midi: n.midi + shift });
+    i = j;
+  }
+  return out;
+}
+
+// One register for the whole melody: a phrase (notes up to a pause of 0.6 s) whose middle lies more
+// than STEADY semitones from the melody's middle moves by octaves towards it. Voices singing the
+// tune an octave apart (a man and a woman, a choir, a child) are written as one line, as a
+// tutorial writes it and a flute plays it.
+const STEADY = 7;
+export function steadyRegister(notes) {
+  if (notes.length < 8) return notes;
+  const med = list => { const v = []; for (const n of list) for (let k = 0; k < Math.max(1, Math.round((n.t1 - n.t0) * 10)); k++) v.push(n.midi); v.sort((a, b) => a - b); return v[v.length >> 1]; };
+  const all = med(notes), out = [];
+  let i = 0;
+  while (i < notes.length) {
+    let j = i + 1;
+    while (j < notes.length && notes[j].t0 - notes[j - 1].t1 < 0.6) j++;
+    const ph = notes.slice(i, j), d = med(ph) - all, k = Math.abs(d) > STEADY ? -12 * Math.round(d / 12) : 0;
+    for (const n of ph) out.push(k ? { ...n, midi: n.midi + k } : n);
     i = j;
   }
   return out;
@@ -912,7 +964,7 @@ export function transcribe(track, levels, opts) {
   const from = o.from || 0, to = o.to || Infinity;
   const folded = foldOctaves(all.filter(n => Math.abs(n.midi - mid) <= 17 && n.t0 >= from && n.t1 <= to));
   // o.main (default): the main melody, plain; o.main false: every note found, with grace notes.
-  const list = o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable);
+  const list = steadyRegister(o.main === false ? graceNotes(folded) : mainMelody(folded, o.playable));
   return fromNotes(track ? markGlides(list, track) : list, o);
 }
 
