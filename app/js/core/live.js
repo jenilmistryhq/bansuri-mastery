@@ -180,8 +180,19 @@ export function holdMeter(opts) {
     ghostTxt.textContent = best ? `Your best on this note: ${best.toFixed(1)} s` : "";
   }
   // Tone glow: bright when the sound is clear, dim when it is airy (from the detector's clarity).
-  let glow = 0;
-  const glowTxt = lvEl("span", { class: "lv-glowtxt" });
+  // The label keeps its place on the page and is only hidden or shown, and it changes only after the
+  // tone has stayed in a new band for half a second, so the page never jumps while you play.
+  let glow = 0, toneShown = "", toneWant = "", toneSince = 0;
+  const glowTxt = lvEl("span", { class: "lv-glowtxt", style: "visibility:hidden" }, "Tone: clear");
+  function showTone(r) {
+    const sounding = r.semi !== null && r.semi > -7.5;
+    const want = sounding ? (glow > 0.93 ? "Tone: clear" : glow > 0.85 ? "Tone: fairly clear" : "Tone: airy") : r.t - lastSound > 1.2 ? "" : toneShown;
+    if (want !== toneWant) { toneWant = want; toneSince = r.t; }
+    if (want === toneShown || r.t - toneSince < 0.5) return;
+    toneShown = want;
+    if (want) glowTxt.textContent = want;
+    glowTxt.style.visibility = want ? "visible" : "hidden";
+  }
   const noteBig = lvEl("div", { class: "lv-big" }, "-");
   const secs = lvEl("div", { class: "lv-secs" }, "0.0 s");
   const needle = lvEl("i", { class: "lv-needle" });
@@ -221,7 +232,6 @@ export function holdMeter(opts) {
     const wrap = el.querySelector(".lv-ringwrap");
     glow = glow * 0.85 + (r.semi !== null ? (r.clarity || 0) : 0) * 0.15;
     wrap.style.setProperty("--glow", Math.max(0, (glow - 0.6) / 0.4).toFixed(2));
-    glowTxt.textContent = r.semi === null ? "" : glow > 0.93 ? "Tone: clear" : glow > 0.85 ? "Tone: fairly clear" : "Tone: airy";
     if (r.semi !== null && r.semi > -7.5) {
       lastSound = r.t;
       if (!cur) cur = { start: r.t, frames: 0, cents: 0, clarity: 0, notes: [] };
@@ -238,6 +248,7 @@ export function holdMeter(opts) {
       if (t !== null && r.near !== t) msg.textContent = `That is ${codeOf(r.near)} (${westOf(r.near)}). The target is ${codeOf(t)}.`;
       else msg.textContent = s.ok ? (s.held < 1.5 ? "Good start. Keep the air steady." : pitchAdvice(r.cents)) : pitchAdvice(r.cents);
     } else if (cur && r.t - lastSound > 0.6) noteEnded(cur);
+    showTone(r);
     if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; }
     if (s.done) {
       lvChime();

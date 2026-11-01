@@ -477,12 +477,14 @@ try {
       await lp.click(".lv-hold .lv-primary");
       await lp.waitForSelector(".lv-hold .lv-intro", { timeout: 3000 }).then(() => check(true, "the first microphone use explains why, before the browser asks"), () => check(false, "the first microphone use explains why, before the browser asks"));
       await lp.click(".lv-hold .lv-intro .lv-primary");
-      await sleep(300); await tone(2);
+      await sleep(300);
+      check(await lp.$eval(".lv-hold .lv-glowtxt", e => e.style.visibility === "hidden" && e.textContent !== ""), "long tones: the tone label keeps its place, hidden, until a note sounds (no jumping)");
+      await tone(2);
       await sleep(5000);
       check(await lp.$(".lv-hold.lv-passed") === null && /target is S/.test(await lp.$eval(".lv-hold .lv-msg", e => e.textContent)), "long tones: holding the wrong note (R) does not pass, and says so");
       await tone(0.08);
       await lp.waitForSelector(".lv-hold.lv-passed", { timeout: 9000 }).then(() => check(true, "long tones: holding Sa for 4 s fills the ring"), () => check(false, "long tones: holding Sa for 4 s fills the ring"));
-      check(/Tone: (clear|fairly clear|airy)/.test(await lp.$eval(".lv-hold .lv-glowtxt", e => e.textContent)), "long tones: the ring glows with the tone quality heard");
+      check(await lp.$eval(".lv-hold .lv-glowtxt", e => e.style.visibility === "visible" && /Tone: (clear|fairly clear|airy)/.test(e.textContent)), "long tones: the ring glows with the tone quality heard");
       await tone(null);
 
       await tab("echo");
