@@ -846,3 +846,10 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
   body.printing-notation #tr-notation::before { content: attr(data-title); visibility: visible; font-size: 18pt; font-weight: 700; display: block; margin-bottom: 8pt; color: #000; }
   body.printing-notation #tr-notation .nview { max-height: none; overflow: visible; background: #fff; color: #000; border: 0; }
 }
+
+/* Tone check */
+.checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.tonepage .table th[scope=row] { font-weight: 600; }
+.tonepage .tablewrap { overflow-x: auto; }
+.tonepage table { width: 100%; border-collapse: collapse; }
+.tonepage th, .tonepage td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }

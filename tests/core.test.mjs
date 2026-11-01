@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { codeOf, fingOf, lessonFor, octName, tuneCents, hzOf } from "../app/js/core/theory.js";
 import { parseNotation, buildEvents, analyzeRange, PRESETS } from "../app/js/core/notation.js";
 import { getSettings, setSettings, saHz } from "../app/js/core/settings.js";
-import { CHECK_PLANS, verdict, segmentsFrom, compareToExpected, cleanFrames, tuningOffset, playableOnly } from "../app/js/core/pitch.js";
+import { CHECK_PLANS, verdict, segmentsFrom, compareToExpected, cleanFrames, tuningOffset, playableOnly, toneProfile } from "../app/js/core/pitch.js";
 
 let passed = 0;
 function test(name, fn) {
@@ -30,6 +30,21 @@ test("tuning: equal by default, tanpura (just) when chosen", () => {
     assert.ok(Math.abs(hzOf(7) / hzOf(0) - 1.5) < 0.002, "Pa is a pure fifth");
     assert.ok(Math.abs(hzOf(4) / hzOf(0) - 1.25) < 0.002, "Ga is 5/4");
   } finally { setSettings({ intonation: "equal" }); }
+});
+
+test("tone profile: steadiness, breath noise and the start of a held note", () => {
+  const sr = 22050, tone = (noise, wobble, scoop) => {
+    let seed = 5, ph = 0; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647 - 0.5; };
+    const x = new Float32Array(sr * 4);
+    for (let i = 0; i < x.length; i++) { const t = i / sr, f = 523.25 * Math.pow(2, (wobble * Math.sin(2 * Math.PI * 4 * t) + (t < 0.2 ? scoop * (1 - t / 0.2) : 0)) / 1200); ph += 2 * Math.PI * f / sr; x[i] = Math.min(1, t / 0.05) * (0.3 * Math.sin(ph) + 0.08 * Math.sin(2 * ph)) + noise * rnd(); }
+    return toneProfile(x, sr);
+  };
+  const clean = tone(0, 2, 0), breathy = tone(0.15, 2, 0), wavy = tone(0, 25, 0), scooped = tone(0, 2, -80);
+  assert.equal(clean.note, 0);
+  assert.ok(clean.air < 1 && breathy.air > clean.air + 1, "breath noise " + clean.air + " / " + breathy.air);
+  assert.ok(clean.pitchSD < 6 && wavy.pitchSD > 12, "pitch spread " + clean.pitchSD + " / " + wavy.pitchSD);
+  assert.ok(scooped.overshoot >= 40 && clean.overshoot < 25, "start " + clean.overshoot + " / " + scooped.overshoot);
+  assert.equal(toneProfile(new Float32Array(sr), sr), null);
 });
 
 test("codeOf / octName", () => {

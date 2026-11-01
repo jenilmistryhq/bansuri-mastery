@@ -186,6 +186,55 @@ export function toneEstimate(levels, clarities, frames, segments, hopS) {
   return { score, voicedShare: Math.round(voicedShare * 100) / 100, clarity: Math.round(clarity * 100) / 100, wobble: wobble === null ? null : Math.round(wobble), text: words[score] };
 }
 
+// A fuller picture of one held note's tone (Tone check, views/tone.js): data is the recording
+// (mono), sr its rate. Every 10 ms over 46 ms windows: loudness, pitch and YIN clarity. The held
+// part is where the loudness stays above 60% of its median and the pitch within 40 cents of the
+// note; it must last at least 1.5 s. Returns null when no held note is found, else:
+//   note (semitones from Sa, rounded), cents (its average offset from the note),
+//   pitchSD (cents: how much the pitch wavers while held), levelCV (%: how much the loudness
+//   wavers), air (%: the share of the sound that is not the note, from YIN clarity: breath noise),
+//   attack (ms from the first sound to the steady note), overshoot (cents: how far the pitch
+//   strays at the start), seconds (held).
+export function toneProfile(data, sr) {
+  const win = Math.round(sr * 0.046), hop = Math.round(sr * 0.01), fr = [];
+  for (let p = 0; p + win <= data.length; p += hop) {
+    const b = data.subarray(p, p + win);
+    let sq = 0; for (let i = 0; i < b.length; i++) sq += b[i] * b[i];
+    const y = yin(b, sr, 150, 3000, 0.2);
+    fr.push({ lv: Math.sqrt(sq / b.length), s: y ? relSemi(y.f) : null, cl: y ? y.clarity : 0 });
+  }
+  const peak = Math.max(0, ...fr.map(f => f.lv));
+  if (peak < 0.005) return null;
+  const sound = fr.map((f, i) => (f.lv > peak * 0.1 ? i : -1)).filter(i => i >= 0);
+  if (sound.length < 150) return null;
+  const med = a => { const v = a.slice().sort((x, y) => x - y); return v[v.length >> 1]; };
+  const lvMed = med(sound.map(i => fr[i].lv)), pitched = sound.filter(i => fr[i].s !== null);
+  if (pitched.length < 100) return null;
+  const pMed = med(pitched.map(i => fr[i].s)), note = Math.round(pMed);
+  const ok = i => fr[i].lv >= 0.6 * lvMed && fr[i].s !== null && Math.abs(fr[i].s - pMed) <= 0.4;
+  // The longest run of held frames (a short dip allowed).
+  let best = [0, -1], a = -1, miss = 0;
+  for (let i = sound[0]; i <= sound[sound.length - 1] + 1; i++) {
+    if (i <= sound[sound.length - 1] && ok(i)) { if (a < 0) a = i; miss = 0; if (i - a > best[1] - best[0]) best = [a, i]; }
+    else if (a >= 0 && ++miss > 8) { a = -1; miss = 0; }
+  }
+  const [h0, h1] = best;
+  if ((h1 - h0) * 0.01 < 1.5) return null;
+  // The middle of the held part (the first and last 10% left out: settling and fading).
+  const m0 = h0 + Math.round((h1 - h0) * 0.1), m1 = h1 - Math.round((h1 - h0) * 0.1), mid = [];
+  for (let i = m0; i <= m1; i++) if (fr[i].s !== null) mid.push(i);
+  const mean = v => v.reduce((x, y) => x + y, 0) / v.length, sd = v => { const m = mean(v); return Math.sqrt(mean(v.map(x => (x - m) * (x - m)))); };
+  const cents = mid.map(i => fr[i].s * 100), lvls = mid.map(i => fr[i].lv), cl = mean(mid.map(i => fr[i].cl));
+  const start = sound[0], first = [];
+  // Within the octave: a detector reading an octave off at the very start is not the player's.
+  for (let i = start; i < Math.min(h0 + 15, fr.length); i++) if (fr[i].s !== null) { const d = (fr[i].s - pMed) * 100; first.push(Math.abs(d - 1200 * Math.round(d / 1200))); }
+  return {
+    note, cents: Math.round(mean(cents) - note * 100), pitchSD: Math.round(sd(cents) * 10) / 10,
+    levelCV: Math.round(sd(lvls) / mean(lvls) * 1000) / 10, air: Math.round((1 - cl) * 1000) / 10,
+    attack: Math.max(0, (h0 - start) * 10), overshoot: first.length ? Math.round(Math.max(...first)) : 0, seconds: Math.round((h1 - h0) * 0.01 * 10) / 10,
+  };
+}
+
 // rows[i] = { n, expected, near, cents, held, t0, t1, status, verdict: [label, kind] }
 // status: "ok" (expected note found), "different", "missing", "extra" (beyond the plan), "free" (no plan)
 // With a plan, segments are aligned to the expected notes (an edit-distance alignment), so one stray

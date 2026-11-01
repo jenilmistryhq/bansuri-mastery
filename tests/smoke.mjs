@@ -1143,6 +1143,13 @@ try {
     }
     fs.unlinkSync(wavPath);
   });
+  await section("Tone check", async () => {
+    await go("/tone");
+    check(/how does your note sound/.test(await text()), "tone: the page opens");
+    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Hold the note/.test(b.textContent)).click());
+    await page.waitForFunction(() => /out of 10|No steady note|could not be read/.test(document.querySelector("#main").textContent), { timeout: 30000 }).catch(() => {});
+    check(/out of 10|No steady note/.test(await page.$eval("#main", e => e.textContent)), "tone: a check with the (fake) microphone ends in a result or a clear message");
+  });
   await section("Standalone bench pages", async () => {
     for (const f of ["interactive-flute.html", "practice-bench.html"]) {
       await page.goto(BASE + "bansuri-mastery/tools/" + f, { waitUntil: "networkidle0" });
@@ -1160,7 +1167,7 @@ try {
   await section("Accessibility (axe-core: WCAG 2.1 A and AA rules)", async () => {
     {
       const axeSrc = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "node_modules", "axe-core", "axe.min.js"), "utf8");
-      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
+      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/tone", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
         await go(route);
         await sleep(400);
         await page.evaluate(axeSrc);
