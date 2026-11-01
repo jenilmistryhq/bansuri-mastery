@@ -50,7 +50,8 @@ export const colors = () => {
 export function fitCanvas(canvas, aspect) {
   const w = canvas.parentElement ? canvas.parentElement.clientWidth : 600, dpr = window.devicePixelRatio || 1;
   // On a phone the field is taller than it is on a wide screen, so the game is not a thin strip.
-  const W = Math.max(280, Math.min(900, w)), H = Math.round(W < 560 ? Math.min(W * aspect * 1.8, window.innerHeight * 0.55) : W * aspect);
+  // Wide screens: up to 1100 px wide, and never taller than about 60% of the window.
+  const W = Math.max(280, Math.min(1100, w)), H = Math.round(W < 560 ? Math.min(W * aspect * 1.8, window.innerHeight * 0.55) : Math.min(W * aspect, Math.max(260, window.innerHeight * 0.6)));
   canvas.width = W * dpr; canvas.height = H * dpr; canvas.style.width = W + "px"; canvas.style.height = H + "px";
   const g = canvas.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
   return { g, W, H };

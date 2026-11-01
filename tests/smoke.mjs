@@ -839,6 +839,21 @@ try {
       const gameBtn = label => lp.evaluate(l => { const b = [...document.querySelectorAll("#main .game-card button")].find(x => x.textContent.trim() === l); if (b) b.click(); return !!b; }, label);
       const gameText = () => lp.$eval("#main .game-card", e => e.textContent);
       const waitText = (re, ms) => lp.waitForFunction(r => new RegExp(r).test(document.querySelector("#main .game-card").textContent), { timeout: ms || 8000 }, re.source).catch(() => {});
+      // Back from a game returns to the list of games (not Today), and so does Close.
+      await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+      await openGame("Balloon");
+      const inGame = await lp.evaluate(() => location.hash);
+      await lp.goBack(); await lp.waitForSelector("#main .gamecard", { timeout: 5000 }).catch(() => {});
+      check(inGame === "#/play/balloon" && await lp.evaluate(() => location.hash === "#/play" && !!document.querySelector("#main .gamecard") && !document.querySelector("#main .game-card:not([hidden])")), "games: each game has its own address, and Back from a game returns to the game list (" + inGame + ")");
+      await openGame("Bullseye"); await gameBtn("Close"); await lp.waitForSelector("#main .gamecard", { timeout: 5000 }).catch(() => {});
+      check(await lp.evaluate(() => location.hash === "#/play" && !document.querySelector("#main .game-card:not([hidden])")), "games: Close returns to the game list");
+      await lp.goto(BASE + "#/play/bingo", { waitUntil: "networkidle0" }); await lp.waitForSelector("#main .bingo", { timeout: 5000 }).catch(() => {});
+      check(!!(await lp.$("#main .game-card:not([hidden]) .bingo")), "games: a game's address opens it directly");
+      await lp.setViewport({ width: 1900, height: 950 });
+      await lp.goto(BASE + "#/play/balloon", { waitUntil: "networkidle0" }); await lp.waitForSelector("#main .game-canvas"); await sleep(200);
+      const geo = await lp.evaluate(() => { const c = document.querySelector("#main .game-canvas").getBoundingClientRect(); return { l: c.left, r: innerWidth - c.right, w: c.width, h: c.height }; });
+      check(Math.abs(geo.l - geo.r) < 30 && geo.w >= 1000 && geo.h <= 950 * 0.62, "games: on a wide screen the game is centred and fills the column (" + JSON.stringify(geo) + ")");
+      await lp.setViewport({ width: 800, height: 600 });
       await openGame("Long-breath boat"); await gameBtn("Start"); await waitText(/Sail!/); await tone(0); await sleep(2500); await tone(null); await gameBtn("Stop"); await waitText(/sailed/);
       check(/sailed [1-9]\d* m/.test(await gameText()), "games: Long-breath boat sails while a steady note is held");
       await openGame("Bullseye"); await gameBtn("Start"); await waitText(/Hold this note:/); await tone(0); await waitText(/points/, 6000); await tone(null);

@@ -44,19 +44,28 @@ async function loadRagas() {
   }))).filter(r => r && r.notes.length >= 4);
 }
 
+// Each game has its own address (#/play/<game>), so the browser's Back button returns to the list.
+// fromList: the game was opened from the list in this visit, so Close can simply go back.
+let fromList = false;
+
 export async function render(main, { params, view }) {
   const page = h("div", { class: "page" });
   main.append(page);
   const cleanups = [];
   let game = null;
   const stage = h("div", { class: "card game-card", hidden: true });
-  const onKey = e => { if (e.key === "Escape" && game) closeGame(); };
+  const onKey = e => { if (e.key === "Escape" && game) leave(); };
+  // Close: back to the list (the previous history entry when the game was opened from it).
+  const leave = () => {
+    if (view === "play" && params[0]) { if (fromList) { fromList = false; history.back(); } else location.replace("#/play"); }
+    else closeGame();
+  };
   const closeGame = () => { if (game) { game.destroy(); game = null; } stage.hidden = true; stage.replaceChildren(); stage.classList.remove("game-full"); document.documentElement.classList.remove("noscroll"); document.removeEventListener("keydown", onKey); };
   cleanups.push(closeGame);
   function open(title, make, note) {
     closeGame();
     game = make();
-    stage.append(...[h("div", { class: "row between" }, h("h2", null, title), h("button", { type: "button", class: "btn ghost small", onclick: closeGame }, "Close")), note, game.el].filter(Boolean));
+    stage.append(...[h("div", { class: "row between" }, h("h2", null, title), h("button", { type: "button", class: "btn ghost small", onclick: leave }, "Close")), note, game.el].filter(Boolean));
     // Full screen while playing: a bigger playing field and nothing else to scroll past.
     stage.hidden = false; stage.classList.add("game-full"); stage.scrollTop = 0;
     document.documentElement.classList.add("noscroll"); document.addEventListener("keydown", onKey);
@@ -129,13 +138,16 @@ export async function render(main, { params, view }) {
   };
   // Which game helps with which quest.
   const FOR_QUEST = { ornament: "meendbridge", swell: "swell", boat: "boat", bullseye: "bullseye", wrong: "wrong", sam: "sam", road: "road", hold: "boat", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
+  // Opening a game goes to its address; the route then opens it (below).
+  const go = key => { fromList = true; location.hash = "#/play/" + key; };
+  const NAV_ONLY = new Set(["compose", "quick"]);
   const qs = questState(), left = qs.list.filter(q => !q.done && FOR_QUEST[q.id]);
   const pick = left.length ? FOR_QUEST[left[0].id] : "balloon";
   const [pTitle, pText, pGo] = GAMES[pick];
   page.append(h("section", { class: "card playnow" },
     h("span", { class: "small muted" }, left.length ? "For today's quest: " + left[0].text : "A good one to play now"),
     h("h2", null, pTitle), h("p", { class: "small muted" }, pText),
-    h("button", { type: "button", class: "btn primary big", onclick: pGo }, "Play " + pTitle)), stage);
+    h("button", { type: "button", class: "btn primary big", onclick: () => (NAV_ONLY.has(pick) ? pGo() : go(pick)) }, "Play " + pTitle)), stage);
   const done = qs.list.filter(q => q.done).length;
   page.append(h("a", { class: "questline small", href: "#/progress" }, "Quests: " + done + " of " + qs.list.length + " done today (20 XP each, 20 more for all three). Every game round earns a little XP."));
 
@@ -144,7 +156,12 @@ export async function render(main, { params, view }) {
   const GROUPS = [["With your flute", ["steer", "balloon", "falling", "jam", "boat", "road", "lanterns", "bullseye", "floors"]],
     ["Ornaments and technique", ["meendbridge", "kanflick", "murkichase", "andolanlamp", "swell", "tongue"]],
     ["By ear (no microphone)", ["nameorn", "wrong", "bingo", "higherlower", "sam"]], ["Make and practise", ["compose", "quick"]]];
-  for (const [head, keys] of GROUPS) page.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, keys.filter(k => k !== pick).map(k => card(GAMES[k][0], GAMES[k][1], GAMES[k][2]))));
+  for (const [head, keys] of GROUPS) page.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, keys.filter(k => k !== pick).map(k => card(GAMES[k][0], GAMES[k][1], NAV_ONLY.has(k) ? GAMES[k][2] : () => go(k)))));
+  // #/play/<game>: open that game (the list stays underneath).
+  if (view === "play" && params[0]) {
+    if (GAMES[params[0]] && !NAV_ONLY.has(params[0])) await GAMES[params[0]][2]();
+    else location.replace("#/play");
+  }
 
   // Collection.
   const coll = h("details", { class: "card" }, h("summary", null, h("b", null, "Your collection: songs and ragas")), h("p", { class: "small muted" }, "Songs and ragas unlock as the course reaches them. A song is mastered when you mark it \"I can play it\" or get 2 stars on it."));
