@@ -80,18 +80,35 @@ export const LISTEN_KINDS = {
     svg.append(svgEl("rect", { x: 0, y: 20, width: 200, height: 80, rx: 40, class: "fl-body" }), svgEl("circle", { cx: 100, cy: 60, r: 26, class: "fl-hole" }));
     const pad = svgEl("rect", { x: 40, y: 22, width: 90, height: 76, rx: 36, class: "fl-pad", style: "opacity:1" });
     svg.append(pad);
-    const slider = h("input", { type: "range", min: "0", max: "100", step: "1", value: "100", "aria-label": "How much of hole 1 is covered", class: "lesson-slider" });
+    const slider = h("input", { type: "range", min: "0", max: "100", step: "1", value: s.mode === "slide" ? "0" : "100", "aria-label": s.mode === "slide" ? "How much of the hole is covered" : "How much of hole 1 is covered", class: "lesson-slider" });
     const name = h("b", { class: "lesson-note" }, "G");
     const cents = h("span", { class: "small muted" });
-    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, "Press Play, then slide your finger off the hole, slowly.");
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.mode === "slide" ? "Press Play, then slide your finger slowly across the hole, all the way." : "Press Play, then slide your finger off the hole, slowly.");
     const play = h("button", { type: "button", class: "btn primary" }, icon("play"), " Play");
-    const semi = () => halfHoleSemi(Number(slider.value) / 100, sweet);
+    const slide = s.mode === "slide", lo = s.closed === undefined ? 4 : s.closed, hi = s.open === undefined ? 6 : s.open;
+    const semi = () => (slide ? hi - (hi - lo) * Number(slider.value) / 100 : halfHoleSemi(Number(slider.value) / 100, sweet));
+    let path = [];
     const draw = () => {
       const cover = Number(slider.value) / 100, x = semi();
       pad.setAttribute("x", String(-16 + 71 * cover)); // centred on the hole when covered; clear of it when open
-      const near = Math.round(x), c = Math.round((x - 5) * 100);
-      name.textContent = Math.abs(x - 5) < 0.5 ? "m" : near <= 4 ? "G" : "M";
-      cents.textContent = (c > 0 ? "+" : "") + c + " cents from shuddha Ma";
+      if (slide) {
+        name.textContent = cover >= 0.97 ? codeOf(lo) : cover <= 0.03 ? codeOf(hi) : codeOf(hi) + " ~ " + codeOf(lo);
+        cents.textContent = Math.round(cover * 100) + "% covered";
+        // A meend: from open to covered (or back), slowly (over 1.2 s or more), with no jumps.
+        const t = performance.now() / 1000;
+        path.push({ t, c: cover });
+        path = path.filter(p => t - p.t < 6);
+        const start = path.findIndex(p => p.c <= 0.03), end = path.length - 1;
+        if (v && !api.data[s.id] && cover >= 0.97 && start >= 0 && path[end].t - path[start].t >= 1.2 * (window.__lessonTime ? 0.05 : 1)) {
+          const steps = path.slice(start).every((p, k, a) => !k || p.c - a[k - 1].c <= 0.25);
+          if (steps) { ding(true); msg.textContent = "A meend: " + codeOf(hi) + " melted into " + codeOf(lo) + ", through every pitch between."; api.data[s.id] = { slid: true }; api.save(); api.ready(); }
+          else msg.textContent = "That was a jump. Slower: the glide is the journey.";
+        }
+      } else {
+        const near = Math.round(x), c = Math.round((x - 5) * 100);
+        name.textContent = Math.abs(x - 5) < 0.5 ? "m" : near <= 4 ? "G" : "M";
+        cents.textContent = (c > 0 ? "+" : "") + c + " cents from shuddha Ma";
+      }
       if (v) v.setPitch(hzOf(x));
     };
     const stop = () => { clearInterval(timer); if (v) { v.voice.stop(ac().currentTime + 0.05); v = null; } play.replaceChildren(icon("play"), " Play"); };
@@ -103,6 +120,7 @@ export const LISTEN_KINDS = {
       v = { voice, setPitch(f) { const now = ac().currentTime; voice.ramp(last, f, now, 0.06); last = f; } };
       play.replaceChildren(icon("stop"), " Stop");
       timer = setInterval(() => {
+        if (slide) return;
         held = Math.abs(semi() - 5) <= 0.1 ? held + 0.2 : 0;
         if (held >= 1 && !api.data[s.id]) { ding(true); msg.textContent = "Shuddha Ma: about " + Math.round(sweet * 100) + "% covered on this flute. On yours, the tuner decides."; api.data[s.id] = { sweet: Math.round(sweet * 100) }; api.save(); api.ready(); }
       }, 200);

@@ -70,7 +70,7 @@ export function lessonPlayer(lesson, opts) {
     const head = s.title ? h("h2", { class: "lesson-title", tabindex: "-1" }, s.title) : null;
     stage.replaceChildren(...[head, s.intro ? h("p", { class: "lesson-intro" }, s.intro) : null, live.el].filter(Boolean));
     stage.dataset.kind = s.kind; stage.dataset.step = s.id; stage.dataset.target = s.target === undefined ? "" : String(s.target);
-    stage.dataset.notes = (s.phrase || s.targets || []).join(","); // for the tests' lesson walker
+    stage.dataset.notes = (s.phrase || s.targets || (s.ex ? [s.ex.from ?? s.ex.grace ?? s.ex.note ?? (s.ex.notes || [])[0], s.ex.to ?? s.ex.main].filter(x => x !== undefined) : [])).join(","); // for the tests' lesson walker
     if (head) head.focus({ preventScroll: true });
     el.scrollIntoView({ block: "start" });
     if (s.always) api.ready(true);
