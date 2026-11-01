@@ -1460,6 +1460,98 @@ try {
     check(await lp.evaluate(() => [...document.querySelectorAll(".lesson-title, .lesson-q, .lesson-option")].every(e => /[\u0900-\u097F]/.test(e.textContent))), "hindi: the lesson's first step is in Hindi");
     await ctx.close();
   });
+  await section("Every day's lesson, walked through", async () => {
+    // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete
+    // each kind of step (the player marks the step's kind on the stage). A fresh learner on the
+    // lesson's day, a synthetic microphone (Sa), fast timers. Finishing must open the next day.
+    const { LESSONS } = await import("../app/js/lessons/index.js");
+    for (const lesson of Object.values(LESSONS).filter(l => !process.env.WALK_ONLY || process.env.WALK_ONLY.split(",").includes(l.id))) {
+      const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+      const lp = await ctx.newPage();
+      await collectI18n(lp);
+      const errs = [];
+      lp.on("pageerror", e => errs.push(e.message));
+      await lp.evaluateOnNewDocument(() => {
+        if (!navigator.mediaDevices) return;
+        const voices = []; let current = 0;
+        const apply = (v, hz) => { const t = v.c.currentTime; if (hz) { v.o.frequency.setValueAtTime(hz, t); v.g.gain.setTargetAtTime(0.4, t, 0.005); } else v.g.gain.setTargetAtTime(0, t, 0.005); };
+        window.__tone = hz => { current = hz; voices.forEach(v => apply(v, hz)); };
+        navigator.mediaDevices.getUserMedia = async () => { const c = new AudioContext(), o = c.createOscillator(), g = c.createGain(), d = c.createMediaStreamDestination(); o.type = "triangle"; g.gain.value = 0; o.connect(g); g.connect(d); o.start(); const v = { c, o, g }; voices.push(v); apply(v, current); return d.stream; };
+        window.__lessonTime = 0.05;
+        document.addEventListener("click", e => { if (window.__walkDebug) console.log("CLICK " + (e.target.outerHTML || "").slice(0, 160)); }, true);
+        window.addEventListener("hashchange", () => { if (window.__walkDebug) console.log("HASH " + location.hash); });
+      });
+      if (process.env.WALK_DEBUG) { lp.on("console", m => { if (/^(CLICK|HASH)/.test(m.text())) console.log("      " + m.text()); }); await lp.evaluateOnNewDocument(() => { window.__walkDebug = true; }); }
+      const SA = 523.251;
+      const tone = hz => lp.evaluate(f => window.__tone(f), hz);
+      const clickL = (sel, re) => lp.evaluate((sel, src) => { const b = [...document.querySelectorAll(sel)].find(x => new RegExp(src).test(x.textContent) && !x.disabled && !x.hidden); if (b) b.click(); return !!b; }, sel, re.source);
+      const tapPart = id => lp.evaluate(id => document.querySelector(`.lesson-stage [data-part="${id}"]`).dispatchEvent(new MouseEvent("click", { bubbles: true })), id);
+      const isReady = () => lp.$eval(".lesson-next", b => !b.disabled);
+      const waitReady = ms => lp.waitForFunction(() => !document.querySelector(".lesson-next").disabled, { timeout: ms }).then(() => true, () => false);
+      const intro = async () => { await sleep(100); if (await lp.evaluate(() => { const b = document.querySelector(".lesson-stage .lv-intro .lv-primary"); if (b) b.click(); return !!b; })) await sleep(150); };
+      await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+      await lp.evaluate(day => {
+        localStorage.clear();
+        localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 }));
+        if (day > 0) {
+          const days = {}; for (let i = 0; i < day; i++) days[i] = { done: true };
+          localStorage.setItem("bansuri.progress", JSON.stringify({ current: day, startedAt: "2026-01-01", days, milestones: { M0: { status: "passed", attempts: [] } }, prefs: { howChosen: true } }));
+          localStorage.setItem("bansuri.lessons", JSON.stringify({ m0: { at: 0, done: "2026-01-01", data: { side: "right" } } }));
+        }
+      }, lesson.day);
+      await lp.goto(BASE + "#/lesson/" + lesson.id, { waitUntil: "networkidle0" });
+      await lp.reload({ waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main .lesson-cover .btn.primary");
+      await lp.evaluate(() => document.querySelector("#main .lesson-cover .btn.primary").click());
+      await lp.waitForSelector(".lesson-stage");
+      let stuck = null, steps = 0;
+      for (let guard = 0; guard < 60; guard++) {
+        const { kind, step } = await lp.$eval(".lesson-stage", e => ({ kind: e.dataset.kind, step: e.dataset.step }));
+        steps++;
+        if (kind === "listen" || kind === "choose") await lp.evaluate(() => document.querySelector(".lesson-option, .lesson-choice").click());
+        else if (kind === "quiz") {
+          for (let q = 0; q < 12 && !(await isReady()); q++) {
+            await lp.evaluate(() => { const b = [...document.querySelectorAll(".lesson-option")].find(x => !x.disabled && !x.classList.contains("wrong")); if (b) b.click(); });
+            await sleep(80); await clickL(".lesson-stage button", /Next question/); await sleep(80);
+          }
+        } else if (kind === "cards") await lp.evaluate(() => document.querySelectorAll(".lesson-card").forEach(c => c.querySelector("button").click()));
+        else if (kind === "form") await lp.evaluate(() => document.querySelectorAll(".lesson-chips").forEach(g => g.children[0].click()));
+        else if (kind === "timer") { await clickL(".lesson-stage button", /^Start/); await lp.waitForFunction(() => !document.querySelector(".lesson-stage .stack[hidden]"), { timeout: 8000 }).catch(() => {}); await lp.evaluate(() => document.querySelectorAll(".lesson-stage input[type=checkbox]").forEach(c => c.click())); }
+        else if (kind === "parts" || kind === "tapquiz") { for (let i = 0; i < 12 && !(await isReady()); i++) { const id = await lp.$eval(".lesson-stage .lesson-q b[data-part]", e => e.dataset.part).catch(() => null); if (!id) break; await tapPart(id); await sleep(50); } }
+        else if (kind === "holes") { const goal = await lp.$eval(".lesson-stage [data-goal]", e => e.dataset.goal); for (let i = 0; i < 6; i++) if (goal[i] === "X") await tapPart("h" + (i + 1)); await clickL(".lesson-stage button", /^Blow$/); }
+        else if (kind === "beat") { await clickL(".lesson-stage button", /^Start$/); await sleep(3400); for (let i = 0; i < 8; i++) { await lp.evaluate(() => document.querySelector(".lesson-pad").dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))); await sleep(833); } await waitReady(6000); }
+        else if (kind === "breathe") { await clickL(".lesson-stage button", /^Start$/); await waitReady(15000); }
+        else if (kind === "hiss") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(700); await tone(SA); await sleep(2500); await tone(0); await waitReady(5000); }
+        else if (kind === "firstSound") { await clickL(".lesson-stage button", /Start/); await intro(); await sleep(400); for (let k = 0; k < 5 && !(await isReady()); k++) { await tone(SA); await sleep(1300); await tone(0); await sleep(500); } }
+        else if (kind === "record") { await tone(SA); await clickL(".lesson-stage button", /Record/); await intro(); await waitReady(12000); await tone(0); }
+        else if (kind === "hold") { await clickL(".lesson-stage .lv-primary", /Start/); await intro(); await sleep(300); await tone(SA); await waitReady(8000); await tone(0); }
+        else if (kind === "hum") { await clickL(".lesson-stage button", /Hear Sa/); await sleep(900); await tone(SA); await clickL(".lesson-stage button", /Hum it/); await intro(); await waitReady(8000); await tone(0); }
+        else if (kind === "rhythm") { for (let k = 0; k < 8 && !(await isReady()); k++) { if (!(await clickL(".lesson-stage .linkbtn", /Next line/))) await clickL(".lesson-stage .btn.primary", /Start|Again|Next/); await sleep(400); for (let t = 0; t < 6; t++) { await lp.evaluate(() => document.querySelector(".lesson-pad").dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))); await sleep(60); } await sleep(1200); } }
+        else if (kind === "judge") { for (let k = 0; k < 8 && !(await isReady()); k++) { await clickL(".lesson-chip", /^A$/); await sleep(80); await clickL(".lesson-stage button", /Next pair/); await sleep(80); } }
+        else if (kind === "rubric") await lp.evaluate(() => document.querySelectorAll(".lesson-stage .lesson-chips").forEach(g => g.children[1].click()));
+        else if (kind === "order") { for (let k = 0; k < 40 && !(await isReady()); k++) await lp.evaluate(() => { const bs = [...document.querySelectorAll(".lesson-stage .lesson-chip:not(:disabled)")]; if (bs.length) bs[Math.floor(Math.random() * bs.length)].click(); }); }
+        else if (kind === "higherlower") { for (let i = 0; i < 20 && !(await isReady()); i++) { await clickL(".lesson-stage button", /Play|Next pair/); await sleep(120); await clickL(".lesson-chip", /Higher/); await sleep(80); } }
+        else if (kind === "custom") {
+          // Custom steps: a skip link, or the main button (then wait).
+          if (!(await isReady())) { if (!(await clickL(".lesson-stage .linkbtn", /Skip/))) await clickL(".lesson-stage .btn.primary", /./); await waitReady(8000); }
+        }
+        if (process.env.WALK_DEBUG) await lp.screenshot({ path: process.env.WALK_DEBUG + "/" + lesson.id + "-" + step + ".png" }).catch(() => {});
+        if (!(await lp.$(".lesson-next"))) { stuck = step + " (" + kind + "): left the lesson, now at " + await lp.evaluate(() => location.hash); break; }
+        if (!(await isReady())) { stuck = step + " (" + kind + ")"; break; }
+        const last = await lp.$eval(".lesson-count", e => { const [a, b] = e.textContent.split("/").map(Number); return a === b; });
+        await lp.evaluate(() => document.querySelector(".lesson-next").click());
+        if (last) break;
+        await lp.waitForFunction(st => document.querySelector(".lesson-stage") && document.querySelector(".lesson-stage").dataset.step !== st, { timeout: 4000 }, step).catch(() => {});
+        await sleep(100);
+      }
+      await lp.waitForSelector(".lesson-end", { timeout: 5000 }).catch(() => {});
+      const st = await lp.evaluate(() => JSON.parse(localStorage.getItem("bansuri.progress") || "{}"));
+      check(!stuck && st.current === lesson.day + 1 && st.days && st.days[lesson.day] && st.days[lesson.day].done,
+        "lesson " + lesson.id + " (Day " + lesson.day + ", " + steps + " steps): walked through; Day " + (lesson.day + 1) + " opens" + (stuck ? " - stuck at " + stuck : ""));
+      check(!errs.length, "lesson " + lesson.id + ": no page errors" + (errs.length ? ": " + errs[0] : ""));
+      await ctx.close();
+    }
+  });
   await section("Tone check", async () => {
     await go("/tone");
     check(/tone check: let the app listen/.test(await text()), "tone: the Tone check opens in the Coach");

@@ -2,18 +2,17 @@
 // once the step has been done; api.data keeps what the learner chose (saved with the lesson).
 import { h, icon } from "../util.js";
 import { ac, makeVoice, click } from "../core/audio.js";
-import { codeOf, nameOf, hzOf } from "../core/theory.js";
+import { codeOf, nameOf, hzOf, FING } from "../core/theory.js";
 import { startRecording, recordingSupported, saveRecording, newId } from "../recorder.js";
 import { today } from "../util.js";
 import { fluteSvg, partName, noteOfPattern } from "./flute.js";
+import { ding } from "./sound.js";
+import { MORE_KINDS } from "./kinds2.js";
+import { LISTEN_KINDS } from "./kinds3.js";
+import { decodeAudioFile, toneProfile } from "../core/pitch.js";
+import { MEASURES, BAND, BAND_CLS, bandOf } from "../views/tone.js";
 
-// A short rising "right" sound, and a soft low "try again".
-export function ding(ok = true) {
-  try {
-    const c = ac(), t = c.currentTime + 0.02;
-    (ok ? [[7, 0], [12, 0.11]] : [[-1, 0]]).forEach(([s, d]) => { const v = makeVoice(hzOf(s), t + d, { level: 0.18 }); v.stop(t + d + (ok ? 0.22 : 0.3)); });
-  } catch (e) { /* audio unavailable */ }
-}
+export { ding };
 
 function shuffle(list) { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const reveal = (ok, head, text) => h("div", { class: "lesson-reveal " + (ok ? "good" : "warn") }, h("b", null, head), text ? h("p", null, text) : null);
@@ -29,6 +28,8 @@ export function beatScore(taps, beats) {
 }
 
 export const STEP_KINDS = {
+  ...MORE_KINDS,
+  ...LISTEN_KINDS,
   // Listen to a recording, then guess. { audio, prompt, options: [{ text, right }], yes, no, explain }
   listen: { make(s, api) {
     const audio = new Audio(s.audio);
@@ -211,7 +212,7 @@ export const STEP_KINDS = {
     let k = 0, mistakes = 0;
     // The part's name in its own span after a fixed phrase, so each translates whole.
     const ask = h("p", { class: "lesson-q", "aria-live": "polite" });
-    const setAsk = id => ask.replaceChildren(h("span", null, "Find this part:"), " ", h("b", null, partName(id)));
+    const setAsk = id => ask.replaceChildren(h("span", null, "Find this part:"), " ", h("b", { "data-part": id }, partName(id)));
     const note = h("p", { class: "small muted" });
     const fl = fluteSvg({ side: api.data.side || "right", numbers: false, onTap: id => {
       if (k >= order.length) return;
@@ -260,7 +261,7 @@ export const STEP_KINDS = {
     function stopVoice() { if (voice) { try { voice.stop(ac().currentTime + 0.05); } catch (e) { /* ended */ } voice = null; } }
     blow.addEventListener("click", play);
     update();
-    return { el: h("div", { class: "stack" }, h("div", { class: "lesson-flute" }, fl.el), h("div", { class: "row lesson-noterow" }, h("div", { class: "stack tight" }, name, sub), blow), msg, found), destroy: stopVoice };
+    return { el: h("div", { class: "stack", "data-goal": FING[s.goal] || "" }, h("div", { class: "lesson-flute" }, fl.el), h("div", { class: "row lesson-noterow" }, h("div", { class: "stack tight" }, name, sub), blow), msg, found), destroy: stopVoice };
   } },
 
   // Record a few seconds into the Journal. { seconds, label, skip }
@@ -269,6 +270,19 @@ export const STEP_KINDS = {
     const btn = h("button", { type: "button", class: "btn primary big" }, icon("mic"), " Record " + s.seconds + " seconds");
     const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.start || "");
     const player = h("audio", { controls: true, hidden: true });
+    const heard = h("div", { class: "stack" });
+    // analyse: true measures the recording as Tone check does, as a second opinion to listen with.
+    async function analyse(blob) {
+      try {
+        const a = await decodeAudioFile(blob), p = toneProfile(a.getChannelData(0), a.sampleRate);
+        if (!p) { heard.replaceChildren(h("p", { class: "small muted" }, "No steady note of 1.5 seconds was heard, so there is nothing to measure yet.")); return; }
+        api.data[s.id] = Object.assign({}, api.data[s.id], { profile: p }); api.save();
+        heard.replaceChildren(h("b", null, "What the app measured:"), h("div", { class: "lesson-measures" }, MEASURES.slice(0, 3).map(m => {
+          const b = bandOf(m, p[m.key]);
+          return h("div", { class: "lesson-measure" }, h("span", null, m.name), h("span", { class: "chip " + BAND_CLS[b] }, BAND[b]));
+        })), h("p", { class: "small muted" }, "Compare it with what you hear. Self-scores are often too generous on pitch and too harsh on tone."));
+      } catch (e) { /* the recording could not be read: listening is enough */ }
+    }
     const skip = h("button", { type: "button", class: "linkbtn" }, s.skip || "Skip for now");
     skip.addEventListener("click", () => { api.data[s.id] = { skipped: true }; api.save(); msg.textContent = "Skipped. You can record it later in the Journal."; skip.hidden = true; api.ready(); });
     if (!recordingSupported()) { btn.disabled = true; msg.textContent = "Recording is not supported in this browser."; }
@@ -289,8 +303,9 @@ export const STEP_KINDS = {
         msg.textContent = s.saved || "Saved in your Journal.";
         btn.disabled = false; btn.replaceChildren(icon("mic"), " Record again");
         api.data[s.id] = { saved: true }; api.save(); skip.hidden = true; ding(true); api.ready();
+        if (s.analyse) analyse(blob);
       }, 1000);
     });
-    return { el: h("div", { class: "stack lesson-center" }, btn, msg, player, skip), destroy() { clearInterval(timer); if (rec) rec.cancel && rec.cancel(); if (url) URL.revokeObjectURL(url); } };
+    return { el: h("div", { class: "stack lesson-center" }, btn, msg, player, heard, skip), destroy() { clearInterval(timer); if (rec) rec.cancel && rec.cancel(); if (url) URL.revokeObjectURL(url); } };
   } },
 };

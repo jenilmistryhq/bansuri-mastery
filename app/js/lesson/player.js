@@ -69,6 +69,7 @@ export function lessonPlayer(lesson, opts) {
     live = kind ? kind.make(s, api) : { el: h("p", null, "This step is missing.") };
     const head = s.title ? h("h2", { class: "lesson-title", tabindex: "-1" }, s.title) : null;
     stage.replaceChildren(...[head, s.intro ? h("p", { class: "lesson-intro" }, s.intro) : null, live.el].filter(Boolean));
+    stage.dataset.kind = s.kind; stage.dataset.step = s.id; // for the tests' lesson walker
     if (head) head.focus({ preventScroll: true });
     el.scrollIntoView({ block: "start" });
     if (s.always) api.ready(true);

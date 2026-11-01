@@ -21,7 +21,7 @@ const REFERENCE = {
   "-12": { label: "lower Sa", pitchSD: 5.8, levelCV: 13.8, air: 0.1, attack: 180, overshoot: 30 },
 };
 // Bands for each measure: [excellent, good, fair] upper limits; beyond fair: work on it.
-const MEASURES = [
+export const MEASURES = [
   { key: "pitchSD", name: "Steady pitch", unit: "cents", bands: [6, 12, 20], what: "how much the pitch wavers while you hold the note",
     tip: "Keep the air pressure even from the belly, not the chest; keep the flute and lips still; check that every closed hole is fully sealed (a leak makes the pitch wander). Practise with the drone and hold the note until it stops wobbling." },
   { key: "levelCV", name: "Steady sound", unit: "%", bands: [10, 18, 30], what: "how much the loudness wavers",
@@ -33,8 +33,8 @@ const MEASURES = [
   { key: "overshoot", name: "Starts on pitch", unit: "cents", bands: [25, 50, 100], what: "how far the pitch strays at the start",
     tip: "Do not blow harder to start the note: begin with the air speed the note needs. If the note starts sharp, start softer; if flat, aim the air a little higher." },
 ];
-const BAND = ["Excellent", "Good", "Fair", "Work on it"], BAND_CLS = ["good", "good", "warn", "bad"];
-const bandOf = (m, v) => { const i = m.bands.findIndex(b => v <= b); return i < 0 ? 3 : i; };
+export const BAND = ["Excellent", "Good", "Fair", "Work on it"], BAND_CLS = ["good", "good", "warn", "bad"];
+export const bandOf = (m, v) => { const i = m.bands.findIndex(b => v <= b); return i < 0 ? 3 : i; };
 const NOTES = [[0, "S (middle Sa)"], [-5, ".P (lower Pa)"], [-12, ".S (lower Sa: on a bass flute)"], [7, "P (Pa)"], [12, "S' (upper Sa)"]];
 const CHECKLIST = [
   "Sitting or standing tall, shoulders down and relaxed",

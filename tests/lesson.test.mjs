@@ -2,6 +2,7 @@
 import assert from "node:assert/strict";
 const F = await import("../app/js/lesson/flute.js").catch(e => { console.error(e); process.exit(1); });
 const S = await import("../app/js/lesson/steps.js");
+const K = await import("../app/js/lesson/kinds2.js");
 const P = await import("../app/js/lesson/player.js");
 const { M0 } = await import("../app/js/lessons/m0.js");
 const { LESSONS, lessonForDay } = await import("../app/js/lessons/index.js");
@@ -50,9 +51,63 @@ test("Day 0 lesson: a quiz question always has one right answer, and wrong ones 
   const hook = P.flatSteps(M0).find(s => s.kind === "listen");
   assert.equal(hook.options.filter(o => o.right).length, 1);
 });
-test("lessons: Day 0 has the lesson, other days none yet", () => {
+test("lessons: each day has at most one lesson, and Day 0 has M0", () => {
   assert.equal(lessonForDay(0), M0);
-  assert.equal(lessonForDay(5), null);
   assert.equal(LESSONS.m0, M0);
+  const days = Object.values(LESSONS).map(l => l.day);
+  assert.equal(new Set(days).size, days.length, "one lesson a day");
+});
+test("every lesson: known step kinds, unique ids, a reward at the end, a finish, and right answers", () => {
+  for (const l of Object.values(LESSONS)) {
+    const steps = P.flatSteps(l), ids = steps.map(s => s.id);
+    assert.equal(new Set(ids).size, ids.length, l.id + ": unique ids");
+    for (const s of steps) assert.ok(s.kind === "custom" ? typeof s.make === "function" : S.STEP_KINDS[s.kind], l.id + "/" + s.id + ": kind " + s.kind);
+    assert.equal(steps[steps.length - 1].kind, "custom", l.id + ": ends on the reward");
+    assert.equal(typeof l.finish, "function", l.id + ": finish");
+    assert.ok(l.title && l.minutes > 0, l.id + ": title and minutes");
+    for (const s of steps.filter(x => x.kind === "quiz")) for (const q of s.questions) {
+      assert.equal(q.options.filter(o => o.right).length, 1, l.id + ": one right answer: " + q.q);
+      for (const o of q.options.filter(o => !o.right)) assert.ok(o.why, l.id + ": a wrong answer explains itself: " + o.text);
+    }
+    for (const s of steps.filter(x => x.kind === "tapquiz")) for (const q of s.questions) assert.ok(/^h[1-6]$|^blow$|^cork$|^open$|^bind$/.test(q.answer), l.id + ": a flute part: " + q.answer);
+  }
+});
+test("hiss: timed from the first sound to the end, evenness as the spread of the level", () => {
+  const frames = [];
+  for (let t = 0; t < 20; t += 0.05) frames.push({ t, level: t >= 1 && t < 17 ? 0.05 : 0.001 });
+  const r = K.hissResult(frames, 0.001);
+  assert.ok(Math.abs(r.seconds - 16) < 0.2, "16 s: " + r.seconds);
+  assert.equal(r.spread, 0, "perfectly even");
+  const fading = frames.map(f => ({ t: f.t, level: f.t >= 1 && f.t < 17 ? 0.08 * (1 - (f.t - 1) / 20) : 0.001 }));
+  assert.ok(K.hissResult(fading, 0.001).spread > 10, "a fading hiss is uneven");
+  assert.equal(K.hissResult([{ t: 0, level: 0.001 }], 0.001).seconds, 0, "no hiss");
+  const gap = frames.map(f => ({ t: f.t, level: f.t >= 8 && f.t < 9 ? 0.001 : f.level }));
+  assert.ok(Math.abs(K.hissResult(gap, 0.001).seconds - 7) < 0.2, "a second of silence ends the hiss");
+});
+test("first sound: L04's table from one reading", () => {
+  assert.equal(K.soundVerdict({ level: 0.001, semi: null }), "quiet");
+  assert.equal(K.soundVerdict({ level: 0.05, semi: null }), "air");
+  assert.equal(K.soundVerdict({ level: 0.05, semi: 0.1, near: 0 }), "note");
+  assert.equal(K.soundVerdict({ level: 0.05, semi: 12, near: 12 }), "squeal");
+  assert.equal(K.soundVerdict({ level: 0.05, semi: 2, near: 2 }), "other");
+});
+test("rhythm: note starts from the course notation, and taps scored against them", () => {
+  assert.deepEqual(K.lineOnsets("S S SS S"), { onsets: [0, 1, 2, 2.5, 3], beats: 4 });
+  assert.deepEqual(K.lineOnsets("S - S -"), { onsets: [0, 2], beats: 4 }, "a held note has one start");
+  assert.deepEqual(K.lineOnsets("S _ S _").onsets, [0, 2], "a rest has none");
+  assert.deepEqual(K.lineOnsets("SSSS S").onsets, [0, 0.25, 0.5, 0.75, 1]);
+  const exp = [0, 1, 2, 3];
+  assert.deepEqual(K.rhythmScore([0.15, 1.15, 2.15, 3.15], exp), { hit: 4, of: 4, extra: 0, lag: 150 }, "a steady delay is left out");
+  assert.equal(K.rhythmScore([0, 1, 2.5, 3], exp).hit, 3, "a tap half a beat off misses");
+  assert.equal(K.rhythmScore([0, 0.5, 1, 2, 3], exp).extra, 1, "an extra tap");
+  assert.equal(K.rhythmScore([], exp).hit, 0);
+});
+test("hum: any octave of Sa is Sa; the distance is the shorter way round", () => {
+  assert.equal(K.centsFromSa(0), 0);
+  assert.equal(K.centsFromSa(-12), 0, "an octave down");
+  assert.equal(K.centsFromSa(-24.2), -20);
+  assert.equal(K.centsFromSa(11.7), -30, "just below the upper Sa");
+  assert.equal(K.centsFromSa(6), 600);
+  assert.equal(K.centsFromSa(null), null);
 });
 console.log("lesson tests: " + n + " passed");
