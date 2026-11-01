@@ -18,7 +18,7 @@ const fmt = ev => ev.map(e => `${codeOf(e.semi)}@${+e.start.toFixed(2)}/${+e.dur
 
 test("settings defaults without a browser", () => {
   assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false, lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1,
-    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal" });
+    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal", pilot: false });
   assert.ok(Math.abs(saHz() - 523.25) < 0.01);
 });
 
@@ -46,6 +46,8 @@ test("tone profile: steadiness, breath noise and the start of a held note", () =
   assert.ok(scooped.overshoot >= 40 && clean.overshoot < 25, "start " + clean.overshoot + " / " + scooped.overshoot);
   assert.equal(toneProfile(new Float32Array(sr), sr), null);
 });
+
+
 
 test("codeOf / octName", () => {
   assert.equal(codeOf(-5), ".P");
@@ -265,3 +267,17 @@ test("lesson codes read as plain words (the course keeps them for teachers)", ()
 });
 
 console.log(`core tests: ${passed} passed`);
+
+// Pilot report on made-up files: steadier notes rated higher, taal mostly kept, most lines right.
+{
+  const P = await import("../scripts/pilot-report.mjs");
+  const files = [0, 1, 2].map(k => ({ kind: "pilot", id: "p" + k, logs: [{ kind: "taal", auto: "keherwa", chosen: "keherwa", samShift: 0 }, { kind: "taal", auto: "keherwa", chosen: "dadra", samShift: 0 }, { kind: "line", fixed: false, notes: 8 }, { kind: "line", fixed: true, notes: 6 }],
+    reviews: [5, 4, 3, 2].map(sc => ({ scores: { steady: sc, tone: sc, pitch: sc }, measures: { pitchSD: 30 - sc * 5 + k, levelCV: 40 - sc * 6, air: 10 - sc * 2, attack: 600 - sc * 100, overshoot: 120 - sc * 20 } })) }));
+  const r = P.report(files);
+  assert.equal(r.learners, 3);
+  assert.ok(r.tone.pitchSD.rho < -0.8 && r.tone.pitchSD.bands[0] < r.tone.pitchSD.bands[2], "steadier notes rated higher: " + JSON.stringify(r.tone.pitchSD));
+  assert.deepEqual([r.taal.right, r.taal.taalChanged], [50, 50]);
+  assert.deepEqual([r.lines.rightLines, r.lines.rightNotesAtLeast], [50, 57]);
+  assert.match(P.markdown(r), /Suggested bands/);
+  console.log("pilot report ok");
+}

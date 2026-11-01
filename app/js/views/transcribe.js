@@ -17,6 +17,7 @@ import { listCaptures, getCapture, addCapture, patchCapture, deleteCapture, MAX 
 import { earTools } from "./eartools.js";
 import { isMidi, parseMidi, melodyScore, topLine, keyTonic } from "../midi.js";
 import { analyser, separator } from "../analyser.js";
+import { pilotLog } from "../pilot.js";
 import { bestRuns, transcribe, tonicMidi, fluteLabel, FLUTES, HOP, scoreTake, TAALS } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
@@ -916,6 +917,8 @@ export async function render(main) {
   const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, phase: opt.phase, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value), follow: opt.follow, easy: opt.easy, taps: opt.taps || undefined, taal: opt.taal, samShift: opt.samShift });
   async function save() {
     const name = nameIn.value.trim() || "Recording of " + today();
+    // Pilot study: was the taal found kept, and sam where it was found?
+    if (opt.layout === "beats" && !midi) pilotLog("taal", { auto: autoTaal, chosen: opt.taal === "auto" ? autoTaal : opt.taal, samShift: opt.samShift });
     try {
       if (current) await patchCapture(current.id, { name, notation: notationText(), settings: settingsNow(), manual, saved: new Date().toISOString() });
       else { const l = store(SAVED, []); l.unshift({ name, notation: notationText(), bpm: Number(bpmIn.value) || 80, flute: Number(fluteSel.value), date: today() }); storeSet(SAVED, l.slice(0, 30)); }

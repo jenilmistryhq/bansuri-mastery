@@ -10,7 +10,7 @@ const SETTINGS_KEY = "bansuri.settings";
 // starts listening or recording; 0 = none).
 export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
   lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
-  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal" });
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal", pilot: false });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -44,7 +44,9 @@ function cleanSettings(s) {
     focus: s.focus === true,
     // The tuning notes are judged and played in: "equal" (like a keyboard) or "just" (tuned to
     // the tanpura: whole-number ratios from Sa, as many teachers tune by ear).
-    intonation: s.intonation === "just" ? "just" : "equal"
+    intonation: s.intonation === "just" ? "just" : "equal",
+    // Pilot study: note anonymous results on this device (pilot.js); off unless chosen.
+    pilot: s.pilot === true
   };
 }
 

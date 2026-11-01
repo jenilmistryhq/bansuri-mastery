@@ -207,6 +207,19 @@ export async function render(main) {
     h("label", { class: "check", for: "st-deva" }, devaBox, "Show sargam in Devanagari too (सा रे ग) in the score and the listening exercises"),
     h("label", { class: "check", for: "st-chimes" }, chimes, "Chime when a session block's time is up")));
 
+  // Pilot study (pilot.js): opt-in, anonymous, local; the learner downloads the file and hands it over.
+  const pilotBox = h("input", { type: "checkbox", id: "st-pilot", checked: getSettings().pilot });
+  pilotBox.addEventListener("change", () => setSettings({ pilot: pilotBox.checked }));
+  const pilotBtn = h("button", { type: "button", class: "btn", onclick: async () => {
+    const { pilotFile } = await import("../pilot.js");
+    download("bansuri-pilot-" + today() + ".json", JSON.stringify(pilotFile(), null, 1));
+    toast("Pilot file downloaded: send it to whoever runs the pilot.");
+  } }, "Download my pilot file");
+  page.append(h("section", { class: "card", id: "pilot" }, h("h2", null, "Pilot study (optional)"),
+    h("p", { class: "small muted" }, "Helps tune the app on real learners. While on, the app notes on this device whether the taal it found was kept and how many lines of a line-by-line check were right as written. The file adds your Tone checks and your teacher's ratings. It has no name and no recordings, and nothing is sent: you download it and hand it over."),
+    h("label", { class: "check", for: "st-pilot" }, pilotBox, "Take part: note these results on this device"),
+    h("div", { class: "row" }, pilotBtn)));
+
   // Daily reminder: a repeating calendar event, so the phone's own calendar reminds the learner.
   const timeIn = h("input", { id: "st-rtime", type: "time", value: s.prefs.reminderTime || "18:00" });
   const lenIn = h("input", { id: "st-rlen", type: "number", min: "15", max: "180", value: String(s.prefs.reminderMinutes || 50) });

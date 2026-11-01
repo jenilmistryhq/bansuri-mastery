@@ -12,6 +12,7 @@ import { h, icon } from "../util.js";
 import { ac, makeVoice } from "../core/audio.js";
 import { codeOf } from "../core/theory.js";
 import { noteDoubts, noteChoices } from "../transcribe.js";
+import { pilotLog } from "../pilot.js";
 
 const fmt = s => Math.floor(s / 60) + ":" + (s % 60).toFixed(1).padStart(4, "0");
 const freqOf = n => 440 * Math.pow(2, (n.midi + (n.off || 0) - 69) / 12);
@@ -187,6 +188,8 @@ export function earTools(o) {
   function lineRight() {
     const list = phrases(); if (!lines || lines.at >= list.length) return;
     const [a, b] = list[lines.at];
+    // Pilot study: was the line right as the app wrote it?
+    pilotLog("line", { fixed: st.notes.slice(a, b + 1).some(n => n.edited), notes: b - a + 1 });
     for (const n of st.notes.slice(a, b + 1)) if (!n.ok) o.onEdit("ok", n.id);
     lines.at++;
     setTimeout(() => showLine(true), 0);

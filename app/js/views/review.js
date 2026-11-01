@@ -38,7 +38,7 @@ export async function render(main, { params }) {
   const send = h("button", { type: "button", class: "btn primary", onclick: async () => {
     const req = { v: 1, kind: "review", id: "rq" + Date.now().toString(36), date: today(), name: nameIn.value.trim().slice(0, 40), what: whatSel.value + (titleIn.value.trim() ? ": " + titleIn.value.trim() : ""), question: qIn.value.trim().slice(0, 600), measures: hand && hand.measures ? hand.measures : null };
     const link = linkTo("review", await encodeLink(req));
-    addRequest({ id: req.id, date: req.date, what: req.what });
+    addRequest({ id: req.id, date: req.date, what: req.what, measures: req.measures });
     const how = await shareOrCopy("Please review my bansuri: " + req.what + (file ? " (recording attached)" : ""), link, file);
     toast(how === "shared" ? "Sent. Your teacher opens the link, listens and fills in the review." : how === "copied" ? "The link is copied" + (file ? " and the recording downloaded: send both to your teacher." : ": send it to your teacher with the recording.") : "Not sent.");
   } }, icon("share"), " Send to my teacher");
