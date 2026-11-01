@@ -5,10 +5,10 @@
 // 2 what was found (and the settings), 3 check by ear (eartools.js), 4 the notation, 5 listen
 // and compare, 6 play along; then Your recordings.
 import { h, toast, store, storeSet, today, icon } from "../util.js";
-import { setSettings, saMidi } from "../core/settings.js";
+import { setSettings, saMidi, getSettings } from "../core/settings.js";
 import { ac, master, makeVoice } from "../core/audio.js";
 import { decodeAudioFile } from "../core/pitch.js";
-import { parseNotation, buildEvents, playEvents } from "../core/notation.js";
+import { parseNotation, buildEvents, playEvents, toCommonMa, normaliseMa } from "../core/notation.js";
 import { countdown } from "../core/live.js";
 import { mountBench } from "../bench/bench.js";
 import { WEST, codeOf, devaNotation, hzOf } from "../core/theory.js";
@@ -17,7 +17,7 @@ import { listCaptures, getCapture, addCapture, patchCapture, deleteCapture, MAX 
 import { earTools } from "./eartools.js";
 import { isMidi, parseMidi, melodyScore, topLine, keyTonic } from "../midi.js";
 import { analyser, separator } from "../analyser.js";
-import { bestRuns, transcribe, tonicMidi, fluteLabel, FLUTES, HOP, scoreTake } from "../transcribe.js";
+import { bestRuns, transcribe, tonicMidi, fluteLabel, FLUTES, HOP, scoreTake, TAALS } from "../transcribe.js";
 
 const SAVED = "bansuri.transcribed";
 const MAX_SECONDS = 360;
@@ -84,7 +84,10 @@ export async function render(main) {
   // follow: the bars follow the recording's tempo as it changes; taps: beats tapped by the learner;
   // easy: the easier version.
   // sameKey false (the default): sargam from the song's own Sa, as tutorials and song books write it.
-  const opt = { octave: 0, sameKey: false, layout: "phrases", main: true, part: "whole", follow: true, easy: false, taps: null };
+  // taal: "auto", a TAALS key or "none" (bars of four); samShift moves sam by beats.
+  const opt = { octave: 0, sameKey: false, layout: "phrases", main: true, part: "whole", follow: true, easy: false, taps: null, taal: "auto", samShift: 0 };
+  // The taal found in the whole recording (its rhythm is in the accompaniment, not the singer).
+  let autoTaal = null;
   // A MIDI file: its tracks, the notes of the chosen one, and its key. Notes corrected by ear
   // (manual) replace the notes found until reset; undo keeps earlier versions.
   let midi = null, midiNotes = null, midiTonics = null, manual = null, undo = [], audioUrl = null;
@@ -200,6 +203,8 @@ export async function render(main) {
     if (first.notes.length < 3) { setBusy("No clear melody was found. It works best when one tune (a flute or a voice) is clearly louder than the rest.", null); return; }
     saSel.replaceChildren(...first.tonics.map((c, i) => h("option", { value: String(tonicMidi(c.pc, first.notes)) }, WEST[c.pc] + (i === 0 ? " (most likely)" : ""))));
     if (sepDone) useSepTonics();
+    // The taal, from the whole mix's rhythm (bars layout with tempo following).
+    autoTaal = transcribe(track.track, track.levels, { flute: saMidi(), layout: "beats", follow: true, taal: "auto" }).taal?.key || null;
     bpmIn.value = String(first.bpm);
     fromIn.value = "0"; toIn.value = String(Math.round(track.seconds)); toIn.max = fromIn.max = String(Math.ceil(track.seconds));
     opt.octave = 0;
@@ -209,7 +214,7 @@ export async function render(main) {
     const st = keep && keep.settings;
     restore(st);
     if (opt.part !== "whole") await choosePart(); else redraw();
-    if (keep && keep.notation) { editor.value = keep.notation; drawView(); }
+    if (keep && keep.notation) { editor.value = showText(keep.notation); drawView(); }
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   // The recording in the worker (again after a cancel): mono, and stereo when its channels differ.
@@ -226,6 +231,7 @@ export async function render(main) {
     if ([...saSel.options].some(o => o.value === String(st.sa))) saSel.value = String(st.sa);
     fluteSel.value = String(st.flute); opt.sameKey = st.sameKey; opt.layout = st.layout; opt.octave = st.octave || 0; opt.main = st.main !== false; opt.part = st.part || "whole";
     opt.follow = st.follow !== false; opt.easy = !!st.easy; followBox.checked = opt.follow;
+    opt.taal = st.taal || "auto"; opt.samShift = st.samShift || 0; taalSel.value = opt.taal;
     bpmIn.value = String(st.bpm); fromIn.value = String(st.from); toIn.value = String(st.to); subSel.value = String(st.sub || 2);
     syncSegs();
   }
@@ -252,6 +258,8 @@ export async function render(main) {
     useMidiTrack();
     const kt = keyTonic(midi.key);
     midiTonics = kt === null ? null : [{ pc: kt, score: 1 }];
+    const ts = midi.timeSig;
+    autoTaal = !ts ? "keherwa" : ts[0] % 3 === 0 && ts[0] !== 12 ? "dadra" : ts[0] === 7 ? "rupak" : "keherwa";
     const first = transcribe(null, null, { notes: midiNotes, tonics: midiTonics, flute: saMidi() });
     saSel.replaceChildren(...first.tonics.map((c, i) => h("option", { value: String(tonicMidi(c.pc, first.notes)) }, WEST[c.pc] + (i === 0 ? (kt !== null ? " (the file's key)" : " (most likely)") : ""))));
     bpmIn.value = String(midi.bpm);
@@ -263,7 +271,7 @@ export async function render(main) {
     restore(st);
     opt.part = "whole";
     redraw();
-    if (keep && keep.notation) { editor.value = keep.notation; drawView(); }
+    if (keep && keep.notation) { editor.value = showText(keep.notation); drawView(); }
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   // The chosen MIDI track, one note at a time, and its pitch line for Check by ear.
@@ -304,12 +312,12 @@ export async function render(main) {
   const segSyncs = [];
   const syncSegs = () => segSyncs.forEach(f => f());
   const seg = (name, items, get, set, after) => {
-    segSyncs.push(() => { btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); if (name === "Layout") detailField.hidden = get() !== "beats"; });
+    segSyncs.push(() => { btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); if (name === "Layout") detailField.hidden = taalField.hidden = get() !== "beats"; });
     const btns = items.map(([v, label]) => h("button", { type: "button", class: "seg-btn", "aria-pressed": String(get() === v), onclick: () => { set(v); btns.forEach((b, i) => b.setAttribute("aria-pressed", String(items[i][0] === get()))); (after || redraw)(); } }, label));
     return h("div", { class: "seg", role: "group", "aria-label": name }, btns);
   };
   const keySeg = seg("Key", [[false, "My flute's own key"], [true, "Same key as the recording"]], () => opt.sameKey, v => { opt.sameKey = v; opt.octave = 0; });
-  const layoutSeg = seg("Layout", [["phrases", "Phrases"], ["beats", "Bars and beats"]], () => opt.layout, v => { opt.layout = v; detailField.hidden = v !== "beats"; });
+  const layoutSeg = seg("Layout", [["phrases", "Phrases"], ["beats", "Taal and beats"]], () => opt.layout, v => { opt.layout = v; detailField.hidden = taalField.hidden = v !== "beats"; });
   const octOut = h("output", { class: "mono" }, "0");
   const octave = h("div", { class: "row tight" }, h("button", { type: "button", class: "btn small", "aria-label": "Octave down", onclick: () => { opt.octave -= 12; redraw(); } }, "-"), octOut, h("button", { type: "button", class: "btn small", "aria-label": "Octave up", onclick: () => { opt.octave += 12; redraw(); } }, "+"));
   const bpmIn = h("input", { class: "input", type: "number", min: "30", max: "220", step: "1", "aria-label": "Tempo (BPM)" });
@@ -349,6 +357,14 @@ export async function render(main) {
   cleanups.push(() => document.removeEventListener("keydown", onTapKey));
   function onTapKey(e) { if (tapping && (e.key === "t" || e.key === "T")) { e.preventDefault(); tap(); } }
   const subSel = h("select", { class: "input", "aria-label": "Notes per beat" }, h("option", { value: "2" }, "Up to 2 notes per beat"), h("option", { value: "4" }, "Up to 4 notes per beat"), h("option", { value: "1" }, "1 note per beat"));
+  // The taal of the bars layout: found in the recording, or chosen; sam can be moved by a beat.
+  const taalSel = h("select", { class: "input", "aria-label": "Taal" }, h("option", { value: "auto" }, "Found in the recording"),
+    Object.entries(TAALS).map(([k, t]) => h("option", { value: k }, t.name + " (" + t.beats + " matras)")), h("option", { value: "none" }, "No taal: bars of four beats"));
+  taalSel.addEventListener("change", () => { opt.taal = taalSel.value; opt.samShift = 0; redraw(); });
+  const samBtns = h("div", { class: "row tight" },
+    h("button", { type: "button", class: "btn small", title: "Sam one beat earlier", onclick: () => { opt.samShift--; redraw(); } }, "Sam earlier"),
+    h("button", { type: "button", class: "btn small", title: "Sam one beat later", onclick: () => { opt.samShift++; redraw(); } }, "Sam later"));
+  const taalField = h("div", { class: "field", hidden: true }, h("span", null, "Taal"), taalSel, samBtns);
   const detailField = h("label", { class: "field", hidden: true }, "Detail", subSel);
   const midiSel = h("select", { class: "input", "aria-label": "MIDI track" });
   midiSel.addEventListener("change", () => { manual = null; undo = []; useMidiTrack(); redraw(); });
@@ -502,7 +518,7 @@ export async function render(main) {
           h("button", { type: "button", class: "btn small", onclick: () => { bpmIn.value = String(Math.max(30, Math.round(Number(bpmIn.value) / 2))); redraw(); } }, "Half"),
           h("button", { type: "button", class: "btn small", onclick: () => { bpmIn.value = String(Math.min(220, Math.round(Number(bpmIn.value) * 2))); redraw(); } }, "Double")),
         h("div", { class: "row tight" }, tapBtn, tapPad), tapNote, followField,
-        detailField)),
+        taalField, detailField)),
     hints);
 
   // ---- 3. The notation ----
@@ -520,13 +536,16 @@ export async function render(main) {
   let script = "latin";
   const scriptSeg = seg("Letters", [["latin", "S R G"], ["deva", "सा रे ग"]], () => script, v => { script = v; }, () => drawView());
   const nameIn = h("input", { class: "input", maxlength: "60", "aria-label": "Name", placeholder: "Name (for example the song's name)" });
-  const notationText = () => editor.value;
+  // The editor shows Ma the learner's way (Settings); the app reads it back in its own way.
+  const maStyle = () => getSettings().maStyle;
+  const showText = t => (maStyle() === "common" ? toCommonMa(t) : t);
+  const notationText = () => normaliseMa(editor.value, maStyle());
   const notationCard = h("section", { class: "card" },
     h("div", { class: "row between" }, h("h2", null, "4. The notation"),
       h("div", { class: "row tight" }, scriptSeg, editBtn,
-        h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(notationText()); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"))),
+        h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(showText(notationText())); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"))),
     view, editor,
-    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar, a pause in a phrase is marked with a gap, a small note in front is a grace note (kan), ~ before a note is a slide into it (meend). The time in front of a line plays that line of the recording."),
+    h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar or vibhag (X sam, 0 khali, 2 and 3 the other taalis), a pause in a phrase is marked with a gap, a small note in front is a grace note (kan), ~ before a note is a slide into it (meend). The time in front of a line plays that line of the recording."),
     h("div", { class: "row" }, nameIn, h("button", { type: "button", class: "btn", onclick: () => save() }, "Save")),
     h("div", { class: "row tight" },
       h("button", { type: "button", class: "btn small", onclick: () => addToSongs() }, icon("note"), " Add to Songs"),
@@ -578,9 +597,10 @@ export async function render(main) {
 
   function drawView() {
     const deva = script === "deva";
-    const show = t => deva ? devaNotation(t) : t;
+    const show = t => deva ? devaNotation(t) : showText(t);
     const cell = tok => {
       if (tok === "|" || tok === "||") return h("span", { class: "nsep", "aria-hidden": "true" }, "|");
+      if (/^(X|0|[2-9])$/.test(tok)) return h("span", { class: "ntaal", title: tok === "X" ? "Sam: the first beat of the cycle" : tok === "0" ? "Khali: the empty beat" : "Taali " + tok }, tok);
       if (tok === ",") return h("span", { class: "npause", "aria-hidden": "true" });
       return h("span", { class: "nc" + (tok === "-" || tok === "_" ? " nhold" : "") }, noteParts(tok, show));
     };
@@ -591,7 +611,7 @@ export async function render(main) {
     view.classList.toggle("deva", deva);
     view.classList.toggle("timed", !!timed);
     view.replaceChildren(...lines.map((line, li) => h("div", { class: "nrow" }, timed ? h("button", { type: "button", class: "ntime", "aria-label": "Play line " + (li + 1) + " of the recording, from " + clock(last.lineTimes[li]), onclick: e => playLine(li, e.currentTarget.parentNode) }, clock(last.lineTimes[li])) : null, h("span", { class: "ntoks" }, line.trim().split(/\s+/).map(tok => {
-      const parts = tok === "|" || tok === "||" || tok === "," ? null : tok.match(NOTE_TOKEN);
+      const parts = tok === "|" || tok === "||" || tok === "," || /^(X|0|[2-9])$/.test(tok) ? null : tok.match(NOTE_TOKEN);
       if (!parts || parts.length < 2) return cell(tok);
       return h("span", { class: "nc nmulti" }, parts.map(x => noteParts(x, show)));
     })))));
@@ -855,7 +875,7 @@ export async function render(main) {
     // A part not separated yet (a mono recording without the model) shows the whole song.
     const p = opt.part, src = p === "singer" || p === "background" ? parts[p] : track;
     const base = { sa: Number(saSel.value), flute, sameKey: opt.sameKey, bpm: Number(bpmIn.value) || undefined, phase: opt.phase, sub: Number(subSel.value), octave: opt.octave, main: opt.main, layout: opt.layout, from: a, to: b,
-      easy: opt.easy, taps: opt.taps || undefined, tuneRef: sepDone && (opt.part === "singer" || opt.part === "best") ? sepTune : undefined, follow: !midi && opt.follow, beats: midi && midi.tempoChanges ? midi.beats : undefined };
+      easy: opt.easy, taps: opt.taps || undefined, taal: opt.taal === "none" ? undefined : opt.taal === "auto" ? autoTaal || "auto" : opt.taal, samShift: opt.samShift, samAt: midi ? 0 : undefined, tuneRef: sepDone && (opt.part === "singer" || opt.part === "best") ? sepTune : undefined, follow: !midi && opt.follow, beats: midi && midi.tempoChanges ? midi.beats : undefined };
     const given = manual || midiNotes;
     const r = given ? transcribe(null, null, { ...base, notes: given, tonics: midiTonics, phase: opt.phase !== undefined ? opt.phase : midi ? 0 : undefined })
       : p === "best" && parts.singer && parts.background ? transcribe(null, null, { ...base, runs: bestRuns(parts.singer, parts.background), playable: true })
@@ -866,13 +886,14 @@ export async function render(main) {
     drawSep();
     last = r;
     octOut.textContent = r.shift > 0 ? "+" + r.shift / 12 : String(r.shift / 12);
-    editor.value = r.notation; drawView();
+    editor.value = showText(r.notation); drawView();
     const saName = WEST[((r.sa % 12) + 12) % 12], fit = r.fit, mine = saMidi();
     const outOf = fit.below + fit.reg3;
     const sc = r.scale, odd = r.notes.filter(n => n.odd).length, tr = r.tempoRange;
     chips.replaceChildren(
       h("span", { class: "chip info" }, "Sa " + saName + (r.tune ? " (" + (r.tune > 0 ? "+" : "") + r.tune + " cents)" : "")),
       h("span", { class: "chip mutedc" }, tr && tr[1] - tr[0] >= 6 ? "Tempo " + tr[0] + " to " + tr[1] + " BPM" : r.bpm + " BPM"),
+      opt.layout === "beats" && r.taal ? h("span", { class: "chip info", title: "Cycles of " + TAALS[r.taal.key].beats + " matras; X is sam, 0 khali" }, TAALS[r.taal.key].name + (opt.taal === "auto" ? " (found)" : "")) : null,
       sc && sc.name ? h("span", { class: "chip info", title: sc.kind === "raga" ? "The same five notes as raga " + sc.name + " (a raga is more than its notes)" : sc.name + " thaat: " + sc.note }, sc.kind === "raga" ? "Notes of raga " + sc.name : sc.name + " thaat") : null,
       odd ? h("button", { type: "button", class: "chip warn chiplink", title: "Notes outside the scale: often a wrong note. Check them by ear.", onclick: () => { document.getElementById("tr-ear").scrollIntoView({ behavior: "smooth", block: "start" }); ear.nextOdd(); } }, odd + (odd === 1 ? " odd note: check it" : " odd notes: check them")) : null,
       h("span", { class: "chip mutedc" }, r.notes.length + " notes, " + codeOf(fit.lo) + " to " + codeOf(fit.hi)),
@@ -892,7 +913,7 @@ export async function render(main) {
   // ---- Your recordings (kept in the app) ----
   const capList = h("div", { class: "stack" });
   const capUse = h("p", { class: "small muted" });
-  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, phase: opt.phase, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value), follow: opt.follow, easy: opt.easy, taps: opt.taps || undefined });
+  const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, phase: opt.phase, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value), follow: opt.follow, easy: opt.easy, taps: opt.taps || undefined, taal: opt.taal, samShift: opt.samShift });
   async function save() {
     const name = nameIn.value.trim() || "Recording of " + today();
     try {

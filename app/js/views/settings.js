@@ -186,8 +186,14 @@ export async function render(main) {
   const devaBox = h("input", { type: "checkbox", id: "st-deva" });
   devaBox.checked = getSettings().deva;
   devaBox.addEventListener("change", () => setSettings({ deva: devaBox.checked }));
+  const maSel = h("select", { id: "st-ma", class: "input" },
+    h("option", { value: "app" }, "m is shuddha Ma, M is tivra Ma (this course)"),
+    h("option", { value: "common" }, "M is shuddha Ma, M# is tivra Ma (most notation websites)"));
+  maSel.value = getSettings().maStyle;
+  maSel.addEventListener("change", () => { setSettings({ maStyle: maSel.value }); toast("Ma is now written " + (maSel.value === "common" ? "M (shuddha) and M# (tivra)." : "m (shuddha) and M (tivra).")); });
   page.append(h("section", { class: "card" }, h("h2", null, "Display and sound"),
     h("label", { class: "field", for: "st-theme" }, "Theme", theme),
+    h("label", { class: "field", for: "st-ma" }, "How Ma is written in notation from recordings and in pasted notation", maSel),
     h("label", { class: "check", for: "st-deva" }, devaBox, "Show sargam in Devanagari too (सा रे ग) in the score and the listening exercises"),
     h("label", { class: "check", for: "st-chimes" }, chimes, "Chime when a session block's time is up")));
 

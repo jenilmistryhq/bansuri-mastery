@@ -960,7 +960,7 @@ try {
     await shot("20-transcribe-result");
     // The notation view, the two layouts, and the players.
     check(/S/.test(await page.$eval("#main .nview", e => e.innerText).catch(() => "")), "transcribe: the notation is shown as phrases");
-    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Bars and beats").click());
+    await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Taal and beats").click());
     check(await page.$("#main .nview .nsep") !== null, "transcribe: Bars and beats shows the notes in bars");
     await page.click("#main button[aria-label='Play: Both together']");
     await sleep(400);
@@ -1088,7 +1088,7 @@ try {
       const midNot = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value).catch(() => "");
       const trackLabel = await page.$eval("#main select[aria-label='MIDI track']", e => e.options[e.selectedIndex].textContent).catch(() => "");
       const saLabel = await page.$eval("#main select[aria-label='Sa of the recording']", e => e.options[e.selectedIndex].textContent).catch(() => "");
-      check(/^S R G m \| P - m - \|\|/.test(midNot.trim()) && /Melody/.test(trackLabel) && /^D \(the file's key\)/.test(saLabel), "midi: the melody track's exact notes, Sa from the key [" + midNot.trim() + " / " + trackLabel + " / " + saLabel + "]");
+      check(/^X S R G m \| 0 P - m - \|\|/.test(midNot.trim()) && /Melody/.test(trackLabel) && /^D \(the file's key\)/.test(saLabel), "midi: the melody track's exact notes, Sa from the key [" + midNot.trim() + " / " + trackLabel + " / " + saLabel + "]");
       // Check by ear: pick the first note with the keyboard, raise it a semitone, undo; delete one.
       await page.focus("#main .earplot");
       await page.keyboard.press("ArrowRight");
@@ -1101,7 +1101,7 @@ try {
       await page.keyboard.press("Delete");
       await sleep(150);
       const deleted = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
-      check(/^r R G m/.test(raised) && /^S R G m/.test(undone) && /^R G m P/.test(deleted), "ear: a note picked with the keys is raised, the change undone, and a note deleted [" + raised.slice(0, 12) + " / " + undone.slice(0, 12) + " / " + deleted.slice(0, 12) + "]");
+      check(/^X r R G m/.test(raised) && /^X S R G m/.test(undone) && /^X _ R G m/.test(deleted), "ear: a note picked with the keys is raised, the change undone, and a note deleted [" + raised.slice(0, 12) + " / " + undone.slice(0, 12) + " / " + deleted.slice(0, 12) + "]");
       check(/Note \d+ of \d+/.test(await page.$eval("#main .earinfo", e => e.textContent).catch(() => "")), "ear: the picked note is described");
       // Split the picked note (R) in two, then add a note after it with the keys; undo both.
       await page.focus("#main .earplot");
@@ -1109,7 +1109,7 @@ try {
       await sleep(150);
       const split = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
       await page.keyboard.down("Control"); await page.keyboard.press("z"); await page.keyboard.press("z"); await page.keyboard.up("Control");
-      check(/^RR G m/.test(split), "ear: S splits the picked note in two [" + split.slice(0, 14) + "]");
+      check(/^X _ RR G m/.test(split), "ear: S splits the picked note in two [" + split.slice(0, 14) + "]");
       // The line-by-line check: the first line is offered, Enter marks it right and moves on.
       await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => b.textContent === "Check line by line").click());
       await sleep(200);

@@ -765,11 +765,58 @@ function beatTokens(notes, grid, sub, semiOf) {
 
 // x (optional): { grid (beat times; else a steady pulse from phase), times (filled with the time
 // each line starts) }.
+// Taals, as Bhatkhande writes them: the matras of one cycle (avartan), its vibhags, and the mark
+// before each vibhag (X sam, 0 khali, 2 3 4 the other taalis). Rupak's sam is a khali, written 0.
+// perLine: cycles on one line of notation.
+export const TAALS = {
+  keherwa: { name: "Keherwa", beats: 8, vibhags: [4, 4], marks: ["X", "0"], perLine: 2 },
+  dadra: { name: "Dadra", beats: 6, vibhags: [3, 3], marks: ["X", "0"], perLine: 2 },
+  rupak: { name: "Rupak", beats: 7, vibhags: [3, 2, 2], marks: ["0", "2", "3"], perLine: 2 },
+  teentaal: { name: "Teentaal", beats: 16, vibhags: [4, 4, 4, 4], marks: ["X", "2", "0", "3"], perLine: 1 },
+  jhaptaal: { name: "Jhaptaal", beats: 10, vibhags: [2, 3, 2, 3], marks: ["X", "2", "0", "3"], perLine: 1 },
+  ektaal: { name: "Ektaal", beats: 12, vibhags: [2, 2, 2, 2, 2, 2], marks: ["X", "0", "2", "0", "3", "4"], perLine: 1 },
+};
+
+// How strongly each beat of the grid is marked by the melody: notes starting on it, longer
+// notes counting more (up to a second).
+function beatAccents(notes, grid) {
+  const acc = new Float64Array(grid.length);
+  for (const n of notes) {
+    const b = beatAt(grid, n.t0), k = Math.round(b.i + b.frac);
+    if (k >= 0 && k < acc.length) acc[k] += Math.min(1, n.t1 - n.t0) + 0.2;
+  }
+  return acc;
+}
+// The taal and where sam falls: grouping in threes (Dadra) or fours (Keherwa), or Rupak's 3+2+2,
+// from how the melody's accents repeat; sam on the beat of the cycle with the strongest accents.
+// Returns { taal (a TAALS key), sam (a beat index on the grid), sure (0 to 1) }. Film songs are
+// mostly Keherwa or Dadra; Teentaal and the others are chosen by hand.
+export function detectTaal(notes, grid) {
+  if (notes.length < 8 || grid.length < 16) return { taal: "keherwa", sam: 0, sure: 0 };
+  const acc = beatAccents(notes, grid), n = acc.length, mean = acc.reduce((a, b) => a + b, 0) / n;
+  const corr = lag => { let s = 0, s0 = 0; for (let i = 0; i + lag < n; i++) { s += (acc[i] - mean) * (acc[i + lag] - mean); s0 += (acc[i] - mean) * (acc[i] - mean); } return s0 ? s / s0 : 0; };
+  const score = { dadra: corr(3) + corr(6), keherwa: corr(4) + corr(8), rupak: corr(7) * 2 - 0.1 };
+  const taal = Object.keys(score).sort((a, b) => score[b] - score[a])[0], L = TAALS[taal].beats;
+  // Sam: the beat position (mod the cycle) with the most accent, the first vibhag of each cycle
+  // counting a little too.
+  let best = 0, bs = -1;
+  for (let o = 0; o < L; o++) {
+    let s = 0;
+    for (let i = o; i < n; i += L) s += acc[i];
+    if (s > bs) { bs = s; best = o; }
+  }
+  const sorted = Object.values(score).sort((a, b) => b - a);
+  return { taal, sam: best, sure: Math.max(0, Math.min(1, (sorted[0] - sorted[1]) * 2)) };
+}
+
+// x.taal: { key (a TAALS key), sam (the grid beat where a cycle starts) }: cycles of that taal with
+// vibhags and their marks; without it, bars of four beats, four bars to a line.
 export function toNotation(notes, bpm, phase, sub, semiOf, x) {
   if (!notes.length) return "";
   x = x || {};
   const grid = x.grid || beatGrid(notes, bpm, phase);
   const { beats, first } = beatTokens(notes, grid, sub, semiOf);
+  if (x.taal && TAALS[x.taal.key]) return taalNotation(beats, first, grid, TAALS[x.taal.key], x.taal.sam || 0, x.times);
   while (beats.length % 4) beats.push("_");
   const bars = [];
   for (let i = 0; i < beats.length; i += 4) {
@@ -781,6 +828,28 @@ export function toNotation(notes, bpm, phase, sub, semiOf, x) {
   for (let i = 0; i < bars.length; i += 4) {
     lines.push(bars.slice(i, i + 4).map(b => b.text).join(" | ") + " ||");
     if (x.times) x.times.push(bars[i].t);
+  }
+  return lines.join("\n");
+}
+
+// The beats (from beatToken, starting at grid beat `first`) in cycles of a taal starting at sam.
+function taalNotation(beats0, first, grid, T, sam, times) {
+  const L = T.beats, lead = ((first - sam) % L + L) % L, start = first - lead;
+  const beats = new Array(lead).fill("_").concat(beats0);
+  while (beats.length % L) beats.push("_");
+  const cycles = [];
+  for (let c = 0; c < beats.length; c += L) {
+    const cyc = beats.slice(c, c + L);
+    if (cyc.every(b => b === "_")) continue;
+    const parts = [];
+    let k = 0;
+    T.vibhags.forEach((v, i) => { parts.push(T.marks[i] + " " + cyc.slice(k, k + v).join(" ")); k += v; });
+    cycles.push({ text: parts.join(" | ") + " ||", t: grid[Math.min(grid.length - 1, Math.max(0, start + c))] });
+  }
+  const lines = [];
+  for (let i = 0; i < cycles.length; i += T.perLine) {
+    lines.push(cycles.slice(i, i + T.perLine).map(c => c.text).join(" "));
+    if (times) times.push(cycles[i].t);
   }
   return lines.join("\n");
 }
@@ -1028,12 +1097,22 @@ function fromNotes(notes, o, knownTonics) {
   // The beats: o.beats (a MIDI file's), o.follow (follow the tempo as it changes), o.taps (tapped).
   const grid = notes.length ? beatGrid(notes, bpm, tempo.phase, { follow: o.follow, beats: o.beats, taps: o.taps }) : [];
   const inside = notes.length ? grid.filter(t => t >= notes[0].t0 && t <= notes[notes.length - 1].t1) : [];
+  // o.taal: "auto" (detected), a TAALS key, or nothing (bars of four). o.samShift moves sam by
+  // beats; o.samAt gives a time that is sam.
+  let taalUsed = null;
+  if (o.taal && notes.length && grid.length) {
+    const d = o.taal === "auto" ? detectTaal(notes, grid) : { taal: o.taal, sam: detectTaal(notes, grid).sam, sure: 1 };
+    // o.samAt: a time known to be sam (a MIDI file's first bar line).
+    if (o.samAt !== undefined && TAALS[d.taal]) { const b = beatAt(grid, o.samAt); d.sam = Math.round(b.i + b.frac); }
+    if (TAALS[d.taal]) taalUsed = { key: d.taal, sam: d.sam + (o.samShift || 0), sure: d.sure, auto: o.taal === "auto" };
+  }
   const lineTimes = [];
   return {
     notes, tune: Math.round(tune * 100), tonics, sa, bpm, phase: tempo.phase, shift, base, scale, grid,
     tempoRange: o.follow || o.beats || o.taps ? tempoRange(inside) : null,
     fit: fitOf(semis), flute: bestFlute(notes, sa),
-    notation: o.layout === "phrases" ? toPhrases(notes, bpm, semiOf, { grid, times: lineTimes }) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf, { grid, times: lineTimes }),
+    notation: o.layout === "phrases" ? toPhrases(notes, bpm, semiOf, { grid, times: lineTimes }) : toNotation(notes, bpm, tempo.phase, o.sub, semiOf, { grid, times: lineTimes, taal: taalUsed }),
+    taal: taalUsed,
     lineTimes,
   };
 }

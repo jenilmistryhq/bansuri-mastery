@@ -35,10 +35,25 @@ function noteAt(str, i) {
   return { semi: SEMI[L] + 12 * (high - low), next: i };
 }
 
-export function parseNotation(text) {
+// Ma written the common way (as most notation websites do): plain M is shuddha Ma and M# (or M^ in
+// some books) tivra; converted to the app's way (m shuddha, M tivra). maStyle: "app" or "common";
+// a text with M# in it is the common way whatever the setting.
+export function fromCommonMa(text) {
+  return String(text || "").replace(/(\.*)M(#|\^(?=['.\s|,)}~-]|$))?/g, (_, lo, t) => lo + (t ? "M" : "m"));
+}
+export function toCommonMa(text) {
+  return String(text || "").replace(/(\.*)([mM])/g, (_, lo, l) => lo + (l === "M" ? "M#" : "M"));
+}
+export function normaliseMa(text, maStyle) {
+  return maStyle === "common" || /M#/.test(String(text || "")) ? fromCommonMa(text) : String(text || "");
+}
+
+export function parseNotation(text, maStyle) {
   const tokens = [], skipped = [];
-  String(text || "").split(/\s+/).filter(Boolean).forEach(raw => {
+  normaliseMa(text, maStyle).split(/\s+/).filter(Boolean).forEach(raw => {
     if (/^\|+$/.test(raw)) { tokens.push({ type: "bar", text: raw }); return; }
+    // Taal marks before a vibhag (Bhatkhande): X sam, 0 khali, 2 3 4 the other taalis. No time.
+    if (/^(X|x|0|[2-9])$/.test(raw)) { tokens.push({ type: "mark", text: raw }); return; }
     if (raw === ",") { tokens.push({ type: "breath", text: "," }); return; }
     if (!/^[.SrRgGmMPdDnN'\-_{}~()^,|]+$/.test(raw)) { skipped.push(raw); tokens.push({ type: "skip", text: raw }); return; }
     const items = []; let i = 0, kan = null, glide = false, breathAfter = false;

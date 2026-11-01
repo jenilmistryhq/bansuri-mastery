@@ -348,4 +348,23 @@ await test("practice: a take is scored note by note", () => {
   assert.equal(sc.right, 1);
 });
 
+await test("taal: cycles with vibhags and marks, the taal found from the accents, Ma written either way", () => {
+  // Three-beat groups (a long note, two short ones), twelve groups: Dadra; four-beat groups: Keherwa.
+  const group = (k, beat) => { const out = []; for (let g = 0; g < 12; g++) for (let b = 0; b < k; b++) { const t0 = (g * k + b) * beat; out.push({ t0, t1: t0 + (b === 0 ? 0.9 : 0.3) * beat, midi: 60 + (b === 0 ? 0 : 2 + b) }); } return out; };
+  for (const [k, want] of [[3, "dadra"], [4, "keherwa"]]) {
+    const notes = group(k, 0.5), grid = T.beatGrid(notes, 120, 0);
+    assert.equal(T.detectTaal(notes, grid).taal, want, k + "-beat groups");
+  }
+  const notes = [0, 2, 4, 5, 7, 9].map((s, i) => ({ t0: i * 0.5, t1: i * 0.5 + 0.45, midi: 60 + s }));
+  const r = T.transcribe(null, null, { notes, sa: 60, sameKey: false, layout: "beats", bpm: 120, phase: 0, taal: "dadra", samAt: 0 });
+  assert.equal(r.notation.trim(), "X S R G | 0 m P D ||");
+  const t = T.transcribe(null, null, { notes, sa: 60, sameKey: false, layout: "beats", bpm: 120, phase: 0, taal: "teentaal", samAt: 0 });
+  assert.match(t.notation, /^X S R G m \| 2 P D _ _ \| 0 _ _ _ _ \| 3 _ _ _ _ \|\|/);
+  const ev = buildEvents(parseNotation(r.notation).tokens, 60).ev.map(e => e.semi);
+  assert.deepEqual(ev, [0, 2, 4, 5, 7, 9], "marks are not notes");
+  const N = { parseNotation, buildEvents };
+  assert.deepEqual(N.buildEvents(N.parseNotation("G M P M# P", "common").tokens, 60).ev.map(e => e.semi), [4, 5, 7, 6, 7], "common Ma: M shuddha, M# tivra");
+  assert.deepEqual(N.buildEvents(N.parseNotation("G m M P").tokens, 60).ev.map(e => e.semi), [4, 5, 6, 7], "the app's Ma");
+});
+
 console.log("transcribe tests: " + passed + " passed");

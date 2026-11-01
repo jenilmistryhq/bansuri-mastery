@@ -18,7 +18,7 @@ const fmt = ev => ev.map(e => `${codeOf(e.semi)}@${+e.start.toFixed(2)}/${+e.dur
 
 test("settings defaults without a browser", () => {
   assert.deepEqual(getSettings(), { saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false, lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1,
-    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false });
+    easyFont: false, contrast: false, beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false });
   assert.ok(Math.abs(saHz() - 523.25) < 0.01);
 });
 

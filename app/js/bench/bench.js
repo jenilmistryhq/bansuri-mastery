@@ -562,7 +562,7 @@ export function mountBench(container, opts) {
     const el = q("score"); el.innerHTML = "";
     const deva = getSettings().deva;
     tokens.forEach((tk, i) => {
-      const s = document.createElement("span"); s.textContent = tk.text; s.dataset.tk = i; s.className = tk.type === "bar" ? "bb-barmark" : tk.type === "skip" ? "bb-skip" : "";
+      const s = document.createElement("span"); s.textContent = tk.text; s.dataset.tk = i; s.className = tk.type === "bar" ? "bb-barmark" : tk.type === "skip" ? "bb-skip" : tk.type === "mark" ? "bb-taalmark" : "";
       // With Devanagari on, each beat also shows its notes in Devanagari underneath.
       if (deva && tk.type === "beat") { const d = document.createElement("small"); d.className = "bb-deva"; d.textContent = devaNotation(tk.text); s.appendChild(d); }
       el.appendChild(s);

@@ -784,6 +784,7 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .nhold { color: var(--muted); }
 .nsep { color: var(--line); width: 1.4em; text-align: center; font-weight: 700; }
 .npause { width: 1.6em; }
+.ntaal { min-width: 1.6em; align-self: flex-start; font-size: 0.72em; font-weight: 700; color: var(--accent); }
 .playrow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
 .playside { display: grid; gap: 6px; justify-items: end; }
 .playrow:first-of-type { border-top: 0; }
