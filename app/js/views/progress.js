@@ -5,6 +5,7 @@ import { totals, streaks, practiceDates, getPlan, getDay, current, milestoneStat
 import { rules } from "../badges.js";
 import { holdSummary } from "../livestats.js";
 import { codeOf } from "../core/theory.js";
+import { getSettings } from "../core/settings.js";
 import { levelBar, levelsTable, xpRules } from "../levelui.js";
 import { emblem } from "../ui.js";
 import { ICON_PATHS } from "../util.js";
@@ -258,10 +259,10 @@ export async function render(main) {
   }
 
   // 5. Level and badges, last: rewards, not information.
-  page.append(q(5, "Level and badges"), levelSection());
+  // Focus mode (Settings) leaves them out.
   const list = rules();
   const earned = list.filter(r => s.badges[r.id]).length;
-  page.append(h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Badges"), h("span", { class: "chip info" }, earned + " of " + list.length)),
+  if (!getSettings().focus) page.append(q(5, "Level and badges"), levelSection(), h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Badges"), h("span", { class: "chip info" }, earned + " of " + list.length)),
     // Earned badges and the next three to aim for; the rest are folded away.
     (() => {
       const badge = r => h("div", { class: "badge" + (s.badges[r.id] ? " earned" : "") },

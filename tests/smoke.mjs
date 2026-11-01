@@ -1143,6 +1143,15 @@ try {
     }
     fs.unlinkSync(wavPath);
   });
+  await section("Focus mode", async () => {
+    await page.evaluate(() => { const st = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); st.focus = true; localStorage.setItem("bansuri.settings", JSON.stringify(st)); });
+    await page.reload({ waitUntil: "networkidle0" }); await go("/today");
+    const tabs = await page.$$eval("nav.tabbar a", a => a.map(x => x.textContent.trim().toLowerCase()));
+    const pill = await page.$eval(".levelpill", e => getComputedStyle(e).display).catch(() => "none");
+    check(tabs.includes("listen") && !tabs.includes("play") && pill === "none", "focus mode: no Play tab and no level, Listen instead [" + tabs.join(", ") + "]");
+    await page.evaluate(() => { const st = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); st.focus = false; localStorage.setItem("bansuri.settings", JSON.stringify(st)); });
+    await page.reload({ waitUntil: "networkidle0" });
+  });
   await section("Tone check", async () => {
     await go("/tone");
     check(/how does your note sound/.test(await text()), "tone: the page opens");

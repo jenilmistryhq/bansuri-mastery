@@ -11,6 +11,7 @@ import { fetchDoc } from "../content.js";
 import { dayResults, lastPlayedDay } from "../livestats.js";
 import { questState } from "../fun.js";
 import { codeOf } from "../core/theory.js";
+import { getSettings } from "../core/settings.js";
 import { icon } from "../util.js";
 import { stepMeta } from "../steps.js";
 import { ring, weekStrip } from "../ui.js";
@@ -151,7 +152,7 @@ export function progressCard() {
 export function quickActions() {
   const a = (href, ic, label) => h("a", { class: "quickact", href }, h("span", { class: "quickicon", "aria-hidden": "true" }, icon(ic)), h("span", null, label));
   return h("nav", { class: "quickacts", "aria-label": "Quick actions" },
-    a("#/bench", "bench", "Flute and tuner"), a("#/coach", "coach", "Check my tone"), a("#/play", "star", "Play a game"),
+    a("#/bench", "bench", "Flute and tuner"), a("#/tone", "coach", "Tone check"), getSettings().focus ? a("#/coach", "coach", "Coach") : a("#/play", "star", "Play a game"),
     a("#/songs", "note", "Songs"), a("#/listen", "listen", "Listen"), a("#/quick", "today", "5 minutes"));
 }
 

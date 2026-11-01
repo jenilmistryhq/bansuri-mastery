@@ -853,3 +853,6 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .tonepage .tablewrap { overflow-x: auto; }
 .tonepage table { width: 100%; border-collapse: collapse; }
 .tonepage th, .tonepage td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+
+/* Focus mode: practice and listening only (Settings) */
+.focus .levelpill, .focus .profile-level, .focus .questline, .focus .levelbadge, .focus .xpfloat { display: none !important; }

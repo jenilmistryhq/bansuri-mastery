@@ -41,7 +41,7 @@ document.addEventListener("bansuri:live", e => {
     // Celebrate personal bests and finished quests.
     if (d.type === "hold" && before >= 2 && d.seconds >= before + 0.5) { celebrate("New best: " + (d.target === null || d.target === undefined ? "a note" : codeOf(d.target)) + " held " + d.seconds.toFixed(1) + " s!"); say("new_best"); }
     else if (d.type === "game" && d.best && d.score) { celebrate("New best score: " + d.score + "!"); say("new_best"); }
-    done.forEach(q => { celebrate("Quest complete: " + q.text + " (+20)"); say("quest_done"); });
+    if (!getSettings().focus) done.forEach(q => { celebrate("Quest complete: " + q.text + " (+20)"); say("quest_done"); });
   } catch (err) { logError(err && err.message ? err.message : String(err), "live result"); }
 });
 import { getState, onChange, isStorageOk } from "./state.js";
@@ -67,6 +67,7 @@ const GROUPS = {
 // Which tab a screen belongs to.
 const TAB_OF = { today: "today", session: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", transcribe: "bench", tone: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress", move: "progress", privacy: "progress", students: "progress" };
 // Simple mode: three big choices, no reading needed.
+const NAV_FOCUS = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["listen", "#/listen", "Listen"], ["progress", "#/progress", "Me"]];
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
 
 let mainEl, navEl, dayPill, cleanup = null, routeToken = 0, updateReady = false;
@@ -95,6 +96,8 @@ function applyAccess() {
   root.classList.toggle("contrast", s.contrast);
   root.classList.toggle("bigtargets", s.bigTargets);
   root.classList.toggle("simple", s.simple);
+  // Focus mode: no games, points, levels, badges or quests (CSS hides them; the tab bar swaps Play for Listen).
+  root.classList.toggle("focus", s.focus);
   root.lang = s.lang === "hi" ? "hi" : "en";
 }
 
@@ -108,9 +111,9 @@ function showLevel() {
   levelPill.setAttribute("aria-label", levelPill.title);
 }
 onXp(({ gained, level, leveledUp }) => {
-  floatXp(gained);
+  if (!getSettings().focus) floatXp(gained);
   showLevel();
-  if (leveledUp) { celebrate("Level " + level.level + ": " + level.name + "!"); say("level_reached"); markLevelSeen(); }
+  if (leveledUp && !getSettings().focus) { celebrate("Level " + level.level + ": " + level.name + "!"); say("level_reached"); markLevelSeen(); }
 });
 
 // Beats seen and felt: a flash at the edge of the screen, and a buzz on phones that can.
@@ -133,7 +136,7 @@ function shell() {
     h("span", { class: "statuspills" }, dayPill, (levelPill = h("a", { class: "levelpill", href: "#/progress#level" }, ""))),
     h("button", { type: "button", class: "iconbtn", title: "Search (press /)", onclick: openPalette }, icon("search", "Search")),
     h("a", { class: "iconbtn", href: "#/settings", title: "Settings" }, icon("settings", "Settings")));
-  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(NAV_ICON[k] || k), h("span", null, label))));
+  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : getSettings().focus ? NAV_FOCUS : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(NAV_ICON[k] || k), h("span", null, label))));
   mainEl = h("main", { id: "main", tabindex: "-1" });
   clear(app).append(top, h("div", { class: "layout" }, navEl, mainEl));
 }
@@ -218,9 +221,10 @@ async function boot() {
     try { setDict(await (await fetch("app/i18n/hi.json")).json()); } catch (e) { console.warn("Hindi dictionary not loaded", e); }
   }
   observe(document.body);
-  let wasSimple = getSettings().simple, wasLang = getSettings().lang;
+  let wasSimple = getSettings().simple, wasLang = getSettings().lang, wasFocus = getSettings().focus;
   onSettings(s => {
     applyAccess();
+    if (s.focus !== wasFocus) { wasFocus = s.focus; location.reload(); return; }
     if (s.simple !== wasSimple || s.lang !== wasLang) {
       const langChanged = s.lang !== wasLang;
       wasSimple = s.simple; wasLang = s.lang;
