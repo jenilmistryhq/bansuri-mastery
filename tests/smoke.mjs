@@ -806,6 +806,27 @@ try {
       await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
       await setSet({ simple: false });
 
+      // Ornament trainer: a played meend from Re to Ga (a glide in small steps) is measured and passes.
+      await lp.goto(BASE + "#/ornaments", { waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main .ornplot");
+      // The played line starts only once the page is listening (the microphone can take a moment).
+      await lp.evaluate(() => {
+        const hz = s => 523.251 * Math.pow(2, s / 12); let t0 = null;
+        const id = setInterval(() => {
+          if (t0 === null) { if (!/Listening for/.test(document.querySelector("#main").textContent)) return; t0 = performance.now() + 300; }
+          const x = (performance.now() - t0) / 1000;
+          if (x < 0) return;
+          window.__tone(x < 0.7 ? hz(2) : x < 1.6 ? hz(2 + 2 * (x - 0.7) / 0.9) : x < 3 ? hz(4) : 0);
+          if (x > 3) clearInterval(id);
+        }, 15);
+        [...document.querySelectorAll("#main button")].find(b => /Try it/.test(b.textContent)).click();
+      });
+      await lp.waitForFunction(() => /Glide length|Too quick|Very slow|No clear note|Start on/.test(document.querySelector("#main").textContent), { timeout: 15000 }).catch(() => {});
+      const ornText = await lp.$eval("#main", e => e.textContent);
+      check(/Glide length/.test(ornText) && /No break in the sound/.test(ornText) && /Smooth: no step/.test(ornText), "ornaments: a played meend is measured: smooth, unbroken, the right length (" + (ornText.match(/(Glide length[^.]*|Too quick[^.]*|No clear note[^.]*|Start on[^.]*)/) || ["?"])[0] + ")");
+      check(/Your best: \d of 4/.test(ornText), "ornaments: the best result is kept");
+      await tone(null);
+
       // Hindi: the interface, and a session step, in Hindi.
       await setSet({ lang: "hi" });
       await lp.goto(BASE + "#/session/2", { waitUntil: "networkidle0" });
@@ -1199,7 +1220,7 @@ try {
   await section("Accessibility (axe-core: WCAG 2.1 A and AA rules)", async () => {
     {
       const axeSrc = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "node_modules", "axe-core", "axe.min.js"), "utf8");
-      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/tone", "/review", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
+      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/tone", "/ornaments", "/review", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
         await go(route);
         await sleep(400);
         await page.evaluate(axeSrc);
