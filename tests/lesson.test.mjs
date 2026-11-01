@@ -125,4 +125,12 @@ test("taal: claps on sam and tali, waves on khali; presses scored by kind and ti
   assert.deepEqual(K3.clapScore([{ t: 0.1, act: "clap" }, { t: 2.05, act: "wave" }, { t: 4.2, act: "clap" }], exp), { hit: 3, of: 3, wrong: 0 });
   assert.deepEqual(K3.clapScore([{ t: 0, act: "clap" }, { t: 2, act: "clap" }], exp), { hit: 1, of: 3, wrong: 1 }, "a clap on khali is wrong");
 });
+test("half-hole: covered is Ga, open is tivra Ma, the sweet spot is shuddha Ma", () => {
+  for (const sweet of [0.4, 0.5, 0.6]) {
+    assert.equal(K3.halfHoleSemi(1, sweet), 4);
+    assert.equal(K3.halfHoleSemi(0, sweet), 6);
+    assert.ok(Math.abs(K3.halfHoleSemi(sweet, sweet) - 5) < 1e-9);
+    assert.ok(K3.halfHoleSemi(sweet + 0.05, sweet) < 5 && K3.halfHoleSemi(sweet - 0.05, sweet) > 5, "more cover, lower");
+  }
+});
 console.log("lesson tests: " + n + " passed");

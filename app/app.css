@@ -1052,3 +1052,4 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-taalbeat.now { background: var(--accent); color: var(--accent-ink); }
 .lesson-bol { position: absolute; inset: 0; display: grid; place-items: center; font-size: 1.6rem; }
 .lesson-act { min-width: 7rem; justify-content: center; }
+.lesson-half { width: min(260px, 100%); height: auto; }

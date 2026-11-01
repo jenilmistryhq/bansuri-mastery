@@ -61,7 +61,57 @@ export function clapScore(presses, expected) {
 // Beats per second between two notes a few cents apart (at Sa's frequency).
 export const beatRate = (cents, hz) => Math.abs(hz * (Math.pow(2, cents / 1200) - 1));
 
+// The half-hole: the note for a hole 1 covered by a fraction (1 = closed: Ga; 0 = open: tivra
+// Ma). Shuddha Ma sits where the cover equals the flute's own sweet spot (about half).
+export function halfHoleSemi(cover, sweet) {
+  // Piecewise: from open (6) to the sweet spot (5), then to closed (4).
+  return cover <= sweet ? 6 - cover / sweet : 5 - (cover - sweet) / (1 - sweet);
+}
+
 export const LISTEN_KINDS = {
+  // Slide a finger across hole 1 and hear Ga glide up to tivra Ma; find shuddha Ma by the cents
+  // readout. The sweet spot differs from flute to flute (40-60%): the tuner decides, not the eye.
+  halfhole: { make(s, api) {
+    let v = null, held = 0, timer = 0;
+    const sweet = 0.4 + Math.random() * 0.2;
+    const NS = "http://www.w3.org/2000/svg";
+    const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, x] of Object.entries(attrs)) e.setAttribute(k, String(x)); return e; };
+    const svg = svgEl("svg", { viewBox: "0 0 200 120", class: "lesson-half", "aria-hidden": "true" });
+    svg.append(svgEl("rect", { x: 0, y: 20, width: 200, height: 80, rx: 40, class: "fl-body" }), svgEl("circle", { cx: 100, cy: 60, r: 26, class: "fl-hole" }));
+    const pad = svgEl("rect", { x: 40, y: 22, width: 90, height: 76, rx: 36, class: "fl-pad", style: "opacity:1" });
+    svg.append(pad);
+    const slider = h("input", { type: "range", min: "0", max: "100", step: "1", value: "100", "aria-label": "How much of hole 1 is covered", class: "lesson-slider" });
+    const name = h("b", { class: "lesson-note" }, "G");
+    const cents = h("span", { class: "small muted" });
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, "Press Play, then slide your finger off the hole, slowly.");
+    const play = h("button", { type: "button", class: "btn primary" }, icon("play"), " Play");
+    const semi = () => halfHoleSemi(Number(slider.value) / 100, sweet);
+    const draw = () => {
+      const cover = Number(slider.value) / 100, x = semi();
+      pad.setAttribute("x", String(-16 + 71 * cover)); // centred on the hole when covered; clear of it when open
+      const near = Math.round(x), c = Math.round((x - 5) * 100);
+      name.textContent = Math.abs(x - 5) < 0.5 ? "m" : near <= 4 ? "G" : "M";
+      cents.textContent = (c > 0 ? "+" : "") + c + " cents from shuddha Ma";
+      if (v) v.setPitch(hzOf(x));
+    };
+    const stop = () => { clearInterval(timer); if (v) { v.voice.stop(ac().currentTime + 0.05); v = null; } play.replaceChildren(icon("play"), " Play"); };
+    play.addEventListener("click", () => {
+      if (v) { stop(); return; }
+      const c = ac(), t = c.currentTime + 0.02, voice = makeVoice(hzOf(semi()), t);
+      voice.stop(t + 60);
+      let last = hzOf(semi());
+      v = { voice, setPitch(f) { const now = ac().currentTime; voice.ramp(last, f, now, 0.06); last = f; } };
+      play.replaceChildren(icon("stop"), " Stop");
+      timer = setInterval(() => {
+        held = Math.abs(semi() - 5) <= 0.1 ? held + 0.2 : 0;
+        if (held >= 1 && !api.data[s.id]) { ding(true); msg.textContent = "Shuddha Ma: about " + Math.round(sweet * 100) + "% covered on this flute. On yours, the tuner decides."; api.data[s.id] = { sweet: Math.round(sweet * 100) }; api.save(); api.ready(); }
+      }, 200);
+    });
+    slider.addEventListener("input", draw);
+    draw();
+    return { el: h("div", { class: "stack lesson-center" }, svg, h("label", { class: "lesson-sliderwrap" }, slider, h("span", { class: "small muted lesson-humscale" }, h("span", null, "open"), h("span", null, "covered"))), name, cents, msg, play), destroy: stop };
+  } },
+
   // Keep a taal with the hands: the tabla plays its theka round a beat clock; clap on sam and
   // tali, wave on khali. The last cycle can be silent: keep the count inside and land on sam.
   // { taal, bpm, cycles, silent (last cycles without the tabla) }
