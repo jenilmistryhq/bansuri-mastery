@@ -116,7 +116,7 @@ function ops(want, got, j) {
   let i = m;
   while (i > 0 && k > 0) {
     if (D[i][k] === D[i - 1][k - 1] + (want[i - 1] === got[lo + k - 1] ? 0 : 1)) { if (want[i - 1] !== got[lo + k - 1]) out.sub.push(want[i - 1] + ">" + got[lo + k - 1]); i--; k--; }
-    else if (D[i][k] === D[i - 1][k] + 1) { out.del++; i--; }
+    else if (D[i][k] === D[i - 1][k] + 1) { out.del++; if (i >= 2 && want[i - 1] === want[i - 2]) out.delRep = (out.delRep || 0) + 1; i--; }
     else { out.ins++; k--; }
   }
   out.del += i;
@@ -139,6 +139,21 @@ function aligned(want, got, j) {
   return out;
 }
 const cons = { right: 0, systematic: 0, random: 0 };
+// --guided: what the guided check would do. For each place found, the app's wrong notes (got index
+// and the right note) and extra notes, by backtracking the alignment.
+function wrongAt(want, got, j) {
+  const m = want.length, lo = Math.max(0, j - 2 * m), D = [];
+  for (let i = 0; i <= m; i++) { D.push(new Array(j - lo + 1).fill(0)); D[i][0] = i; }
+  for (let i = 1; i <= m; i++) for (let k = 1; k <= j - lo; k++) D[i][k] = Math.min(D[i - 1][k - 1] + (want[i - 1] === got[lo + k - 1] ? 0 : 1), D[i - 1][k] + 1, D[i][k - 1] + 1);
+  let k = j - lo; for (let x = 0; x <= j - lo; x++) if (D[m][x] < D[m][k]) k = x;
+  const subs = [], ins = []; let i = m;
+  while (i > 0 && k > 0) {
+    if (D[i][k] === D[i - 1][k - 1] + (want[i - 1] === got[lo + k - 1] ? 0 : 1)) { if (want[i - 1] !== got[lo + k - 1]) subs.push([lo + k - 1, want[i - 1]]); i--; k--; }
+    else if (D[i][k] === D[i - 1][k] + 1) i--; else { ins.push(lo + k - 1); k--; }
+  }
+  return { subs, ins };
+}
+const guided = { right: 0, total: 0, rightAfter: 0, wrong: 0, flagged: 0, fixable: 0, extra: 0, extraFlagged: 0, asked: 0, minutes: 0 };
 // Every place (local minimum of edits) with at most 40% wrong; places closer than half a line merge.
 function places(want, got) {
   const e = endsAt(want, got), out = [], limit = Math.floor(want.length * 0.4);
@@ -273,7 +288,7 @@ for (const txt of songs) {
     if (ps.length) for (const p of ps) {
       right += n - p.e; total += n;
       const o = ops(line.notes, got, p.j);
-      why.del += o.del; why.ins += o.ins; why.sub += o.sub.length;
+      why.del += o.del; why.ins += o.ins; why.sub += o.sub.length; why.delRep = (why.delRep || 0) + (o.delRep || 0);
       for (const x of o.sub) why.pairs[x] = (why.pairs[x] || 0) + 1;
     } else total += n;
     bestRight += n - best; bestTotal += n;
@@ -282,11 +297,30 @@ for (const txt of songs) {
     if (flag("--dump")) for (const p of ps) { const a = Math.max(0, p.j - n - 2), z = Math.min(r.notes.length, p.j + 2); rows.push("       " + p.e + " wrong at " + r.notes[a].t0.toFixed(1) + "s: " + r.notes.slice(a, z).map(q => name(q.midi - r.sa) + "(" + Math.round((q.t1 - q.t0) * 100) + ")").join(" ")); }
   }
   const sc = scoreAt(ref, got), typ = sc.typ, bst = bestRight / bestTotal;
+  if (flag("--guided")) {
+    const scale = r.scale && r.scale.name ? r.scale.pcs.map(pc => (pc + r.sa) % 12) : null, frames = tr.track || [];
+    const doubt = r.notes.map((_, k) => frames.length ? T.noteDoubts(r.notes, k, frames, r.tune / 100, scale).length > 0 : false);
+    let fixedHere = 0, totalHere = 0, rightHere = 0;
+    for (const c of sc.taken) {
+      const w = wrongAt(ref.lines[c.li].notes, got, c.z);
+      for (const [gi, want] of w.subs) {
+        guided.wrong++;
+        if (doubt[gi]) { guided.flagged++; const ch = T.noteChoices(r.notes, gi, frames, r.tune / 100, scale).map(m => m - r.sa + shift); if (ch.includes(want)) { guided.fixable++; fixedHere++; } }
+      }
+      for (const gi of w.ins) { guided.extra++; if (doubt[gi]) { guided.extraFlagged++; fixedHere++; } }
+      rightHere += c.n - c.e; totalHere += c.n;
+    }
+    // Lines never found count as missed, as in the score.
+    const missedLines = sc.typ > 0 ? Math.round(rightHere / sc.typ) - totalHere : 0;
+    guided.right += rightHere; guided.total += totalHere + Math.max(0, missedLines); guided.rightAfter += Math.min(totalHere, rightHere + fixedHere);
+    guided.asked += doubt.filter(Boolean).length; guided.minutes += (r.notes.length ? r.notes[r.notes.length - 1].t1 - r.notes[0].t0 : 0) / 60;
+  }
   sumTyp += typ; sumBest += bst; count++;
   console.log(ref.title + ": typical " + Math.round(typ * 100) + "%, best " + Math.round(bst * 100) + "% | app's Sa " + NAMES[first.sa % 12] + (ref.sa !== null && ref.sa >= 0 ? ", reference Sa " + NAMES[ref.sa] + (first.sa % 12 === ref.sa ? " (same)" : " (DIFFERENT: scored on the reference Sa)") : "") + " | " + r.notes.length + " notes");
   if (flag("--show")) console.log(rows.join("\n"));
 }
-if (flag("--why")) console.log("errors in the places found: " + why.del + " notes missing, " + why.ins + " extra, " + why.sub + " wrong; most common wrong (want>got): " + Object.entries(why.pairs).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => k + " x" + v).join(", "));
+if (flag("--why")) console.log("errors in the places found: " + why.del + " notes missing (" + (why.delRep || 0) + " of them a repeat of the note before), " + why.ins + " extra, " + why.sub + " wrong; most common wrong (want>got): " + Object.entries(why.pairs).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => k + " x" + v).join(", "));
+if (flag("--guided")) console.log("guided check: " + guided.flagged + " of " + guided.wrong + " wrong notes flagged as doubtful (" + guided.fixable + " with the right note among the choices), " + guided.extraFlagged + " of " + guided.extra + " extra notes flagged; " + Math.round(guided.asked / Math.max(0.1, guided.minutes)) + " doubtful notes a minute of song; notes right " + Math.round(guided.right / guided.total * 100) + "% now, about " + Math.round(guided.rightAfter / guided.total * 100) + "% after the check");
 if (flag("--consistency")) { const t = cons.right + cons.systematic + cons.random; console.log("notes in lines found 2+ times: " + Math.round(cons.right / t * 100) + "% as written, " + Math.round(cons.systematic / t * 100) + "% the same other note at most repeats (recording and notation differ), " + Math.round(cons.random / t * 100) + "% other slips"); }
 if (oracle.length) console.log("with the best Sa for each song: typical " + Math.round(oracle.reduce((a, b) => a + b, 0) / oracle.length * 100) + "%");
 if (count) console.log("ALL " + count + " songs: typical " + Math.round(sumTyp / count * 100) + "%, best " + Math.round(sumBest / count * 100) + "% (goal: 90% typical)");

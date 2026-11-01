@@ -5,9 +5,13 @@
 // the pitch heard, a slide in or not, added or deleted). Notes outside the song's scale are
 // outlined ("odd": the likeliest mistakes) and can be visited one by one. The page owns the notes; this module draws them, plays them
 // and reports each edit through o.onEdit(op, id, arg) (for "add" the page returns the new id).
+// The guided check walks through only the doubtful notes (outside the scale, between two notes,
+// very short, wavering, a big jump), plays each in the original, and offers the likely notes as
+// one-key choices; a note kept is marked checked (op "ok") and not asked about again.
 import { h, icon } from "../util.js";
 import { ac, makeVoice } from "../core/audio.js";
 import { codeOf } from "../core/theory.js";
+import { noteDoubts, noteChoices } from "../transcribe.js";
 
 const fmt = s => Math.floor(s / 60) + ":" + (s % 60).toFixed(1).padStart(4, "0");
 const freqOf = n => 440 * Math.pow(2, (n.midi + (n.off || 0) - 69) / 12);
@@ -52,6 +56,13 @@ export function earTools(o) {
     btn(h("span", null, icon("note"), " This note"), "Hear only this note as written", () => { const n = current(); if (n) playNotes(n.t0, n.t1); }),
     btn(h("span", null, icon("stop")), "Stop", () => stop(), "ghost"),
     btn("Next odd note", "The next note outside the song's scale (O)", () => nextOdd(), "ghost"));
+  // ---- Guided check ----
+  const guideBtn = h("button", { type: "button", class: "btn", onclick: () => startGuide() }, "Check the doubtful notes");
+  // Line by line: every phrase is heard sung, then as written; Enter when they match, else fix it.
+  const lineBtn = h("button", { type: "button", class: "btn primary", onclick: () => startLines() }, "Check line by line");
+  let lines = null; // { list: [[a, b]], at }
+  const guideBox = h("div", { class: "guide", hidden: true, "aria-live": "polite" });
+  let guide = null; // { queue: [ids], at, from }
   const el = h("section", { class: "card" }, h("h2", null, "3. Check by ear"),
     h("p", { class: "small muted" }, "Click a note (or use the arrow keys), hear the original there, slowed down without changing its pitch, and correct the note until it matches. The notation follows every change."),
     h("div", { class: "row eartop" },
@@ -59,6 +70,7 @@ export function earTools(o) {
       h("label", { class: "check", for: "ear-loop" }, loopBox, "Loop"),
       h("div", { class: "row tight" }, btn("-", "Show more of the song (zoom out)", () => zoom(1.5)), btn("+", "Show less, larger (zoom in)", () => zoom(1 / 1.5))),
       h("div", { class: "row tight earundo" }, undoBtn, resetBtn)),
+    h("div", { class: "row tight guiderow" }, lineBtn, guideBtn, h("span", { class: "small muted guidecount" })), guideBox,
     h("div", { class: "earwrap" }, canvas), pos, info, playRow, editRow,
     h("details", { class: "small" }, h("summary", null, "Keys"),
       h("p", null, "Left and Right: the previous or next note. Up and Down: a semitone higher or lower (with Shift: an octave). Comma and full stop: shorter or longer. S: split. J: join with the next. H: the pitch heard. G: slide in or not. A: add a note after. O: the next odd note. Delete: remove the note. Space: the original here. P: the phrase. N: the phrase, then the notes. Ctrl+Z: undo. Double-click an empty place to add a note there; drag to move along the song; pinch (or Ctrl and the mouse wheel) to zoom.")));
@@ -115,6 +127,114 @@ export function earTools(o) {
     const cur = current(), next = odd.find(n => !cur || n.t0 > cur.t0) || odd[0];
     select(next.id); canvas.focus({ preventScroll: true });
   }
+
+  // ---- Doubtful notes ----
+  const doubts = (n, k) => noteDoubts(st.notes, k, st.frames, st.tune, st.scale ? st.scale.map(pc => (pc + st.zero) % 12) : null);
+  const choices = (n, k) => noteChoices(st.notes, k, st.frames, st.tune, st.scale ? st.scale.map(pc => (pc + st.zero) % 12) : null);
+  function countDoubts() { return st.notes.reduce((a, n, k) => a + (doubts(n, k).length ? 1 : 0), 0); }
+  function startGuide(from) {
+    const queue = st.notes.map((n, k) => (doubts(n, k).length ? n.id : null)).filter(Boolean);
+    if (!queue.length) { guideBox.hidden = false; guideBox.replaceChildren(h("p", null, icon("check"), " No doubtful notes left. Play the phrases once more to be sure.")); return; }
+    guide = { queue, at: 0 };
+    if (from) { const i = queue.indexOf(from); if (i >= 0) guide.at = i; }
+    showGuide(true);
+  }
+  function stopGuide() { guide = null; lines = null; guideBox.hidden = true; stop(); describeGuide(); }
+  // The phrases (notes up to a pause of 0.6 s, at most 8 s), as [first index, last index].
+  function phrases() {
+    const out = [], ns = st.notes;
+    let a = 0;
+    for (let k = 1; k <= ns.length; k++) if (k === ns.length || ns[k].t0 - ns[k - 1].t1 >= 0.6 || ns[k].t1 - ns[a].t0 > 8) { out.push([a, k - 1]); a = k; }
+    return out;
+  }
+  function startLines(at) {
+    guide = null;
+    const list = phrases();
+    if (!list.length) return;
+    // Start at the first line not checked yet.
+    const first = list.findIndex(([a, b]) => st.notes.slice(a, b + 1).some(n => !n.ok));
+    lines = { at: at !== undefined ? at : Math.max(0, first) };
+    showLine(true);
+  }
+  function showLine(play) {
+    if (!lines) return;
+    const list = phrases();
+    if (lines.at >= list.length) { stopGuide(); guideBox.hidden = false; guideBox.replaceChildren(h("p", null, icon("check"), " Every line is checked.")); return; }
+    const [a, b] = list[lines.at], ns = st.notes.slice(a, b + 1);
+    select(ns[0].id);
+    guideBox.hidden = false;
+    guideBox.replaceChildren(
+      h("p", null, h("b", null, "Line " + (lines.at + 1) + " of " + list.length + ": "), h("span", { class: "mono" }, ns.map(n => codeOf(n.semi)).join(" ")), ns.every(n => n.ok) ? " (checked)" : ""),
+      h("div", { class: "row tight" },
+        btn(h("span", null, icon("play"), " Sung, then written"), "The line sung, then as written (Space)", () => hearLine()),
+        btn(h("span", null, icon("play"), " Sung"), "The line in the original (P)", () => playOriginal(ns[0].t0 - 0.2, ns[ns.length - 1].t1 + 0.2)),
+        btn(h("span", null, icon("note"), " Written"), "The line as written (N)", () => playNotes(ns[0].t0, ns[ns.length - 1].t1))),
+      h("div", { class: "row tight" },
+        h("button", { type: "button", class: "btn primary", onclick: () => lineRight() }, "It matches (Enter)"),
+        h("button", { type: "button", class: "btn", onclick: () => { stop(); canvas.focus(); info.textContent = "Fix the notes of this line with the keys (Up, Down, S, J, Delete...), then press Enter for the next line."; } }, "Fix this line"),
+        btn("Back", "The previous line (Backspace)", () => { if (lines.at > 0) { lines.at--; showLine(true); } }, "ghost"),
+        btn("Stop checking", "Stop (Esc)", () => stopGuide(), "ghost")));
+    // Keys keep working: the focus stays in the panel after it is redrawn.
+    if (!el.contains(document.activeElement) || document.activeElement === document.body || !document.activeElement.isConnected) guideBox.querySelector(".btn.primary").focus({ preventScroll: true });
+    if (play) hearLine();
+  }
+  function hearLine() {
+    const list = phrases(); if (!lines || lines.at >= list.length) return;
+    const [a, b] = list[lines.at], t0 = st.notes[a].t0, t1 = st.notes[b].t1;
+    playOriginal(Math.max(0, t0 - 0.2), t1 + 0.2, () => playNotes(t0, t1));
+  }
+  // The line is right: its notes are marked checked, and on to the next.
+  function lineRight() {
+    const list = phrases(); if (!lines || lines.at >= list.length) return;
+    const [a, b] = list[lines.at];
+    for (const n of st.notes.slice(a, b + 1)) if (!n.ok) o.onEdit("ok", n.id);
+    lines.at++;
+    setTimeout(() => showLine(true), 0);
+  }
+  // The current doubtful note: its reasons, a play button, and the choices as one-key buttons.
+  function showGuide(play) {
+    if (!guide) return;
+    // Notes changed or checked since the queue was made are passed over.
+    while (guide.at < guide.queue.length) {
+      const k = st.notes.findIndex(n => n.id === guide.queue[guide.at]);
+      if (k >= 0 && doubts(st.notes[k], k).length) break;
+      guide.at++;
+    }
+    if (guide.at >= guide.queue.length) { stopGuide(); guideBox.hidden = false; guideBox.replaceChildren(h("p", null, icon("check"), " Done: every doubtful note is checked. Play each phrase once more with \"Phrase, then notes\" to be sure.")); describeGuide(); return; }
+    const k = st.notes.findIndex(n => n.id === guide.queue[guide.at]), n = st.notes[k];
+    select(n.id);
+    const opts = choices(n, k), name = m => codeOf(m - st.zero);
+    const pick = (m, i) => h("button", { type: "button", class: "btn guidechoice" + (i === 0 ? " current" : ""), onclick: () => choose(m), onmouseenter: () => preview(m) },
+      h("b", null, String(i + 1)), " " + name(m) + (i === 0 ? " (as written)" : ""));
+    guideBox.hidden = false;
+    guideBox.replaceChildren(
+      h("p", null, h("b", null, "Doubtful note " + (guide.at + 1) + " of " + guide.queue.length + ": " + name(n.midi)), " - " + doubts(n, k).join(", ") + "."),
+      h("div", { class: "row tight" },
+        btn(h("span", null, icon("play"), " Hear it"), "The original around this note, then the note (Space)", () => hearDoubt()),
+        btn(h("span", null, icon("play"), " Hear the phrase"), "The whole phrase in the original (P)", () => { const [a, b] = phrase(); playOriginal(a, b); })),
+      h("div", { class: "row tight guidechoices", role: "group", "aria-label": "Which note is it?" }, opts.map(pick),
+        h("button", { type: "button", class: "btn guidechoice", onclick: () => { advance(); edit("delete"); } }, h("b", null, String(opts.length + 1)), " No note here"),
+        h("button", { type: "button", class: "btn guidechoice", onclick: () => { advance(); edit("split"); } }, h("b", null, String(opts.length + 2)), " Two notes")),
+      h("div", { class: "row tight" },
+        btn("Back", "The previous doubtful note (Backspace)", () => { if (guide.at > 0) { guide.at--; showGuide(true); } }, "ghost"),
+        btn("Skip", "Leave it for now (Tab)", () => { guide.at++; showGuide(true); }, "ghost"),
+        btn("Stop checking", "Stop the guided check (Esc)", () => stopGuide(), "ghost")),
+      h("p", { class: "small muted" }, "Keys: 1 to " + (opts.length + 2) + " choose, Enter keeps the note as written, Space hears it again."));
+    guideBox._opts = opts;
+    if (!el.contains(document.activeElement) || !document.activeElement.isConnected) guideBox.querySelector(".guidechoice").focus({ preventScroll: true });
+    if (play) hearDoubt();
+  }
+  function describeGuide() { if (lines) setTimeout(() => showLine(false), 0); const c = countDoubts(); guideBtn.disabled = !c && !guide; guideBtn.parentNode.querySelector(".guidecount").textContent = c ? c + " doubtful notes" : "No doubtful notes"; }
+  // Kept as written (op "ok"), or set to another note; then on to the next.
+  function choose(m) {
+    const n = current(); if (!n) return;
+    advance();
+    if (m === n.midi) o.onEdit("ok", n.id); else { o.onEdit("heard", n.id, m); o.onEdit("ok", n.id); }
+  }
+  function advance() { if (guide) { guide.at++; setTimeout(() => showGuide(true), 0); } }
+  function preview(m) { const n = current(); if (!n) return; const c = ac(), v = makeVoice(440 * Math.pow(2, (m + (n.off || 0) - 69) / 12), c.currentTime + 0.02, { level: 0.2 }); v.stop(c.currentTime + 0.5); }
+  // The original from a little before the note to its end (at the chosen speed), then the note as written.
+  function hearDoubt() { const n = current(); if (!n) return; playOriginal(Math.max(0, n.t0 - 0.8), n.t1 + 0.15, () => playNotes(n.t0, n.t1)); }
 
   // ---- Playing ----
   function stop() {
@@ -264,6 +384,27 @@ export function earTools(o) {
     }
     if (best && bd < 3) { select(best.id, false); canvas.focus(); }
   }
+  // Keys while the guided check is on.
+  el.addEventListener("keydown", e => {
+    if (lines && e.target.tagName !== "INPUT") {
+      if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); lineRight(); }
+      else if (e.key === "Escape") { e.preventDefault(); stopGuide(); }
+      else if (e.key === " " && e.target !== canvas) { e.preventDefault(); e.stopPropagation(); hearLine(); }
+      else if (e.key === "Backspace" && e.target !== canvas) { e.preventDefault(); if (lines.at > 0) { lines.at--; showLine(true); } }
+      return;
+    }
+    if (!guide || e.target.tagName === "INPUT") return;
+    const opts = guideBox._opts || [];
+    if (/^[1-9]$/.test(e.key)) {
+      const i = Number(e.key) - 1;
+      e.preventDefault(); e.stopPropagation();
+      if (i < opts.length) choose(opts[i]); else if (i === opts.length) { advance(); edit("delete"); } else if (i === opts.length + 1) { advance(); edit("split"); }
+    } else if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); if (opts.length) choose(opts[0]); }
+    else if (e.key === "Escape") { e.preventDefault(); stopGuide(); }
+    else if (e.key === "Backspace") { e.preventDefault(); e.stopPropagation(); if (guide.at > 0) { guide.at--; showGuide(true); } }
+    else if (e.key === "Tab" && !e.shiftKey && e.target === canvas) { e.preventDefault(); guide.at++; showGuide(true); }
+    else if (e.key === " ") { e.preventDefault(); e.stopPropagation(); hearDoubt(); }
+  }, true);
   canvas.addEventListener("keydown", e => {
     const i = indexOf(), ns = st.notes;
     const go = j => { if (ns[j]) { e.preventDefault(); select(ns[j].id); } };
@@ -292,10 +433,12 @@ export function earTools(o) {
     el,
     // state: { notes (with id and semi), frames (MIDI pitch per 20 ms), tune (semitones), zero (the
     // flute's Sa as MIDI, after the octave shift), url (the recording, for slowed playback),
-    // duration, edited (true once the learner has changed anything), canUndo }
+    // duration, edited (true once the learner has changed anything), canUndo, scale (the song's
+    // scale as pitch classes from the flute's Sa, or null) }
     show(state) {
       st = state;
       if (!st.notes.some(n => n.id === sel)) sel = null;
+      describeGuide();
       pos.max = String(Math.max(0, st.duration - span));
       undoBtn.disabled = !st.canUndo; resetBtn.hidden = !st.edited;
       describe(); requestAnimationFrame(draw);

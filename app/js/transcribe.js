@@ -892,6 +892,43 @@ export function easier(notes, semiOf) {
   });
 }
 
+// Doubtful notes, for the guided check (eartools.js): why note k may be wrong, from the pitch line
+// under it (frames: MIDI every HOP, tune: the recording's tuning in semitones). Empty: no doubt.
+// scale: the song's scale as MIDI pitch classes, or null. A note marked .ok is never doubtful.
+function heardUnder(n, frames, tune) {
+  const vals = [];
+  for (let i = Math.ceil(n.t0 / HOP); i < n.t1 / HOP; i++) { const m = frames[i]; if (m !== null && m !== undefined) vals.push(m - tune); }
+  return vals.sort((a, b) => a - b);
+}
+export function noteDoubts(notes, k, frames, tune, scale) {
+  const n = notes[k];
+  if (n.ok) return [];
+  const why = [], prev = notes[k - 1], next = notes[k + 1], vals = heardUnder(n, frames, tune);
+  if (n.odd || (scale && !scale.includes(((n.midi % 12) + 12) % 12))) why.push("outside the song's scale");
+  if (vals.length >= 3) {
+    // Compared within the octave (the note may be written an octave from where it was sung).
+    const med = vals[vals.length >> 1], raw = med - n.midi, dev = raw - 12 * Math.round(raw / 12), spread = vals[Math.floor(vals.length * 0.75)] - vals[Math.floor(vals.length * 0.25)];
+    if (Math.abs(dev) >= DOUBT_CENTS / 100) why.push("heard " + Math.round(Math.abs(dev) * 100) + " cents " + (dev > 0 ? "higher" : "lower"));
+    if (spread >= 0.7) why.push("the pitch moves a lot");
+  }
+  if (n.t1 - n.t0 < 0.1 && why.length) why.push("very short");
+  if (prev && next && Math.abs(n.midi - prev.midi) >= 8 && Math.abs(n.midi - next.midi) >= 8) why.push("a big jump from the notes around it");
+  return why;
+}
+const DOUBT_CENTS = 35;
+// The likely notes for a doubtful one: itself, the pitch heard, its neighbours in the scale (or a
+// semitone each way), and the octave towards its neighbours after a big jump. MIDI numbers.
+export function noteChoices(notes, k, frames, tune, scale) {
+  const n = notes[k], out = [n.midi], add = m => { if (m !== null && !out.includes(m)) out.push(m); };
+  const vals = heardUnder(n, frames, tune);
+  if (vals.length) { const m = Math.round(vals[vals.length >> 1]); add(m + 12 * Math.round((n.midi - m) / 12)); }
+  const inScale = m => !scale || scale.includes(((m % 12) + 12) % 12);
+  for (const dir of [1, -1]) { let m = n.midi + dir; while (!inScale(m) && Math.abs(m - n.midi) < 3) m += dir; add(m); }
+  const prev = notes[k - 1], next = notes[k + 1];
+  if (prev && next && Math.abs(n.midi - prev.midi) >= 8) add(n.midi + (prev.midi > n.midi ? 12 : -12));
+  return out.slice(0, 5);
+}
+
 // How a take went, for Practise with the recording: each note (t0 and t1 in the recording's time,
 // semi from the flute's Sa) against the microphone's readings ({ t in the recording's time, semi })
 // in its middle: "right" (at least 40% of the clear readings within half a semitone), "octave"

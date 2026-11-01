@@ -93,6 +93,7 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] A song that speeds up or slows down: with "Follow tempo changes" the bars stay on the beat; the chip shows the tempo range.
 - [ ] Practise a line with the recording, with headphones and a real flute: notes played right turn green; after a good pass the speed goes up.
 - [ ] Check by ear on a phone: two-finger pinch zooms the pitch line.
+- [ ] Check line by line on a real song: each line plays sung then written; Enter moves on; a fixed line keeps its changes after Save and Open.
 - [ ] Settings > Download backup with recordings, then restore it in another browser: My songs and Your recordings come back.
 
 ### Listening with a real flute (the most important manual check)

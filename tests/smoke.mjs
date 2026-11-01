@@ -1110,6 +1110,14 @@ try {
       const split = await page.$eval("#main textarea[aria-label^='Notation']", e => e.value.trim()).catch(() => "");
       await page.keyboard.down("Control"); await page.keyboard.press("z"); await page.keyboard.press("z"); await page.keyboard.up("Control");
       check(/^RR G m/.test(split), "ear: S splits the picked note in two [" + split.slice(0, 14) + "]");
+      // The line-by-line check: the first line is offered, Enter marks it right and moves on.
+      await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => b.textContent === "Check line by line").click());
+      await sleep(200);
+      const line1 = await page.$eval("#main .guide p", e => e.innerText).catch(() => "");
+      await page.keyboard.press("Enter"); await sleep(300);
+      const line2 = await page.$eval("#main .guide p", e => e.innerText).catch(() => "");
+      await page.evaluate(() => { const b = [...document.querySelectorAll("#main button")].find(x => x.textContent === "Stop checking"); if (b) b.click(); });
+      check(/^Line 1 of \d+/.test(line1) && /^Line 2 of|Every line is checked/.test(line2), "ear: the line-by-line check walks the lines [" + line1.slice(0, 30) + " / " + line2.slice(0, 30) + "]");
       await page.click("#main button[aria-label='Hear the original around this note (Space)']");
       await sleep(400);
       await page.click("#main button[aria-label='Stop']");

@@ -631,7 +631,7 @@ export async function render(main) {
   const ear = earTools({ onEdit: (op, id, arg) => {
     if (op === "reset") { manual = null; undo = []; redraw(); return; }
     if (op === "undo") { if (undo.length) { manual = JSON.parse(undo.pop()); redraw(); } return; }
-    if (!manual) manual = last.notes.map(n => ({ id: n.id, t0: n.t0, t1: n.t1, midi: n.midi, off: n.off || 0, cents: n.cents || 0, lv: n.lv, edited: n.edited, glide: n.glide, kan: n.kan }));
+    if (!manual) manual = last.notes.map(n => ({ id: n.id, t0: n.t0, t1: n.t1, midi: n.midi, off: n.off || 0, cents: n.cents || 0, lv: n.lv, edited: n.edited, glide: n.glide, kan: n.kan, ok: n.ok }));
     undo.push(JSON.stringify(manual)); if (undo.length > 100) undo.shift();
     if (op === "add") {
       // Tuned like the notes around it.
@@ -650,6 +650,7 @@ export async function render(main) {
     else if (op === "longer") { n.t1 = Math.min(next ? next.t0 - 0.01 : n.t1 + 0.1, n.t1 + 0.1); n.edited = true; }
     else if (op === "split" && n.t1 - n.t0 >= 0.12) { const mid = (n.t0 + n.t1) / 2; manual.splice(i + 1, 0, { ...n, id: "u" + Date.now().toString(36), t0: mid + 0.005 }); n.t1 = mid - 0.005; n.edited = true; }
     else if (op === "glide") { n.glide = !n.glide; n.edited = true; }
+    else if (op === "ok") { n.ok = true; undo.pop(); }
     else if (op === "delete") manual.splice(i, 1);
     else if (op === "join" && manual[i + 1]) { n.t1 = manual[i + 1].t1; n.edited = true; manual.splice(i + 1, 1); }
     redraw();
@@ -884,7 +885,7 @@ export async function render(main) {
     hints.replaceChildren(...tips);
     hints.hidden = !tips.length;
     const line = (p === "best" ? parts.singer : src) || track;
-    ear.show({ notes: r.notes, frames: line.track, tune: r.tune / 100, zero: r.base - r.shift, url: p === "singer" && vocalsUrl ? vocalsUrl : audioUrl, duration: audio ? audio.duration : 0, edited: !!manual, canUndo: undo.length > 0 });
+    ear.show({ notes: r.notes, frames: line.track, tune: r.tune / 100, zero: r.base - r.shift, url: p === "singer" && vocalsUrl ? vocalsUrl : audioUrl, duration: audio ? audio.duration : 0, edited: !!manual, canUndo: undo.length > 0, scale: r.scale && r.scale.name ? r.scale.pcs.map(pc => (((pc + r.sa - r.base + r.shift) % 12) + 12) % 12) : null });
     fillLines();
   }
 

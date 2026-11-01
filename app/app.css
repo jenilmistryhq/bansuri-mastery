@@ -811,6 +811,13 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .earplot { display: block; width: 100%; height: 300px; cursor: pointer; touch-action: pan-y; }
 .earplot:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
 .earpos { width: 100%; }
+.guiderow { align-items: center; }
+.guide { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid var(--accent); border-radius: var(--radius); background: var(--accent-soft); }
+.guide p { margin: 0; }
+.guidechoices { flex-wrap: wrap; }
+.guidechoice { min-width: 5.5rem; justify-content: flex-start; font-family: var(--mono); }
+.guidechoice b { display: inline-grid; place-items: center; width: 1.4em; height: 1.4em; border-radius: 4px; background: var(--surface); color: var(--muted); font-family: var(--body); font-size: 0.8em; }
+.guidechoice.current { border-color: var(--accent); }
 .earinfo { min-height: 1.4em; font-weight: 600; }
 .earedit, .trresults .card > .row.tight { flex-wrap: wrap; }
 @media (max-width: 560px) { .earplot { height: 240px; } .earundo { margin-left: 0; } }
