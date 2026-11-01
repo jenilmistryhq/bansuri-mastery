@@ -105,7 +105,7 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Milestone M1 (or any unlocked milestone): "Check with mic" on "Long tone Sa" ticks the item when you pass.
 - [ ] Settings > Detect from my flute: play your Sa for 3 s; it names your flute's key correctly.
 - [ ] Bench > Tala & drone > Tap the beat: the first Start calibrates (8 clicks), then plays a round; the lights flash with the click you hear; tapping well reads "on the beat", also with Bluetooth headphones.
-- [ ] Tone check: hold a long Sa; a deliberately airy or flat note is named as such, and "Show the fix" opens the matching Coach guide.
+- [ ] Coach > Tone check: hold a long Sa; a deliberately airy or flat note is named as such, and "Show the fix" opens the matching guide below it.
 - [ ] Play a tongued `G G G` in Play back or a milestone phrase: each repeat is counted.
 - [ ] Settings > Microphone check: run it, copy the report, and send it along with any problem.
 - [ ] Settings > Already play? > Take the playing test: each item passes when played well; the recommended phase makes sense.

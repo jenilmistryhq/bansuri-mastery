@@ -1,4 +1,4 @@
-// Tone check (#/tone): hold one note for six seconds; the app measures what a microphone can hear
+// Tone check, a section of the Coach (#/coach; #/tone opens it there): hold one note for six seconds; the app measures what a microphone can hear
 // of the tone (core/pitch.js toneProfile) and compares it with a reference player and with the
 // learner's own best. While recording it also listens live (core/listen.js) and runs the coach's
 // diagnosis (views/coach.js diagnose); each finding links to its troubleshooting guide (#/coach/TS-nn).
@@ -45,9 +45,11 @@ const CHECKLIST = [
   "Listening to the drone while holding the note",
 ];
 
-export async function render(main) {
-  const page = h("div", { class: "page tonepage" });
-  main.append(page);
+// The Tone check's cards for a host page (the Coach). onFix(ts): open the guide for a finding in
+// place (without it, a finding links to #/coach/TS-nn). Returns { top, more, cleanup }: the hold and
+// result cards, then the checklist, history and explanation cards.
+export function toneCheck({ onFix } = {}) {
+  const page = h("div", { class: "stack tonepage" });
   let note = 0, recorder = null, stream = null, lastUrl = null, lastBlob = null, unsub = null, findings = null;
   const cleanups = [() => { if (unsub) { unsub(); unsub = null; } if (recorder && recorder.state !== "inactive") recorder.stop(); if (stream) stream.getTracks().forEach(t => t.stop()); if (lastUrl) URL.revokeObjectURL(lastUrl); }];
 
@@ -98,7 +100,7 @@ export async function render(main) {
     return [h("div", { class: "stack tone-found" }, h("h3", null, "What the app heard, most important first"),
       findings.map(f => {
         const first = !seen.has(f.ts); seen.add(f.ts);
-        return h("div", { class: "notice info row between" }, h("span", null, f.text), first ? h("a", { class: "btn small", href: "#/coach/" + f.ts }, "Show the fix") : null);
+        return h("div", { class: "notice info row between" }, h("span", null, f.text), !first ? null : onFix ? h("button", { type: "button", class: "btn small", onclick: () => onFix(f.ts) }, "Show the fix") : h("a", { class: "btn small", href: "#/coach/" + f.ts }, "Show the fix"));
       }))];
   }
 
@@ -148,19 +150,21 @@ export async function render(main) {
   }));
 
   page.append(
-    h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Tone check"), h("h1", null, "How does your note sound?"),
-      h("p", { class: "muted" }, "Hold one note for six seconds. The app measures what a microphone can hear: steadiness, breath noise and the start of the note, against a reference player and your own best. It also names the likely problem and links to its fix.")),
-    h("section", { class: "card" }, h("h2", null, "1. Hold a note"),
+    h("section", { class: "card", id: "tone" }, h("h2", null, "Tone check: let the app listen"),
+      h("p", { class: "muted" }, "Hold one note for six seconds. The app measures what a microphone can hear: steadiness, breath noise and the start of the note, against a reference player and your own best. It also names the likely problem and shows its fix."),
       h("div", { class: "row" }, h("label", { class: "field" }, "Note", noteSel), hearBtn),
       h("div", { class: "row" }, startBtn), status,
       h("p", { class: "small muted" }, "Play in a quiet room, about 30 cm from the microphone, with the drone off. Use a headset microphone if you can.")),
-    h("section", { class: "card" }, result),
-    h("section", { class: "card" }, h("h2", null, "2. Before every check: what the microphone cannot hear"), checklist,
+    h("section", { class: "card", hidden: true }, result));
+  // The result card shows once there is a result.
+  new MutationObserver(() => { result.parentElement.hidden = !result.childNodes.length; }).observe(result, { childList: true });
+  const more = [
+    h("section", { class: "card" }, h("h2", null, "Before every tone check: what the microphone cannot hear"), checklist,
       h("p", { class: "small muted" }, "A microphone measures the sound, not how you make it. Posture, lips and breath decide the sound over months; a teacher, or a video of yourself (Journal), checks them.")),
-    h("section", { class: "card" }, h("h2", null, "Your checks"), histBox),
+    h("section", { class: "card" }, h("h2", null, "Your tone checks"), histBox),
     h("section", { class: "card" }, h("h2", null, "What the numbers mean"),
       h("p", { class: "small" }, "Steady pitch: the spread of the pitch while held (the reference player: 2 cents on middle Sa). Steady sound: the spread of the loudness. Clear tone: breath noise in the sound, from how periodic the sound is (calibrated on tones with known noise). Clean start: from the first sound to the steady note. Starts on pitch: how far the pitch strays at the start."),
-      h("p", { class: "small muted" }, "The reference is a competent player's recording (Freesound, sankalp), not a master's. The microphone, the room and the flute change the numbers: compare yourself with yourself first.")));
+      h("p", { class: "small muted" }, "The reference is a competent player's recording (Freesound, sankalp), not a master's. The microphone, the room and the flute change the numbers: compare yourself with yourself first."))];
   drawHistory();
-  return () => cleanups.forEach(f => f());
+  return { top: page, more, cleanup: () => cleanups.forEach(f => f()) };
 }

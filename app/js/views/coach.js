@@ -1,11 +1,13 @@
 // Coach (#/coach): diagnose a practice problem from the course's troubleshooting guides.
 // Works offline; no AI and no network beyond the app's own files. Offers the matching live drill and
-// remembers what helped. Listening to a held note is done by Tone check (#/tone), which uses
-// diagnose() below and links each finding here (#/coach/TS-nn opens that guide).
+// remembers what helped. Its first section is the Tone check (views/tone.js), which listens to a held
+// note, scores it and runs diagnose() below; "Show the fix" opens the guide here. #/coach/TS-nn opens
+// a guide directly; #/tone opens the Coach at the Tone check.
 import { h, clear, store, storeSet, today, fmtDate } from "../util.js";
 import { renderMarkdown, fetchDoc, tablesOf, sectionOf } from "../content.js";
 import { holdMeter, phraseCheck, echoGame, tapGame } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
+import { toneCheck } from "./tone.js";
 
 const HISTORY = "bansuri.coach.history";
 
@@ -62,7 +64,7 @@ export async function render(main, { params } = {}) {
   main.append(page);
   const cleanups = [];
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Coach"), h("h1", null, "What is going wrong?"),
-    h("p", { class: "muted" }, "Pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.")));
+    h("p", { class: "muted" }, "Let the app listen to a held note, or pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.")));
 
   const md = await fetchDoc("troubleshooting/README.md");
   const table = tablesOf(md).find(t => t.head.some(x => /symptom/i.test(x)));
@@ -148,17 +150,19 @@ export async function render(main, { params } = {}) {
     grid.append(b);
   }
 
-  // Listening is done by Tone check, which links its findings back to these guides.
-  page.append(h("section", { class: "card row between" },
-    h("p", { class: "small", style: { margin: 0 } }, "Not sure what is wrong? Let the app listen: Tone check hears a held note and shows the fix for what it finds."),
-    h("a", { class: "btn", href: "#/tone" }, "Open Tone check")));
+  // First the Tone check: it listens, and its findings open the guides below.
+  const tone = toneCheck({ onFix: ts => openSymptom(rows.find(r => tsOf(r) === ts)) });
+  cleanups.push(tone.cleanup);
+  page.append(tone.top);
   page.append(histHost);
-  page.append(h("section", { class: "card" }, h("h2", null, "Or pick a symptom"), grid, out,
+  page.append(h("section", { class: "card", id: "symptoms" }, h("h2", null, "Or pick a symptom"), grid, out,
     h("p", { class: "small muted" }, "Pain, numbness or tingling that does not go away: stop and see a doctor or physiotherapist. ",
       h("a", { href: "#/read/troubleshooting/TS-08-body-pain-and-tension.md" }, "Read the medical caution"), ". For tone, posture and embouchure, a live teacher sees what no guide can.")));
+  page.append(...tone.more);
   drawHistory();
   // #/coach/TS-05: opened from a Tone check finding.
   const want = params && /^TS-\d\d$/.test(params[0] || "") ? params[0] : null;
   if (want) openSymptom(rows.find(r => tsOf(r) === want));
+  else if (/^#\/tone$/.test(location.hash)) tone.top.querySelector("#tone").scrollIntoView({ block: "start" });
   return () => cleanups.forEach(f => f());
 }

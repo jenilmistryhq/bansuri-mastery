@@ -3474,5 +3474,10 @@
 "The note was {n} cents flat: blow slightly faster, or roll the flute out. If every note is off by this much, set your flute's tuning in Settings.": "स्वर {n} सेंट नीचे था: थोड़ी तेज़ हवा दीजिए, या बाँसुरी को थोड़ा बाहर घुमाइए। अगर हर स्वर इतना ही हटा है, तो सेटिंग्स में अपनी बाँसुरी की ट्यूनिंग सेट कीजिए।",
 "The note was {n} cents sharp: slow the air, or roll the flute in. If every note is off by this much, set your flute's tuning in Settings.": "स्वर {n} सेंट ऊपर था: हवा धीमी कीजिए, या बाँसुरी को थोड़ा अंदर घुमाइए। अगर हर स्वर इतना ही हटा है, तो सेटिंग्स में अपनी बाँसुरी की ट्यूनिंग सेट कीजिए।",
 "The pitch wavered by about {n} cents: breathe low and keep the air steady from start to end.": "सुर लगभग {n} सेंट हिला: नीचे (पेट) से साँस लीजिए और हवा शुरू से अंत तक स्थिर रखिए।",
-"The longest steady stretch was {x} s: aim for 6 s with a calm, low breath.": "सबसे लंबा स्थिर हिस्सा {x} सेकंड था: शांत, गहरी साँस के साथ 6 सेकंड का लक्ष्य रखिए।"
+"The longest steady stretch was {x} s: aim for 6 s with a calm, low breath.": "सबसे लंबा स्थिर हिस्सा {x} सेकंड था: शांत, गहरी साँस के साथ 6 सेकंड का लक्ष्य रखिए।",
+"Tone check: let the app listen": "सुर की जाँच: ऐप को सुनने दीजिए",
+"Hold one note for six seconds. The app measures what a microphone can hear: steadiness, breath noise and the start of the note, against a reference player and your own best. It also names the likely problem and shows its fix.": "एक स्वर छह सेकंड तक रोकिए। ऐप वह मापता है जो माइक्रोफ़ोन सुन सकता है: स्थिरता, साँस की आवाज़ और स्वर की शुरुआत, एक संदर्भ वादक और आपके सबसे अच्छे से तुलना करके। यह संभावित समस्या का नाम और उसका इलाज भी बताता है।",
+"Before every tone check: what the microphone cannot hear": "हर सुर की जाँच से पहले: जो माइक्रोफ़ोन नहीं सुन सकता",
+"Your tone checks": "आपकी सुर की जाँचें",
+"Let the app listen to a held note, or pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.": "ऐप को एक रोका हुआ स्वर सुनने दीजिए, या सबसे मिलता-जुलता लक्षण चुनिए। आपको मिलेंगे संभावित कारण, टिक करने के लिए तुरंत जाँचें, एक ड्रिल जो दिखाती है कि कब ठीक हुआ, और कब गुरु से मिलना चाहिए।"
 }

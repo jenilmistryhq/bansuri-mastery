@@ -565,23 +565,26 @@ try {
       await lp.evaluate(() => [...document.querySelectorAll("#main .mrow button")].find(b => /Check with mic/.test(b.textContent)).click());
       check(await lp.$("#main .micpanel .lv-quiz") !== null, "milestone M4: identifying notes opens a note-naming test");
 
-      // Tone check (with the coach's diagnosis): a held Sa 35 cents flat is diagnosed as flat, and
-      // Show the fix opens the matching coach guide.
+      // Tone check, a section of the Coach: a held Sa 35 cents flat is diagnosed as flat, and
+      // Show the fix opens the matching guide on the same page.
       await lp.goto(BASE + "#/tone", { waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main #symptoms", { timeout: 8000 }).catch(() => {});
+      check(await lp.evaluate(() => /What is going wrong/.test((document.querySelector("#main h1") || {}).textContent || "") && !!document.querySelector("#main #tone") && !!document.querySelector("#main #symptoms")), "#/tone opens the Coach, with the Tone check and the symptoms on one page");
       await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Hold the note/.test(b.textContent)), { timeout: 5000 });
       await clickTextOn(lp, "#main button", "Hold the note");
       await sleep(300); await tone(-0.35);
       await lp.waitForFunction(() => /cents flat/.test(document.querySelector("#main .tone-found") ? document.querySelector("#main .tone-found").innerText : ""), { timeout: 20000 })
         .then(() => check(true, "tone check hears that a held Sa is flat (the coach's diagnosis)"), async () => check(false, "tone check: " + (await lp.$eval("#main", e => e.innerText)).slice(0, 400)));
       await tone(null);
-      const fix = await lp.$('#main .tone-found a[href="#/coach/TS-05"]');
-      check(fix !== null, "tone check: the flat finding links to the tuning guide (TS-05)");
-      if (fix) {
-        await fix.click();
-        await lp.waitForFunction(() => /#\/coach\/TS-05/.test(location.hash) && document.querySelector("#main .symcard.on"), { timeout: 8000 })
-          .then(() => check(true, "coach opens the guide from the link"), () => check(false, "coach opens the guide from the link"));
+      const fix = await lp.evaluateHandle(() => [...document.querySelectorAll("#main .tone-found .notice")].find(n => /cents flat/.test(n.textContent))?.querySelector("button") || null);
+      check(await fix.evaluate(b => !!b), "tone check: the flat finding has a Show the fix button");
+      if (await fix.evaluate(b => !!b)) {
+        await fix.evaluate(b => b.click());
+        await lp.waitForFunction(() => document.querySelector("#main .symcard.on") && /out of 10/.test(document.querySelector("#main").textContent), { timeout: 8000 })
+          .then(() => check(true, "Show the fix opens the guide on the same page, and the tone result stays"), () => check(false, "Show the fix opens the guide on the same page, and the tone result stays"));
       }
-      check(!/Start listening/.test(await lp.$eval("#main", e => e.innerText)), "coach: no second listening tool (it is in Tone check)");
+      await lp.goto(BASE + "#/coach/TS-05", { waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main .symcard.on", { timeout: 8000 }).then(() => check(true, "#/coach/TS-05 opens that guide"), () => check(false, "#/coach/TS-05 opens that guide"));
 
       // A session step with a listening goal ticks itself when the goal is met.
       await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 2, startedAt: "2026-10-01" })));
@@ -955,7 +958,7 @@ try {
       await lp.goto(BASE + "#/read/ragas/yaman.md", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .hiraga", { timeout: 8000 }).catch(() => {});
       check(await lp.evaluate(() => { const d = document.querySelector("#main .hiraga"); return !!d && /([\u0900-\u097F]+\s+){10}/.test(d.textContent) && d.querySelectorAll("h2").length >= 4 && !!document.querySelector("#main article"); }), "hindi: a raga card shows its sections in Hindi, with the English card below");
-      for (const [route, what] of [["/ornaments", "ornament trainer"], ["/tone", "tone check"], ["/review", "teacher review"]]) {
+      for (const [route, what] of [["/ornaments", "ornament trainer"], ["/coach", "coach (with the tone check)"], ["/review", "teacher review"]]) {
         await lp.goto(BASE + "#" + route, { waitUntil: "networkidle0" });
         await sleep(300);
         check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector("#main h1").textContent) && [...document.querySelectorAll("#main button")].every(b => !/[A-Za-z]{3}/.test(b.textContent) || /[\u0900-\u097F]/.test(b.textContent))), "hindi: the " + what + " page's heading and buttons are in Hindi");
@@ -1323,7 +1326,7 @@ try {
   });
   await section("Tone check", async () => {
     await go("/tone");
-    check(/how does your note sound/.test(await text()), "tone: the page opens");
+    check(/tone check: let the app listen/.test(await text()), "tone: the Tone check opens in the Coach");
     await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Hold the note/.test(b.textContent)).click());
     await page.waitForFunction(() => /out of 10|No steady note|could not be read/.test(document.querySelector("#main").textContent), { timeout: 30000 }).catch(() => {});
     check(/out of 10|No steady note/.test(await page.$eval("#main", e => e.textContent)), "tone: a check with the (fake) microphone ends in a result or a clear message");
