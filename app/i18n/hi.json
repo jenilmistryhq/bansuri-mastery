@@ -3479,5 +3479,9 @@
 "Hold one note for six seconds. The app measures what a microphone can hear: steadiness, breath noise and the start of the note, against a reference player and your own best. It also names the likely problem and shows its fix.": "एक स्वर छह सेकंड तक रोकिए। ऐप वह मापता है जो माइक्रोफ़ोन सुन सकता है: स्थिरता, साँस की आवाज़ और स्वर की शुरुआत, एक संदर्भ वादक और आपके सबसे अच्छे से तुलना करके। यह संभावित समस्या का नाम और उसका इलाज भी बताता है।",
 "Before every tone check: what the microphone cannot hear": "हर सुर की जाँच से पहले: जो माइक्रोफ़ोन नहीं सुन सकता",
 "Your tone checks": "आपकी सुर की जाँचें",
-"Let the app listen to a held note, or pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.": "ऐप को एक रोका हुआ स्वर सुनने दीजिए, या सबसे मिलता-जुलता लक्षण चुनिए। आपको मिलेंगे संभावित कारण, टिक करने के लिए तुरंत जाँचें, एक ड्रिल जो दिखाती है कि कब ठीक हुआ, और कब गुरु से मिलना चाहिए।"
+"Let the app listen to a held note, or pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.": "ऐप को एक रोका हुआ स्वर सुनने दीजिए, या सबसे मिलता-जुलता लक्षण चुनिए। आपको मिलेंगे संभावित कारण, टिक करने के लिए तुरंत जाँचें, एक ड्रिल जो दिखाती है कि कब ठीक हुआ, और कब गुरु से मिलना चाहिए।",
+"Day {n} (one session) - {m} of {k} day done": "दिन {n} (एक सत्र) - {k} में से {m} दिन पूरा",
+"Days {n}-{m} - about {k} weeks - {j} of {p} days done": "दिन {n}-{m} - लगभग {k} हफ़्ते - {p} में से {j} दिन पूरे",
+"Days {n}-{m} - about a week - {k} of {j} days done": "दिन {n}-{m} - लगभग एक हफ़्ता - {j} में से {k} दिन पूरे",
+"Days {n}-{m} - {k} of {j} days done": "दिन {n}-{m} - {j} में से {k} दिन पूरे"
 }

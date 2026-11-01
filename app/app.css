@@ -266,6 +266,9 @@ dialog.modal::backdrop { background: rgba(0,0,0,0.4); }
   .blockline { grid-template-columns: 2.8rem minmax(0, 1fr); }
   .blockline > :last-child { grid-column: 2; }
   .weekrow { grid-template-columns: 1fr; gap: 4px; }
+  details.phasebox > summary.pathhead { grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; }
+  details.phasebox > summary.pathhead > .chip { grid-column: 2; justify-self: start; }
+  .phaseacts .btn { flex: 1 1 100%; justify-content: center; }
   .mitem { grid-template-columns: auto minmax(0, 1fr); }
   .mitem > :last-child { grid-column: 2; }
   .block header { grid-template-columns: auto minmax(0, 1fr); }
@@ -688,6 +691,11 @@ html.noscroll, html.noscroll body { overflow: hidden; }
 
 /* Course map phases as paths. */
 .pathhead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; list-style: none; cursor: pointer; }
+/* The phase summary is a grid (ring, title, status), not the generic flex summary of other boxes. */
+details.phasebox > summary.pathhead { display: grid; align-items: center; }
+.pathtext h2 { margin: 0; line-height: 1.25; }
+.pathhead > .chip { justify-self: end; }
+.phaseacts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 2px 0 12px; }
 .pathhead::-webkit-details-marker { display: none; }
 .pathtext { display: grid; gap: 2px; min-width: 0; }
 .phasebox > .row { margin-top: 10px; }
