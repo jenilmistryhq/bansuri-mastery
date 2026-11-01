@@ -807,7 +807,9 @@ try {
       await setSet({ simple: false });
 
       // Ornament trainer: a played meend from Re to Ga (a glide in small steps) is measured and passes.
+      // A fresh page: the hands-free section's spoken prompts can still be muting the microphone.
       await lp.goto(BASE + "#/ornaments", { waitUntil: "networkidle0" });
+      await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .ornplot");
       // The played line starts only once the page is listening (the microphone can take a moment).
       await lp.evaluate(() => {
@@ -835,6 +837,14 @@ try {
       await sleep(500);
       check(await lp.evaluate(() => document.documentElement.lang === "hi" && /[\u0900-\u097F]/.test(document.querySelector(".tabbar").innerText)), "hindi: the tabs are in Hindi");
       check(await lp.evaluate(() => [...document.querySelectorAll("#main .steptext")].some(p => /[\u0900-\u097F]/.test(p.textContent))), "hindi: session steps are shown in Hindi");
+      await lp.goto(BASE + "#/read/ragas/yaman.md", { waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main .hiraga", { timeout: 8000 }).catch(() => {});
+      check(await lp.evaluate(() => { const d = document.querySelector("#main .hiraga"); return !!d && /([\u0900-\u097F]+\s+){10}/.test(d.textContent) && d.querySelectorAll("h2").length >= 4 && !!document.querySelector("#main article"); }), "hindi: a raga card shows its sections in Hindi, with the English card below");
+      for (const [route, what] of [["/ornaments", "ornament trainer"], ["/tone", "tone check"], ["/review", "teacher review"]]) {
+        await lp.goto(BASE + "#" + route, { waitUntil: "networkidle0" });
+        await sleep(300);
+        check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector("#main h1").textContent) && [...document.querySelectorAll("#main button")].every(b => !/[A-Za-z]{3}/.test(b.textContent) || /[\u0900-\u097F]/.test(b.textContent))), "hindi: the " + what + " page's heading and buttons are in Hindi");
+      }
       await setSet({ lang: "en" });
 
       await lp.evaluate(() => localStorage.clear());

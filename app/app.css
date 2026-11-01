@@ -821,6 +821,9 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .guidechoice.current { border-color: var(--accent); }
 .earinfo { min-height: 1.4em; font-weight: 600; }
 .earedit, .trresults .card > .row.tight { flex-wrap: wrap; }
+/* Raga cards in Hindi */
+.hiraga > summary { cursor: pointer; font-weight: 600; }
+.hiraga > .reader { margin-top: 8px; }
 /* Ornament trainer */
 .ornTabs { flex-wrap: wrap; gap: 6px; }
 .ornAbout p { margin: 6px 0; }

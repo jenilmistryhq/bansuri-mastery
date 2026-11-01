@@ -24,6 +24,10 @@ export function setDict(d) {
       templates.set(en, hi);
     } else dict.set(en, hi);
   }
+  // The most specific pattern first (the most fixed text): "Play {x}" must not catch a sentence
+  // that a longer pattern describes exactly.
+  const fixed = p => p.re.source.replace(/\((?:\[-\+\]\?\\d\[\\d\.,:\]\*|\.\+\?)\)/g, "").length;
+  patterns = patterns.map((p, i) => ({ p, i, f: fixed(p) })).sort((a, b) => b.f - a.f || a.i - b.i).map(x => x.p);
 }
 
 export function hasDict() { return !!dict; }

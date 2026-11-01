@@ -73,7 +73,9 @@ export async function render(main, { params }) {
   // Lessons open as cards (one idea at a time); the full text is one tap away.
   // In Hindi, lessons show their Hindi text (title, objectives, explanation, steps) where it exists.
   let hiLesson = null;
-  if (getSettings().lang === "hi" && /^lessons\/L\d\d/.test(path)) {
+  // Raga cards have their prose sections in Hindi too (shown above the English card, below).
+  const isRagaCard = /^ragas\/(?!README)[a-z-]+\.md$/.test(path);
+  if (getSettings().lang === "hi" && (/^lessons\/L\d\d/.test(path) || isRagaCard)) {
     try { hiLesson = ((await (await fetch("app/i18n/lessons-hi.json")).json()) || {})[path] || null; } catch (e) { /* English only */ }
   }
   const cards = /^lessons\/L\d\d/.test(path) ? lessonCards(node, path, hiLesson) : [];
@@ -96,6 +98,14 @@ export async function render(main, { params }) {
     const anchored = location.hash.split("#").length > 2;
     show(anchored || mode === "full" ? "full" : "cards");
   } else page.append(full);
+  if (hiLesson && isRagaCard && hiLesson.sections) {
+    const HEAD = { "Character": "स्वभाव", "Notes to treat carefully": "जिन स्वरों में सावधानी चाहिए", "On your C flute": "आपकी C बाँसुरी पर", "Similar ragas": "मिलते-जुलते राग",
+      "Movement and resting notes (sourced)": "चलन और न्यास के स्वर (स्रोत सहित)", "Practice steps": "अभ्यास के चरण" };
+    const hiMd = Object.entries(hiLesson.sections).map(([k, v]) => "## " + (HEAD[k] || k) + "\n\n" + v).join("\n\n");
+    const hiNode = renderMarkdown(hiMd, path).node;
+    hiNode.classList.add("reader"); hiNode.setAttribute("lang", "hi");
+    page.insertBefore(h("details", { class: "card hiraga", open: true }, h("summary", null, "हिन्दी में पढ़िए (स्वरलिपि, सुनने की सूची और रचना नीचे अंग्रेज़ी कार्ड में)"), hiNode), full);
+  }
   // The raga index: a "Name that raga" ear game built from every raga card.
   if (path === "ragas/README.md") {
     const files = [...new Set([...md.matchAll(/\]\(([a-z-]+\.md)\)/g)].map(m => m[1]))];
