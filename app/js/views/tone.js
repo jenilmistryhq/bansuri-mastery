@@ -1,12 +1,16 @@
 // Tone check (#/tone): hold one note for six seconds; the app measures what a microphone can hear
 // of the tone (core/pitch.js toneProfile) and compares it with a reference player and with the
-// learner's own best. What a microphone cannot judge (posture, lips, breath from the belly) is a
-// checklist. Results are kept in this browser (bansuri.tone.history).
+// learner's own best. While recording it also listens live (core/listen.js) and runs the coach's
+// diagnosis (views/coach.js diagnose); each finding links to its troubleshooting guide (#/coach/TS-nn).
+// What a microphone cannot judge (posture, lips, breath from the belly) is a checklist.
+// Results are kept in this browser (bansuri.tone.history).
 import { h, toast, store, storeSet, today, icon } from "../util.js";
 import { codeOf, hzOf } from "../core/theory.js";
 import { makeVoice, ac } from "../core/audio.js";
 import { toneProfile, decodeAudioFile } from "../core/pitch.js";
 import { countdown } from "../core/live.js";
+import { listenMic } from "../core/listen.js";
+import { diagnose } from "./coach.js";
 import { handOff } from "../reviewhandoff.js";
 
 const HISTORY = "bansuri.tone.history", CHECKS = "bansuri.tone.checks";
@@ -44,8 +48,8 @@ const CHECKLIST = [
 export async function render(main) {
   const page = h("div", { class: "page tonepage" });
   main.append(page);
-  let note = 0, recorder = null, stream = null, lastUrl = null, lastBlob = null;
-  const cleanups = [() => { if (recorder && recorder.state !== "inactive") recorder.stop(); if (stream) stream.getTracks().forEach(t => t.stop()); if (lastUrl) URL.revokeObjectURL(lastUrl); }];
+  let note = 0, recorder = null, stream = null, lastUrl = null, lastBlob = null, unsub = null, findings = null;
+  const cleanups = [() => { if (unsub) { unsub(); unsub = null; } if (recorder && recorder.state !== "inactive") recorder.stop(); if (stream) stream.getTracks().forEach(t => t.stop()); if (lastUrl) URL.revokeObjectURL(lastUrl); }];
 
   const noteSel = h("select", { class: "input", "aria-label": "Note to hold" }, NOTES.map(([s, l]) => h("option", { value: String(s) }, l)));
   noteSel.addEventListener("change", () => { note = Number(noteSel.value); });
@@ -63,10 +67,15 @@ export async function render(main) {
     recorder = new MediaRecorder(stream);
     recorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
     const done = new Promise(res => { recorder.onstop = res; });
+    // The live readings, for the diagnosis (as the coach used to hear them): from the first clear note on.
+    const reads = []; let started = null;
+    try { unsub = await listenMic(r => { reads.push(r); if (started === null && r.semi !== null) started = r.t; }); } catch (e) { unsub = null; }
     recorder.start();
     status.textContent = "Listening: hold " + codeOf(note) + " steadily...";
     setTimeout(() => { if (recorder.state !== "inactive") recorder.stop(); }, 7000);
     await done;
+    if (unsub) { unsub(); unsub = null; }
+    findings = reads.length ? diagnose(started === null ? reads : reads.filter(r => r.t >= started - 0.2), note) : null;
     stream.getTracks().forEach(t => t.stop());
     const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
     lastBlob = blob;
@@ -76,9 +85,21 @@ export async function render(main) {
     let p = null;
     try { const a = await decodeAudioFile(blob); p = toneProfile(a.getChannelData(0), a.sampleRate); }
     catch (e) { status.textContent = "This recording could not be read."; return; }
-    if (!p) { status.textContent = "No steady note of 1.5 seconds or more was heard. Play closer to the microphone and hold the note longer."; return; }
+    if (!p) { status.textContent = "No steady note of 1.5 seconds or more was heard. Play closer to the microphone and hold the note longer."; result.replaceChildren(...heard()); return; }
     status.textContent = "";
     show(p, true);
+  }
+
+  // What the coach's diagnosis heard, each with a link to its troubleshooting guide.
+  function heard() {
+    if (!findings) return [];
+    if (!findings.length) return [h("p", { class: "small" }, icon("check"), " No common problem was heard: the note was clear, steady and in tune.")];
+    const seen = new Set();
+    return [h("div", { class: "stack tone-found" }, h("h3", null, "What the app heard, most important first"),
+      findings.map(f => {
+        const first = !seen.has(f.ts); seen.add(f.ts);
+        return h("div", { class: "notice info row between" }, h("span", null, f.text), first ? h("a", { class: "btn small", href: "#/coach/" + f.ts }, "Show the fix") : null);
+      }))];
   }
 
   // The measures as rows: the value, its band, the reference player and your best.
@@ -96,6 +117,7 @@ export async function render(main) {
     result.replaceChildren(
       h("h2", null, "Your " + codeOf(note) + ": " + score + " out of 10"),
       h("p", { class: "small muted" }, "Held " + p.seconds + " s, " + (p.cents > 0 ? "+" : "") + p.cents + " cents from the note" + (Math.abs(p.cents) > 25 ? ": check your flute's key in Settings, or the angle of the air." : ".")),
+      ...(fresh ? heard() : []),
       h("div", { class: "tablewrap" }, h("table", { class: "table" },
         h("thead", null, h("tr", null, h("th", null, "Measure"), h("th", null, "You"), h("th", null, ""), h("th", null, ref ? "Reference player (" + ref.label + ")" : "Reference player"), h("th", null, "Your best"))),
         h("tbody", null, rows))),
@@ -127,7 +149,7 @@ export async function render(main) {
 
   page.append(
     h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Tone check"), h("h1", null, "How does your note sound?"),
-      h("p", { class: "muted" }, "Hold one note for six seconds. The app measures what a microphone can hear: steadiness, breath noise and the start of the note, against a reference player and your own best.")),
+      h("p", { class: "muted" }, "Hold one note for six seconds. The app measures what a microphone can hear: steadiness, breath noise and the start of the note, against a reference player and your own best. It also names the likely problem and links to its fix.")),
     h("section", { class: "card" }, h("h2", null, "1. Hold a note"),
       h("div", { class: "row" }, h("label", { class: "field" }, "Note", noteSel), hearBtn),
       h("div", { class: "row" }, startBtn), status,

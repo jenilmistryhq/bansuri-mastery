@@ -1,10 +1,10 @@
 // Coach (#/coach): diagnose a practice problem from the course's troubleshooting guides.
-// Works offline; no AI and no network beyond the app's own files. It can also listen to a held Sa
-// and point at the likely problem, offer the matching live drill, and remember what helped.
+// Works offline; no AI and no network beyond the app's own files. Offers the matching live drill and
+// remembers what helped. Listening to a held note is done by Tone check (#/tone), which uses
+// diagnose() below and links each finding here (#/coach/TS-nn opens that guide).
 import { h, clear, store, storeSet, today, fmtDate } from "../util.js";
 import { renderMarkdown, fetchDoc, tablesOf, sectionOf } from "../content.js";
-import { listenMic } from "../core/listen.js";
-import { holdMeter, phraseCheck, echoGame, tapGame, micIntro, countdown } from "../core/live.js";
+import { holdMeter, phraseCheck, echoGame, tapGame } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
 
 const HISTORY = "bansuri.coach.history";
@@ -22,9 +22,10 @@ const DRILLS = {
   "TS-10": ["Play phrases back by ear", () => echoGame({ level: "srg" })],
 };
 
-// What a held Sa says about the common problems. readings: [{ t, semi, near, cents, level }].
+// What a held note says about the common problems. readings: [{ t, semi, near, cents, level }];
+// target: the note asked for (semitones from Sa; Sa by default).
 // Returns [{ ts, text }], most important first; an empty list means nothing stood out.
-export function diagnose(readings) {
+export function diagnose(readings, target = 0) {
   const sounding = readings.filter(r => r.level > 0.008);
   if (sounding.length < 15) return [{ ts: "TS-01", text: "Almost no sound reached the microphone. If you were playing, it was mostly air: see the no-sound guide, and hold the phone closer." }];
   const voiced = sounding.filter(r => r.semi !== null && r.semi > -7.5);
@@ -37,8 +38,8 @@ export function diagnose(readings) {
   voiced.forEach(r => { count[r.near] = (count[r.near] || 0) + 1; });
   const main = Number(Object.entries(count).sort((a, b) => b[1] - a[1])[0][0]);
   if (jumps >= 2) out.push({ ts: "TS-02", text: `The note jumped by an octave ${jumps} times: the air is too fast or the lips too tight.` });
-  if (main === 12) out.push({ ts: "TS-02", text: "You played upper Sa (S') instead of Sa: slow the air right down." });
-  else if (main !== 0) out.push({ ts: "TS-06", text: `The main note was ${codeOf(main)}, not Sa: check that holes 1-3 are fully covered and 4-6 fully open.` });
+  if (main === target + 12) out.push({ ts: "TS-02", text: target === 0 ? "You played upper Sa (S') instead of Sa: slow the air right down." : `You played ${codeOf(main)}, an octave above ${codeOf(target)}: slow the air right down.` });
+  else if (main !== target) out.push({ ts: "TS-06", text: target === 0 ? `The main note was ${codeOf(main)}, not Sa: check that holes 1-3 are fully covered and 4-6 fully open.` : `The main note was ${codeOf(main)}, not ${codeOf(target)}: check the fingering, and that every closed hole is fully covered.` });
   const onMain = voiced.filter(r => r.near === main).map(r => r.cents).sort((a, b) => a - b);
   if (onMain.length >= 10) {
     const med = onMain[onMain.length >> 1];
@@ -56,12 +57,12 @@ export function diagnose(readings) {
   return out;
 }
 
-export async function render(main) {
+export async function render(main, { params } = {}) {
   const page = h("div", { class: "page" });
   main.append(page);
   const cleanups = [];
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Coach"), h("h1", null, "What is going wrong?"),
-    h("p", { class: "muted" }, "Let the coach listen to a long Sa, or pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.")));
+    h("p", { class: "muted" }, "Pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.")));
 
   const md = await fetchDoc("troubleshooting/README.md");
   const table = tablesOf(md).find(t => t.head.some(x => /symptom/i.test(x)));
@@ -147,50 +148,17 @@ export async function render(main) {
     grid.append(b);
   }
 
-  // Let the coach listen: 6 seconds of a held Sa.
-  const listenMsg = h("p", { class: "small", "aria-live": "polite" }, "Close the top three holes and press Start. Play one long Sa, as steady as you can.");
-  const findings = h("div", { class: "stack" });
-  const listenBtn = h("button", { type: "button", class: "btn primary" }, "Start listening");
-  const meter = h("div", { class: "progressbar", role: "progressbar", "aria-label": "Listening", "aria-valuemin": "0", "aria-valuemax": "6", "aria-valuenow": "0" }, h("i", { style: { width: "0%" } }));
-  let unsub = null, timer = 0, gone = false;
-  cleanups.push(() => { gone = true; clearInterval(timer); if (unsub) { unsub(); unsub = null; } });
-  listenBtn.addEventListener("click", async () => {
-    if (unsub) return;
-    if (!(await micIntro(listenBtn.parentElement)) || gone) return;
-    if (!(await countdown(listenBtn.parentElement, { btn: listenBtn })) || gone || unsub) return;
-    const reads = []; let started = null;
-    clear(findings);
-    try {
-      unsub = await listenMic(r => { reads.push(r); if (started === null && r.semi !== null) started = r.t; });
-      if (gone) { unsub(); unsub = null; return; }
-    } catch (e) { listenMsg.textContent = "The microphone is not available here. Pick a symptom below instead."; return; }
-    listenBtn.disabled = true;
-    const t0 = Date.now();
-    listenMsg.textContent = "Listening... play your long Sa now.";
-    timer = setInterval(() => {
-      const secs = (Date.now() - t0) / 1000;
-      meter.firstChild.style.width = Math.min(100, secs / 8 * 100) + "%";
-      if (secs < 8) return;
-      clearInterval(timer); unsub(); unsub = null; listenBtn.disabled = false; listenBtn.textContent = "Listen again";
-      const playing = started === null ? reads : reads.filter(r => r.t >= started - 0.2);
-      const res = diagnose(playing);
-      if (!res.length) { listenMsg.textContent = "Your Sa sounded clear, steady and in tune. If something still feels wrong, pick the closest symptom below."; return; }
-      listenMsg.textContent = "Here is what the coach heard, most important first:";
-      const seen = new Set();
-      for (const f of res) {
-        const row = rows.find(r => tsOf(r) === f.ts);
-        findings.append(h("div", { class: "notice info row between" }, h("span", null, f.text),
-          row && !seen.has(f.ts) ? h("button", { type: "button", class: "btn small", onclick: () => openSymptom(row) }, "Show the fix") : null));
-        seen.add(f.ts);
-      }
-    }, 200);
-  });
-
-  page.append(h("section", { class: "card" }, h("h2", null, "Let the coach listen"), listenMsg, meter, h("div", { class: "row" }, listenBtn), findings));
+  // Listening is done by Tone check, which links its findings back to these guides.
+  page.append(h("section", { class: "card row between" },
+    h("p", { class: "small", style: { margin: 0 } }, "Not sure what is wrong? Let the app listen: Tone check hears a held note and shows the fix for what it finds."),
+    h("a", { class: "btn", href: "#/tone" }, "Open Tone check")));
   page.append(histHost);
   page.append(h("section", { class: "card" }, h("h2", null, "Or pick a symptom"), grid, out,
     h("p", { class: "small muted" }, "Pain, numbness or tingling that does not go away: stop and see a doctor or physiotherapist. ",
       h("a", { href: "#/read/troubleshooting/TS-08-body-pain-and-tension.md" }, "Read the medical caution"), ". For tone, posture and embouchure, a live teacher sees what no guide can.")));
   drawHistory();
+  // #/coach/TS-05: opened from a Tone check finding.
+  const want = params && /^TS-\d\d$/.test(params[0] || "") ? params[0] : null;
+  if (want) openSymptom(rows.find(r => tsOf(r) === want));
   return () => cleanups.forEach(f => f());
 }

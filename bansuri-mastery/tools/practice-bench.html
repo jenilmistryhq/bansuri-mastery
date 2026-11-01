@@ -202,6 +202,8 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .lv-check { display: inline-flex; gap: 6px; align-items: center; font-size: 0.9rem; color: var(--muted); }
 .lv-check input { accent-color: var(--accent); width: 18px; height: 18px; }
 .lv-msg { margin: 0; min-height: 1.5em; font-size: 0.95rem; }
+/* On a phone the advice can wrap to two lines: keep room for both so the buttons below stay put. */
+@media (max-width: 640px) { .lv-msg { min-height: 2.9em; } }
 .lv-count { font-size: 0.85rem; color: var(--muted); }
 .lv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .lv-chip { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: 0.9rem; }
@@ -271,6 +273,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .lv-ghost { fill: none; stroke: var(--muted); stroke-width: 9; opacity: 0.28; stroke-linecap: round; }
 .lv-glow { border-radius: 50%; box-shadow: 0 0 calc(4px + 26px * var(--glow, 0)) calc(1px + 6px * var(--glow, 0)) color-mix(in srgb, var(--accent) calc(25% + 55% * var(--glow, 0)), transparent); transition: box-shadow 120ms linear; }
 .lv-glowtxt { font-size: 0.85rem; color: var(--muted); }
+.lv-hz { font-size: 0.85rem; color: var(--muted); font-family: var(--mono); font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { .lv-glow { transition: none; } }
 /* Right and wrong are never colour alone: a tick, a cross, an arrow for the wrong octave. */
 .lv-slot.lv-ok::after { content: " \2713"; }
@@ -322,7 +325,7 @@ const SETTINGS_KEY = "bansuri.settings";
 // starts listening or recording; 0 = none).
 const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
   lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
-  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal" });
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal", pilot: false });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -356,7 +359,9 @@ function cleanSettings(s) {
     focus: s.focus === true,
     // The tuning notes are judged and played in: "equal" (like a keyboard) or "just" (tuned to
     // the tanpura: whole-number ratios from Sa, as many teachers tune by ear).
-    intonation: s.intonation === "just" ? "just" : "equal"
+    intonation: s.intonation === "just" ? "just" : "equal",
+    // Pilot study: note anonymous results on this device (pilot.js); off unless chosen.
+    pilot: s.pilot === true
   };
 }
 
@@ -831,6 +836,19 @@ function toneDemo(level, seconds) {
   return v;
 }
 
+// Play a pitch curve ([{ t, semi }], from 0 s) on the flute voice, at a speed (1 or 0.5).
+function playCurve(pts, speed) {
+  const c = ac(), t0 = c.currentTime + 0.08, k = 1 / (speed || 1), step = 2;
+  const v = makeVoice(hzOf(pts[0].semi), t0);
+  for (let i = step; i < pts.length; i += step) {
+    const a = pts[i - step], b = pts[i];
+    v.ramp(hzOf(a.semi), hzOf(b.semi), t0 + a.t * k, (b.t - a.t) * k);
+  }
+  const end = t0 + pts[pts.length - 1].t * k + 0.05;
+  v.stop(end);
+  return { voice: v, start: t0, seconds: end - c.currentTime };
+}
+
 function playNote(semi, dur) {
   const c = ac(), t = c.currentTime + 0.02;
   const v = makeVoice(hzOf(semi), t);
@@ -1293,6 +1311,55 @@ function toneEstimate(levels, clarities, frames, segments, hopS) {
   if (clarity >= CLARITY[4] && voicedShare >= 0.92 && steady <= 8) score = 4;
   const words = ["", "Mostly air: little clear pitch yet.", "Some clear tone, with a lot of breath or an unsteady pitch.", "Clear and fairly steady, with some breath.", "Full, clear and steady."];
   return { score, voicedShare: Math.round(voicedShare * 100) / 100, clarity: Math.round(clarity * 100) / 100, wobble: wobble === null ? null : Math.round(wobble), text: words[score] };
+}
+
+// A fuller picture of one held note's tone (Tone check, views/tone.js): data is the recording
+// (mono), sr its rate. Every 10 ms over 46 ms windows: loudness, pitch and YIN clarity. The held
+// part is where the loudness stays above 60% of its median and the pitch within 40 cents of the
+// note; it must last at least 1.5 s. Returns null when no held note is found, else:
+//   note (semitones from Sa, rounded), cents (its average offset from the note),
+//   pitchSD (cents: how much the pitch wavers while held), levelCV (%: how much the loudness
+//   wavers), air (%: the share of the sound that is not the note, from YIN clarity: breath noise),
+//   attack (ms from the first sound to the steady note), overshoot (cents: how far the pitch
+//   strays at the start), seconds (held).
+function toneProfile(data, sr) {
+  const win = Math.round(sr * 0.046), hop = Math.round(sr * 0.01), fr = [];
+  for (let p = 0; p + win <= data.length; p += hop) {
+    const b = data.subarray(p, p + win);
+    let sq = 0; for (let i = 0; i < b.length; i++) sq += b[i] * b[i];
+    const y = yin(b, sr, 150, 3000, 0.2);
+    fr.push({ lv: Math.sqrt(sq / b.length), s: y ? relSemi(y.f) : null, cl: y ? y.clarity : 0 });
+  }
+  const peak = Math.max(0, ...fr.map(f => f.lv));
+  if (peak < 0.005) return null;
+  const sound = fr.map((f, i) => (f.lv > peak * 0.1 ? i : -1)).filter(i => i >= 0);
+  if (sound.length < 150) return null;
+  const med = a => { const v = a.slice().sort((x, y) => x - y); return v[v.length >> 1]; };
+  const lvMed = med(sound.map(i => fr[i].lv)), pitched = sound.filter(i => fr[i].s !== null);
+  if (pitched.length < 100) return null;
+  const pMed = med(pitched.map(i => fr[i].s)), note = Math.round(pMed);
+  const ok = i => fr[i].lv >= 0.6 * lvMed && fr[i].s !== null && Math.abs(fr[i].s - pMed) <= 0.4;
+  // The longest run of held frames (a short dip allowed).
+  let best = [0, -1], a = -1, miss = 0;
+  for (let i = sound[0]; i <= sound[sound.length - 1] + 1; i++) {
+    if (i <= sound[sound.length - 1] && ok(i)) { if (a < 0) a = i; miss = 0; if (i - a > best[1] - best[0]) best = [a, i]; }
+    else if (a >= 0 && ++miss > 8) { a = -1; miss = 0; }
+  }
+  const [h0, h1] = best;
+  if ((h1 - h0) * 0.01 < 1.5) return null;
+  // The middle of the held part (the first and last 10% left out: settling and fading).
+  const m0 = h0 + Math.round((h1 - h0) * 0.1), m1 = h1 - Math.round((h1 - h0) * 0.1), mid = [];
+  for (let i = m0; i <= m1; i++) if (fr[i].s !== null) mid.push(i);
+  const mean = v => v.reduce((x, y) => x + y, 0) / v.length, sd = v => { const m = mean(v); return Math.sqrt(mean(v.map(x => (x - m) * (x - m)))); };
+  const cents = mid.map(i => fr[i].s * 100), lvls = mid.map(i => fr[i].lv), cl = mean(mid.map(i => fr[i].cl));
+  const start = sound[0], first = [];
+  // Within the octave: a detector reading an octave off at the very start is not the player's.
+  for (let i = start; i < Math.min(h0 + 15, fr.length); i++) if (fr[i].s !== null) { const d = (fr[i].s - pMed) * 100; first.push(Math.abs(d - 1200 * Math.round(d / 1200))); }
+  return {
+    note, cents: Math.round(mean(cents) - note * 100), pitchSD: Math.round(sd(cents) * 10) / 10,
+    levelCV: Math.round(sd(lvls) / mean(lvls) * 1000) / 10, air: Math.round((1 - cl) * 1000) / 10,
+    attack: Math.max(0, (h0 - start) * 10), overshoot: first.length ? Math.round(Math.max(...first)) : 0, seconds: Math.round((h1 - h0) * 0.01 * 10) / 10,
+  };
 }
 
 // rows[i] = { n, expected, near, cents, held, t0, t1, status, verdict: [label, kind] }
@@ -1788,12 +1855,25 @@ function holdMeter(opts) {
     ghostTxt.textContent = best ? `Your best on this note: ${best.toFixed(1)} s` : "";
   }
   // Tone glow: bright when the sound is clear, dim when it is airy (from the detector's clarity).
-  let glow = 0;
-  const glowTxt = lvEl("span", { class: "lv-glowtxt" });
+  // The label keeps its place on the page and is only hidden or shown, and it changes only after the
+  // tone has stayed in a new band for half a second, so the page never jumps while you play.
+  let glow = 0, toneShown = "", toneWant = "", toneSince = 0;
+  const glowTxt = lvEl("span", { class: "lv-glowtxt", style: "visibility:hidden" }, "Tone: clear");
+  function showTone(r) {
+    const sounding = r.semi !== null && r.semi > -7.5;
+    const want = sounding ? (glow > 0.93 ? "Tone: clear" : glow > 0.85 ? "Tone: fairly clear" : "Tone: airy") : r.t - lastSound > 1.2 ? "" : toneShown;
+    if (want !== toneWant) { toneWant = want; toneSince = r.t; }
+    if (want === toneShown || r.t - toneSince < 0.5) return;
+    toneShown = want;
+    if (want) glowTxt.textContent = want;
+    glowTxt.style.visibility = want ? "visible" : "hidden";
+  }
   const noteBig = lvEl("div", { class: "lv-big" }, "-");
   const secs = lvEl("div", { class: "lv-secs" }, "0.0 s");
   const needle = lvEl("i", { class: "lv-needle" });
   const centsTxt = lvEl("span", { class: "lv-cents" }, "");
+  // What the old live tuner showed too: the Western name and the frequency. Hidden, not removed, in silence.
+  const hzTxt = lvEl("span", { class: "lv-hz", style: "visibility:hidden" }, "C5 523.3 Hz");
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play a long, steady note.");
   // For screen readers: the seconds held, every 2 s (the ring itself is silent).
   const srLive = lvEl("span", { class: "lv-sr", "aria-live": "polite" });
@@ -1808,7 +1888,7 @@ function holdMeter(opts) {
     lvEl("div", { class: "lv-stage" },
       lvEl("div", { class: "lv-ringwrap lv-glow", role: "progressbar", "aria-label": "Seconds held", "aria-valuemin": "0", "aria-valuemax": String(o.seconds), "aria-valuenow": "0" }, ring, lvEl("div", { class: "lv-ringtxt" }, noteBig, secs)),
       lvEl("div", { class: "lv-tune" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle), lvEl("div", { class: "lv-scale" }, lvEl("span", null, "flat"), centsTxt, lvEl("span", null, "sharp")))),
-    lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt),
+    lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt, hzTxt),
     msg, srLive,
     lvEl("div", { class: "lv-row" }, startBtn, hearBtn, drone.el));
 
@@ -1829,7 +1909,6 @@ function holdMeter(opts) {
     const wrap = el.querySelector(".lv-ringwrap");
     glow = glow * 0.85 + (r.semi !== null ? (r.clarity || 0) : 0) * 0.15;
     wrap.style.setProperty("--glow", Math.max(0, (glow - 0.6) / 0.4).toFixed(2));
-    glowTxt.textContent = r.semi === null ? "" : glow > 0.93 ? "Tone: clear" : glow > 0.85 ? "Tone: fairly clear" : "Tone: airy";
     if (r.semi !== null && r.semi > -7.5) {
       lastSound = r.t;
       if (!cur) cur = { start: r.t, frames: 0, cents: 0, clarity: 0, notes: [] };
@@ -1842,11 +1921,13 @@ function holdMeter(opts) {
       needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
       needle.className = "lv-needle " + (Math.abs(r.cents) <= 10 ? "lv-good" : ok ? "lv-warn" : "lv-bad");
       centsTxt.textContent = (r.cents > 0 ? "+" : "") + r.cents + " cents";
+      if (r.f) { hzTxt.textContent = westOf(r.near) + " " + r.f.toFixed(1) + " Hz"; hzTxt.style.visibility = "visible"; }
       const t = targets[idx];
       if (t !== null && r.near !== t) msg.textContent = `That is ${codeOf(r.near)} (${westOf(r.near)}). The target is ${codeOf(t)}.`;
       else msg.textContent = s.ok ? (s.held < 1.5 ? "Good start. Keep the air steady." : pitchAdvice(r.cents)) : pitchAdvice(r.cents);
     } else if (cur && r.t - lastSound > 0.6) noteEnded(cur);
-    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; }
+    showTone(r);
+    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; hzTxt.style.visibility = "hidden"; }
     if (s.done) {
       lvChime();
       if (chips) chips.querySelector(`[data-i="${idx}"]`).classList.add("lv-ok");
@@ -2369,7 +2450,7 @@ function ragaQuiz(opts) {
 // ---- bench/bench.js ----
 // Practice Bench UI. mountBench(container, opts) -> { destroy, setTab, loadNotation, stopAll }
 
-const BENCH_TABS = [["play", "Play along"], ["tones", "Long tones"], ["echo", "Play back"], ["rhythm", "Tala &amp; drone"], ["ear", "Ear quiz"], ["chart", "Fingering"], ["check", "Tuner"], ["about", "About"]];
+const BENCH_TABS = [["play", "Play along"], ["tones", "Long tones"], ["echo", "Play back"], ["rhythm", "Tala &amp; drone"], ["ear", "Ear quiz"], ["chart", "Fingering"], ["check", "Check my flute"], ["about", "About"]];
 const BENCH_HOLE_X = [430, 505, 580, 690, 765, 840];
 const BENCH_TALAS = {
   teentaal: { name: "Teentaal (16)", div: [4, 4, 4, 4], marks: ["X", "2", "0", "3"], bols: "Dha Dhin Dhin Dha Dha Dhin Dhin Dha Dha Tin Tin Ta Ta Dhin Dhin Dha" },
@@ -2562,15 +2643,9 @@ function benchTemplate(uid, o) {
         <p class="bb-small" data-ref="fileStatus"></p>
       </div>
       <div class="bb-card">
-        <h2>Live tuner</h2>
-        <p class="bb-muted bb-small">Uses your microphone where the browser allows it. If it is blocked here, open <span class="bb-mono">tools/practice-bench.html</span> from the course website or your curriculum folder in Chrome or Edge, or use the recording check.</p>
-        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="micBtn">Start microphone</button></div>
-        <div class="bb-meter">
-          <div class="bb-notebig"><span class="bb-name bb-tname" data-ref="tName">-</span><span class="bb-mono" data-ref="tDetail"></span></div>
-          <div class="bb-bar" aria-hidden="true"><div class="bb-mid"></div><div class="bb-needle" data-ref="tNeedle"></div></div>
-          <div class="bb-small bb-muted bb-scale"><span>-50 cents (flat)</span><span>in tune</span><span>+50 cents (sharp)</span></div>
-        </div>
-        <p class="bb-small" data-ref="micStatus"></p>
+        <h2>Live: which note, how many cents</h2>
+        <p class="bb-muted bb-small">The live tuner is part of Long tones now: choose "Any steady note" and play. It shows the note, how many cents flat or sharp, its Western name and Hz, and how clear the tone is.</p>
+        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button></div>
       </div>
     </div>
     <div class="bb-card" data-ref="resultCard" hidden>
@@ -3143,7 +3218,7 @@ function mountBench(container, opts) {
   }
 
   // ---------- Check my flute ----------
-  let micStop = null, lastResult = null, lastFile = null, micIdle = null, micLast = 0;
+  let lastResult = null, lastFile = null;
   // A recording that sits consistently off the notes means the flute is tuned away from Sa at
   // A4 = 440 (common for bansuris). Offer to retune the app instead of marking every note wrong.
   function showTuning(result) {
@@ -3184,40 +3259,6 @@ function mountBench(container, opts) {
     st.textContent = `Done: ${res.seconds.toFixed(1)} s analysed, ${res.segments.length} steady note${res.segments.length === 1 ? "" : "s"} found.` + (res.truncated ? " Only the first 3 minutes were analysed." : "");
     showResults(res, CHECK_PLANS[Number(q("plan").value)][1]);
   }
-  function tunerBlank() {
-    q("tName").textContent = "-"; q("tDetail").textContent = "";
-    const n = q("tNeedle"); n.style.left = "50%"; n.style.background = "var(--muted)";
-  }
-  function micOff() {
-    if (micStop) { micStop(); micStop = null; }
-    if (micIdle) { clearInterval(micIdle); micIdle = null; }
-    if (has("check")) { q("micBtn").textContent = "Start microphone"; tunerBlank(); }
-  }
-  async function micToggle() {
-    if (micStop) { micOff(); return; }
-    const st = q("micStatus");
-    if (!(await countdown(q("micBtn").parentElement, { btn: q("micBtn") })) || destroyed) return;
-    try {
-      micStop = await startMicTuner(r => {
-        micLast = performance.now();
-        const L = letterOf(r.near);
-        q("tName").textContent = codeOf(r.near);
-        q("tDetail").textContent = `${NAME[L]} · ${westOf(r.near)} · ${r.f.toFixed(1)} Hz · ${r.cents > 0 ? "+" : ""}${r.cents} cents`;
-        const n = q("tNeedle");
-        n.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
-        n.style.background = Math.abs(r.cents) <= 10 ? "var(--good)" : Math.abs(r.cents) <= 25 ? "var(--warn)" : "var(--bad)";
-      });
-      if (destroyed) { micOff(); return; }
-      q("micBtn").textContent = "Stop microphone"; st.textContent = "Listening. Play a long note.";
-      // Clear the reading when the note stops, so an old note is not left on screen.
-      micIdle = setInterval(() => { if (micLast && performance.now() - micLast > 500) { micLast = 0; tunerBlank(); } }, 200);
-    } catch (e) {
-      micStop = null;
-      st.textContent = e && e.message === "unavailable"
-        ? "Live microphone is not available in this view. Use the recording check, or open tools/practice-bench.html in Chrome or Edge."
-        : "Live microphone is blocked in this view. Use the recording check, or open tools/practice-bench.html in Chrome or Edge.";
-    }
-  }
   if (has("check")) {
     const sel = q("plan");
     CHECK_PLANS.forEach((p, i) => { const op = document.createElement("option"); op.value = i; op.textContent = p[0]; sel.appendChild(op); });
@@ -3225,7 +3266,7 @@ function mountBench(container, opts) {
     // Reset the input after reading, so choosing the same file again analyses it again.
     listen(q("fileIn"), "change", e => { const f = e.target.files[0]; e.target.value = ""; analyzeFile(f); });
     listen(sel, "change", () => { if (lastResult) showResults(lastResult, CHECK_PLANS[Number(sel.value)][1]); });
-    listen(q("micBtn"), "click", micToggle);
+    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").parentElement.hidden = true; }
   }
 
   // ---------- Ear quiz ----------
@@ -3312,7 +3353,7 @@ function mountBench(container, opts) {
   setTab(opts.tab || (compact ? null : benchGet("tab", null)) || (tabs[0] && tabs[0][0]));
 
   function stopEverything() {
-    stopBlow(); seqStop(); if (has("rhythm")) talaStop(); micOff();
+    stopBlow(); seqStop(); if (has("rhythm")) talaStop();
     Object.values(liveWidgets).forEach(w => w.destroy());
     if (startedTan && tanpura.isOn()) tanpura.stop();
     startedTan = false;

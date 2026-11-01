@@ -216,6 +216,7 @@
 .lv-ghost { fill: none; stroke: var(--muted); stroke-width: 9; opacity: 0.28; stroke-linecap: round; }
 .lv-glow { border-radius: 50%; box-shadow: 0 0 calc(4px + 26px * var(--glow, 0)) calc(1px + 6px * var(--glow, 0)) color-mix(in srgb, var(--accent) calc(25% + 55% * var(--glow, 0)), transparent); transition: box-shadow 120ms linear; }
 .lv-glowtxt { font-size: 0.85rem; color: var(--muted); }
+.lv-hz { font-size: 0.85rem; color: var(--muted); font-family: var(--mono); font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { .lv-glow { transition: none; } }
 /* Right and wrong are never colour alone: a tick, a cross, an arrow for the wrong octave. */
 .lv-slot.lv-ok::after { content: " \2713"; }

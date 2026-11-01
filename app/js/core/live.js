@@ -197,6 +197,8 @@ export function holdMeter(opts) {
   const secs = lvEl("div", { class: "lv-secs" }, "0.0 s");
   const needle = lvEl("i", { class: "lv-needle" });
   const centsTxt = lvEl("span", { class: "lv-cents" }, "");
+  // What the old live tuner showed too: the Western name and the frequency. Hidden, not removed, in silence.
+  const hzTxt = lvEl("span", { class: "lv-hz", style: "visibility:hidden" }, "C5 523.3 Hz");
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play a long, steady note.");
   // For screen readers: the seconds held, every 2 s (the ring itself is silent).
   const srLive = lvEl("span", { class: "lv-sr", "aria-live": "polite" });
@@ -211,7 +213,7 @@ export function holdMeter(opts) {
     lvEl("div", { class: "lv-stage" },
       lvEl("div", { class: "lv-ringwrap lv-glow", role: "progressbar", "aria-label": "Seconds held", "aria-valuemin": "0", "aria-valuemax": String(o.seconds), "aria-valuenow": "0" }, ring, lvEl("div", { class: "lv-ringtxt" }, noteBig, secs)),
       lvEl("div", { class: "lv-tune" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle), lvEl("div", { class: "lv-scale" }, lvEl("span", null, "flat"), centsTxt, lvEl("span", null, "sharp")))),
-    lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt),
+    lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt, hzTxt),
     msg, srLive,
     lvEl("div", { class: "lv-row" }, startBtn, hearBtn, drone.el));
 
@@ -244,12 +246,13 @@ export function holdMeter(opts) {
       needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
       needle.className = "lv-needle " + (Math.abs(r.cents) <= 10 ? "lv-good" : ok ? "lv-warn" : "lv-bad");
       centsTxt.textContent = (r.cents > 0 ? "+" : "") + r.cents + " cents";
+      if (r.f) { hzTxt.textContent = westOf(r.near) + " " + r.f.toFixed(1) + " Hz"; hzTxt.style.visibility = "visible"; }
       const t = targets[idx];
       if (t !== null && r.near !== t) msg.textContent = `That is ${codeOf(r.near)} (${westOf(r.near)}). The target is ${codeOf(t)}.`;
       else msg.textContent = s.ok ? (s.held < 1.5 ? "Good start. Keep the air steady." : pitchAdvice(r.cents)) : pitchAdvice(r.cents);
     } else if (cur && r.t - lastSound > 0.6) noteEnded(cur);
     showTone(r);
-    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; }
+    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; hzTxt.style.visibility = "hidden"; }
     if (s.done) {
       lvChime();
       if (chips) chips.querySelector(`[data-i="${idx}"]`).classList.add("lv-ok");

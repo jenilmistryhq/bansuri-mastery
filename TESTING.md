@@ -80,7 +80,7 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Journal > Record: the first press asks for microphone permission; recording starts.
 - [ ] Play Sa for 3 seconds, Stop: the recording saves and plays back.
 - [ ] Analyse pitch: your Sa appears as `S` with a cents value (a C5 flute should read close to 0).
-- [ ] Bench > Check my flute > Start microphone: the tuner follows your notes.
+- [ ] Bench > Long tones, "Any steady note", Start: the note, cents, Western name and Hz follow your playing (this is the live tuner).
 - [ ] Deny microphone permission once: the app explains and nothing breaks.
 - [ ] "Send to a teacher": the share sheet offers the audio file (or it downloads and the summary is copied).
 
@@ -105,7 +105,7 @@ Use one iPhone (Safari) and one Android phone (Chrome). Open the live site, not 
 - [ ] Milestone M1 (or any unlocked milestone): "Check with mic" on "Long tone Sa" ticks the item when you pass.
 - [ ] Settings > Detect from my flute: play your Sa for 3 s; it names your flute's key correctly.
 - [ ] Bench > Tala & drone > Tap the beat: the first Start calibrates (8 clicks), then plays a round; the lights flash with the click you hear; tapping well reads "on the beat", also with Bluetooth headphones.
-- [ ] Coach > Let the coach listen: play a long Sa; a deliberately airy or flat note is named as such.
+- [ ] Tone check: hold a long Sa; a deliberately airy or flat note is named as such, and "Show the fix" opens the matching Coach guide.
 - [ ] Play a tongued `G G G` in Play back or a milestone phrase: each repeat is counted.
 - [ ] Settings > Microphone check: run it, copy the report, and send it along with any problem.
 - [ ] Settings > Already play? > Take the playing test: each item passes when played well; the recommended phase makes sense.

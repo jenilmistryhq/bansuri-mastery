@@ -52,7 +52,7 @@ const ROUTES = [
   [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
-  [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/songs$/, "songs"],
+  [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/coach\/(TS-\d\d)$/, "coach"], [/^\/songs$/, "songs"],
   [/^\/play$/, "play"], [/^\/play\/([a-z]+)$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/transcribe$/, "transcribe"], [/^\/tone$/, "tone"], [/^\/ornaments$/, "ornaments"], [/^\/review$/, "review"], [/^\/review\/([A-Za-z0-9_-]+)$/, "review"], [/^\/feedback\/([A-Za-z0-9_-]+)$/, "feedback"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
 // Five tabs; related screens sit together under one tab, with a small menu at the top of each.

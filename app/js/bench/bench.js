@@ -3,11 +3,11 @@ import { getSettings, setSettings, onSettings } from "../core/settings.js";
 import { LETTERS, NAME, DEVA, WEST, BASE, DIFF, codeOf, octName, fingOf, lessonFor, hzOf, westOf, letterOf, devaNotation } from "../core/theory.js";
 import { ac, makeVoice, playNote, tanpura, click, tablaBol, setTablaLevel } from "../core/audio.js";
 import { parseNotation, buildEvents, analyzeRange, playEvents, PRESETS } from "../core/notation.js";
-import { analyzeAudioBuffer, decodeAudioFile, compareToExpected, drawPitchPlot, tuningOffset, CHECK_PLANS, startMicTuner } from "../core/pitch.js";
+import { analyzeAudioBuffer, decodeAudioFile, compareToExpected, drawPitchPlot, tuningOffset, CHECK_PLANS } from "../core/pitch.js";
 import { listenMic, emitLive } from "../core/listen.js";
 import { holdMeter, echoGame, tapGame, micIntro, countdown } from "../core/live.js";
 
-const BENCH_TABS = [["play", "Play along"], ["tones", "Long tones"], ["echo", "Play back"], ["rhythm", "Tala &amp; drone"], ["ear", "Ear quiz"], ["chart", "Fingering"], ["check", "Tuner"], ["about", "About"]];
+const BENCH_TABS = [["play", "Play along"], ["tones", "Long tones"], ["echo", "Play back"], ["rhythm", "Tala &amp; drone"], ["ear", "Ear quiz"], ["chart", "Fingering"], ["check", "Check my flute"], ["about", "About"]];
 const BENCH_HOLE_X = [430, 505, 580, 690, 765, 840];
 const BENCH_TALAS = {
   teentaal: { name: "Teentaal (16)", div: [4, 4, 4, 4], marks: ["X", "2", "0", "3"], bols: "Dha Dhin Dhin Dha Dha Dhin Dhin Dha Dha Tin Tin Ta Ta Dhin Dhin Dha" },
@@ -200,15 +200,9 @@ function benchTemplate(uid, o) {
         <p class="bb-small" data-ref="fileStatus"></p>
       </div>
       <div class="bb-card">
-        <h2>Live tuner</h2>
-        <p class="bb-muted bb-small">Uses your microphone where the browser allows it. If it is blocked here, open <span class="bb-mono">tools/practice-bench.html</span> from the course website or your curriculum folder in Chrome or Edge, or use the recording check.</p>
-        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="micBtn">Start microphone</button></div>
-        <div class="bb-meter">
-          <div class="bb-notebig"><span class="bb-name bb-tname" data-ref="tName">-</span><span class="bb-mono" data-ref="tDetail"></span></div>
-          <div class="bb-bar" aria-hidden="true"><div class="bb-mid"></div><div class="bb-needle" data-ref="tNeedle"></div></div>
-          <div class="bb-small bb-muted bb-scale"><span>-50 cents (flat)</span><span>in tune</span><span>+50 cents (sharp)</span></div>
-        </div>
-        <p class="bb-small" data-ref="micStatus"></p>
+        <h2>Live: which note, how many cents</h2>
+        <p class="bb-muted bb-small">The live tuner is part of Long tones now: choose "Any steady note" and play. It shows the note, how many cents flat or sharp, its Western name and Hz, and how clear the tone is.</p>
+        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button></div>
       </div>
     </div>
     <div class="bb-card" data-ref="resultCard" hidden>
@@ -781,7 +775,7 @@ export function mountBench(container, opts) {
   }
 
   // ---------- Check my flute ----------
-  let micStop = null, lastResult = null, lastFile = null, micIdle = null, micLast = 0;
+  let lastResult = null, lastFile = null;
   // A recording that sits consistently off the notes means the flute is tuned away from Sa at
   // A4 = 440 (common for bansuris). Offer to retune the app instead of marking every note wrong.
   function showTuning(result) {
@@ -822,40 +816,6 @@ export function mountBench(container, opts) {
     st.textContent = `Done: ${res.seconds.toFixed(1)} s analysed, ${res.segments.length} steady note${res.segments.length === 1 ? "" : "s"} found.` + (res.truncated ? " Only the first 3 minutes were analysed." : "");
     showResults(res, CHECK_PLANS[Number(q("plan").value)][1]);
   }
-  function tunerBlank() {
-    q("tName").textContent = "-"; q("tDetail").textContent = "";
-    const n = q("tNeedle"); n.style.left = "50%"; n.style.background = "var(--muted)";
-  }
-  function micOff() {
-    if (micStop) { micStop(); micStop = null; }
-    if (micIdle) { clearInterval(micIdle); micIdle = null; }
-    if (has("check")) { q("micBtn").textContent = "Start microphone"; tunerBlank(); }
-  }
-  async function micToggle() {
-    if (micStop) { micOff(); return; }
-    const st = q("micStatus");
-    if (!(await countdown(q("micBtn").parentElement, { btn: q("micBtn") })) || destroyed) return;
-    try {
-      micStop = await startMicTuner(r => {
-        micLast = performance.now();
-        const L = letterOf(r.near);
-        q("tName").textContent = codeOf(r.near);
-        q("tDetail").textContent = `${NAME[L]} · ${westOf(r.near)} · ${r.f.toFixed(1)} Hz · ${r.cents > 0 ? "+" : ""}${r.cents} cents`;
-        const n = q("tNeedle");
-        n.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
-        n.style.background = Math.abs(r.cents) <= 10 ? "var(--good)" : Math.abs(r.cents) <= 25 ? "var(--warn)" : "var(--bad)";
-      });
-      if (destroyed) { micOff(); return; }
-      q("micBtn").textContent = "Stop microphone"; st.textContent = "Listening. Play a long note.";
-      // Clear the reading when the note stops, so an old note is not left on screen.
-      micIdle = setInterval(() => { if (micLast && performance.now() - micLast > 500) { micLast = 0; tunerBlank(); } }, 200);
-    } catch (e) {
-      micStop = null;
-      st.textContent = e && e.message === "unavailable"
-        ? "Live microphone is not available in this view. Use the recording check, or open tools/practice-bench.html in Chrome or Edge."
-        : "Live microphone is blocked in this view. Use the recording check, or open tools/practice-bench.html in Chrome or Edge.";
-    }
-  }
   if (has("check")) {
     const sel = q("plan");
     CHECK_PLANS.forEach((p, i) => { const op = document.createElement("option"); op.value = i; op.textContent = p[0]; sel.appendChild(op); });
@@ -863,7 +823,7 @@ export function mountBench(container, opts) {
     // Reset the input after reading, so choosing the same file again analyses it again.
     listen(q("fileIn"), "change", e => { const f = e.target.files[0]; e.target.value = ""; analyzeFile(f); });
     listen(sel, "change", () => { if (lastResult) showResults(lastResult, CHECK_PLANS[Number(sel.value)][1]); });
-    listen(q("micBtn"), "click", micToggle);
+    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").parentElement.hidden = true; }
   }
 
   // ---------- Ear quiz ----------
@@ -950,7 +910,7 @@ export function mountBench(container, opts) {
   setTab(opts.tab || (compact ? null : benchGet("tab", null)) || (tabs[0] && tabs[0][0]));
 
   function stopEverything() {
-    stopBlow(); seqStop(); if (has("rhythm")) talaStop(); micOff();
+    stopBlow(); seqStop(); if (has("rhythm")) talaStop();
     Object.values(liveWidgets).forEach(w => w.destroy());
     if (startedTan && tanpura.isOn()) tanpura.stop();
     startedTan = false;

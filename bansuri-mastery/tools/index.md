@@ -12,12 +12,12 @@ An interactive 6-hole bansuri that runs in your browser. Use it from Day 0.
 | Fingering chart | Hear and see every note from `.P` to `M'` | [Conventions](../05-CONVENTIONS-AND-NOTATION-KEY.md) |
 | Play notation | Play any sargam in the curriculum's notation, check its range on your flute and see which lesson unlocks it. Presets cover the scales, alankars, practice melodies and raga phrases | [L10](../lessons/L10-reading-and-writing-sargam.md), [L18](../lessons/L18-song-learning-system.md), [EX-MEL](../exercises/EX-MEL-practice-melodies.md) |
 | Tanpura and tala | A tanpura tuned to your Sa, and a metronome for keherwa, dadra, teentaal, rupak, jhaptaal and ektaal | [L07](../lessons/L07-long-tones-tuner-and-drone.md), [L15](../lessons/L15-taal-basics.md) |
-| Check my flute | Live tuner, or upload a phone recording of your flute and see each note's pitch and cents | [L00](../lessons/L00-day-0-your-flute.md), [L17](../lessons/L17-intonation-and-drone.md), [L22](../lessons/L22-taar-saptak.md) |
+| Check my flute | Upload a phone recording of your flute and see each note's pitch and cents. The live tuner is in Long tones ("Any steady note") | [L00](../lessons/L00-day-0-your-flute.md), [L17](../lessons/L17-intonation-and-drone.md), [L22](../lessons/L22-taar-saptak.md) |
 | Ear quiz | EX-EAR Levels 2, 3, 4 and 6 | [EX-EAR](../exercises/EX-EAR-ear-training-system.md) |
 
 ## Good to know
 
 - **Settings:** set your flute's Sa (default C5, a C natural medium flute) and A4 tuning (default 440 Hz) at the top right. Everything follows them.
-- **Microphone:** the live tuner asks for microphone permission. All analysis runs in your browser; no audio is uploaded.
+- **Microphone:** Long tones (the live tuner) asks for microphone permission. All analysis runs in your browser; no audio is uploaded.
 - **What it cannot check:** your tone, embouchure, posture, raga intonation and ornament style. The flute sound is synthesised. See its "What this confirms" tab and the [quality report](../07-QUALITY-REPORT.md).
 - **Offline use:** the page is a single file. Download `practice-bench.html` and open it in Chrome or Edge.

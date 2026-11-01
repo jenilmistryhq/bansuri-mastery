@@ -295,8 +295,10 @@ try {
     check((await progress()).recordings === 1, "recording counted once");
     await go("/bench");
     await page.evaluate(() => document.querySelector('.bb-bench .bb-tabs button[data-tab="check"]').click());
-    await page.evaluate(() => { const b = [...document.querySelectorAll(".bb-bench button")].find(x => /start microphone/i.test(x.textContent)); if (b) b.click(); });
-    await page.waitForFunction(() => /Listening/.test(document.querySelector(".bb-bench").innerText), { timeout: 8000 }).then(() => check(true, "live tuner starts with a microphone"), () => check(false, "live tuner starts with a microphone"));
+    // The live tuner is part of Long tones now: the Check my flute tab points there.
+    check(await page.$(".bb-bench [data-ref=micBtn]") === null && /Check my flute/.test(await page.$eval('.bb-bench .bb-tabs button[data-tab="check"]', e => e.textContent)), "bench: no separate live tuner; the tab is Check my flute");
+    await page.evaluate(() => document.querySelector(".bb-bench [data-ref=toTones]").click());
+    check(await page.$eval('.bb-bench [data-panel="tones"]', e => !e.hidden), "bench: Open Long tones switches to the Long tones tab");
 
   });
   await section("Check my flute with a real bansuri recording", async () => {
@@ -563,14 +565,23 @@ try {
       await lp.evaluate(() => [...document.querySelectorAll("#main .mrow button")].find(b => /Check with mic/.test(b.textContent)).click());
       check(await lp.$("#main .micpanel .lv-quiz") !== null, "milestone M4: identifying notes opens a note-naming test");
 
-      // The coach listens: a held Sa 35 cents flat is diagnosed as flat.
-      await lp.goto(BASE + "#/coach", { waitUntil: "networkidle0" });
-      await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Start listening/.test(b.textContent)), { timeout: 5000 });
-      await clickTextOn(lp, "#main button", "Start listening");
+      // Tone check (with the coach's diagnosis): a held Sa 35 cents flat is diagnosed as flat, and
+      // Show the fix opens the matching coach guide.
+      await lp.goto(BASE + "#/tone", { waitUntil: "networkidle0" });
+      await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Hold the note/.test(b.textContent)), { timeout: 5000 });
+      await clickTextOn(lp, "#main button", "Hold the note");
       await sleep(300); await tone(-0.35);
-      await lp.waitForFunction(() => /cents flat/.test(document.querySelector("#main").innerText), { timeout: 12000 })
-        .then(() => check(true, "the coach hears that a held Sa is flat"), async () => check(false, "coach: " + (await lp.$eval("#main", e => e.innerText)).slice(0, 300)));
+      await lp.waitForFunction(() => /cents flat/.test(document.querySelector("#main .tone-found") ? document.querySelector("#main .tone-found").innerText : ""), { timeout: 20000 })
+        .then(() => check(true, "tone check hears that a held Sa is flat (the coach's diagnosis)"), async () => check(false, "tone check: " + (await lp.$eval("#main", e => e.innerText)).slice(0, 400)));
       await tone(null);
+      const fix = await lp.$('#main .tone-found a[href="#/coach/TS-05"]');
+      check(fix !== null, "tone check: the flat finding links to the tuning guide (TS-05)");
+      if (fix) {
+        await fix.click();
+        await lp.waitForFunction(() => /#\/coach\/TS-05/.test(location.hash) && document.querySelector("#main .symcard.on"), { timeout: 8000 })
+          .then(() => check(true, "coach opens the guide from the link"), () => check(false, "coach opens the guide from the link"));
+      }
+      check(!/Start listening/.test(await lp.$eval("#main", e => e.innerText)), "coach: no second listening tool (it is in Tone check)");
 
       // A session step with a listening goal ticks itself when the goal is met.
       await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 2, startedAt: "2026-10-01" })));
