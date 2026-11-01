@@ -281,3 +281,16 @@ console.log(`core tests: ${passed} passed`);
   assert.match(P.markdown(r), /Suggested bands/);
   console.log("pilot report ok");
 }
+
+// Pilot report: the ornament section from made-up attempts.
+{
+  const P = await import("../scripts/pilot-report.mjs");
+  const logs = [true, true, false, true].map((g, i) => ({ kind: "orn", key: "kan", ok: [true, g, true, true, i % 2 === 0], m: { grace: 60 + i * 40, lead: 80, cents: 5 } }))
+    .concat([{ kind: "phrase", id: "bhairav-2", points: 2, max: 3 }, { kind: "phrase", id: "bhairav-2", points: 3, max: 3 }]);
+  const r = P.report([{ kind: "pilot", id: "p1", logs }]);
+  assert.equal(r.orn.kan.n, 4);
+  assert.deepEqual(r.orn.kan.pass.map(p => p.pct), [100, 75, 100, 100, 50]);
+  assert.equal(r.phrases["bhairav-2"].pct, 83);
+  assert.match(P.markdown(r), /kan heard 100%, kan short 75%/);
+  console.log("pilot report (ornaments) ok");
+}

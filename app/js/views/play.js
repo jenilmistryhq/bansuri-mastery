@@ -5,12 +5,14 @@ import { getDay, current, phaseOf } from "../course.js";
 import { fetchDoc } from "../content.js";
 import { questState } from "../fun.js";
 import { pitchSteer, balloon, fallingNotes, jam, NOTE_SETS } from "../games.js";
+import { ragaPhrases as phraseGame, layaLadder, tihai, taarSaptak } from "../games4.js";
 import { meendBridge, kanFlick, murkiChase, andolanLamp, nameOrnament, swellFade, tonguedBeats } from "../games3.js";
 import { boat, glideRoad, lanterns, bullseye, threeFloors, wrongNote, bingo, higherLower, catchSam } from "../games2.js";
 import { phraseCheck } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
 import { parseSongs } from "./songs.js";
 import { ragaPhrases, ragaInfo } from "./reader.js";
+import { ragaGrammar } from "../ragagrammar.js";
 import { encodePayload } from "./progress.js";
 
 export function decodeChallenge(p) {
@@ -40,7 +42,7 @@ async function loadRagas() {
     if (!md) return null;
     const ph = ragaPhrases(md), info = ragaInfo(md), phase = Number((/Phase (\d)/.exec(m[3]) || [])[1]) || 3;
     const notes = info.notes.length ? info.notes : [...new Set(ph.phrases.flat())].sort((a, b) => a - b);
-    return { name: m[1], file: m[2], notes, first: info.first, phrases: ph.phrases, phase };
+    return { name: m[1], file: m[2], notes, first: info.first, phrases: ph.phrases, phase, grammar: ragaGrammar(md) };
   }))).filter(r => r && r.notes.length >= 4);
 }
 
@@ -132,12 +134,16 @@ export async function render(main, { params, view }) {
     andolanlamp: ["Andolan lamp", "Swing komal Re, Ga or Dha slowly below its place and back.", () => open("Andolan lamp", () => andolanLamp())],
     swell: ["Swell and fade", "Louder, then softer, on one note, without the pitch moving.", () => open("Swell and fade", () => swellFade())],
     tongue: ["Tongued beats", "Tongue a short Sa on every beat of the metronome, evenly.", () => open("Tongued beats", () => tonguedBeats())],
+    phrase: ["Raga phrases", "Ornaments inside a raga's own phrases: Bhairav's andolan, Bhimpalasi's meend and kan, and more.", () => open("Raga phrases", () => phraseGame())],
+    taar: ["Taar saptak", "Hold the upper octave steady, clear and in tune: S', R', G', m'.", () => open("Taar saptak", () => taarSaptak())],
+    laya: ["Laya ladder", "Over the theka: one note a beat, then two (dugun), then three (tigun).", () => open("Laya ladder", () => layaLadder())],
+    tihai: ["Tihai", "A phrase three times, so its last note lands on sam.", () => open("Tihai", () => tihai())],
     nameorn: ["Name the ornament", "Hear a phrase: meend, kan, murki, andolan or a plain note? (no microphone)", () => open("Name the ornament", () => nameOrnament())],
     compose: ["Make a melody", "Build a tune from a raga's notes, play it, and challenge a friend.", () => { location.hash = "#/compose"; }],
     quick: ["5-minute practice", "Short on time? A long tone, a game and a song.", () => { location.hash = "#/quick"; }],
   };
   // Which game helps with which quest.
-  const FOR_QUEST = { ornament: "meendbridge", swell: "swell", boat: "boat", bullseye: "bullseye", wrong: "wrong", sam: "sam", road: "road", hold: "boat", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
+  const FOR_QUEST = { phrase: "phrase", laya: "laya", tihai: "tihai", ornament: "meendbridge", swell: "swell", boat: "boat", bullseye: "bullseye", wrong: "wrong", sam: "sam", road: "road", hold: "boat", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
   // Opening a game goes to its address; the route then opens it (below).
   const go = key => { fromList = true; location.hash = "#/play/" + key; };
   const NAV_ONLY = new Set(["compose", "quick"]);
@@ -154,8 +160,9 @@ export async function render(main, { params, view }) {
   // The other games.
   const card = (title, text, onClick) => h("button", { type: "button", class: "gamecard", onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
   const GROUPS = [["With your flute", ["steer", "balloon", "falling", "jam", "boat", "road", "lanterns", "bullseye", "floors"]],
-    ["Ornaments and technique", ["meendbridge", "kanflick", "murkichase", "andolanlamp", "swell", "tongue"]],
-    ["By ear (no microphone)", ["nameorn", "wrong", "bingo", "higherlower", "sam"]], ["Make and practise", ["compose", "quick"]]];
+    ["Ornaments and technique", ["phrase", "meendbridge", "kanflick", "murkichase", "andolanlamp", "swell", "taar"]],
+    ["Rhythm: laya and taal", ["laya", "tihai", "tongue", "sam"]],
+    ["By ear (no microphone)", ["nameorn", "wrong", "bingo", "higherlower"]], ["Make and practise", ["compose", "quick"]]];
   for (const [head, keys] of GROUPS) page.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, keys.filter(k => k !== pick).map(k => card(GAMES[k][0], GAMES[k][1], NAV_ONLY.has(k) ? GAMES[k][2] : () => go(k)))));
   // #/play/<game>: open that game (the list stays underneath).
   if (view === "play" && params[0]) {

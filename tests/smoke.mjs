@@ -903,6 +903,32 @@ try {
       await openGame("Name the ornament"); await gameBtn("Start"); await sleep(300); await gameBtn("Kan");
       check(/Right\.|Not quite\./.test(await gameText()) && /: /.test(await gameText()), "games: Name the ornament judges an answer and explains it");
       await gameBtn("Stop");
+      await openGame("Raga phrases"); await gameBtn("Try it"); await waitText(/Play the phrase now/); await tone(4); await sleep(700); await tone(5); await sleep(700); await tone(1); await sleep(2000); await tone(0); await sleep(900); await tone(null);
+      await waitText(/Score \d+ of \d+|not recognised|No clear phrase/, 8000);
+      check(/Score \d+ of \d+ \(\d+%\)/.test(await gameText()) && /andolan|swing|Swing/i.test(await gameText()), "games: Raga phrases judges G m r~ S part by part, and a steady r has no andolan");
+      await openGame("Laya ladder"); await gameBtn("Start"); await waitText(/Listen for one cycle/); await sleep(400); await gameBtn("Stop");
+      check(/Thah: 0 of 8 notes in time/.test(await gameText()), "games: Laya ladder reports each section");
+      await openGame("Tihai"); await gameBtn("Start"); await waitText(/Start on beat 7 of the second cycle/);
+      check(/Start on beat 7 of the second cycle/.test(await gameText()), "games: Tihai shows the start beat that lands on sam (S R G in keherwa: beat 7)");
+      await gameBtn("Stop");
+      await openGame("Taar saptak"); await gameBtn("Start"); await waitText(/Hold this note:/); await tone(12); await waitText(/Next note:/, 6000); await tone(null);
+      check(/Next note:/.test(await gameText()), "games: Taar saptak scores a held upper Sa and moves on");
+      await gameBtn("Stop");
+      // Ornament trainer: a teacher's model from a recording becomes the target.
+      {
+        const os = await import("node:os"), sr = 22050, n = sr * 1.5, wav = Buffer.alloc(44 + n * 2);
+        wav.write("RIFF", 0); wav.writeUInt32LE(36 + n * 2, 4); wav.write("WAVEfmt ", 8); wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22);
+        wav.writeUInt32LE(sr, 24); wav.writeUInt32LE(sr * 2, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write("data", 36); wav.writeUInt32LE(n * 2, 40);
+        for (let i = 0; i < n; i++) wav.writeInt16LE(Math.round(Math.sin(2 * Math.PI * 587.33 * i / sr) * 12000), 44 + i * 2);
+        const file = path.join(os.tmpdir(), "bansuri-model-test.wav"); fs.writeFileSync(file, wav);
+        await lp.goto(BASE + "#/ornaments", { waitUntil: "networkidle0" }); await lp.waitForSelector("#orn-modelfile");
+        check(/Your teacher's model/.test(await lp.$eval("#main", e => e.textContent)), "ornaments: the trainer offers a teacher's model");
+        await (await lp.$("#orn-modelfile")).uploadFile(file);
+        await lp.waitForFunction(() => /Use it as the target/.test(document.querySelector("#main").textContent), { timeout: 10000 }).catch(() => {});
+        check(/Use it as the target/.test(await lp.$eval("#main", e => e.textContent)), "ornaments: a recording becomes the teacher's model and the target");
+        fs.unlinkSync(file);
+        await lp.evaluate(() => localStorage.removeItem("bansuri.ornament.models"));
+      }
       await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
 
       // Hindi: the interface, and a session step, in Hindi.
@@ -1302,6 +1328,15 @@ try {
     await page.evaluate(() => document.querySelector(".bb-flute [data-ref=hole3]").focus()); await page.keyboard.press("Enter");
     check(await page.$eval(".bb-flute [data-ref=hole3]", e => e.getAttribute("aria-label")) === "Hole 4: half closed", "flute: Enter on a focused hole half-closes it");
 
+  });
+  await section("No stray null, undefined or NaN on any screen", async () => {
+    const bad = [];
+    for (const r of ["/today", "/session/0", "/session/2", "/plan", "/bench", "/coach", "/listen", "/songs", "/transcribe", "/tone", "/ornaments", "/play", "/compose", "/quick", "/progress", "/journal", "/settings", "/review", "/read/ragas/yaman.md"]) {
+      await go(r);
+      const hits = await page.evaluate(() => { const out = []; const w = document.createTreeWalker(document.querySelector("#main"), NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (/null|undefined|NaN/.test(n.nodeValue)) out.push(n.nodeValue.trim().slice(0, 60)); return out; });
+      if (hits.length) bad.push(r + ": " + hits.join(" | "));
+    }
+    check(!bad.length, "no screen shows null, undefined or NaN as text" + (bad.length ? " (" + bad.join("; ") + ")" : ""));
   });
   await section("Accessibility (axe-core: WCAG 2.1 A and AA rules)", async () => {
     {

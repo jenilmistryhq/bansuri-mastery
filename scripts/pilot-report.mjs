@@ -20,6 +20,9 @@ export function spearman(a, b) {
   for (let i = 0; i < n; i++) { num += (ra[i] - ma) * (rb[i] - ma); da += (ra[i] - ma) ** 2; db += (rb[i] - ma) ** 2; }
   return da && db ? num / Math.sqrt(da * db) : null;
 }
+// The ornament trainer's checks, in order (app/js/ornaments.js).
+export const ORN_CHECKS = { meend: ["glide length", "no break", "no step", "no overshoot"], kan: ["kan heard", "kan short", "joined", "nothing else first", "main note in tune"],
+  murki: ["all notes in order", "no extra notes", "speed", "no break"], andolan: ["swing width", "swing speed", "even swings", "top on the note"] };
 const median = v => { const s = v.slice().sort((x, y) => x - y); return s.length ? s[s.length >> 1] : null; };
 
 export function report(files) {
@@ -46,6 +49,21 @@ export function report(files) {
     const ok = lines.filter(l => !l.fixed), notes = lines.reduce((a, l) => a + (l.notes || 0), 0), okNotes = ok.reduce((a, l) => a + (l.notes || 0), 0);
     out.lines = { n: lines.length, rightLines: Math.round(ok.length / lines.length * 100), rightNotesAtLeast: notes ? Math.round(okNotes / notes * 100) : null };
   }
+  // Ornaments: how often real attempts pass each check, and the median measures, to set the
+  // trainer's limits from real players rather than from textbook values.
+  const orn = files.flatMap(f => (f.logs || []).filter(l => l.kind === "orn" && Array.isArray(l.ok)));
+  if (orn.length) {
+    out.orn = {};
+    for (const key of Object.keys(ORN_CHECKS)) {
+      const a = orn.filter(l => l.key === key); if (!a.length) continue;
+      const pass = ORN_CHECKS[key].map((name, i) => { const v = a.filter(l => l.ok.length > i); return { name, n: v.length, pct: v.length ? Math.round(v.filter(l => l.ok[i]).length / v.length * 100) : null }; });
+      const measures = {};
+      for (const l of a) for (const [k, v] of Object.entries(l.m || {})) if (Number.isFinite(v)) (measures[k] = measures[k] || []).push(v);
+      out.orn[key] = { n: a.length, pass, medians: Object.fromEntries(Object.entries(measures).map(([k, v]) => [k, median(v)])), withModel: a.filter(l => l.model).length };
+    }
+  }
+  const ph = files.flatMap(f => (f.logs || []).filter(l => l.kind === "phrase" && l.max));
+  if (ph.length) out.phrases = Object.fromEntries([...new Set(ph.map(l => l.id))].map(id => { const v = ph.filter(l => l.id === id); return [id, { n: v.length, pct: Math.round(v.reduce((a, l) => a + l.points / l.max, 0) / v.length * 100) }]; }));
   return out;
 }
 
@@ -55,6 +73,13 @@ export function markdown(r) {
   for (const [m, t] of Object.entries(r.tone)) L.push("| " + m + " | " + t.point + " | " + t.n + " | " + (t.rho === null ? "too few" : t.rho) + " | " + (t.bands ? t.bands.join(", ") : "needs ratings of 3, 4 and 5") + " |");
   L.push("", "## Taal found in recordings", "", r.taal ? r.taal.n + " saved notations: taal and sam right " + r.taal.right + "%, only sam moved " + r.taal.samMoved + "%, taal changed " + r.taal.taalChanged + "%." : "No data yet.");
   L.push("", "## Automatic notation (line-by-line checks)", "", r.lines ? r.lines.n + " lines checked: " + r.lines.rightLines + "% right as written; at least " + r.lines.rightNotesAtLeast + "% of notes (a fixed line can still have most notes right)." : "No data yet.");
+  L.push("", "## Ornaments (trainer and games)", "");
+  if (r.orn) for (const [k, o] of Object.entries(r.orn)) {
+    L.push("**" + k + "**: " + o.n + " attempts" + (o.withModel ? ", " + o.withModel + " against a teacher's model" : "") + ". Passing each check: " + o.pass.map(p => p.name + " " + (p.pct === null ? "-" : p.pct + "%")).join(", ") + ".");
+    L.push("Median measures: " + Object.entries(o.medians).map(([m, v]) => m + " " + v).join(", ") + ".", "");
+  } else L.push("No data yet.", "");
+  L.push("A check almost nobody passes, or almost everybody, is a sign its limit is wrong (compare with a teacher's ratings before changing it).");
+  if (r.phrases) L.push("", "## Raga phrases", "", ...Object.entries(r.phrases).map(([id, v]) => "- " + id + ": " + v.n + " attempts, average " + v.pct + "%"));
   L.push("", "Bands go into app/js/views/tone.js (MEASURES) once a measure agrees with the ratings (rho clearly below 0) and has 20 or more pairs.");
   return L.join("\n") + "\n";
 }

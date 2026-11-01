@@ -11,6 +11,7 @@ import { noteSequencer, emitLive, muteListening } from "./core/listen.js";
 import { t as tr } from "./core/i18n.js";
 import { seeded, colors, fitCanvas, chime, mic } from "./games.js";
 import { targetCurve, analyse, cleanReadings } from "./ornaments.js";
+import { pilotLog } from "./pilot.js";
 
 // ---------- Pure parts ----------
 const SCALE = [-5, -3, -1, 0, 2, 4, 5, 7, 9, 11, 12, 14];
@@ -161,6 +162,7 @@ function ornamentRounds(cfg) {
     const pts = res.passed;
     run.total += pts; run.max += res.of || 4;
     if (cfg.after) cfg.after(run, res);
+    if (res.of) pilotLog("orn", { key: cfg.key, ex: "game", passed: res.passed, of: res.of, ok: res.checks.map(c => c.ok), m: res.measures });
     chime(res.of && res.passed === res.of);
     const firstBad = res.checks.find(c => !c.ok);
     say(status, res.verdict, res.of ? pts + " of " + res.of + " points." : "");

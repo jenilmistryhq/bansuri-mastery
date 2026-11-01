@@ -193,3 +193,17 @@ export function analyseAndolan(rs, e, name) {
 export const ANALYSE = { meend: analyseMeend, kan: analyseKan, murki: analyseMurki, andolan: analyseAndolan };
 // Analyse an attempt: clean readings, then the ornament's analyser. name(semi) gives a note's name.
 export function analyse(key, e, readings, name) { return ANALYSE[key](cleanReadings(readings), e, name || String); }
+
+// A teacher's recorded model as a target curve. frames: [{ s: semitones } | null] every hopS
+// seconds (core/pitch.js analyzeAudioBuffer). The curve starts at the first clear note and ends
+// at the last, and is moved by whole semitones so it starts on the exercise's first note: a model
+// recorded on a flute in another key, or an octave away, still lines up with the learner's flute.
+export function modelCurve(frames, hopS, startSemi) {
+  const first = frames.findIndex(f => f), last = frames.length - 1 - [...frames].reverse().findIndex(f => f);
+  if (first < 0 || frames.filter(Boolean).length < 10) return null;
+  const head = frames.slice(first, first + Math.max(3, Math.round(0.2 / hopS))).filter(Boolean).map(f => f.s).sort((a, b) => a - b);
+  const shift = Math.round(startSemi - head[head.length >> 1]);
+  const step = Math.max(1, Math.ceil((last - first + 1) / 800)), curve = [];
+  for (let i = first; i <= last; i += step) curve.push({ t: Math.round((i - first) * hopS * 1000) / 1000, semi: frames[i] ? Math.round((frames[i].s + shift) * 100) / 100 : null });
+  return { curve, shift };
+}

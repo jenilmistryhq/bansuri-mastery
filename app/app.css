@@ -841,6 +841,11 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .ornAbout p { margin: 6px 0; }
 .ornwrap { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); overflow: hidden; margin-top: 10px; }
 .ornplot { display: block; width: 100%; height: 220px; }
+.ornmodel { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 6px; }
+.ornmodel h3 { margin: 0; font-size: 1rem; }
+.phrase-parts li.ok { color: var(--good); }
+.jam-grammar li { margin: 2px 0; }
+.sambeat.start { outline: 2px solid var(--accent); }
 @media (max-width: 560px) { .earplot { height: 240px; } .earundo { margin-left: 0; } }
 .trsteps { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 .tappad { min-width: 8rem; }

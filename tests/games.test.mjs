@@ -98,4 +98,74 @@ test("three floors: the floor of a note", () => {
     assert.equal(extra.extra, 2);
   });
 }
+// Raga phrases, laya, tihai, taar saptak (app/js/phrases.js, games4.js), raga grammar and models.
+{
+  const P = await import("../app/js/phrases.js");
+  const G4 = await import("../app/js/games4.js");
+  const RG = await import("../app/js/ragagrammar.js");
+  const O = await import("../app/js/ornaments.js");
+  const fs = await import("node:fs");
+  const sample = (pts, jitter) => { const out = []; let k = 0, seed = 3; const end = pts[pts.length - 1].t;
+    for (let t = 0; t <= end; t += 0.033) { while (k + 1 < pts.length && pts[k + 1].t <= t) k++; seed = (seed * 16807) % 2147483647; out.push({ t: 7 + t, semi: pts[k].semi + (seed / 2147483647 - 0.5) * (jitter || 0.04) }); } return out; };
+  const plainOf = segs => segs.map(s => s.n !== undefined ? s : s.kan ? { n: s.kan[1], d: s.d } : s.meend ? { n: s.meend[1], d: s.d } : { n: s.andolan, d: s.d });
+  test("raga phrases: each phrase's own target scores full marks; plain notes lose the ornament's points", () => {
+    for (const ph of P.PHRASES) {
+      const r = P.judgePhrase(sample(P.phraseCurve(ph.segs).pts), ph, String);
+      assert.ok(r.ok && r.points === r.max, ph.id + ": " + r.points + "/" + r.max + " " + r.parts.filter(x => !x.ok).map(x => x.text).join(" | "));
+      const p = P.judgePhrase(sample(P.phraseCurve(plainOf(ph.segs)).pts), ph, String);
+      assert.ok(p.points <= r.max - 2, ph.id + " plain: " + p.points + "/" + p.max);
+    }
+  });
+  test("raga phrases: every phrase has a source link and a raga card that exists", () => {
+    for (const ph of P.PHRASES) { assert.match(ph.src, /^https:\/\/(ragajunglism\.org|en\.wikipedia\.org)\//); assert.ok(fs.existsSync("bansuri-mastery/ragas/" + ph.file), ph.file); }
+  });
+  test("raga phrases: a different phrase is not recognised", () => {
+    const other = P.judgePhrase(sample(P.phraseCurve([{ n: 12, d: 1 }, { n: 14, d: 1 }, { n: 16, d: 1 }]).pts), P.PHRASES[0], String);
+    assert.equal(other.ok, false);
+  });
+  test("shape match: 100% against itself, lower against a different shape", () => {
+    const m = P.phraseCurve(P.PHRASES[4].segs).pts;
+    assert.ok(P.shapeMatch(sample(m), m) >= 95);
+    assert.ok(P.shapeMatch(sample(P.phraseCurve(plainOf(P.PHRASES[4].segs)).pts), m) < P.shapeMatch(sample(m), m));
+  });
+  test("teacher's model: trimmed to the notes, and moved to the learner's flute by whole semitones", () => {
+    const frames = [null, null].concat(Array.from({ length: 40 }, (_, i) => ({ s: i < 20 ? -3 : -1 }))).concat([null]);
+    const mc = O.modelCurve(frames, 0.03, 2);
+    assert.equal(mc.shift, 5); assert.equal(mc.curve[0].t, 0); assert.equal(mc.curve[0].semi, 2); assert.equal(mc.curve[mc.curve.length - 1].semi, 4);
+    assert.equal(O.modelCurve([null, { s: 1 }], 0.03, 0), null);
+  });
+  test("raga grammar: Bhimpalasi does not use Re and Dha going up; resting on weak notes is reported", () => {
+    const g = RG.ragaGrammar(fs.readFileSync("bansuri-mastery/ragas/bhimpalasi.md", "utf8"));
+    assert.deepEqual(g.aroh, [0, 3, 5, 7, 10]); assert.ok(g.avroh.includes(2) && g.avroh.includes(9)); assert.ok(g.strong.includes(5));
+    const notes = [0, 2, 3, 5, 7, 9, 10].map((s, i) => ({ semi: s, t0: i * 0.5 })).concat([{ semi: 2, t0: 3.5 }, { semi: 0, t0: 5 }]);
+    const a = RG.alapCheck(notes, g, 7);
+    assert.deepEqual(Object.keys(a.up).map(Number).sort((x, y) => x - y), [2, 9]);
+    assert.equal(a.rests, 2); assert.deepEqual(a.weak, { 2: 1 });
+  });
+  test("laya ladder: on-time notes with a steady lag score in every section; a gap is counted", () => {
+    const beat = 1, ev = G4.layaEvents(8, 8).map(e => ({ ...e, t: 10 + e.beat * beat }));
+    assert.deepEqual(G4.LAYA_SECTIONS.map(([s]) => ev.filter(e => e.sec === s).length), [8, 16, 24]);
+    const on = ev.map(e => ({ t: e.t + 0.09, semi: e.semi }));
+    const r = G4.layaJudge(on, ev);
+    for (const [s] of G4.LAYA_SECTIONS) { assert.equal(r[s].hits, r[s].of); assert.equal(r[s].right, r[s].of); assert.equal(r[s].spread, 0); }
+    const r2 = G4.layaJudge(on.filter(o => o.t < 26.5), ev);
+    assert.ok(r2.tigun.hits < r2.tigun.of && r2.thah.hits === 8);
+  });
+  test("tihai: it starts where it must for the last note to land on sam", () => {
+    for (const [len, cyc] of [[3, 8], [5, 8], [4, 16], [3, 16], [4, 6]]) {
+      const ev = G4.tihaiEvents(Array(len).fill(0), 1, cyc, cyc);
+      assert.equal(ev.length, len * 3); assert.equal(ev[ev.length - 1].beat % cyc, 0, len + " in " + cyc); assert.ok(ev[ev.length - 1].last);
+      assert.ok(ev[0].beat >= cyc && ev[0].beat < 2 * cyc);
+    }
+    assert.equal(G4.tihaiStart(3, 1, 8), 6);
+  });
+  test("taar saptak: steady, clear and in tune scores high; wavering or airy scores lower", () => {
+    const steady = Array.from({ length: 90 }, () => ({ semi: 12.02, clarity: 0.97 }));
+    const waver = Array.from({ length: 90 }, (_, i) => ({ semi: 12 + 0.3 * Math.sin(i / 3), clarity: 0.97 }));
+    const airy = Array.from({ length: 90 }, () => ({ semi: 12.02, clarity: 0.86 }));
+    const a = G4.taarScore(steady, 12), b = G4.taarScore(waver, 12), c = G4.taarScore(airy, 12);
+    assert.ok(a.score >= 95 && b.score < a.score - 20 && c.score < a.score - 20, JSON.stringify([a, b, c]));
+    assert.equal(G4.taarScore(steady.slice(0, 5), 12), null);
+  });
+}
 console.log("game tests: " + n + " passed");

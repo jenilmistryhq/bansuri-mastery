@@ -21,6 +21,9 @@ export const POOL = [
   { id: "sam", text: g => `Catch the sam ${g} times in one round`, goal: () => 5, step: (d, g) => d.type === "game" && d.game === "sam" && d.hits >= g ? g : 0, once: true },
   { id: "ornament", text: g => `Score ${g}% in Meend bridge, Kan flick, Murki chase or Andolan lamp`, goal: () => 60, step: (d, g) => d.type === "game" && ["meendbridge", "kanflick", "murkichase", "andolanlamp"].includes(d.game) && d.score >= g ? g : 0, once: true },
   { id: "swell", text: g => `Score ${g} in Swell and fade`, goal: () => 60, step: (d, g) => d.type === "game" && d.game === "swell" && d.score >= g ? g : 0, once: true },
+  { id: "phrase", text: g => `Score ${g}% on a phrase in Raga phrases`, goal: () => 70, step: (d, g) => d.type === "game" && d.game === "phrase" && d.score >= g ? g : 0, once: true },
+  { id: "laya", text: g => `Score ${g}% in the Laya ladder`, goal: () => 60, step: (d, g) => d.type === "game" && d.game === "laya" && d.score >= g ? g : 0, once: true },
+  { id: "tihai", text: () => "Land a tihai on sam", goal: () => 1, step: d => d.type === "game" && d.game === "tihai" && d.landed ? 1 : 0 },
   { id: "song", text: () => "Play along with a song and get 80% of the notes right", goal: () => 1, step: d => d.type === "play" && d.n && d.ok / d.n >= 0.8 ? 1 : 0 },
 ];
 const POINTS = 20, BONUS = 20;

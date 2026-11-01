@@ -1,5 +1,5 @@
 {
- "version": "0e7c9a043f6c",
+ "version": "7a54f8314eee",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -57,6 +57,7 @@
   "app/js/games.js",
   "app/js/games2.js",
   "app/js/games3.js",
+  "app/js/games4.js",
   "app/js/glossary.js",
   "app/js/lessoncards.js",
   "app/js/levelui.js",
@@ -67,11 +68,13 @@
   "app/js/news.js",
   "app/js/ornaments.js",
   "app/js/palette.js",
+  "app/js/phrases.js",
   "app/js/pilot.js",
   "app/js/pitchmodel.js",
   "app/js/placement.js",
   "app/js/playable.js",
   "app/js/posture.js",
+  "app/js/ragagrammar.js",
   "app/js/recorder.js",
   "app/js/reminder.js",
   "app/js/review.js",

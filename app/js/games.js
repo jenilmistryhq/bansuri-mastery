@@ -9,6 +9,7 @@ import { parseNotation, buildEvents, playEvents } from "./core/notation.js";
 import { getSettings } from "./core/settings.js";
 import { drawFing, picturesOn, noteLabel } from "./core/fingers.js";
 import { speak } from "./voice.js";
+import { alapCheck } from "./ragagrammar.js";
 import { t as tr } from "./core/i18n.js";
 
 // Accessibility settings for the games: speed (slow, normal, fast), no clock, and cues for playing
@@ -383,7 +384,8 @@ export function jam(opts) {
     ["long", "Play at least 24 notes, all inside the raga", (seq, r, inside) => seq.length >= 24 && inside === seq.length],
   ];
   const promptSel = h("select", { class: "input", "aria-label": "Prompt", style: { width: "auto" } }, PROMPTS.map(([k, t]) => h("option", { value: k }, t)));
-  const el = h("div", { class: "stack game" }, h("div", { class: "row" }, h("label", { class: "field" }, "Raga", ragaSel), h("label", { class: "field" }, "Tala", talaSel), h("label", { class: "field" }, "BPM", bpmIn), h("label", { class: "field" }, "Prompt", promptSel), btn, idea), keys, trail, status);
+  const grammar = h("ul", { class: "small jam-grammar", "aria-live": "polite" });
+  const el = h("div", { class: "stack game" }, h("div", { class: "row" }, h("label", { class: "field" }, "Raga", ragaSel), h("label", { class: "field" }, "Tala", talaSel), h("label", { class: "field" }, "BPM", bpmIn), h("label", { class: "field" }, "Prompt", promptSel), btn, idea), keys, trail, status, grammar);
   const m = mic(el);
   let run = null;
   const raga = () => o.ragas[Number(ragaSel.value)];
@@ -401,11 +403,13 @@ export function jam(opts) {
     if (run) return stop(true);
     const r = raga(); if (!r) return;
     ac();
-    run = { seq: noteSequencer(), notes: 0, inside: 0, started: Date.now(), next: ac().currentTime + 0.2, i: 0, timer: 0, mine: false, last: [], played: [] };
+    run = { seq: noteSequencer(), notes: 0, inside: 0, started: Date.now(), next: ac().currentTime + 0.2, i: 0, timer: 0, mine: false, last: [], played: [], timed: [], lastT: 0 };
+    grammar.replaceChildren();
     const ok = await m.start(rd => {
       if (!run) return;
+      if (rd.semi !== null) run.lastT = rd.t;
       const n = run.seq.feed(rd); if (!n) return;
-      run.notes++; run.played.push(n.semi);
+      run.notes++; run.played.push(n.semi); run.timed.push({ semi: n.semi, t0: n.t0 });
       const inRaga = r.notes.some(x => ((x - n.semi) % 12 + 12) % 12 === 0);
       if (inRaga) { run.inside++; drawKeys(n.semi); status.textContent = ""; }
       else {
@@ -444,6 +448,20 @@ export function jam(opts) {
       status.textContent = `${r.notes} notes in ${mins.toFixed(1)} min, ${pct}% inside ${raga().name}.` + (pct >= 90 ? " Beautifully in the raga." : " Notes marked ! were outside the raga.");
       const pr = PROMPTS.find(x => x[0] === promptSel.value);
       if (pr && pr[2]) status.textContent += pr[2](r.played, raga(), r.inside) ? " Prompt done: " + pr[1] + " \u2713" : " Prompt not yet: " + pr[1] + ".";
+      // The raga's grammar: where you rested, and notes used in a direction the raga does not use them.
+      const gr = raga().grammar;
+      if (gr && r.timed.length >= 6) {
+        const a = alapCheck(r.timed, gr, r.lastT + 0.2), list = [];
+        const names = o2 => Object.entries(o2).map(([k, v]) => codeOf(Number(k)) + (v > 1 ? " (" + v + ")" : "")).join(", ");
+        if (a.rests) list.push("Rests (notes held a second or more): " + a.rests + ", of which " + a.strongRests + " on Sa, Pa or the vadi and samvadi.");
+        else list.push("No rests yet: in an alap, hold the important notes (Sa, Pa, the vadi and samvadi) for a breath.");
+        if (Object.keys(a.weak).length) list.push("Rested on weaker notes: " + names(a.weak) + ". Lean on the strong notes instead.");
+        if (Object.keys(a.up).length) list.push("Used going up, which " + raga().name + " avoids in its aroh: " + names(a.up) + ".");
+        if (Object.keys(a.down).length) list.push("Used coming down, which " + raga().name + " avoids in its avroh: " + names(a.down) + ".");
+        if (!Object.keys(a.up).length && !Object.keys(a.down).length) list.push("Every note went the way the raga's aroh and avroh allow.");
+        list.push("A guide from the card's table: ragas have phrases the table does not show. Check with your teacher.");
+        grammar.replaceChildren(...list.map(x => h("li", null, x)));
+      }
       emitLive({ type: "game", game: "jam", raga: raga().name, minutes: Math.round(mins * 10) / 10, pct, score: r.inside });
     }
   }
