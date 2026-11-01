@@ -1067,3 +1067,4 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-chip.missed { outline: 2px dashed var(--warn); }
 .lesson-trail { min-height: 1.6em; font-size: 1.1rem; letter-spacing: 0.04em; }
 .small.warn { color: var(--warn); font-weight: 600; }
+.lesson-shown { font-size: 1.3rem; padding: 6px 14px; border-radius: var(--radius); background: var(--sunken); }

@@ -365,7 +365,10 @@ export const LISTEN_KINDS = {
     const slots = h("div", { class: "lesson-line mono" });
     const msg = h("p", { class: "lesson-q", "aria-live": "polite" });
     const out = h("div");
-    const target = () => s.rounds[i];
+    // A round is the answer's notes, or { notes, show } where show is a melody written another way
+    // (in another key) that the learner rewrites in the flute's own sargam.
+    const target = () => (Array.isArray(s.rounds[i]) ? s.rounds[i] : s.rounds[i].notes);
+    const shown = h("p", { class: "lesson-shown mono" });
     const label = n => (s.notes.find(x => x.semi === n) || {}).label || "?";
     const hear = h("button", { type: "button", class: "btn primary" }, icon("play"), " Hear the phrase");
     hear.addEventListener("click", () => target().forEach((n, k) => setTimeout(() => sound({ semi: n, seconds: 0.5 }), k * 560)));
@@ -384,7 +387,8 @@ export const LISTEN_KINDS = {
     function show() {
       written = []; tries = 0; closed = false; out.replaceChildren();
       tally.textContent = "Phrase " + (i + 1) + " of " + s.rounds.length + ": " + target().length + " notes";
-      msg.textContent = "Hear it, sing it, then write it: the first note against Sa, then up or down, step or leap.";
+      shown.textContent = s.rounds[i].show || ""; shown.hidden = !s.rounds[i].show;
+      msg.textContent = s.rounds[i].show ? (s.say || "Write it in your flute's own sargam.") : "Hear it, sing it, then write it: the first note against Sa, then up or down, step or leap.";
       draw();
     }
     undo.addEventListener("click", () => { if (closed) return; written.pop(); draw(); });
@@ -404,7 +408,7 @@ export const LISTEN_KINDS = {
       if (last) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
     });
     show();
-    return { el: h("div", { class: "stack lesson-center" }, tally, hear, slots, msg, keys, h("div", { class: "row" }, undo, check), out) };
+    return { el: h("div", { class: "stack lesson-center" }, tally, shown, hear, slots, msg, keys, h("div", { class: "row" }, undo, check), out) };
   } },
 
   // Put notes in order by ear: tap the names in order; each tap plays its note.
