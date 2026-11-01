@@ -69,8 +69,12 @@ export function rhythmScore(taps, expected) {
 export function lineOnsets(text) {
   const beats = text.trim().split(/\s+/).filter(x => x !== "|" && x !== "||");
   const onsets = [];
-  // Each character of a beat is an equal part of it; "_" (silence) and "-" (held) start nothing.
-  beats.forEach((b, i) => { const n = b.length; for (let k = 0; k < n; k++) if (b[k] !== "-" && b[k] !== "_") onsets.push(i + k / n); });
+  // Each note symbol of a beat (".N", "S'", "R", or "-" held, "_" silence) is an equal part of
+  // it; "-" and "_" start nothing.
+  beats.forEach((b, i) => {
+    const units = b.match(/\.?[SrRgGmMPdDnN]'?|[-_]/g) || [];
+    units.forEach((u, k) => { if (u !== "-" && u !== "_") onsets.push(i + k / units.length); });
+  });
   return { onsets, beats: beats.length };
 }
 // How far a hummed pitch is from Sa in any octave, in cents (-600..600).

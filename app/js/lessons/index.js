@@ -6,6 +6,8 @@ import { M3 } from "./m3.js";
 import { M4 } from "./m4.js";
 import { M8 } from "./m8.js";
 import { M9 } from "./m9.js";
+import { M12 } from "./m12.js";
+import { M15 } from "./m15.js";
 
-export const LESSONS = { m0: M0, m1: M1, m2: M2, m3: M3, m4: M4, m8: M8, m9: M9 };
+export const LESSONS = { m0: M0, m1: M1, m2: M2, m3: M3, m4: M4, m8: M8, m9: M9, m12: M12, m15: M15 };
 export const lessonForDay = n => Object.values(LESSONS).find(l => l.day === n) || null;

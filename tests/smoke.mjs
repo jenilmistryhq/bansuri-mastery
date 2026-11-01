@@ -1535,6 +1535,7 @@ try {
         else if (kind === "judge") { for (let k = 0; k < 8 && !(await isReady()); k++) { await clickL(".lesson-chip", /^A$/); await sleep(80); await clickL(".lesson-stage button", /Next pair/); await sleep(80); } }
         else if (kind === "rubric") await lp.evaluate(() => document.querySelectorAll(".lesson-stage .lesson-chips").forEach(g => g.children[1].click()));
         else if (kind === "order") { for (let k = 0; k < 40 && !(await isReady()); k++) await lp.evaluate(() => { const bs = [...document.querySelectorAll(".lesson-stage .lesson-chip:not(:disabled)")]; if (bs.length) bs[Math.floor(Math.random() * bs.length)].click(); }); }
+        else if (kind === "complete") { for (let k = 0; k < 30 && !(await isReady()); k++) { await lp.evaluate(() => { const b = [...document.querySelectorAll(".lesson-stage .lesson-chip")].find(x => !x.disabled); if (b) b.click(); }); await sleep(60); await clickL(".lesson-stage button", /Next pattern/); await sleep(60); } }
         else if (kind === "higherlower") { for (let i = 0; i < 20 && !(await isReady()); i++) { await clickL(".lesson-stage button", /Play|Next pair/); await sleep(120); await clickL(".lesson-chip", /Higher/); await sleep(80); } }
         else if (kind === "custom") {
           // Custom steps: a skip link, or the main button (then wait).

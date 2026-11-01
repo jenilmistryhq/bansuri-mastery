@@ -161,6 +161,40 @@ export const LISTEN_KINDS = {
     return { el: h("div", { class: "stack" }, rows, pickOne("One keep (something good)", s.keeps, "keep"), pickOne("One fix (the most important problem)", s.fixes, "fix")) };
   } },
 
+  // Continue a pattern: a sequence with its last item missing; choose what comes next. When the
+  // items are notes (semis), the finished sequence plays. { rounds: [{ seq: [label], semis, options, answer, why }] }
+  complete: { make(s, api) {
+    let i = 0, right = 0, missed = false;
+    const tally = h("p", { class: "small muted" });
+    const line = h("div", { class: "lesson-line mono" });
+    const opts = h("div", { class: "lesson-chips" });
+    const out = h("div");
+    const playSeq = r => (r.semis || []).forEach((n, k) => setTimeout(() => sound({ semi: n, seconds: 0.42 }), k * 380));
+    function show() {
+      const r = s.rounds[i]; missed = false; out.replaceChildren();
+      tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length;
+      line.replaceChildren(...r.seq.map(x => h("span", { class: "lesson-beat" + (x === "|" ? " bar" : "") }, x)), h("span", { class: "lesson-beat blank" }, "?"));
+      opts.replaceChildren(...r.options.map(o => {
+        const b = h("button", { type: "button", class: "lesson-chip mono" }, o);
+        b.addEventListener("click", () => {
+          if (o !== r.answer) { missed = true; b.classList.add("wrong"); b.disabled = true; ding(false); return; }
+          if (!missed) right++;
+          line.lastChild.textContent = o; line.lastChild.classList.replace("blank", "now");
+          opts.querySelectorAll("button").forEach(x => { x.disabled = true; });
+          ding(true); setTimeout(() => playSeq(r), 350);
+          const last = i === s.rounds.length - 1;
+          const next = last ? null : h("button", { type: "button", class: "btn" }, "Next pattern");
+          if (next) next.addEventListener("click", () => { i++; show(); });
+          out.replaceChildren(...[r.why ? h("div", { class: "lesson-reveal good" }, h("b", null, "Right."), h("p", null, r.why)) : null, next].filter(Boolean));
+          if (last) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
+        });
+        return b;
+      }));
+    }
+    show();
+    return { el: h("div", { class: "stack lesson-center" }, tally, line, opts, out) };
+  } },
+
   // Put notes in order by ear: tap the names in order; each tap plays its note.
   // { items: [{ label, semi }] (in the right order), prompt }
   order: { make(s, api) {
