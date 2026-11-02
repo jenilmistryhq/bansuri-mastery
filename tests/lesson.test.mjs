@@ -149,4 +149,9 @@ test("notes from readings: a note counts once it lasts, passing frames do not", 
   for (const [n, d] of [[0, 0.5], [1, 0.06], [2, 0.4], [null, 0.3], [2, 0.4]]) for (let x = 0; x < d; x += 0.03) { rs.push({ t, semi: n, near: n }); t += 0.03; }
   assert.deepEqual(K5.notesFromReadings(rs).map(n => n.semi), [0, 2, 2], "the 60 ms r is a passing frame; a gap starts a new note");
 });
+test("half-hole on any hole: komal Ga sits between Re (covered) and Ga (open)", () => {
+  assert.equal(K3.halfHoleSemi(1, 0.5, 2, 4), 2);
+  assert.equal(K3.halfHoleSemi(0, 0.5, 2, 4), 4);
+  assert.equal(K3.halfHoleSemi(0.5, 0.5, 2, 4), 3);
+});
 console.log("lesson tests: " + n + " passed");

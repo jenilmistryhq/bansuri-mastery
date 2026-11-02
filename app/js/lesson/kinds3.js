@@ -63,9 +63,10 @@ export const beatRate = (cents, hz) => Math.abs(hz * (Math.pow(2, cents / 1200) 
 
 // The half-hole: the note for a hole 1 covered by a fraction (1 = closed: Ga; 0 = open: tivra
 // Ma). Shuddha Ma sits where the cover equals the flute's own sweet spot (about half).
-export function halfHoleSemi(cover, sweet) {
-  // Piecewise: from open (6) to the sweet spot (5), then to closed (4).
-  return cover <= sweet ? 6 - cover / sweet : 5 - (cover - sweet) / (1 - sweet);
+export function halfHoleSemi(cover, sweet, lo = 4, hi = 6) {
+  // Piecewise: from open (hi) to the sweet spot (the half-hole note, between), then to closed (lo).
+  const mid = (lo + hi) / 2;
+  return cover <= sweet ? hi - (hi - mid) * cover / sweet : mid - (mid - lo) * (cover - sweet) / (1 - sweet);
 }
 
 export const LISTEN_KINDS = {
@@ -86,7 +87,8 @@ export const LISTEN_KINDS = {
     const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.mode === "slide" ? "Press Play, then slide your finger slowly across the hole, all the way." : "Press Play, then slide your finger off the hole, slowly.");
     const play = h("button", { type: "button", class: "btn primary" }, icon("play"), " Play");
     const slide = s.mode === "slide", lo = s.closed === undefined ? 4 : s.closed, hi = s.open === undefined ? 6 : s.open;
-    const semi = () => (slide ? hi - (hi - lo) * Number(slider.value) / 100 : halfHoleSemi(Number(slider.value) / 100, sweet));
+    const mid = (lo + hi) / 2, midName = s.midName || "shuddha Ma";
+    const semi = () => (slide ? hi - (hi - lo) * Number(slider.value) / 100 : halfHoleSemi(Number(slider.value) / 100, sweet, lo, hi));
     let path = [];
     const draw = () => {
       const cover = Number(slider.value) / 100, x = semi();
@@ -105,9 +107,9 @@ export const LISTEN_KINDS = {
           else msg.textContent = "That was a jump. Slower: the glide is the journey.";
         }
       } else {
-        const near = Math.round(x), c = Math.round((x - 5) * 100);
-        name.textContent = Math.abs(x - 5) < 0.5 ? "m" : near <= 4 ? "G" : "M";
-        cents.textContent = (c > 0 ? "+" : "") + c + " cents from shuddha Ma";
+        const near = Math.round(x), c = Math.round((x - mid) * 100);
+        name.textContent = codeOf(Math.abs(x - mid) < 0.5 ? mid : near <= lo ? lo : hi);
+        cents.textContent = (c > 0 ? "+" : "") + c + " cents from " + midName;
       }
       if (v) v.setPitch(hzOf(x));
     };
@@ -121,8 +123,8 @@ export const LISTEN_KINDS = {
       play.replaceChildren(icon("stop"), " Stop");
       timer = setInterval(() => {
         if (slide) return;
-        held = Math.abs(semi() - 5) <= 0.1 ? held + 0.2 : 0;
-        if (held >= 1 && !api.data[s.id]) { ding(true); msg.textContent = "Shuddha Ma: about " + Math.round(sweet * 100) + "% covered on this flute. On yours, the tuner decides."; api.data[s.id] = { sweet: Math.round(sweet * 100) }; api.save(); api.ready(); }
+        held = Math.abs(semi() - mid) <= 0.1 ? held + 0.2 : 0;
+        if (held >= 1 && !api.data[s.id]) { ding(true); msg.textContent = midName === "shuddha Ma" ? "Shuddha Ma: about " + Math.round(sweet * 100) + "% covered on this flute. On yours, the tuner decides." : "Found: about " + Math.round(sweet * 100) + "% covered on this flute. On yours, the tuner decides."; api.data[s.id] = { sweet: Math.round(sweet * 100) }; api.save(); api.ready(); }
       }, 200);
     });
     slider.addEventListener("input", draw);
