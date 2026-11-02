@@ -13,6 +13,7 @@ import { stepMeta, plainText } from "../steps.js";
 import { plainCodes } from "../codes.js";
 import { newsCard } from "../news.js";
 import { lessonForDay } from "../lessons/index.js";
+import { practiceLesson } from "../lessons/practice.js";
 import { lessonRecord } from "../lesson/player.js";
 import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard, teacherTaskCard } from "./today-cards.js";
 
@@ -46,7 +47,7 @@ function simpleToday(page, cur, day) {
   page.append(
     h("section", { class: "hero simplehero" }, h("span", { class: "eyebrow" }, "Day " + cur), h("h1", null, day && day.title ? day.title : "Today"), sayButton(["welcome"], "Listen")),
     h("div", { class: "simpletiles" },
-      big(lessonDue(cur) ? "#/lesson/" + lessonDue(cur).id : day && day.kind === "milestone" ? "#/milestone/" + day.milestone : "#/session/" + cur, "play", "Start practice", "session_start", "primary"),
+      big(lessonDue(cur) ? "#/lesson/" + lessonDue(cur).id : day && day.kind === "milestone" ? "#/milestone/" + day.milestone : practiceLesson("p" + cur) ? "#/lesson/p" + cur : "#/session/" + cur, "play", "Start practice", "session_start", "primary"),
       big("#/play", "star", "Play a game", "steer_intro"),
       big("#/listen", "listen", "Listen", "listen_intro"),
       big("#/quick", "today", "5 minutes", "quick_intro")));
@@ -138,6 +139,12 @@ export async function render(main, { params, view }) {
       action = h("div", { class: "row" },
         h("a", { class: "btn primary big", href: "#/session/" + n }, sessionLabel),
         h("a", { class: "btn", href: "#/milestone/" + day.milestone }, "Then complete " + day.milestone));
+    } else if (practiceLesson("p" + n) && !blocksDone) {
+      // A practice day: its blocks as a lesson, drills from the lessons so far; the step list stays one tap away.
+      const r = lessonRecord("p" + n);
+      action = h("div", { class: "row" },
+        h("a", { class: "btn primary big", href: "#/lesson/p" + n }, r && r.at > 0 ? "Continue today's practice" : "Start today's practice"),
+        h("a", { class: "btn ghost", href: "#/session/" + n }, "The step list"));
     } else {
       action = h("a", { class: "btn primary big", href: "#/session/" + n }, sessionLabel);
     }

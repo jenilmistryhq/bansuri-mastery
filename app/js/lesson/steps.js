@@ -1,6 +1,6 @@
 // The kinds of lesson step. Each make(step, api) returns { el, destroy? } and calls api.ready()
 // once the step has been done; api.data keeps what the learner chose (saved with the lesson).
-import { h, icon } from "../util.js";
+import { h, icon, fmtClock } from "../util.js";
 import { ac, makeVoice, click, playNote } from "../core/audio.js";
 import { codeOf, nameOf, hzOf, FING } from "../core/theory.js";
 import { startRecording, recordingSupported, saveRecording, newId } from "../recorder.js";
@@ -160,21 +160,29 @@ export const STEP_KINDS = {
     // window.__lessonTime shortens timers in the browser tests (1 = real time).
     const secs = Math.max(1, Math.round(s.seconds * (window.__lessonTime || 1)));
     let timer = 0, left = secs;
-    const num = h("b", { class: "lesson-timer-n" }, String(left));
-    const ringEl = h("div", { class: "lesson-timer" }, num, h("span", { class: "small muted" }, "seconds"));
+    // Two minutes or more (a practice day's block) count down as minutes and seconds.
+    const long = s.seconds >= 120, show = v => (long ? fmtClock(v) : String(v));
+    const num = h("b", { class: "lesson-timer-n" }, show(left));
+    const ringEl = h("div", { class: "lesson-timer" }, num, h("span", { class: "small muted" }, long ? "minutes" : "seconds"));
     const btn = h("button", { type: "button", class: "btn primary" }, s.start || "Start");
     const checks = h("div", { class: "stack", hidden: true }, h("p", { class: "lesson-q" }, "Tick what was true:"),
-      s.checks.map((c, i) => { const box = h("input", { type: "checkbox", id: s.id + "-c" + i }); box.addEventListener("change", () => { if ([...checks.querySelectorAll("input")].every(x => x.checked)) api.ready(); }); return h("label", { class: "check", for: s.id + "-c" + i }, box, c); }));
+      s.checks.map((c, i) => { const box = h("input", { type: "checkbox", id: s.id + "-c" + i }); box.addEventListener("change", () => { if ([...checks.querySelectorAll("input")].every(x => x.checked)) { api.data[s.id] = true; api.save(); api.ready(); } }); return h("label", { class: "check", for: s.id + "-c" + i }, box, c); }));
+    // A long block can end early: the same ticks, without waiting out the clock.
+    const early = h("button", { type: "button", class: "linkbtn", hidden: true }, "Done early");
+    const stopRun = () => { clearInterval(timer); btn.disabled = false; btn.textContent = "Again"; ringEl.classList.remove("running"); early.hidden = true; checks.hidden = false; };
+    early.addEventListener("click", stopRun);
     btn.addEventListener("click", () => {
-      clearInterval(timer); left = secs; num.textContent = String(left); btn.disabled = true; ringEl.classList.add("running");
+      clearInterval(timer); left = secs; num.textContent = show(left); btn.disabled = true; ringEl.classList.add("running"); early.hidden = !long;
       timer = setInterval(() => {
-        left--; num.textContent = String(Math.max(0, left));
+        left--; num.textContent = show(Math.max(0, left));
         ringEl.style.setProperty("--p", String(1 - left / secs));
         if (left > 0) return;
-        clearInterval(timer); ding(true); btn.disabled = false; btn.textContent = "Again"; ringEl.classList.remove("running"); checks.hidden = false;
+        ding(true); stopRun();
       }, 1000);
     });
-    return { el: h("div", { class: "stack lesson-center" }, ringEl, h("div", { class: "row" }, btn), checks), destroy() { clearInterval(timer); } };
+    // read: the block's readings (a practice day's timer), one tap away.
+    const read = s.read && s.read.length ? h("div", { class: "linklist" }, s.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : "") }, r.label))) : null;
+    return { el: h("div", { class: "stack lesson-center" }, ringEl, h("div", { class: "row" }, btn, early), checks, read), destroy() { clearInterval(timer); } };
   } },
 
   // Tap along with a metronome. { bpm, beats }

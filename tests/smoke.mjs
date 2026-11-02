@@ -1465,7 +1465,9 @@ try {
     // each kind of step (the player marks the step's kind on the stage). A fresh learner on the
     // lesson's day, a synthetic microphone (Sa), fast timers. Finishing must open the next day.
     const { LESSONS } = await import("../app/js/lessons/index.js");
-    for (const lesson of Object.values(LESSONS).filter(l => !process.env.WALK_ONLY || process.env.WALK_ONLY.split(",").includes(l.id))) {
+    // Plus a sample of practice days, built from their blocks (lessons/practice.js), across all five phases.
+    const PRACTICE = [6, 20, 47, 101, 160, 260, 330, 421, 520, 640, 695].map(n => ({ id: "p" + n, day: n }));
+    for (const lesson of Object.values(LESSONS).concat(PRACTICE).filter(l => !process.env.WALK_ONLY || process.env.WALK_ONLY.split(",").includes(l.id))) {
       const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
       const lp = await ctx.newPage();
       await collectI18n(lp);
@@ -1499,6 +1501,10 @@ try {
           localStorage.setItem("bansuri.lessons", JSON.stringify({ m0: { at: 0, done: "2026-01-01", data: { side: "right" } } }));
         }
       }, lesson.day);
+      if (lesson.id[0] === "p") {
+        await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" }); await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+        check(!!(await lp.$('#main a[href="#/lesson/' + lesson.id + '"]')) && !!(await lp.$('#main a[href="#/session/' + lesson.day + '"]')), "Today (Day " + lesson.day + ") starts the practice lesson, with the step list one tap away");
+      }
       await lp.goto(BASE + "#/lesson/" + lesson.id, { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .lesson-cover .btn.primary");

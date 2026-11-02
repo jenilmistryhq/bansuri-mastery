@@ -193,4 +193,48 @@ test("energy map: calm start, waves on the way up, the peak at the end", () => {
   assert.equal(K5.energyCheck([2, 5, 3, 2, 3, 4]).latePeak, false, "peaking in the jod is too early");
   assert.equal(K5.energyCheck([4, 2, 3, 2, 4, 5]).calmStart, false);
 });
+// Practice days: every one in the plan becomes a lesson from its own blocks.
+{
+  const fs = await import("node:fs");
+  const PR = await import("../app/js/lessons/practice.js");
+  const plan = JSON.parse(fs.readFileSync(new URL("../app/data/plan.json", import.meta.url), "utf8"));
+  const dayOf = n => { const b = plan.days[n]; if (!b) return null; const t = b.template ? plan.templates[b.template] : {}; return Object.assign({}, t, b, { blocks: b.blocks || t.blocks || [], n }); };
+  const built = [];
+  for (let n = 0; n < plan.days.length; n++) { const d = dayOf(n); if (d.kind === "practice" && !lessonForDay(n)) built.push([n, d, PR.buildPractice(n, d, dayOf(n + 1))]); }
+  test("practice days: all " + built.length + " build, from their own blocks, with known steps and a reward at the end", () => {
+    assert.ok(built.length > 500);
+    for (const [n, d, l] of built) {
+      assert.ok(l, "Day " + n + " builds");
+      assert.equal(l.chapters.length, d.blocks.length + 1, "Day " + n + ": a chapter per block, then the reward");
+      const steps = P.flatSteps(l), ids = steps.map(s => s.id);
+      assert.equal(new Set(ids).size, ids.length, "Day " + n + ": unique ids");
+      for (const s of steps) assert.ok(s.kind === "custom" ? typeof s.make === "function" : S.STEP_KINDS[s.kind], "Day " + n + " " + s.id + ": kind " + s.kind);
+      assert.equal(steps[steps.length - 1].id, "done");
+      const timed = steps.filter(s => s.kind === "timer").reduce((a, s) => a + s.seconds, 0);
+      assert.ok(timed <= d.minutes * 60 + 60, "Day " + n + ": the timers fit in the day's " + d.minutes + " minutes");
+      for (const s of steps) assert.ok(!/[`*]|\]\(/.test(s.intro || ""), "Day " + n + " " + s.id + ": plain words");
+    }
+  });
+  test("practice days: the same day always gets the same drills; neighbouring days get different ones", () => {
+    const [n, d] = built[200];
+    assert.deepEqual(P.flatSteps(PR.buildPractice(n, d, null)).map(s => s.id), P.flatSteps(built[200][2]).map(s => s.id));
+    let same = 0, pairs = 0;
+    for (let i = 1; i < built.length; i++) if (built[i][0] === built[i - 1][0] + 1) {
+      const k = l => P.flatSteps(l).filter(s => /^[KM]-/.test(s.id)).map(s => s.id).join();
+      pairs++; if (k(built[i][2]) === k(built[i - 1][2])) same++;
+    }
+    assert.ok(same / pairs < 0.2, same + " of " + pairs + " neighbouring days repeat their drills");
+  });
+  test("practice days: long tones with no notes named rotate through the registers reached", () => {
+    assert.deepEqual(PR.toneNotes(20, 15), [-1, 0, 2, 4, 5, 7]);
+    assert.ok(!PR.toneNotes(100, 99).some(x => x > 9), "no upper octave before Day 141");
+    assert.deepEqual([300, 301, 302].map(n => PR.toneNotes(n, 281)[0]), [-5, 0, 11], "low, middle, upper on three days running");
+  });
+  test("practice days: drills come only from lessons already reached", () => {
+    for (const [n, , l] of built) for (const s of P.flatSteps(l)) {
+      const m = /^[KME]-(m\d+)-/.exec(s.id);
+      if (m) assert.ok(LESSONS[m[1]].day < n, "Day " + n + " uses " + m[1]);
+    }
+  });
+}
 console.log("lesson tests: " + n + " passed");

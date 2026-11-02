@@ -2,12 +2,14 @@
 // lesson player (lesson/player.js). Finishing it passes what it covers (for M0: Day 0 and M0).
 import { h, icon } from "../util.js";
 import { LESSONS } from "../lessons/index.js";
+import { practiceLesson, localise } from "../lessons/practice.js";
 import { lessonPlayer, lessonRecord, flatSteps } from "../lesson/player.js";
 import { celebrate } from "../fun.js";
 import { current } from "../course.js";
 
 export async function render(main, { params }) {
-  const lesson = LESSONS[params && params[0]];
+  const lesson = LESSONS[params && params[0]] || practiceLesson(params && params[0]);
+  if (lesson && lesson.practice) await localise(lesson);
   const page = h("div", { class: "page lessonpage" });
   main.append(page);
   if (!lesson) { page.append(h("section", { class: "card" }, h("h1", null, "Lesson not found"), h("a", { class: "btn", href: "#/today" }, "Back to today"))); return undefined; }
@@ -40,7 +42,7 @@ export async function render(main, { params }) {
   const rec = lessonRecord(lesson.id), steps = flatSteps(lesson);
   const inProgress = rec && !rec.done && rec.at > 0;
   page.append(h("section", { class: "card lesson-cover" },
-    h("span", { class: "eyebrow" }, lesson.day !== undefined ? "Day " + lesson.day + " lesson" : "Lesson"),
+    h("span", { class: "eyebrow" }, lesson.practice ? "Day " + lesson.day + " practice" : lesson.day !== undefined ? "Day " + lesson.day + " lesson" : "Lesson"),
     h("h1", null, lesson.title),
     h("p", { class: "muted" }, "About " + lesson.minutes + " minutes. Have your flute with you, and headphones or a speaker."),
     h("ol", { class: "lesson-chapters" }, lesson.chapters.map(c => h("li", null, c.title))),
@@ -48,6 +50,6 @@ export async function render(main, { params }) {
     h("div", { class: "row" },
       h("button", { type: "button", class: "btn primary big", onclick: () => play(false) }, inProgress ? "Continue" : rec && rec.done ? "Play it again" : "Start"),
       inProgress ? h("button", { type: "button", class: "btn", onclick: () => play(true) }, "Start over") : null,
-      lesson.day !== undefined ? h("a", { class: "btn ghost", href: "#/session/" + lesson.day }, "The reading version") : null)));
+      lesson.day !== undefined ? h("a", { class: "btn ghost", href: "#/session/" + lesson.day }, lesson.practice ? "The step list" : "The reading version") : null)));
   return () => { if (player) player.destroy(); };
 }
