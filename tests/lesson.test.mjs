@@ -159,4 +159,16 @@ test("staff: E4 bottom line, G4 the clef's line, C5 the third space, A5 the firs
   assert.ok(K5.staffStep(6).sharp && !K5.staffStep(7).sharp);
   assert.equal(K5.staffStep(6).step, K5.staffStep(5).step, "F# sits where F does, with a sharp");
 });
+test("tihai: start = land + 1 - (3 x phrase + 2 x gap), matching L32's worked examples and quiz", () => {
+  assert.deepEqual([[3, 1], [5, 0], [2, 1], [4, 0], [3, 2]].map(([l, g]) => K5.tihaiStartBeat(l, g)), [7, 3, 10, 6, 5]);
+  assert.equal(K5.tihaiStartBeat(3, 1, 13), 3, "landing on the mukhda, beat 13");
+  const b = K5.tihaiBeats([4, 2, 0], 1, 7).map(x => x.beat);
+  assert.deepEqual(b, [7, 8, 9, 11, 12, 13, 15, 16, 17], "worked example 1: the last S on beat 17, the next sam");
+});
+test("taals: Rupak's sam is a wave; the instruction names each taal's own marks", () => {
+  assert.deepEqual(K3.taalActions("rupak").map(a => a.act), ["wave", "clap", "clap"]);
+  for (const [k, t] of Object.entries(K3.TAALS)) assert.equal(t.bols.length, t.beats, k + ": one bol a beat");
+  assert.match(K3.taalHow("rupak"), /sam itself is a wave/);
+  assert.match(K3.taalHow("ektaal"), /Clap on X, 2, 3 and 4/);
+});
 console.log("lesson tests: " + n + " passed");

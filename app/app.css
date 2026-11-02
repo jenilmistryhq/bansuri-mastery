@@ -1083,3 +1083,11 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .staff-note { fill: var(--ink); }
 .staff-clef { fill: var(--ink); font-size: 58px; }
 .staff-sharp { fill: var(--ink); font: 700 18px var(--body); }
+.lesson-tihai { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: min(420px, 100%); }
+.lesson-tihaibeat { display: grid; gap: 2px; justify-items: center; padding: 6px 2px; min-height: 52px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--sunken); color: var(--ink); cursor: pointer; }
+.lesson-tihaibeat.mark { border-color: var(--accent); }
+.lesson-tihaibeat:last-child { grid-column: 1 / -1; }
+.lesson-tihaibeat.on { background: var(--accent-soft); }
+.lesson-tihaibeat.now { background: var(--accent); color: var(--accent-ink); }
+.lesson-tihaibeat:disabled { cursor: default; }
+.tihai-mark { font-style: normal; font-weight: 700; color: var(--accent); padding: 0 4px; border: 1px solid var(--accent); border-radius: 999px; font-size: 0.75em; }

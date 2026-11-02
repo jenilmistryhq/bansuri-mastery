@@ -5,7 +5,8 @@
 import { h, icon, store, storeSet } from "../util.js";
 import { listenMic } from "../core/listen.js";
 import { micIntro, countdown } from "../core/live.js";
-import { playCurve, playNote } from "../core/audio.js";
+import { ac, playCurve, playNote, tablaBol } from "../core/audio.js";
+import { TAALS } from "./kinds3.js";
 import { codeOf, nameOf } from "../core/theory.js";
 import { targetCurve, analyse } from "../ornaments.js";
 import { alapCheck } from "../ragagrammar.js";
@@ -52,7 +53,88 @@ export function staffStep(semi) {
   return { step: 5 + LETTER[pc] + 7 * oct, sharp: !!SHARP[pc] };
 }
 
+// A tihai in teentaal: a phrase of len beats played three times with gap beats between. To end
+// on beat land (17 = the next sam, 13 = where the mukhda starts) it starts on land + 1 - total.
+export function tihaiStartBeat(len, gap, land = 17) { return land + 1 - (3 * len + 2 * gap); }
+// The phrase's notes by beat when it starts on start: [{ beat, semi }].
+export function tihaiBeats(phrase, gap, start) {
+  const out = [];
+  for (let r = 0; r < 3; r++) phrase.forEach((semi, k) => out.push({ beat: start + r * (phrase.length + gap) + k, semi }));
+  return out;
+}
+
 export const RAGA_KINDS = {
+  // Tap the beat a tihai must start on, then hear it against teentaal: does it land?
+  // { bpm, rounds: [{ phrase: [semi per beat], gap, land: 17 | 13, why }] }
+  tihai: { make(s, api) {
+    let i = 0, right = 0, missed = false, timers = [], playing = false;
+    const T = TAALS.teentaal, beat = 60 / (s.bpm || 90) * (window.__lessonTime ? 0.25 : 1);
+    const q = h("p", { class: "lesson-q", "aria-live": "polite" });
+    const tally = h("p", { class: "small muted" });
+    const out = h("div");
+    const grid = h("div", { class: "lesson-tihai" });
+    const cells = Array.from({ length: 17 }, (_, k) => {
+      const b = k + 1, mark = b === 17 ? "X" : T.marks[b] || "";
+      const c = h("button", { type: "button", class: "lesson-tihaibeat" + (mark ? " mark" : ""), "aria-label": b === 17 ? "Next sam" : "Beat " + b },
+        h("span", { class: "small" }, b === 17 ? "Next sam " : String(b) + " ", mark ? h("i", { class: "tihai-mark" }, mark) : null), h("b", { class: "mono" }, ""));
+      c.addEventListener("click", () => { if (b < 17) pick(b); });
+      return c;
+    });
+    grid.append(...cells);
+    const stop = () => { timers.forEach(clearTimeout); timers = []; playing = false; };
+    function paint(notes) {
+      cells.forEach(c => { c.lastChild.textContent = ""; c.classList.remove("on"); });
+      for (const n of notes) if (n.beat <= 17) { const c = cells[n.beat - 1]; c.lastChild.textContent = codeOf(n.semi); c.classList.add("on"); }
+    }
+    function pick(b) {
+      if (playing) return;
+      const r = s.rounds[i], land = r.land || 17, notes = tihaiBeats(r.phrase, r.gap, b), last = notes[notes.length - 1].beat;
+      const total = 3 * r.phrase.length + 2 * r.gap, start = tihaiStartBeat(r.phrase.length, r.gap, land);
+      paint(notes); playing = true; out.replaceChildren();
+      cells.forEach(c => { c.disabled = true; });
+      const c = ac(), t0 = c.currentTime + 0.3, end = Math.max(17, last);
+      for (let k = 1; k <= end; k++) {
+        const t = t0 + (k - 1) * beat, n = notes.find(x => x.beat === k);
+        tablaBol(t, T.bols[(k - 1) % 16], beat, k === 1 || k === 17);
+        timers.push(setTimeout(() => {
+          cells.forEach(x => x.classList.remove("now"));
+          if (k <= 17) cells[k - 1].classList.add("now");
+          if (n) playNote(n.semi, beat * 0.9);
+        }, (t - c.currentTime) * 1000));
+      }
+      timers.push(setTimeout(() => {
+        stop(); cells.forEach(x => { x.classList.remove("now"); x.disabled = false; });
+        const where = land === 17 ? "sam" : "beat 13";
+        if (last === land) {
+          if (!missed) right++;
+          ding(true); cells.forEach(x => { x.disabled = true; });
+          const final = i === s.rounds.length - 1;
+          const next = final ? null : h("button", { type: "button", class: "btn" }, "Next one");
+          if (next) next.addEventListener("click", () => { i++; show(); });
+          out.replaceChildren(...[h("div", { class: "lesson-reveal good" }, h("b", null, "It lands on " + where + "."),
+            h("p", null, "Total = 3 x " + r.phrase.length + " + 2 x " + r.gap + " = " + total + ". Start = " + (land + 1) + " - " + total + " = beat " + start + "."), r.why ? h("p", null, r.why) : null), next].filter(Boolean));
+          if (final) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
+        } else {
+          missed = true; ding(false);
+          const off = last - land;
+          out.replaceChildren(h("div", { class: "lesson-reveal" }, h("b", null, off > 0 ? "It ends " + off + " beats after " + where + "." : "It ends " + (-off) + " beats before " + where + "."),
+            h("p", null, off > 0 ? "Start earlier. Work out the total length first." : "Start later. Work out the total length first.")));
+        }
+      }, (t0 - c.currentTime + end * beat + 0.4) * 1000));
+    }
+    function show() {
+      const r = s.rounds[i], land = r.land || 17;
+      missed = false; out.replaceChildren(); paint([]);
+      cells.forEach(c => { c.disabled = false; });
+      grid.dataset.start = String(tihaiStartBeat(r.phrase.length, r.gap, land));
+      tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length;
+      const ph = r.phrase.map(codeOf).join(" ");
+      q.textContent = "Phrase " + ph + " (" + r.phrase.length + " beats), gap " + r.gap + ". Tap the beat it starts on, so it ends " + (land === 17 ? "on the next sam." : "on beat 13, where the mukhda starts.");
+    }
+    show();
+    return { el: h("div", { class: "stack lesson-center" }, tally, q, grid, out), destroy: stop };
+  } },
+
   // Read a note on the treble staff. { rounds: [{ semi (from C5), options, answer, why }] }
   staff: { make(s, api) {
     let i = 0, right = 0, missed = false;

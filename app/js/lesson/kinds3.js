@@ -42,7 +42,16 @@ export const TAALS = {
   keherwa: { beats: 8, marks: { 1: "X", 5: "0" }, bols: "Dha Ge Na Ti Na Ka Dhi Na".split(" ") },
   dadra: { beats: 6, marks: { 1: "X", 4: "0" }, bols: "Dha Dhi Na Dha Ti Na".split(" ") },
   teentaal: { beats: 16, marks: { 1: "X", 5: "2", 9: "0", 13: "3" }, bols: "Dha Dhin Dhin Dha Dha Dhin Dhin Dha Dha Tin Tin Ta Ta Dhin Dhin Dha".split(" ") },
+  // Rupak's first beat is khali: sam is shown with a wave (L32).
+  rupak: { beats: 7, marks: { 1: "0", 4: "2", 6: "3" }, bols: "Tin Tin Na Dhi Na Dhi Na".split(" ") },
+  jhaptaal: { beats: 10, marks: { 1: "X", 3: "2", 6: "0", 8: "3" }, bols: "Dhi Na Dhi Dhi Na Ti Na Dhi Dhi Na".split(" ") },
+  ektaal: { beats: 12, marks: { 1: "X", 3: "0", 5: "2", 7: "0", 9: "3", 11: "4" }, bols: "Dhin Dhin DhaGe TiRaKiTa Tu Na Kat Ta DhaGe TiRaKiTa Dhi Na".split(" ") },
 };
+// The instruction for a taal: which marks are claps and which are waves.
+export function taalHow(name) {
+  const m = Object.values(TAALS[name].marks), claps = m.filter(x => x !== "0"), list = a => a.length > 1 ? a.slice(0, -1).join(", ") + " and " + a[a.length - 1] : a[0];
+  return "Press Start. Clap on " + list(claps) + "; wave on 0." + (TAALS[name].marks[1] === "0" ? " Here sam itself is a wave." : "") + " Count the other beats on your fingers.";
+}
 // Clap or wave on each marked beat: [{ beat (1..n), act: "clap"|"wave" }] for one cycle.
 export const taalActions = name => Object.entries(TAALS[name].marks).map(([b, m]) => ({ beat: Number(b), act: m === "0" ? "wave" : "clap" }));
 // Presses [{ t, act }] against the expected [{ t, act }] (seconds): each expected one takes the
@@ -144,7 +153,7 @@ export const LISTEN_KINDS = {
       return h("span", { class: "lesson-taalbeat" + (m ? " mark" : "") + (m === "0" ? " khali" : ""), style: "--i:" + i }, m || "");
     }));
     const bol = h("b", { class: "lesson-bol", "aria-live": "off" }, "");
-    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, "Press Start. Clap on X, 2 and 3; wave on 0. Count the other beats on your fingers.");
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, taalHow(s.taal));
     const clap = h("button", { type: "button", class: "btn big lesson-act", disabled: true }, "Clap");
     const wave = h("button", { type: "button", class: "btn big lesson-act", disabled: true }, "Wave");
     const start = h("button", { type: "button", class: "btn primary" }, "Start");
@@ -165,13 +174,13 @@ export const LISTEN_KINDS = {
             dots.querySelectorAll(".now").forEach(x => x.classList.remove("now"));
             dots.children[b].classList.add("now");
             bol.textContent = quiet ? (b === 0 ? "?" : "") : T.bols[b];
-            if (quiet && b === 0 && cy === cycles - silent) msg.textContent = "Silent now: keep counting, and clap on sam.";
+            if (quiet && b === 0 && cy === cycles - silent) msg.textContent = T.marks[1] === "0" ? "Silent now: keep counting, and wave on sam." : "Silent now: keep counting, and clap on sam.";
           }, (t - c.currentTime) * 1000));
         }
       }
       // The sam after the last cycle closes the round: arriving there counts too.
       const end = t0 + cycles * n * gap;
-      expected.push({ t: end, act: "clap" });
+      expected.push({ t: end, act: T.marks[1] === "0" ? "wave" : "clap" });
       timers.push(setTimeout(() => {
         running = false; start.disabled = false; start.textContent = "Again"; clap.disabled = wave.disabled = true;
         dots.querySelectorAll(".now").forEach(x => x.classList.remove("now")); bol.textContent = "";
