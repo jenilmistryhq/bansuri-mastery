@@ -1,10 +1,16 @@
+// Me > Teacher (#/me/teacher, old #/review): Ask, Feedback (#/me/teacher/feedback), Students
+// (#/me/teacher/students, old #/students) and Share progress (#/me/teacher/share).
 // Teacher review (#/review and #/review/<data>). Without data: the student asks for a review (what,
 // a question, the recording); the request goes as a link, the recording beside it through the share
 // sheet. With data: the teacher's side, a rubric (review.js RUBRIC) with comments and a practice
 // task, which becomes a reply link (#/feedback/<data>, views/feedback.js).
-import { h, toast, today, icon, addDays } from "../util.js";
-import { RUBRIC, encodeLink, decodeLink, linkTo, addRequest } from "../review.js";
+import { h, toast, today, icon, addDays, store, storeSet } from "../util.js";
+import { RUBRIC, encodeLink, decodeLink, linkTo, addRequest, feedback as feedbackList } from "../review.js";
 import { takeHandoff } from "../reviewhandoff.js";
+import { segNav } from "../segnav.js";
+import { reviewCard } from "./feedback.js";
+import { studentsBody } from "./students.js";
+import { encodePayload, sharePayload } from "./progress.js";
 
 const WHAT = ["Tone check (a held note)", "A song", "A raga (alap, phrases or a composition)", "An exercise or alankar", "Something else"];
 
@@ -19,10 +25,64 @@ async function shareOrCopy(text, link, file) {
   return "copied";
 }
 
+// Me > Teacher has four views (redesign M3): everything that leaves the phone for another person.
+const VIEWS = [["ask", "#/me/teacher", "Ask"], ["feedback", "#/me/teacher/feedback", "Feedback"], ["students", "#/me/teacher/students", "Students"], ["share", "#/me/teacher/share", "Share progress"]];
+
+// Feedback: the reviews your teacher sent back (moved here from Progress).
+function feedbackView(page) {
+  const fbs = feedbackList();
+  page.append(h("section", { class: "hero", id: "reviews" }, h("span", { class: "eyebrow" }, "Teacher review"), h("h1", null, "Feedback from your teacher"),
+    h("p", { class: "muted" }, "Your teacher's ratings, comments and practice tasks, newest first. They are kept on this device.")));
+  if (!fbs.length) {
+    page.append(h("section", { class: "card emptycard" }, h("p", { class: "emptystate" }, "No reviews yet. Record yourself and send it to your teacher: their ratings and tasks appear here and on Today."),
+      h("a", { class: "btn primary", href: "#/me/teacher" }, "Ask for a review")));
+    return undefined;
+  }
+  page.append(reviewCard(fbs[0], "Latest: " + fbs[0].what));
+  const rated = RUBRIC.filter(r => fbs.some(f => f.scores[r.key]));
+  if (fbs.length > 1 && rated.length) page.append(h("section", { class: "card" }, h("h2", null, "Each point over time"),
+    h("table", { class: "rvtable" }, h("tbody", null, rated.map(r => h("tr", null, h("th", { scope: "row" }, r.name),
+      h("td", { class: "mono" }, fbs.slice(0, 6).reverse().map(f => f.scores[r.key] || "-").join("  ")))))),
+    h("p", { class: "small muted" }, "Ratings from the oldest to the newest of your last six reviews, 1 to 5.")));
+  if (fbs.length > 1) page.append(h("h2", { class: "grouphead" }, "Earlier reviews"),
+    ...fbs.slice(1).map(f => h("details", { class: "card" }, h("summary", null, h("b", null, f.what), h("span", { class: "small muted" }, " " + f.date)), reviewCard(f, f.what))));
+  return undefined;
+}
+
+// Share progress: a link to a progress card, for anyone or with practice details for a teacher (moved
+// here from Progress; the link format is unchanged).
+function shareView(page) {
+  const nameIn = h("input", { class: "input", id: "sh-name", maxlength: "40", placeholder: "Your first name (optional)", value: store("bansuri.shareName", "") });
+  const out = h("div", { class: "stack" });
+  const teacherBox = h("input", { type: "checkbox", id: "sh-teacher" });
+  const make = () => {
+    storeSet("bansuri.shareName", nameIn.value.trim());
+    const url = location.href.split("#")[0] + "#/share/" + encodePayload(sharePayload(nameIn.value.trim(), teacherBox.checked));
+    const linkBox = h("input", { class: "input", readonly: true, value: url, "aria-label": "Share link" });
+    const copy = h("button", { type: "button", class: "btn" }, "Copy link");
+    copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(url); toast("Link copied."); } catch (e) { linkBox.select(); toast("Select the link and copy it."); } });
+    const native = navigator.share ? h("button", { type: "button", class: "btn", onclick: () => navigator.share({ title: "My bansuri progress", url }).catch(() => {}) }, "Share") : null;
+    out.replaceChildren(linkBox, h("div", { class: "row" }, copy, native, h("a", { class: "btn", href: "#/share/" + url.split("#/share/")[1] }, "Preview the card")));
+  };
+  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Teacher review"), h("h1", null, "Share your progress"),
+    h("p", { class: "muted" }, "Creates a link to a progress card. The data travels inside the link itself; nothing is uploaded. Anyone with the link sees your day, streak, practice time and milestones.")),
+    h("section", { class: "card" },
+      h("label", { class: "check", for: "sh-teacher" }, teacherBox, "For my teacher: add practice per week and what the microphone measured (long tones, play-along, play back)"),
+      h("div", { class: "row" }, h("div", { style: { flex: "1 1 220px" } }, nameIn), h("button", { type: "button", class: "btn primary", onclick: make }, "Create link")), out));
+  return undefined;
+}
+
 export async function render(main, { params }) {
   const page = h("div", { class: "page reviewpage" });
   main.append(page);
-  if (params && params[0]) return teacherSide(page, params[0]);
+  const p = params && params[0];
+  // #/review/<data>: a teacher opening a student's request.
+  if (p && !VIEWS.some(v => v[0] === p)) return teacherSide(page, p);
+  const view = p || "ask";
+  page.append(segNav(VIEWS, view, "Teacher views"));
+  if (view === "feedback") return feedbackView(page);
+  if (view === "share") return shareView(page);
+  if (view === "students") { page.append(...studentsBody()); return undefined; }
 
   // ---- The student's request ----
   const hand = takeHandoff();

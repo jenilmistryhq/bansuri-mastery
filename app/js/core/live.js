@@ -48,6 +48,11 @@ function lvMicError(e) {
     ? "This browser cannot use the microphone here. Open the app in Chrome, Edge or Safari over https."
     : "The microphone is blocked. Allow it in the browser's site settings, then try again.";
 }
+// The message where a widget shows it; in the app, with a link to Me > Flute (its microphone check).
+function lvShowMicError(msg, e) {
+  msg.textContent = lvMicError(e);
+  if (typeof location !== "undefined" && /^#\//.test(location.hash || "")) msg.append(" ", lvEl("a", { href: "#/me/flute#g-checks" }, "Microphone help in Me > Flute"));
+}
 
 // Before the first microphone prompt, say why the app wants it. Resolves true to go ahead.
 export function micIntro(host) {
@@ -291,7 +296,7 @@ export function holdMeter(opts) {
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... play a long note.";
       talking = true; lvSay(targets[idx] === null ? "hold_intro" : ["note", targets[idx], "hold"], ["secs", o.seconds]).then(() => { talking = false; });
-    } catch (e) { msg.textContent = lvMicError(e); }
+    } catch (e) { lvShowMicError(msg, e); }
     finally { life.starting = false; }
   }
   function report() {
@@ -387,7 +392,7 @@ export function phraseCheck(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening. Play the phrase.";
-    } catch (e) { msg.textContent = lvMicError(e); }
+    } catch (e) { lvShowMicError(msg, e); }
     finally { life.starting = false; }
   }
   function stop() { life.gen++; clearTimeout(quietTimer); if (unsub) { unsub(); unsub = null; } startBtn.textContent = "Start"; }
@@ -456,7 +461,7 @@ export function echoGame(opts) {
   let opening = null;
   async function ensureMic() {
     if (unsub) return true;
-    if (!opening) opening = lvListen(life, onReading).then(u => { opening = null; if (u) unsub = u; return !!u; }, e => { opening = null; msg.textContent = lvMicError(e); return false; });
+    if (!opening) opening = lvListen(life, onReading).then(u => { opening = null; if (u) unsub = u; return !!u; }, e => { opening = null; lvShowMicError(msg, e); return false; });
     return opening;
   }
   function play() {
@@ -680,7 +685,7 @@ export function fluteFinder(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... hold your Sa.";
-    } catch (e) { msg.textContent = lvMicError(e); }
+    } catch (e) { lvShowMicError(msg, e); }
     finally { life.starting = false; }
   });
   useBtn.addEventListener("click", () => {

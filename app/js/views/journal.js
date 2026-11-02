@@ -1,11 +1,14 @@
-// Journal (#/journal): practice log, recordings (audio and video) with pitch analysis, comparison and sharing.
+// Journal (#/me/journal, old #/journal): three views. Days: the practice log, day by day. Recordings
+// (#/me/journal/recordings): audio and video with pitch analysis, comparison and sharing. Capsule
+// (#/me/journal/capsule): the Day 0 time capsule next to the newest recording.
 import { h, clear, fmtDate, fmtMinutes, toast, addDays, daysBetween, parseDate } from "../util.js";
 import { getState, addLog } from "../state.js";
 import { totals, streaks, getPlan } from "../course.js";
 import { listRecordings, deleteRecording, patchRecording, recordWidget } from "../recorder.js";
 import { ac, toneDemo } from "../core/audio.js";
 import { analyzeAudioBuffer, compareToExpected, drawPitchPlot } from "../core/pitch.js";
-import { dayResults } from "../livestats.js";
+import { dayResults, holdSummary } from "../livestats.js";
+import { segNav } from "../segnav.js";
 import { postureCheck } from "../posture.js";
 import { codeOf, westOf } from "../core/theory.js";
 import { award } from "../xp.js";
@@ -95,13 +98,62 @@ function refControl(rec, redraw) {
   return sel;
 }
 
-export async function render(main) {
+// Time capsules: the Day 0 recording (and any later one saved as a time capsule), heard next to your
+// newest recording (redesign W73). Everything plays from this browser's storage.
+export const isCapsule = r => /time capsule/i.test(r.label || "");
+async function capsuleView(urls) {
+  let recs = [];
+  try { recs = await listRecordings(); } catch (e) { /* recordings unavailable: shown as empty */ }
+  const caps = recs.filter(isCapsule).sort((a, b) => (a.created < b.created ? -1 : 1));
+  const newest = recs.find(r => !isCapsule(r) && r.kind !== "video");
+  const out = [h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Journal"), h("h1", null, "Time capsule"),
+    h("p", { class: "muted" }, "The sound you made on Day 0, next to your newest recording. Hear how far you have come."))];
+  if (!caps.length) {
+    out.push(h("section", { class: "card emptycard" }, h("p", { class: "emptystate" }, "No time capsule yet. Day 0 records a few seconds of your first sound and keeps it here."),
+      h("a", { class: "btn", href: "#/me/journal/recordings" }, "Record yourself now")));
+    return out;
+  }
+  const player = r => { const url = URL.createObjectURL(r.blob); urls.push(url); return h("audio", { controls: true, src: url, preload: "none" }); };
+  const boxes = [];
+  const col = (head, r) => {
+    const box = h("div");
+    boxes.push([r, box]);
+    return h("div", { class: "card capsulecol" }, h("h2", { class: "grouphead" }, head),
+      h("span", { class: "small muted" }, fmtDate(r.date) + (r.day !== null && r.day !== undefined ? " - Day " + r.day : "") + " - " + (r.durationS || 0).toFixed(1) + " s"),
+      player(r), box);
+  };
+  const first = caps[0];
+  const best = Math.max(0, ...holdSummary().map(x => x.best));
+  const now = newest && newest.created > first.created
+    ? col("Today", newest)
+    : h("div", { class: "card capsulecol" }, h("h2", { class: "grouphead" }, "Today"), h("p", { class: "small muted" }, "Record a long Sa now, then come back and hear the two side by side."),
+      h("a", { class: "btn", href: "#/me/journal/recordings" }, "Record yourself now"));
+  out.push(h("div", { class: "grid2 capsulepair" }, col(first.day === 0 ? "Day 0" : first.label, first), now));
+  if (best) out.push(h("p", { class: "small muted" }, "Your longest steady note so far: {n} s.".replace("{n}", best.toFixed(1))));
+  if (boxes.length === 2) out.push(h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: async e => { e.currentTarget.disabled = true; for (const [r, box] of boxes) await analyse(r, box); } }, "Compare the pitch of both")));
+  // Later time capsules, when there are any.
+  if (caps.length > 1) out.push(h("section", { class: "card" }, h("h2", null, "Later time capsules"),
+    caps.slice(1).map(r => h("div", { class: "rec" }, h("b", null, r.label), h("span", { class: "small muted" }, fmtDate(r.date)), player(r)))));
+  return out;
+}
+
+export async function render(main, { params } = {}) {
   const s = getState();
   const page = h("div", { class: "page" });
   const urls = [];
   const cleanups = [];
   const tt = totals(), st = streaks();
-  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Journal"), h("h1", null, "Practice journal"),
+  // Three views (redesign M2, level 3): Days (the record, and Log extra practice at its end),
+  // Recordings (record, with the posture check on video) and the time capsule.
+  const view = ["recordings", "capsule"].includes(params && params[0]) ? params[0] : "days";
+  const show = { days: [], recordings: [] };
+  page.append(segNav([["days", "#/me/journal", "Days"], ["recordings", "#/me/journal/recordings", "Recordings"], ["capsule", "#/me/journal/capsule", "Capsule"]], view, "Journal views"));
+  if (view === "capsule") {
+    page.append(...await capsuleView(urls));
+    main.append(page);
+    return () => urls.forEach(u => URL.revokeObjectURL(u));
+  }
+  show.days.push(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Journal"), h("h1", null, "Practice journal"),
     h("div", { class: "row summarychips" }, h("span", { class: "chip mutedc" }, fmtMinutes(tt.minutes) + " logged"), h("span", { class: "chip mutedc" }, tt.practiceDays + " days practised"), h("span", { class: "chip mutedc" }, "Streak " + st.current + " (best " + st.best + ")"))));
 
   // New recording.
@@ -110,7 +162,8 @@ export async function render(main) {
   const widget = recordWidget({ day: s.current, label: () => labelIn.value.trim() || "Free practice", onSaved: () => { drawRecs(); drawTimeline(); } });
   cleanups.push(() => widget.cleanup && widget.cleanup());
   host.append(widget);
-  page.append(h("section", { class: "card" }, h("h2", null, "Record"), h("label", { class: "field", for: "j-label" }, "What are you recording?", labelIn), host,
+  show.recordings.push(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Journal"), h("h1", null, "Your recordings")));
+  show.recordings.push(h("section", { class: "card" }, h("h2", null, "Record"), h("label", { class: "field", for: "j-label" }, "What are you recording?", labelIn), host,
     h("p", { class: "small muted" }, "Recordings stay in this browser. They are never uploaded. Include them in a backup from Settings."),
     toneLevels()));
 
@@ -132,7 +185,7 @@ export async function render(main) {
     postureHost);
   // The posture widget (and its 19 MB model) is created only when the section is opened.
   vidDetails.addEventListener("toggle", () => { if (vidDetails.open && !posture) { posture = postureCheck(); postureHost.append(posture.el); } });
-  page.append(vidDetails);
+  show.recordings.push(vidDetails);
 
   // Recordings.
   const recHost = h("div");
@@ -192,7 +245,7 @@ export async function render(main) {
     }
     compareHost.scrollIntoView({ behavior: "smooth" });
   });
-  page.append(h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Recordings"), cmpBtn), compareHost, recHost));
+  show.recordings.push(h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Recordings"), cmpBtn), compareHost, recHost));
 
   // Reference kit: a teacher (or your best take) records the core sounds once; each becomes the
   // reference that plays in that lesson's "Practise it now" card.
@@ -207,7 +260,7 @@ export async function render(main) {
       kitList.append(h("details", { class: "kitrow" }, h("summary", null, h("b", { class: "mono" }, id), " ", what, " ", status), w));
     }
   }).catch(() => {});
-  page.append(h("details", { class: "card" }, h("summary", null, h("b", null, "Reference kit: record the core sounds (for a teacher)")),
+  show.recordings.push(h("details", { class: "card" }, h("summary", null, h("b", null, "Reference kit: record the core sounds (for a teacher)")),
     h("p", { class: "small muted" }, "Eight short recordings by a teacher, or your own best takes. Each one plays as the reference in its lesson, in place of the built-in recording."), kitList));
 
   // Log: one tap for the minutes and how it went, an optional note.
@@ -234,10 +287,10 @@ export async function render(main) {
     noteIn.value = ""; feel = ""; feelChips.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
     drawTimeline(); toast("Logged " + m + " min.");
   });
-  page.append(h("section", { class: "card" }, h("h2", null, "Log extra practice"),
+  const logCard = h("section", { class: "card", id: "log" }, h("h2", null, "Log extra practice"),
     h("p", { class: "small muted" }, "Sessions log themselves. Use this for practice outside a session."),
     h("div", { class: "row" }, minChips, minIn), h("div", { class: "row" }, h("span", { class: "small muted" }, "How did it go?"), feelChips),
-    h("div", { class: "row" }, h("div", { style: { flex: "1 1 220px" } }, noteIn), saveLog)));
+    h("div", { class: "row" }, h("div", { style: { flex: "1 1 220px" } }, noteIn), saveLog));
 
   // Timeline: each day's practice, recordings and what the microphone measured, newest first.
   const timeHost = h("div", { class: "timeline" });
@@ -273,9 +326,11 @@ export async function render(main) {
         h("ul", { class: "tlist" }, bits)));
     }
   }
-  page.append(h("section", { class: "card" }, h("h2", null, "Day by day"), timeHost));
+  // Days: the record, newest first, and logging extra practice at its end.
+  show.days.push(h("section", { class: "card" }, h("h2", null, "Day by day"), timeHost), logCard);
 
+  page.append(...show[view]);
   main.append(page);
-  drawRecs(); drawTimeline();
+  if (view === "recordings") drawRecs(); else drawTimeline();
   return () => { urls.forEach(u => URL.revokeObjectURL(u)); cleanups.forEach(f => f()); };
 }

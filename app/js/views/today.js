@@ -91,7 +91,7 @@ function welcome() {
       h("li", null, h("span", null, h("b", null, "Each day is a guided session "), "of about 45-60 minutes: warm-up, tone, technique, music, ear training and a short log. Timers and tools are built in.")),
       h("li", null, h("span", null, h("b", null, "Milestones prove progress. "), "You move on by passing practical tests, not by the calendar. A failed test tells you exactly what to practise.")),
       h("li", null, h("span", null, h("b", null, "Your progress stays on this device. "), "Export a backup in Settings to move it to another device."))),
-    h("p", { class: "small muted" }, "Built for a 6-hole C natural medium bansuri (Sa = C5). Another flute? Day 0 finds its Sa for you. Already play? ", h("a", { href: "#/settings" }, "Take the playing test"), " to start at the right phase."));
+    h("p", { class: "small muted" }, "Built for a 6-hole C natural medium bansuri (Sa = C5). Another flute? Day 0 finds its Sa for you. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), " to start at the right phase."));
 }
 
 export async function render(main, { params, view }) {

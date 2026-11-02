@@ -38,16 +38,18 @@ export function profileStrip() {
 // missed notes, the play-back levels with the most misses. Each has one tap to practise it.
 function weakList() {
   const L = getState().live || {}, since = addDays(today(), -14), out = [];
-  const bench = (tab, extra) => () => { try { localStorage.setItem("bansuri.bench.tab", JSON.stringify(tab)); for (const [k, v] of Object.entries(extra || {})) localStorage.setItem("bansuri.bench." + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } location.hash = "#/bench"; };
+  // Each one opens its skill's tab (redesign 03: doors open the right section); the Bench tool inside
+  // it is set up first, so Long tones or Play it back open where they should.
+  const bench = (tab, skill, extra) => () => { try { localStorage.setItem("bansuri.bench.tab", JSON.stringify(tab)); for (const [k, v] of Object.entries(extra || {})) localStorage.setItem("bansuri.bench." + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } location.hash = "#/skills/" + skill; };
   for (const [k, list] of Object.entries(L.holds || {})) {
     if (k === "any" || !list.length) continue;
     const last = list[list.length - 1];
-    if (last.s < 5) out.push({ score: last.s / 5, text: "Hold " + codeOf(Number(k)) + " longer: your best lately is " + last.s.toFixed(1) + " s", label: "Long tones", go: bench("tones", { "live.toneNote": k }) });
+    if (last.s < 5) out.push({ score: last.s / 5, text: "Hold " + codeOf(Number(k)) + " longer: your best lately is " + last.s.toFixed(1) + " s", label: "Long tones", go: bench("tones", "tone", { "live.toneNote": k }) });
   }
   const pieces = {};
   for (const p of (L.plays || []).filter(x => x.d >= since && x.n)) { const q = pieces[p.piece] || (pieces[p.piece] = { ok: 0, n: 0 }); q.ok += p.ok; q.n += p.n; }
-  for (const [piece, q] of Object.entries(pieces)) if (q.ok / q.n < 0.75) out.push({ score: q.ok / q.n, text: piece + ": " + Math.round(q.ok / q.n * 100) + "% of notes right lately. Try it 10 BPM slower.", label: "Play it", go: () => { location.hash = "#/songs"; } });
-  for (const e of Object.values(L.echo || {})) if (e.total >= 5 && e.right / e.total < 0.5) out.push({ score: e.right / e.total, text: "Play back (" + e.label + "): " + e.right + " of " + e.total + " right", label: "Play back", go: bench("echo") });
+  for (const [piece, q] of Object.entries(pieces)) if (q.ok / q.n < 0.75) out.push({ score: q.ok / q.n, text: piece + ": " + Math.round(q.ok / q.n * 100) + "% of notes right lately. Try it 10 BPM slower.", label: "Notes and tuning", go: () => { location.hash = "#/skills/notes"; } });
+  for (const e of Object.values(L.echo || {})) if (e.total >= 5 && e.right / e.total < 0.5) out.push({ score: e.right / e.total, text: "Play back (" + e.label + "): " + e.right + " of " + e.total + " right", label: "Play back", go: bench("echo", "ear") });
   out.sort((a, b) => a.score - b.score);
   return out;
 }

@@ -44,7 +44,7 @@ export async function render(main, { params }) {
           h("div", { class: "lesson-burst", "aria-hidden": "true" }, icon("star")),
           h("h1", null, "Well done."),
           h("p", null, res.advanced ? "Day " + (lesson.day + 1) + " is open. Come back tomorrow for it: the day's practice is what makes it stick." : "You went through the lesson again."),
-          h("div", { class: "row" }, h("a", { class: "btn primary big", href: "#/today" }, "Back to today"), lesson.day === 0 ? h("a", { class: "btn", href: "#/journal" }, "See your time capsule") : null),
+          h("div", { class: "row" }, h("a", { class: "btn primary big", href: "#/today" }, "Back to today"), lesson.day === 0 ? h("a", { class: "btn", href: "#/me/journal/capsule" }, "See your time capsule") : null),
           points()));
       },
     });

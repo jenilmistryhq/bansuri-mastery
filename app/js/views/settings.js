@@ -1,5 +1,6 @@
-// Settings (#/settings): flute, display, placement, backup/restore, reset, about.
-import { h, toast, today } from "../util.js";
+// Settings (#/me/settings, old #/settings): five groups of preferences, each row showing what it is set
+// to; a group opens on its own (#/me/settings/data). Me > Flute (#/me/flute) is drawn here too.
+import { h, toast, today, fmtDate } from "../util.js";
 import { errorList, clearErrors, problemReport } from "../errors.js";
 import { getState, update, restoreFrom, resetAll } from "../state.js";
 import { getPlan, current } from "../course.js";
@@ -131,6 +132,34 @@ function accessSection() {
     check("noTimer", "No time limit in the games"),
     check("cues", "Game sounds for playing without looking: the next note is spoken, and progress is heard as ticks"))];
 }
+
+// A row that opens a screen: its name, what it is set to now (each part its own phrase), and a chevron.
+function settingsRow(href, title, parts, key) {
+  const now = (parts || []).filter(Boolean);
+  return h("a", { class: "hubrow", href, dataset: { group: key || "" } }, h("span", { class: "stack" }, h("b", null, title),
+    now.length ? h("span", { class: "small muted sumlist" }, now.map(p => h("span", null, p))) : null), h("span", { class: "chev", "aria-hidden": "true" }, ">"));
+}
+
+const PACE_SHORT = { short: "25-35 min a day", standard: "45-60 min a day", long: "60-80 min a day" };
+// The five groups of preferences (redesign M5), frequent first and risky last; each card is found by
+// its heading. The summary is what the group is set to now.
+const SETTINGS_GROUPS = [
+  { slug: "voice", id: "g-voice", label: "Language and voice", titles: ["Voice and language"],
+    summary: () => { const s = getSettings(); return [s.lang === "hi" ? "हिन्दी" : "English", s.talk ? "Talk to me: on" : "Talk to me: off"]; } },
+  { slug: "display", id: "g-access", label: "Display and ease of use", titles: ["Easier to use", "Display and sound"],
+    summary: () => {
+      const s = getSettings(), size = Math.round(s.textSize * 100);
+      return [size === 100 ? "Text size normal" : "Text size {n}%".replace("{n}", size), s.simple ? "Simple mode" : null, s.focus ? "Focus mode" : null, s.contrast ? "High contrast" : null, s.bigTargets ? "Bigger buttons" : null];
+    } },
+  { slug: "practice", id: "g-practice", label: "Practice and reminders", titles: ["Daily practice time", "Countdown", "Daily practice reminder", "Already play?"],
+    summary: () => { const p = getState().prefs; return [PACE_SHORT[p.pace] || PACE_SHORT.standard, p.reminderTime ? "Reminder at {x}".replace("{x}", p.reminderTime) : "No reminder"]; } },
+  { slug: "data", id: "g-data", label: "Your data", titles: ["Your data", "Start over"],
+    summary: () => { const b = getState().lastBackup; return [b ? "Last backup {x}".replace("{x}", fmtDate(b)) : "No backup yet"]; } },
+  { slug: "help", id: "g-help", label: "Help and about", titles: ["Problem report", "Pilot study (optional)", "Privacy", "About"],
+    summary: () => [getSettings().pilot ? "Pilot study: on" : null] },
+];
+// Me > Flute: the flute's setup, then its checks, Check my flute first.
+const FLUTE_GROUPS = [{ id: "g-flute", label: "Sa and tuning", titles: ["Your flute"] }, { id: "g-checks", label: "Checks", titles: ["Check my flute", "Microphone check", "Calibrate with your flute"] }];
 
 export async function render(main, ctx = {}) {
   // Me > Flute (#/me/flute) shows the flute's setup and checks; Me > Settings shows the preferences.
@@ -432,14 +461,14 @@ export async function render(main, ctx = {}) {
     try { await navigator.clipboard.writeText(text); toast("Problem report copied. Paste it into your bug report."); }
     catch (e) { repBox.select(); toast("Select the report below and copy it."); }
   });
-  const clrBtn = h("button", { type: "button", class: "btn ghost", onclick: () => { clearErrors(); toast("Error log cleared."); location.hash = "#/settings"; } }, "Clear the log");
+  const clrBtn = h("button", { type: "button", class: "btn ghost", onclick: () => { clearErrors(); toast("Error log cleared."); if (location.hash === "#/me/settings/help") window.dispatchEvent(new HashChangeEvent("hashchange")); else location.hash = "#/me/settings/help"; } }, "Clear the log");
   page.append(h("section", { class: "card" }, h("h2", null, "Problem report"),
     h("p", { class: "small muted" }, (errs.length ? errs.length + " error" + (errs.length === 1 ? "" : "s") + " recorded on this device." : "No errors recorded on this device.") +
       " If something goes wrong, copy this report into a bug report. It contains the app version, your browser and the error messages, and nothing about your progress, notes or recordings."),
     h("div", { class: "row" }, repBtn, errs.length ? clrBtn : null), repBox));
 
   page.append(h("section", { class: "card" }, h("h2", null, "About"),
-    h("p", null, h("a", { href: "#/privacy" }, "Privacy: what stays on your device"), " - in short, everything."),
+    h("p", null, h("a", { href: "#/me/privacy" }, "Privacy: what stays on your device"), " - in short, everything."),
     h("p", null, "Bansuri Mastery teaches the bansuri day by day from the open curriculum. Read it all as a ", h("a", { href: "docs/" }, "website"), " or in the ", h("a", { href: "#/library" }, "library"), "."),
     h("p", { class: "small muted" }, "Course content: CC BY-NC-SA 4.0. Code: MIT. Fonts: Hind, Rozha One (Indian Type Foundry) and JetBrains Mono, SIL Open Font License. Markdown rendering: marked (MIT). Everything runs in your browser; nothing you do here is sent anywhere."),
     h("p", { class: "small muted" }, "Limits: the app cannot hear your tone, see your posture or judge raga intonation. Use recordings, a tuner and, when you can, a teacher. ", h("a", { href: "#/read/07-QUALITY-REPORT.md" }, "Quality report"), ".")));
@@ -450,30 +479,38 @@ export async function render(main, ctx = {}) {
   calibBtn.addEventListener("click", () => { if (calib) return; calib = calibrationWidget(); calibHost.append(calib.el); calibBtn.hidden = true; });
   page.append(h("section", { class: "card" }, h("h2", null, "Calibrate with your flute"),
     h("p", { class: "small muted" }, "Four 10-second tasks with your flute. The app saves what its pitch detector measured (no sound) as a file you can send to the course author, so the in-tune, airy and steady thresholds can be set from real players."), calibBtn, calibHost));
-  // Groups, in this order, each with its heading; a row of links jumps to each group.
-  const GROUPS = fluteView
-    ? [["g-flute", "Sa and tuning", ["Your flute"]], ["g-checks", "Checks", ["Microphone check", "Calibrate with your flute"]]]
-    : [["g-voice", "Voice and language", ["Voice and language"]], ["g-access", "Display and ease of use", ["Easier to use", "Display and sound"]],
-      ["g-practice", "Practice and reminders", ["Daily practice time", "Countdown", "Daily practice reminder", "Already play?"]],
-      ["g-data", "Your data", ["Your data", "Start over"]], ["g-help", "Help and about", ["Problem report", "About"]]];
-  // Cards that belong to the other section are left out here (each lives in one place).
-  const OTHER = new Set(["Your flute", "Microphone check", "Calibrate with your flute"]);
+  // Check my flute: the first of the flute's checks.
+  page.append(h("section", { class: "card row between" }, h("h2", { class: "sr-only" }, "Check my flute"), h("span", null, "Check my flute: play each note and see how in tune it is."), h("a", { class: "btn", href: "#/bench/check" }, "Check my flute")));
+  // Privacy: its own page, under Help and about.
+  page.append(h("section", { class: "card" }, h("h2", null, "Privacy"), h("div", { class: "hublist" }, settingsRow("#/me/privacy", "What stays on your device", null, "privacy"))));
   const cards = [...page.querySelectorAll(":scope > section.card")].concat(access);
   const byTitle = new Map(cards.map(c => [(c.querySelector("h2") || {}).textContent, c]));
   const hero = page.querySelector(":scope > .hero");
-  const jump = h("nav", { class: "jumpnav", "aria-label": "Settings groups" }, GROUPS.map(([id, label]) => h("a", { href: (fluteView ? "#/me/flute#" : "#/me/settings#") + id }, label)));
+  const groups = fluteView ? FLUTE_GROUPS : SETTINGS_GROUPS;
+  // Which group to open: the address (#/me/settings/data), or an old link's anchor (#/settings#countdown,
+  // #/settings#g-data) that names a group or a card inside one.
+  let open = fluteView ? null : groups.find(g => g.slug === (ctx.params || [])[0]) || null;
+  const anchor = ctx.anchor || "";
+  if (!fluteView && !open && anchor) open = groups.find(g => g.id === anchor || g.titles.some(t => byTitle.has(t) && byTitle.get(t).id === anchor)) || null;
   if (fluteView) {
+    // Me > Flute: Sa and tuning, then the checks, on one page.
     hero.replaceChildren(h("span", { class: "eyebrow" }, "Me"), h("h1", null, "Your flute"),
       h("p", { class: "muted" }, "Every pitch and check in the app follows your flute's Sa. Set it here, and check the flute and the microphone."));
+    page.replaceChildren(hero);
+    for (const g of groups) {
+      page.append(h("h2", { class: "grouphead", id: g.id }, g.label));
+      for (const t of g.titles) if (byTitle.has(t)) page.append(byTitle.get(t));
+    }
+  } else if (open) {
+    // One group of preferences (redesign W80): back to Settings, the group's name, its cards.
+    page.replaceChildren(h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/me/settings" }, "Settings"), " / ", h("span", null, open.label)),
+      h("section", { class: "hero" }, h("h1", { id: open.id }, open.label)));
+    for (const t of open.titles) if (byTitle.has(t)) page.append(byTitle.get(t));
+  } else {
+    // Settings: five groups, each row with its current values (redesign M5).
+    page.replaceChildren(hero, h("section", { class: "card" }, h("div", { class: "hublist settingsgroups" },
+      groups.map(g => settingsRow("#/me/settings/" + g.slug, g.label, g.summary(), g.slug)))));
   }
-  page.replaceChildren(hero, jump);
-  for (const [id, label, titles] of GROUPS) {
-    page.append(h("h2", { class: "grouphead", id }, label));
-    for (const t of titles) if (byTitle.has(t)) { page.append(byTitle.get(t)); byTitle.delete(t); }
-  }
-  if (fluteView) page.append(h("section", { class: "card row between" }, h("span", null, "Check my flute: play each note and see how in tune it is."), h("a", { class: "btn", href: "#/bench/check" }, "Check my flute")));
-  // Anything not grouped stays, at the end: only on Settings, and never the flute's own cards.
-  else byTitle.forEach((c, t) => { if (!OTHER.has(t)) page.append(c); });
   main.append(page);
   return () => { if (calib) calib.destroy(); if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
 }

@@ -102,7 +102,7 @@ try {
 
   });
   await section("Routes render", async () => {
-    for (const [route, needle] of [["/plan", "Your path to independent musicianship"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/me/flute", "Your flute"], ["/me/settings", "Voice and language"], ["/skills", "Get better at one thing"], ["/skills/tone", "Tone and breath"], ["/skills/ornaments", "Meend bridge"], ["/skills/games", "Notes and tuning"], ["/skills/fix", "Tone check"], ["/course/milestones", "First Stable Tone"], ["/course/book", "The whole course"], ["/music", "Songs"], ["/music/ragas", "Bhupali"], ["/music/mine", "Your tunes"], ["/me", "Your progress"], ["/me/teacher", "What to review"], ["/bench/tones", "Long tones"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Locked"]]) {
+    for (const [route, needle] of [["/plan", "Your path to independent musicianship"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/me/flute", "Your flute"], ["/me/settings", "Language and voice"], ["/skills", "Get better at one thing"], ["/skills/tone", "Tone and breath"], ["/skills/ornaments", "Meend bridge"], ["/skills/games", "Notes and tuning"], ["/skills/fix", "Tone check"], ["/course/milestones", "First Stable Tone"], ["/course/book", "The whole course"], ["/music", "Songs"], ["/music/ragas", "Bhupali"], ["/music/mine", "Your tunes"], ["/me", "Your progress"], ["/me/teacher", "What to review"], ["/bench/tones", "Long tones"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Locked"]]) {
       await go(route);
       t = await text();
       check(t.includes(needle.toLowerCase()), route + " shows \"" + needle + "\"");
@@ -162,12 +162,13 @@ try {
 
   });
   await section("Pace and Devanagari", async () => {
-    await go("/settings");
+    await go("/me/settings/practice");
     await page.select("#st-pace", "short");
     await go("/session/0");
     check(/^9:00$/.test(await page.$eval("#main .block[data-id=READ] .timer", e => e.textContent.trim())), "a short daily time scales a 15-minute block to 9 minutes");
-    await go("/settings");
+    await go("/me/settings/practice");
     await page.select("#st-pace", "standard");
+    await go("/me/settings/display");
     await page.click("#st-deva");
     await go("/bench");
     await page.evaluate(() => document.querySelector('.bb-tabs button[data-tab="play"]').click());
@@ -268,7 +269,7 @@ try {
 
   });
   await section("Share", async () => {
-    await go("/progress");
+    await go("/me/teacher/share");
     await page.type("#sh-name", "Tester");
     const btns = await page.$$("#main button.btn.primary");
     await btns[btns.length - 1].click();
@@ -290,7 +291,7 @@ try {
 
   });
   await section("Recording and pitch (fake microphone)", async () => {
-    await go("/journal");
+    await go("/me/journal/recordings");
     await clickText("#main .card button", "Record");
     await page.waitForFunction(() => /Recording\./.test(document.querySelector("#main").innerText), { timeout: 8000 });
     await sleep(2500);
@@ -359,7 +360,7 @@ try {
 
   });
   await section("Posture and tone levels", async () => {
-    await go("/journal");
+    await go("/me/journal/recordings");
     check(await page.$$eval("#main .chipbtn", b => b.filter(x => /^[1-4]: /.test(x.textContent)).length) === 4, "the four tone levels can be heard in the Journal");
     await page.evaluate(() => { const d = [...document.querySelectorAll("details")].find(x => /Video self-check/.test(x.textContent)); d.open = true; });
     await sleep(300);
@@ -379,7 +380,10 @@ try {
     check(await page.evaluate(() => { const e = JSON.parse(localStorage.getItem("bansuri.progress")).log.pop(); return e.minutes === 45 && e.feel === "great" && e.note === "Long tones"; }), "one-tap log saves minutes, how it went and the note");
     check(/Went well/.test(await page.$eval("#main .timeline", e => e.innerText)), "the day-by-day timeline shows the entry");
     await go("/progress");
-    check(await page.$$eval("#main .wkchart", c => c.map(x => x.querySelectorAll(".wk-bar").length).join()) === "12,12" && await page.$$eval("#main .wkchart path", x => x.length) >= 2, "progress charts 12 weeks of XP and of practice minutes");
+    const minutesChart = await page.$$eval("#main .wkchart", c => c.map(x => x.querySelectorAll(".wk-bar").length).join() + ":" + c.reduce((a, x) => a + x.querySelectorAll("path").length, 0));
+    await go("/me/level");
+    check(/^12:/.test(minutesChart) && !/:0$/.test(minutesChart) && await page.$$eval("#main .wkchart", c => c.map(x => x.querySelectorAll(".wk-bar").length).join()) === "12", "progress charts 12 weeks of practice minutes, and Level and badges 12 weeks of XP [" + minutesChart + "]");
+    await go("/progress");
     check(await page.$$eval("#main .mspath li", x => x.length) === 11, "progress shows the M0-M10 milestone path");
 
   });
@@ -435,7 +439,7 @@ try {
 
   });
   await section("Settings: CSV and problem report", async () => {
-    await go("/settings");
+    await go("/me/settings/data");
     const csv = await page.evaluate(() => new Promise(resolve => {
       const orig = URL.createObjectURL;
       URL.createObjectURL = b => { URL.createObjectURL = orig; b.arrayBuffer().then(buf => { const u = new Uint8Array(buf); resolve((u[0] === 0xef && u[1] === 0xbb && u[2] === 0xbf ? "BOM" : "") + new TextDecoder().decode(u)); }); return orig.call(URL, b); };
@@ -443,6 +447,7 @@ try {
     }));
     check(/^BOMdate,day,minutes/.test(csv), "CSV starts with a UTF-8 BOM and the log header");
     check(/Smoke test note/.test(csv) && /milestone,title,status,attempts/.test(csv) && /M0,/.test(csv), "CSV has the log note and milestone rows");
+    await go("/me/settings/help");
     await clickText("#main button", "Copy problem report");
     await page.waitForFunction(() => { const t = document.querySelector("#main textarea[aria-label='Problem report']"); return t && !t.hidden && t.value.length > 20; }, { timeout: 4000 })
       .then(() => check(true, "problem report is generated"), () => check(false, "problem report is generated"));
@@ -555,7 +560,7 @@ try {
       await lp.evaluate(() => [...document.querySelectorAll("#main .micpanel .lv-primary")].pop().click());
 
       // Placement: pass the first item (hold Sa), then stop: the test recommends Phase 1.
-      await lp.goto(BASE + "#/settings", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/me/settings/practice", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#st-placetest", { timeout: 5000 });
       await lp.click("#st-placetest");
       await lp.click("#main .placement .lv-primary");
@@ -738,7 +743,7 @@ try {
       await lp.evaluate(async () => { const x = await import(new URL("app/js/xp.js", location.href).href); x.award("lesson", { key: "smoke" }); x.award("lesson", { key: "smoke2" }); });
       await lp.waitForFunction(() => [...document.querySelectorAll(".toasts *")].some(t => /Level 2/.test(t.textContent)) && document.querySelector(".xpfloat") === null, { timeout: 3000 })
         .then(() => check(true, "levels: earning XP moves the learner up to Level 2, celebrated, with no floating points"), () => check(false, "levels: earning XP moves the learner up to Level 2, celebrated, with no floating points"));
-      await lp.goto(BASE + "#/progress", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/me/level", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#level .levelrow");
       check(await lp.$$eval("#level .levelrow", x => x.length) === 30 && /Listener/.test(await lp.$eval("#level .levelrow.now", e => e.textContent)), "levels: Progress lists the 30 named levels, the current one marked");
 
@@ -1052,7 +1057,7 @@ try {
     await go("/milestone/M1");
     check(await page.$("#main .stuckcard .btn.primary") !== null, "stuck: after two failed tries a milestone offers the three-minute check");
     // Move to another device: make the link, open it, see what it holds.
-    await go("/settings");
+    await go("/me/settings/data");
     await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Make a transfer link/.test(b.textContent)).click());
     await page.waitForSelector("#main input[aria-label='Transfer link']", { timeout: 5000 }).catch(() => {});
     const moveUrl = await page.$eval("#main input[aria-label='Transfer link']", e => e.value).catch(() => "");
@@ -1063,7 +1068,7 @@ try {
       check(/Day 20/.test(await page.$eval("#main", e => e.innerText)), "move: opening the link shows what it holds before replacing anything");
     }
     // A teacher link carries the measured practice.
-    await go("/progress");
+    await go("/me/teacher/share");
     await page.evaluate(() => { document.querySelector("#sh-teacher").click(); [...document.querySelectorAll("#main button")].find(b => /Create link/.test(b.textContent)).click(); });
     const shareUrl = await page.$eval("#main input[aria-label='Share link']", e => e.value).catch(() => "");
     await page.goto(shareUrl, { waitUntil: "networkidle0" }); await sleep(400);
@@ -1081,7 +1086,7 @@ try {
     await go("/privacy");
     check(/everything stays on your device/i.test(await text()), "privacy: the page says what stays on the device");
     // A teacher pastes a student's link and sees the student in the table.
-    await go("/progress");
+    await go("/me/teacher/share");
     await page.evaluate(() => { const b = document.querySelector("#sh-teacher"); if (!b.checked) b.click(); const n = document.querySelector("#sh-name"); n.value = "Asha"; n.dispatchEvent(new Event("input", { bubbles: true })); [...document.querySelectorAll("#main button")].find(x => /Create link/.test(x.textContent)).click(); });
     const studentLink = await page.$eval("#main input[aria-label='Share link']", e => e.value).catch(() => "");
     await go("/students");
@@ -1094,7 +1099,7 @@ try {
     const l9 = await page.$eval("#main", e => e.innerText).catch(() => "");
     check(l9.length > 500 && !/FNG-01/.test(l9), "lessons: course codes are hidden (FNG-01 not shown)");
     await page.evaluate(() => localStorage.setItem("bansuri.readerMode", JSON.stringify("cards")));
-    await go("/journal");
+    await go("/me/journal/recordings");
     check(/reference kit/.test(await text()), "journal: the reference kit for recordings a teacher can check");
   });
   await section("Notation from a recording", async () => {
@@ -1589,6 +1594,79 @@ try {
     await sleep(300);
     check(await lp.evaluate(() => document.querySelector(".lesson-stage").dataset.step !== "sgsg" && JSON.parse(localStorage.getItem("bansuri.lessons")).m9.data.sgsg.skipped === true), "result: Skip for now goes on, and the step is remembered as skipped");
     await tone(0); await ctx.close();
+  });
+  await section("Me: progress, journal, teacher, flute, settings", async () => {
+    await go("/today");
+    const saved = await page.evaluate(() => ({ p: localStorage.getItem("bansuri.progress"), s: localStorage.getItem("bansuri.settings") }));
+    await page.evaluate(() => {
+      const t = new Date(), d = t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
+      localStorage.setItem("bansuri.progress", JSON.stringify({ current: 20, startedAt: "2026-09-20", prefs: { howChosen: true, pace: "short" }, log: [{ date: d, minutes: 30, day: 19 }],
+        live: { holds: { "4": [{ d, s: 2.4 }] }, echo: { lv1: { label: "Level 1", best: 2, len: 2, right: 1, total: 6, d } }, taps: [], plays: [{ d, piece: "Morning Steps", bpm: 60, ok: 4, n: 10, onTime: 3, timed: 10 }] } }));
+      localStorage.removeItem("bansuri.settings");
+    });
+    await page.reload({ waitUntil: "networkidle0" });
+    // Progress: five questions, doors to the capsule, the course path, one level row, your flute.
+    await go("/me");
+    const me = await page.evaluate(() => ({ capsule: !!document.querySelector("#main a[href='#/me/journal/capsule']"), path: !!document.querySelector("#main a.courselink[href='#/course']"),
+      level: (document.querySelector("#main a.hubrow[href='#/me/level']") || {}).innerText || "", flute: (document.querySelector("#main a.hubrow[href='#/me/flute']") || {}).innerText || "",
+      moved: !document.querySelector("#sh-name") && !/Teacher reviews/.test(document.querySelector("#main").innerText), levels: document.querySelectorAll("#main .levelrow").length }));
+    check(me.capsule && me.path && /Level 1/.test(me.level) && /badge/.test(me.level) && /C natural/.test(me.flute) && /Sa C5/.test(me.flute) && me.moved && !me.levels,
+      "me: Day 0 vs today, Where am I to the path, one Level and badges row, Your flute with its Sa; reviews and sharing moved out " + JSON.stringify(me));
+    // What should I work on? opens the skill's tab.
+    for (const [label, want] of [["Long tones", "#/skills/tone"], ["Notes and tuning", "#/skills/notes"], ["Play back", "#/skills/ear"]]) {
+      await go("/me");
+      await clickText("#main .weakcard button", label);
+      await page.waitForFunction(w => location.hash === w, { timeout: 3000 }, want).catch(() => {});
+      check(await page.evaluate(() => location.hash) === want, "me: work on \"" + label + "\" opens " + want);
+    }
+    await go("/me/level");
+    check(await page.$("#level .levelrow") !== null && await page.$("#main .badges") !== null, "me: the level row opens the full level and badges");
+    // Journal: three views as a segmented control (level 3), Log extra practice at the end of Days.
+    await go("/me/journal");
+    const j = await page.evaluate(() => ({ seg: [...document.querySelectorAll("#main .segnav a")].map(a => a.textContent + (a.getAttribute("aria-current") ? "*" : "")).join(), tab: (document.querySelector("#main .sectiontabs [aria-current=page]") || {}).textContent,
+      last: ([...document.querySelectorAll("#main .page > section.card")].pop() || {}).id, record: !!document.querySelector("#j-label") }));
+    check(j.seg === "Days*,Recordings,Capsule" && j.tab === "Journal" && j.last === "log" && !j.record, "journal: Days, Recordings and Capsule as one segmented control; Days ends with Log extra practice " + JSON.stringify(j));
+    await go("/me/journal/capsule");
+    check(/no time capsule yet/.test(await text()), "journal: the Capsule view says when there is no time capsule yet");
+    await page.evaluate(async () => {
+      const r = await import(new URL("app/js/recorder.js", location.href).href);
+      const blob = new Blob([new Uint8Array(64)], { type: "audio/webm" });
+      await r.saveRecording({ id: "smokecap", created: "2026-01-01T10:00:00.000Z", date: "2026-01-01", day: 0, label: "Day 0 time capsule", mime: "audio/webm", blob, durationS: 6, kind: "audio" }, { count: false });
+      await r.saveRecording({ id: "smokenow", created: new Date().toISOString(), date: "2026-11-01", day: 20, label: "Long Sa", mime: "audio/webm", blob, durationS: 9, kind: "audio" }, { count: false });
+    });
+    await go("/me/journal");
+    await go("/me/journal/capsule");
+    check(await page.$$eval("#main .capsulepair .capsulecol audio", a => a.length) === 2 && /day 0/.test(await text()), "journal: the Capsule view plays the Day 0 time capsule next to the newest recording");
+    await page.evaluate(async () => { const r = await import(new URL("app/js/recorder.js", location.href).href); await r.deleteRecording("smokecap"); await r.deleteRecording("smokenow"); });
+    // Teacher: Ask, Feedback, Students, Share progress.
+    for (const [route, cur, needle] of [["/me/teacher", "Ask", "what to review"], ["/me/teacher/feedback", "Feedback", "feedback from your teacher"], ["/students", "Students", "my students"], ["/me/teacher/share", "Share progress", "for my teacher"]]) {
+      await go(route);
+      const seg = await page.evaluate(() => ({ cur: (document.querySelector("#main .segnav [aria-current=page]") || {}).textContent, n: document.querySelectorAll("#main .segnav a").length, tab: (document.querySelector("#main .sectiontabs [aria-current=page]") || {}).textContent }));
+      check(seg.cur === cur && seg.n === 4 && seg.tab === "Teacher" && (await text()).includes(needle), "teacher: " + route + " opens the " + cur + " view " + JSON.stringify(seg));
+    }
+    // Flute: Check my flute first among the checks; the microphone-blocked message links here.
+    await go("/me/flute");
+    check(await page.evaluate(() => { const hd = document.querySelector("#g-checks"); const next = hd && hd.nextElementSibling; return !!next && !!next.querySelector("a[href='#/bench/check']"); }), "flute: Check my flute is the first check");
+    await go("/bench/tones");
+    await page.evaluate(() => { localStorage.setItem("bansuri.live.micIntro", "1"); navigator.mediaDevices.getUserMedia = () => Promise.reject(new DOMException("Permission denied", "NotAllowedError")); });
+    await page.evaluate(() => document.querySelector("#main .lv-hold .lv-primary").click());
+    await page.waitForSelector("#main .lv-msg a[href='#/me/flute#g-checks']", { timeout: 5000 }).then(() => check(true, "flute: a blocked microphone links to Me > Flute"), async () => check(false, "flute: a blocked microphone links to Me > Flute [" + await page.$eval("#main .lv-hold .lv-msg", e => e.innerText).catch(() => "") + "]"));
+    // Settings: a Me tab (no gear), five groups showing their values, groups and privacy at their own addresses.
+    await go("/me/settings");
+    const st = await page.evaluate(() => ({ gear: !!document.querySelector(".topbar a[href*='settings']"), rows: [...document.querySelectorAll("#main .settingsgroups .hubrow")].map(r => r.innerText.replace(/\s+/g, " ")) }));
+    check(!st.gear && st.rows.length === 5 && /English/.test(st.rows[0]) && /Talk to me: off/.test(st.rows[0]) && /25-35 min a day/.test(st.rows[2]) && /No reminder/.test(st.rows[2]) && /^Help and about/.test(st.rows[4]),
+      "settings: no gear in the top bar; five groups, each with its current values " + JSON.stringify(st));
+    await go("/me/settings/data");
+    check(/download backup/.test(await text()) && /start over/.test(await text()) && !/problem report/.test(await text()), "settings: Your data opens at #/me/settings/data");
+    await go("/me/settings/help");
+    check(/pilot study/.test(await text()) && await page.$("#main a[href='#/me/privacy']") !== null, "settings: Pilot study and Privacy are under Help and about");
+    await go("/settings");
+    await page.goto(BASE + "#/settings#countdown", { waitUntil: "networkidle0" }); await sleep(300);
+    check(await page.$("#main #countdown") !== null && await page.$("#main #st-placetest") !== null, "settings: an old link to a card (#/settings#countdown) opens its group");
+    await go("/me/privacy");
+    check(/everything stays on your device/i.test(await text()) && await page.$eval("nav.tabbar [aria-current=page]", e => e.textContent.trim()).catch(() => "") === "Me", "settings: #/me/privacy opens Privacy under Me");
+    await page.evaluate(v => { if (v.p) localStorage.setItem("bansuri.progress", v.p); else localStorage.removeItem("bansuri.progress"); if (v.s) localStorage.setItem("bansuri.settings", v.s); else localStorage.removeItem("bansuri.settings"); }, saved);
+    await page.reload({ waitUntil: "networkidle0" });
   });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete
