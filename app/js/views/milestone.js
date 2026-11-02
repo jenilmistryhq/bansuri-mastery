@@ -1,8 +1,11 @@
 // Milestone test (#/milestone/<id>): checklist parsed from the milestone file, rubric, record, pass/fail.
-import { h, fmtDate, toast } from "../util.js";
+// The cover (docs/redesign 05 L7, W35): what is checked first, then how to take it, then Take the
+// test beside Rehearse first. Not yet (W38) leads with what passed; passed (W37) plays the Day 0
+// time capsule next to today's recording.
+import { h, fmtDate, toast, icon, today } from "../util.js";
 import { milestoneInfo, milestoneState, recordAttempt, current } from "../course.js";
 import { fetchDoc, tablesOf, renderInline, renderMarkdown, sectionOf } from "../content.js";
-import { recordWidget } from "../recorder.js";
+import { recordWidget, listRecordings } from "../recorder.js";
 import { celebrate } from "../fun.js";
 import { holdMeter, phraseCheck, noteQuiz, echoGame } from "../core/live.js";
 import { parseNotation } from "../core/notation.js";
@@ -103,6 +106,25 @@ function stuckCheck(cleanups) {
     h("p", { class: "small muted" }, "Two tries have not passed yet. Three short checks (about 3 minutes) show which basic skill to work on."), start, body);
 }
 
+// Your sound then and now (W37): the Day 0 time capsule (lessons/m0.js records it with day 0) next to
+// a recording made today, when both are kept in this browser. Empty until both are found.
+function thenAndNow(cleanups) {
+  const box = h("section", { class: "card ms-thennow", hidden: true });
+  const urls = [];
+  cleanups.push(() => urls.forEach(u => URL.revokeObjectURL(u)));
+  listRecordings().then(all => {
+    const audio = (all || []).filter(r => r && r.blob && r.kind !== "video");
+    const day0 = audio.filter(r => r.day === 0);
+    const capsule = day0.find(r => /capsule/i.test(r.label || "")) || day0[day0.length - 1];
+    const now = audio.find(r => r.date === today() && r !== capsule);
+    if (!capsule || !now) return;
+    const clip = (label, r) => { const u = URL.createObjectURL(r.blob); urls.push(u); return h("div", { class: "stack tight" }, h("b", null, label), h("audio", { controls: true, preload: "none", src: u, "aria-label": label })); };
+    box.append(h("h2", null, "Your sound then and now"), h("div", { class: "ms-pair" }, clip("Day 0", capsule), clip("Today", now)));
+    box.hidden = false;
+  }).catch(() => { /* recordings unavailable: nothing to compare */ });
+  return box;
+}
+
 export async function render(main, { params }) {
   const id = params[0];
   const info = milestoneInfo(id);
@@ -124,8 +146,19 @@ export async function render(main, { params }) {
   if (!unlocked) page.append(h("div", { class: "notice info" }, "This milestone is ahead of you (Day " + info.day + "). You can read it now; the test opens when you reach that day."));
   // Two tries without passing: a three-minute check finds which basic skill is holding things back.
   if (state.status !== "passed" && state.attempts.filter(x => !x.passed).length >= 2) page.append(stuckCheck(cleanups));
+  // Passed: your sound then and now.
+  if (state.status === "passed") page.append(thenAndNow(cleanups));
 
-  page.append(h("section", { class: "card" }, h("h2", null, "How to take it"),
+  // The cover: what is checked (with its count), how to take it, then the two ways on.
+  const cover = h("div", { class: "stack ms-cover" });
+  const required = items.filter(it => it.required).length;
+  cover.append(h("section", { class: "card" },
+    h("div", { class: "row between" }, h("h2", null, "What is checked"), h("span", { class: "chip mutedc", "aria-label": items.length + " checks" }, String(items.length))),
+    items.length ? h("ul", { class: "ms-checked" }, items.map(it => h("li", null,
+      h("span", { class: "stack", style: { gap: "2px" } }, h("span", null, it.num ? h("b", null, it.num + ". ") : null, renderInline(it.label, info.path)), it.criterion ? h("span", { class: "small muted" }, renderInline(it.criterion, info.path)) : null),
+      h("span", { class: "chip " + (it.required ? "info" : "mutedc") }, it.required ? "Required" : (it.requiredText || "Optional"))))) : h("p", null, "No checklist table was found in this milestone file."),
+    required && required < items.length ? h("p", { class: "small muted" }, "Every required check must pass; the others are a bonus.") : null));
+  cover.append(h("section", { class: "card" }, h("h2", null, "How to take it"),
     h("ol", { class: "stack", style: { paddingLeft: "1.2em", margin: "0" } },
       h("li", null, "Warm up for at most 10 minutes."),
       h("li", null, "Record each item in one take (two attempts allowed; the better one counts). No editing."),
@@ -133,10 +166,24 @@ export async function render(main, { params }) {
       h("li", null, "Every item marked Required must pass. If not, practise the remedies below and retest only the failed items.")),
     h("p", { class: "small muted" }, "From ", h("a", { href: "#/read/projects/README.md" }, "how every milestone works"), ". From M3 on, a second listener (ideally a teacher) helps: trust the lower score.")));
 
+  // Take the test (the checks, the recording and the score) or rehearse with the day's session.
+  const test = h("div", { class: "stack ms-test", hidden: true });
+  const takeBtn = h("button", { type: "button", class: "btn primary big" }, state.status === "failed" ? "Retake the test" : state.status === "passed" ? "Take it again" : "Take the test");
+  takeBtn.addEventListener("click", () => {
+    cover.remove(); test.hidden = false;
+    const first = test.querySelector("h2");
+    if (first) { first.setAttribute("tabindex", "-1"); first.focus({ preventScroll: true }); }
+    test.scrollIntoView({ block: "start" });
+  });
+  cover.append(h("div", { class: "row ms-ways" },
+    unlocked ? takeBtn : h("p", { class: "small muted" }, "Opens on Day " + info.day + "."),
+    h("a", { class: "btn", href: "#/session/" + info.day }, "Rehearse first")));
+  page.append(cover, test);
+
   // Recording for the test.
   const rw = recordWidget({ day: info.day, label: id + " test" });
   cleanups.push(() => rw.cleanup && rw.cleanup());
-  page.append(h("section", { class: "card" }, h("h2", null, "Record the test"), h("p", { class: "small muted" }, "Recordings are saved in your journal. Listen back before you score."), rw));
+  test.append(h("section", { class: "card" }, h("h2", null, "Record the test"), h("p", { class: "small muted" }, "Recordings are saved in your journal. Listen back before you score."), rw));
 
   // Checklist.
   const checks = {};
@@ -188,18 +235,24 @@ export async function render(main, { params }) {
     const res = recordAttempt(id, { items: passedItems, rubric: Object.assign({}, rubric), notes: notes.value.trim() }, passed);
     result.replaceChildren();
     if (passed) {
-      result.append(h("div", { class: "notice good" }, h("b", null, "Passed. "), "Well earned. " + (res.advanced ? "The next day is unlocked." : "")), h("a", { class: "btn primary", href: "#/today" }, "Go to today"));
+      result.append(h("div", { class: "notice good" }, h("b", null, "Passed. "), "Well earned. " + (res.advanced ? "The next day is unlocked." : "")), thenAndNow(cleanups), h("a", { class: "btn primary", href: "#/today" }, "Go to today"));
       celebrate("Milestone " + id + " passed!");
     } else {
+      // Not yet (W38): what passed first, then what is for next time, gently.
+      const passedNow = items.filter(it => checks[it.key].checked);
       const failed = items.filter(it => it.required && !checks[it.key].checked);
       const remedy = sectionOf(md, /if you did not pass/i);
-      result.append(h("div", { class: "notice" }, h("b", null, "Not passed yet. "), "Failing is information, not a judgement. Required items still to pass: " + failed.map(f => f.num || f.label).join(", ") + ". Practise the remedies below for 5-10 practice days, then retest only those items."));
+      const row = (it, ok) => h("li", { class: ok ? "ok" : "later" }, h("span", { class: "lesson-tick", "aria-hidden": "true" }, ok ? icon("check") : ""), h("span", null, it.num ? it.num + ". " : "", renderInline(it.label, info.path)));
+      result.append(h("div", { class: "notice ms-notyet" }, h("b", null, "Not yet. "), "Failing is information, not a judgement."),
+        passedNow.length ? h("div", { class: "stack tight lesson-well" }, h("span", { class: "eyebrow" }, "Passed " + passedNow.length + " of " + items.length), h("ul", { class: "lesson-done" }, passedNow.map(it => row(it, true)))) : null,
+        h("div", { class: "stack tight lesson-later" }, h("span", { class: "eyebrow" }, "For next time"), h("ul", { class: "lesson-done" }, failed.map(it => row(it, false))),
+          h("p", { class: "small" }, "Practise the remedies below for 5-10 practice days, then retest only those items.")));
       if (remedy) { const r = renderMarkdown(remedy, info.path); r.node.classList.add("reader"); result.append(h("div", { class: "card" }, r.node)); }
     }
     result.scrollIntoView({ behavior: "smooth" });
   });
 
-  page.append(h("section", { class: "card" }, h("h2", null, "Checklist"), items.length ? list : h("p", null, "No checklist table was found in this milestone file."),
+  test.append(h("section", { class: "card" }, h("h2", null, "Checklist"), items.length ? list : h("p", null, "No checklist table was found in this milestone file."),
     h("h3", null, "Rubric (1-4, from L08)"), rub,
     h("label", { class: "field", for: "ms-notes" }, "Notes", notes),
     h("div", { class: "row" }, submit, unlocked ? null : h("span", { class: "small muted" }, "Opens on Day " + info.day + ".")),

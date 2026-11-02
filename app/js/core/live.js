@@ -142,6 +142,13 @@ function lvDrone(label) {
   return { el: lvEl("span", { class: "lv-dronebox" }, lvEl("label", { class: "lv-check" }, box, label || "Drone"), tip), stop() { if (mine && tanpura.isOn()) tanpura.stop(); mine = false; box.checked = false; tip.hidden = true; } };
 }
 
+// The one word of playing mode: "in tune", "a little low", "hold", "breathe"... (set("") clears it).
+function lvWord() {
+  const el = lvEl("p", { class: "lv-word", "aria-hidden": "true" });
+  let shown = null;
+  return { el, set(w) { if (w !== shown) { shown = w; el.textContent = w; } } };
+}
+
 // ---------- Long-tone meter ----------
 // opts: { targets: [semi] (in order) or null for any steady note, seconds, cents, onPass(results),
 //   ghost(target) -> the learner's best hold in seconds for that note (drawn as a faint arc to beat) }
@@ -203,6 +210,9 @@ export function holdMeter(opts) {
   // What the old live tuner showed too: the Western name and the frequency. Hidden, not removed, in silence.
   const hzTxt = lvEl("span", { class: "lv-hz", style: "visibility:hidden" }, "C5 523.3 Hz");
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play a long, steady note.");
+  // Playing mode's one word (docs/redesign 09), readable from a music stand. bench.css hides it; the
+  // lesson player shows it while the microphone listens, so other screens are unchanged.
+  const word = lvWord();
   // For screen readers: the seconds held, every 2 s (the ring itself is silent).
   const srLive = lvEl("span", { class: "lv-sr", "aria-live": "polite" });
   const chips = targets[0] === null ? null : lvEl("div", { class: "lv-chips" }, targets.map((s, i) => lvEl("span", { class: "lv-chip", "data-i": String(i) }, lvNote(s))));
@@ -216,6 +226,7 @@ export function holdMeter(opts) {
     lvEl("div", { class: "lv-stage" },
       lvEl("div", { class: "lv-ringwrap lv-glow", role: "progressbar", "aria-label": "Seconds held", "aria-valuemin": "0", "aria-valuemax": String(o.seconds), "aria-valuenow": "0" }, ring, lvEl("div", { class: "lv-ringtxt" }, noteBig, secs)),
       lvEl("div", { class: "lv-tune" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle), lvEl("div", { class: "lv-scale" }, lvEl("span", null, "flat"), centsTxt, lvEl("span", null, "sharp")))),
+    word.el,
     lvEl("div", { class: "lv-row" }, ghostTxt, glowTxt, hzTxt),
     msg, srLive,
     lvEl("div", { class: "lv-row" }, startBtn, hearBtn, drone.el));
@@ -251,13 +262,14 @@ export function holdMeter(opts) {
       centsTxt.textContent = (r.cents > 0 ? "+" : "") + r.cents + " cents";
       if (r.f) { hzTxt.textContent = westOf(r.near) + " " + r.f.toFixed(1) + " Hz"; hzTxt.style.visibility = "visible"; }
       const t = targets[idx];
+      word.set(t !== null && r.near !== t ? (r.near < t ? "too low" : "too high") : Math.abs(r.cents) > 15 ? (r.cents < 0 ? "a little low" : "a little high") : s.ok && s.held >= 2 ? "hold" : "in tune");
       if (t !== null && r.near !== t) msg.textContent = `That is ${codeOf(r.near)} (${westOf(r.near)}). The target is ${codeOf(t)}.`;
       else msg.textContent = s.ok ? (s.held < 1.5 ? "Good start. Keep the air steady." : pitchAdvice(r.cents)) : pitchAdvice(r.cents);
     } else if (cur && r.t - lastSound > 0.6) noteEnded(cur);
     showTone(r);
-    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; hzTxt.style.visibility = "hidden"; }
+    if (!(r.semi !== null && r.semi > -7.5) && r.t - lastSound > 1.2) { word.set("breathe"); noteBig.textContent = "-"; msg.textContent = s.best ? `Best hold: ${s.best.toFixed(1)} s. Breathe, then play again.` : "Listening... play a long note."; needle.className = "lv-needle"; centsTxt.textContent = ""; hzTxt.style.visibility = "hidden"; }
     if (s.done) {
-      lvChime();
+      lvChime(); word.set("breathe");
       if (chips) chips.querySelector(`[data-i="${idx}"]`).classList.add("lv-ok");
       cur = null;
       if (idx < targets.length - 1) {
@@ -289,7 +301,7 @@ export function holdMeter(opts) {
       ac();
       const u = await lvListen(life, onReading);
       if (!u) return;
-      unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... play a long note.";
+      unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... play a long note."; word.set("");
       talking = true; lvSay(targets[idx] === null ? "hold_intro" : ["note", targets[idx], "hold"], ["secs", o.seconds]).then(() => { talking = false; });
     } catch (e) { msg.textContent = lvMicError(e); }
     finally { life.starting = false; }
@@ -318,6 +330,7 @@ export function phraseCheck(opts) {
   const exp = o.phrase.slice();
   const slots = lvEl("div", { class: "lv-slots" });
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play the phrase.");
+  const word = lvWord();
   const count = lvEl("span", { class: "lv-count" }, o.reps > 1 ? `0 of ${o.reps} clean in a row` : "");
   const startBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start");
   const hearBtn = lvEl("button", { type: "button", class: "lv-btn" }, "Hear it");
@@ -327,7 +340,7 @@ export function phraseCheck(opts) {
   let showing = false;
   const el = lvEl("div", { class: "lv lv-phrase" },
     lvEl("p", { class: "lv-goal" }, "Play: ", lvEl("b", { class: "lv-mono" }, exp.map(codeOf).join(" ")), exp.some((x, i) => i && x === exp[i - 1]) ? " (tongue each repeated note)" : ""),
-    slots, lvEl("div", { class: "lv-row" }, count), msg, lvEl("div", { class: "lv-row" }, startBtn, hearBtn, slowBtn));
+    slots, word.el, lvEl("div", { class: "lv-row" }, count), msg, lvEl("div", { class: "lv-row" }, startBtn, hearBtn, slowBtn));
   function drawSlots(st) {
     slots.replaceChildren(...exp.map((s, i) => lvEl("span", { class: "lv-slot" + (st && st.marks[i] ? " lv-" + st.marks[i] : i === (st ? st.pos : 0) ? " lv-next" : "") }, lvNote(s))));
   }
@@ -340,12 +353,13 @@ export function phraseCheck(opts) {
     const st = matcher.feed(n.semi);
     drawSlots(st);
     const last = st.marks[st.pos - 1];
+    word.set(last === "ok" ? "in tune" : last ? (n.semi < exp[st.pos - 1] ? "too low" : "too high") : "");
     if (last === "octave") msg.textContent = `Right note, wrong octave: ${codeOf(n.semi)}. Use ${n.semi > exp[st.pos - 1] ? "slower" : "faster"} air.`;
     else if (last === "wrong") msg.textContent = `Heard ${codeOf(n.semi)}, expected ${codeOf(exp[st.pos - 1])}.`;
     else msg.textContent = "";
     if (!st.done && matcher.onlyRepeatsLeft()) quietTimer = setTimeout(() => { if (unsub) { drawSlots(matcher.completeRepeats()); passDone(matcher.state()); } }, 1200);
     else if (st.done) passDone(st);
-    else quietTimer = setTimeout(() => { if (unsub) { msg.textContent = "Start again from the first note when ready."; fresh(); } }, 6000);
+    else quietTimer = setTimeout(() => { if (unsub) { msg.textContent = "Start again from the first note when ready."; word.set("breathe"); fresh(); } }, 6000);
   }
   function passDone(st) {
     {
@@ -369,7 +383,7 @@ export function phraseCheck(opts) {
       emitAttempt({ ok: false, fix: mark === "octave" ? "TS-02" : "TS-06" });
       msg.textContent = at < 0 ? "Not clean yet. Again from the start, slowly."
         : `The ${codeOf(exp[at])} (note ${at + 1}) slipped${mark === "octave" ? ", in the wrong octave" : ""}. Hear it, or try half speed, then again from the start.`;
-      slowBtn.hidden = false; showing = true; el.classList.add("lv-missed");
+      slowBtn.hidden = false; showing = true; el.classList.add("lv-missed"); word.set("breathe");
       matcher = phraseMatcher(exp);
     }
   }
@@ -386,7 +400,7 @@ export function phraseCheck(opts) {
       ac();
       const u = await lvListen(life, onReading);
       if (!u) return;
-      unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening. Play the phrase.";
+      unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening. Play the phrase."; word.set("");
     } catch (e) { msg.textContent = lvMicError(e); }
     finally { life.starting = false; }
   }

@@ -5,7 +5,7 @@ import { filesList } from "./content.js";
 import { current } from "./course.js";
 
 const SCREENS = () => [
-  ["Today", "#/today", "today"], ["Today's session", "#/session/" + current(), "play"], ["Course map", "#/plan", "plan"], ["Library", "#/library", "library"],
+  ["Today", "#/today", "today"], ["Today's session", "#/session/" + current(), "play"], ["Course", "#/course", "plan"], ["Course book", "#/course/book", "library"],
   ["Practice Bench: flute, tuner, tanpura, tala", "#/bench", "bench"], ["Coach: check my tone", "#/coach", "coach"], ["Listen", "#/listen", "listen"],
   ["Songs: play along", "#/songs", "note"], ["Games", "#/play", "star"], ["Make a melody", "#/compose", "note"], ["Notation from a recording (YouTube, a file)", "#/transcribe", "note"], ["5-minute practice", "#/quick", "today"],
   ["Progress and level", "#/progress", "progress"], ["Journal: record and log", "#/journal", "journal"], ["Settings", "#/settings", "settings"], ["Privacy", "#/privacy", "settings"], ["My students (for teachers)", "#/students", "me"],
@@ -29,7 +29,7 @@ export async function openPalette() {
     shown = (words.length ? items.filter(x => words.every(w => (x.t + " " + x.href).toLowerCase().includes(w))) : items.filter(x => x.kind === "Screen")).slice(0, 12);
     sel = Math.min(sel, Math.max(0, shown.length - 1));
     list.replaceChildren(...(shown.length ? shown.map((x, i) => h("li", { role: "option", "aria-selected": String(i === sel), class: i === sel ? "on" : "" },
-      h("a", { href: x.href, onclick: close }, icon(x.ic), h("span", null, x.t), h("span", { class: "small muted" }, x.kind)))) : [h("li", { class: "small muted pal-empty" }, "Nothing found. Try the Library's full-text search.")]));
+      h("a", { href: x.href, onclick: close }, icon(x.ic), h("span", null, x.t), h("span", { class: "small muted" }, x.kind)))) : [h("li", { class: "small muted pal-empty" }, "Nothing found. Try the course book's full-text search.")]));
   };
   function close() { if (!box) return; box.remove(); box = null; document.removeEventListener("keydown", onKey, true); }
   function onKey(e) {

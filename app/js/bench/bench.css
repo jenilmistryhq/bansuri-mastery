@@ -145,6 +145,8 @@
 .lv-check { display: inline-flex; gap: 6px; align-items: center; font-size: 0.9rem; color: var(--muted); }
 .lv-check input { accent-color: var(--accent); width: 18px; height: 18px; }
 .lv-msg { margin: 0; min-height: 1.5em; font-size: 0.95rem; }
+/* Playing mode's one word: shown only by the app's lesson player while the microphone listens. */
+.lv-word { display: none; }
 /* On a phone the advice can wrap to two lines: keep room for both so the buttons below stay put. */
 @media (max-width: 640px) { .lv-msg { min-height: 2.9em; } }
 .lv-count { font-size: 0.85rem; color: var(--muted); }

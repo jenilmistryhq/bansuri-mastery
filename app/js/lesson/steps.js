@@ -19,6 +19,8 @@ export { ding };
 
 function shuffle(list) { const a = list.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const reveal = (ok, head, text) => h("div", { class: "lesson-reveal " + (ok ? "good" : "warn") }, h("b", null, head), text ? h("p", null, text) : null);
+// An answer, marked with a symbol and a word as well as its colour (never colour alone, redesign L6).
+const answerMark = (b, ok) => { if (!b.querySelector(".lesson-optmark")) b.append(h("span", { class: "lesson-optmark" }, icon(ok ? "check" : "x"), ok ? "Right" : "Not this one")); };
 
 // Taps against the beat: how far each tap is from its nearest beat (ms), the median of those (a
 // steady device delay, left out), and how many taps land within 90 ms of the beat after that.
@@ -75,7 +77,7 @@ export const STEP_KINDS = {
         b.addEventListener("click", () => {
           if (op.right) {
             if (!missed) firstTry++;
-            b.classList.add("right"); opts.querySelectorAll("button").forEach(x => { x.disabled = true; });
+            b.classList.add("right"); answerMark(b, true); opts.querySelectorAll("button").forEach(x => { x.disabled = true; });
             ding(true);
             const last = i === s.questions.length - 1;
             const nextQ = last ? null : h("button", { type: "button", class: "btn" }, "Next question");
@@ -83,7 +85,7 @@ export const STEP_KINDS = {
             out.replaceChildren(...[reveal(true, "Right.", q.why), nextQ].filter(Boolean));
             if (last) { api.data[s.id] = { firstTry, of: s.questions.length }; api.save(); api.ready(); }
           } else {
-            missed = true; b.classList.add("wrong"); b.disabled = true; ding(false);
+            missed = true; b.classList.add("wrong"); answerMark(b, false); b.disabled = true; ding(false);
             out.replaceChildren(reveal(false, "Not this one.", op.why || "Try another answer."));
           }
         });

@@ -5,7 +5,7 @@
 // with the day, so no two neighbouring days are the same: technique from the current lesson,
 // music from recent ones, and one ear game from any lesson so far (spaced review).
 import { LESSONS } from "./index.js";
-import { dayReward } from "./common.js";
+import { dayReward, reviewGrowth } from "./common.js";
 import { getDay, current, dayState, finishSession, dueReviews, markReview } from "../course.js";
 import { parseNotation } from "../core/notation.js";
 import { holdSpec } from "../views/session.js";
@@ -139,7 +139,7 @@ export function buildPractice(n, day, next, lessons = LESSONS, done = {}, due = 
   }
   const teaser = next ? { when: "Tomorrow", title: "Day " + next.n + ": " + next.title, text: next.kind === "milestone" ? "A milestone: show what you can do." : next.kind === "review" ? "A review day." : "Another step on the way.", notes: [0, 2, 4, 2, 0] } : { when: "Tomorrow", title: "Keep going", text: "", notes: [0, 2, 4, 2, 0] };
   chapters.push({ title: "Done", steps: [{ id: "done", kind: "custom", title: review ? "Day " + n + " reviewed" : "Day " + n + " practised", next: "Finish Day " + n,
-    make: dayReward(d => (review ? [[d.quiz ? "Quiz: " + d.quiz.firstTry + " of " + d.quiz.of + " right first time" : "Review quiz", !!d.quiz]] : []).concat(parts.map(p => [p.b.label || p.b.id, p.done || p.steps.some(s => d[s.id])])), teaser) }] });
+    make: dayReward(d => (review ? [[d.quiz ? "Quiz: " + d.quiz.firstTry + " of " + d.quiz.of + " right first time" : "Review quiz", !!d.quiz]] : []).concat(parts.map(p => [p.b.label || p.b.id, p.done || p.steps.some(s => d[s.id])])), teaser, review ? reviewGrowth : null) }] });
   return {
     id: "p" + n, day: n, practice: true, review, title: day.title, minutes: day.minutes || 45, chapters,
     finish(d) {

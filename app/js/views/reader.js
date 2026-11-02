@@ -55,18 +55,18 @@ export async function render(main, { params }) {
   const page = h("div", { class: "page" });
   main.append(page);
   if (!/^[A-Za-z0-9._\/-]+\.md$/.test(path) || path.includes("..")) {
-    page.append(h("div", { class: "card" }, h("h2", null, "Page not found"), h("p", null, "That address does not point to a course page."), h("a", { href: "#/library" }, "Open the library")));
+    page.append(h("div", { class: "card" }, h("h2", null, "Page not found"), h("p", null, "That address does not point to a course page."), h("a", { href: "#/course/book" }, "Open the course book")));
     return;
   }
   let md;
   try { md = await fetchDoc(path); }
-  catch (e) { page.append(h("div", { class: "card" }, h("h2", null, "Could not open this page"), h("p", null, String(e.message)), h("a", { href: "#/library" }, "Open the library"))); return; }
+  catch (e) { page.append(h("div", { class: "card" }, h("h2", null, "Could not open this page"), h("p", null, String(e.message)), h("a", { href: "#/course/book" }, "Open the course book"))); return; }
 
   const { node, title } = renderMarkdown(md, path);
   const cleanups = [];
   document.title = title + " - Bansuri Mastery";
   const folder = path.includes("/") ? path.split("/")[0] : "";
-  const crumbs = h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/library" }, "Library"), folder ? [" / ", h("span", null, GROUP_LABEL[folder] || folder)] : null);
+  const crumbs = h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/course/book" }, "Course book"), folder ? [" / ", h("span", null, GROUP_LABEL[folder] || folder)] : null);
   node.classList.add("reader");
   const full = h("article", { class: "card" }, node);
   page.append(crumbs);
