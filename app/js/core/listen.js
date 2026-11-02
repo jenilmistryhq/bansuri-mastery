@@ -198,6 +198,13 @@ export function emitLive(detail) {
   try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:live", { detail })); } catch (e) { /* no DOM */ }
 }
 
+// Each attempt in a listening exercise goes out as a "bansuri:attempt" event: { ok, fix } where fix
+// names the troubleshooting guide that fits a miss (TS-01 airy, TS-02 octave, TS-05 pitch, TS-06
+// fingers, TS-07 breath). The lesson player counts misses and, after two, offers help and a skip.
+export function emitAttempt(detail) {
+  try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:attempt", { detail })); } catch (e) { /* no DOM */ }
+}
+
 // Timing of taps against a beat. offsets: milliseconds, negative = early.
 // Returns { n, mean, spread, within } (within = share of taps inside +/- 50 ms) or null.
 export function tapStats(offsets) {

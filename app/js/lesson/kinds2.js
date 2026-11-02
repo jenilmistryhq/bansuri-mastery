@@ -224,7 +224,7 @@ export const MORE_KINDS = {
   // between. { target, seconds, cents, times, giveUp }
   hold: { make(s, api) {
     let timer = 0;
-    const later = h("button", { type: "button", class: "linkbtn", hidden: true }, "Not yet? Go on, and try again tomorrow");
+    const later = h("button", { type: "button", class: "linkbtn lesson-later", hidden: true }, "Not yet? Go on, and try again tomorrow");
     const meter = holdMeter({ targets: s.targets || Array(s.times || 1).fill(s.target), seconds: s.seconds, cents: s.cents || 30, onPass: () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
     later.addEventListener("click", () => { api.data[s.id] = { passed: false }; api.save(); later.hidden = true; api.ready(); });
     timer = setTimeout(() => { later.hidden = false; }, (s.giveUp || 45) * 1000 * (window.__lessonTime || 1));
@@ -235,7 +235,7 @@ export const MORE_KINDS = {
   phrase: { make(s, api) {
     let timer = 0;
     const play = () => s.phrase.forEach((n, i) => setTimeout(() => playNote(n, 0.55), i * 600));
-    const later = h("button", { type: "button", class: "linkbtn", hidden: true }, "Not yet? Go on, and try again tomorrow");
+    const later = h("button", { type: "button", class: "linkbtn lesson-later", hidden: true }, "Not yet? Go on, and try again tomorrow");
     const pc = phraseCheck({ phrase: s.phrase, reps: s.reps || 1, hear: play, onPass: () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
     later.addEventListener("click", () => { api.data[s.id] = { passed: false }; api.save(); later.hidden = true; api.ready(); });
     timer = setTimeout(() => { later.hidden = false; }, (s.giveUp || 60) * 1000 * (window.__lessonTime || 1));

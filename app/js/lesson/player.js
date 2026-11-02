@@ -9,7 +9,8 @@ import { h, store, storeSet, today, icon } from "../util.js";
 import { STEP_KINDS } from "./steps.js";
 import { stopAll } from "../core/audio.js";
 import { micActive } from "../core/listen.js";
-import { whyLayer } from "./learn.js";
+import { whyLayer, openReading } from "./learn.js";
+import { FIX_INFO, FIX_FILE } from "../skillmap.js";
 
 const KEY = "bansuri.lessons";
 export const lessonRecord = id => store(KEY, {})[id] || null;
@@ -39,9 +40,12 @@ export function lessonPlayer(lesson, opts) {
   const stage = h("div", { class: "lesson-stage", "aria-live": "polite" });
   const backBtn = h("button", { type: "button", class: "btn ghost" }, "Back");
   const nextBtn = h("button", { type: "button", class: "btn primary big lesson-next" }, "Continue");
+  // After two misses on a step (redesign L4c, F9): help that fits the miss, and a respectable skip.
+  const trouble = h("div", { class: "lesson-trouble", hidden: true });
+  let misses = 0, lastFix = null;
   const el = h("div", { class: "lesson" },
     h("header", { class: "lesson-top" }, closeBtn, bar, count),
-    chapterEl, stage,
+    chapterEl, stage, trouble,
     h("footer", { class: "lesson-foot" }, backBtn, nextBtn));
 
   const api = {
@@ -49,6 +53,7 @@ export function lessonPlayer(lesson, opts) {
     ready(on = true) {
       isReady = !!on; nextBtn.disabled = !isReady;
       nextBtn.classList.toggle("lesson-go", isReady);
+      if (isReady) trouble.hidden = true;
     },
     save() { save(); },
     next() { go(at + 1); },
@@ -67,6 +72,7 @@ export function lessonPlayer(lesson, opts) {
     backBtn.hidden = at === 0;
     nextBtn.textContent = s.next || (at === steps.length - 1 ? "Finish" : "Continue");
     api.ready(false);
+    misses = 0; lastFix = null; trouble.hidden = true; trouble.replaceChildren(); el.classList.remove("lesson-introuble");
     const kind = s.kind === "custom" ? { make: s.make } : STEP_KINDS[s.kind];
     live = kind ? kind.make(s, api) : { el: h("p", null, "This step is missing.") };
     const head = s.title ? h("h2", { class: "lesson-title", tabindex: "-1" }, s.title) : null;
@@ -110,6 +116,23 @@ export function lessonPlayer(lesson, opts) {
   // stand, so the note, the ring and one word grow and everything else steps back.
   const onMic = e => el.classList.toggle("lesson-playing", !!(e.detail && e.detail.on));
   document.addEventListener("bansuri:mic", onMic);
+  function showTrouble() {
+    const s = steps[at], fix = lastFix && FIX_FILE[lastFix] ? lastFix : "TS-01";
+    const help = h("button", { type: "button", class: "linkbtn" }, "Having trouble? ", h("span", { class: "muted" }, FIX_INFO[fix]));
+    help.addEventListener("click", () => openReading({ path: "troubleshooting/" + FIX_FILE[fix], label: fix + " - " + FIX_INFO[fix] }));
+    const skip = h("button", { type: "button", class: "linkbtn" }, "Skip for now");
+    skip.addEventListener("click", () => { if (!api.data[s.id]) api.data[s.id] = { passed: false, skipped: true }; save(); go(at + 1); });
+    trouble.replaceChildren(help, skip);
+    trouble.hidden = false;
+    el.classList.add("lesson-introuble");
+  }
+  const onAttempt = e => {
+    const d = e.detail || {};
+    if (d.ok || isReady) return;
+    misses++; if (d.fix) lastFix = d.fix;
+    if (misses >= 2) showTrouble();
+  };
+  document.addEventListener("bansuri:attempt", onAttempt);
   el.classList.toggle("lesson-playing", micActive());
   // Full focus: while the player is on screen, no top bar and no tabs (W2); the close button leads out.
   document.documentElement.classList.add("fullfocus");
@@ -119,6 +142,7 @@ export function lessonPlayer(lesson, opts) {
     destroy() {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("bansuri:mic", onMic);
+      document.removeEventListener("bansuri:attempt", onAttempt);
       document.documentElement.classList.remove("fullfocus");
       if (live && live.destroy) { try { live.destroy(); } catch (e) { /* ignore */ } }
       stopAll();

@@ -5906,5 +5906,8 @@
 "+{n} XP today": "आज +{n} XP",
 "{n} days in a row": "लगातार {n} दिन",
 "1 day in a row": "लगातार 1 दिन",
-"note": "स्वर"
+"note": "स्वर",
+"Having trouble?": "दिक़्क़त आ रही है?",
+"The {x} (note {n}) slipped. Hear it, or try half speed, then again from the start.": "{x} (स्वर {n}) फिसल गया। इसे सुनिए, या आधी गति पर आज़माइए, फिर शुरू से दोबारा।",
+"The {x} (note {n}) slipped, in the wrong octave. Hear it, or try half speed, then again from the start.": "{x} (स्वर {n}) फिसल गया, ग़लत सप्तक में। इसे सुनिए, या आधी गति पर आज़माइए, फिर शुरू से दोबारा।"
 }

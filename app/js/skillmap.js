@@ -48,6 +48,14 @@ export const FIX_INFO = {
   "TS-12": "Flute damage and care",
 };
 
+// Each guide's course page (bansuri-mastery/troubleshooting/).
+export const FIX_FILE = {
+  "TS-01": "TS-01-no-sound-or-airy-tone.md", "TS-02": "TS-02-squeaks-and-wrong-octave.md", "TS-03": "TS-03-low-notes-wont-sound.md",
+  "TS-04": "TS-04-high-notes.md", "TS-05": "TS-05-pitch-out-of-tune.md", "TS-06": "TS-06-finger-leaks-and-transitions.md",
+  "TS-07": "TS-07-breath-dizziness-and-endurance.md", "TS-08": "TS-08-body-pain-and-tension.md", "TS-09": "TS-09-rhythm-and-tempo.md",
+  "TS-10": "TS-10-ear-and-memory.md", "TS-11": "TS-11-practice-plateaus-and-motivation.md", "TS-12": "TS-12-flute-damage-and-care.md",
+};
+
 const last = list => (list && list.length ? list[list.length - 1] : null);
 
 // Each skill: the section tab's id and label, its full name, the latest measure (or null), the tools

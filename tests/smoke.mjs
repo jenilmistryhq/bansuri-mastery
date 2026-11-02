@@ -1542,6 +1542,54 @@ try {
     check(await lp.evaluate(() => [...document.querySelectorAll(".lesson-title, .lesson-q, .lesson-option")].every(e => /[\u0900-\u097F]/.test(e.textContent))), "hindi: the lesson's first step is in Hindi");
     await ctx.close();
   });
+  await section("Result after an attempt", async () => {
+    // Redesign L4c: a missed phrase keeps its result (the note that broke, in amber, Half speed
+    // beside Hear it); after two misses the step offers the fitting guide in a sheet, and a skip.
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const lp = await ctx.newPage();
+    lp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    await lp.evaluateOnNewDocument(() => {
+      const voices = []; let current = 0;
+      const apply = (v, hz) => { const t = v.c.currentTime; if (hz) { v.o.frequency.setValueAtTime(hz, t); v.g.gain.setTargetAtTime(0.4, t, 0.005); } else v.g.gain.setTargetAtTime(0, t, 0.005); };
+      window.__tone = hz => { current = hz; voices.forEach(v => apply(v, hz)); };
+      navigator.mediaDevices.getUserMedia = async () => { const c = new AudioContext(), o = c.createOscillator(), g = c.createGain(), d = c.createMediaStreamDestination(); o.type = "triangle"; g.gain.value = 0; o.connect(g); g.connect(d); o.start(); const v = { c, o, g, stream: d.stream }; voices.push(v); apply(v, current); return d.stream; };
+      window.__lessonTime = 0.05;
+    });
+    const tone = hz => lp.evaluate(f => window.__tone(f), hz);
+    const hz = n => 523.251 * Math.pow(2, n / 12);
+    await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    // Day 9's lesson, resumed at its phrase step (S G S G S).
+    const at = await lp.evaluate(async () => {
+      const u = p => import(new URL("app/js/" + p, location.href).href);
+      const [{ LESSONS }, OD, C, P] = await Promise.all([u("lessons/index.js"), u("lessons/oneday.js"), u("course.js"), u("lesson/player.js")]);
+      const days = {}; for (let i = 0; i < 9; i++) days[i] = { done: true };
+      localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 }));
+      localStorage.setItem("bansuri.progress", JSON.stringify({ current: 9, startedAt: "2026-01-01", days, milestones: { M0: { status: "passed", attempts: [] } }, prefs: { howChosen: true } }));
+      const i = P.flatSteps(OD.oneDay(LESSONS.m9, C.getDay(9))).findIndex(s => s.id === "sgsg");
+      localStorage.setItem("bansuri.lessons", JSON.stringify({ m0: { at: 0, done: "2026-01-01", data: { side: "right" } }, m9: { at: i, data: {}, done: null } }));
+      return i;
+    });
+    await lp.goto(BASE + "#/lesson/m9", { waitUntil: "networkidle0" }); await lp.reload({ waitUntil: "networkidle0" });
+    await lp.waitForSelector("#main .lesson-cover .btn.primary");
+    await lp.evaluate(() => document.querySelector("#main .lesson-cover .btn.primary").click());
+    await lp.waitForSelector('.lesson-stage[data-step="sgsg"]', { timeout: 5000 }).catch(() => {});
+    check(at > 0 && await lp.$('.lesson-stage[data-step="sgsg"]') !== null && await lp.$(".lesson-trouble:not([hidden])") === null, "result: the phrase step opens with no help offered yet");
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lv-primary").click());
+    await sleep(150); await lp.evaluate(() => { const b = document.querySelector(".lesson-stage .lv-intro .lv-primary"); if (b) b.click(); }); await sleep(400);
+    // Two passes with the second note wrong (R for G).
+    for (let rep = 0; rep < 2; rep++) { for (const n of [0, 2, 0, 4, 0]) { await tone(hz(n)); await sleep(650); await tone(0); await sleep(180); } await sleep(900); }
+    const res = await lp.evaluate(() => ({ wrong: document.querySelectorAll(".lesson-stage .lv-slot.lv-wrong").length, color: (() => { const e = document.querySelector(".lesson-stage .lv-slot.lv-wrong"); return e ? getComputedStyle(e).borderTopColor : ""; })(), warn: getComputedStyle(document.documentElement).getPropertyValue("--warn").trim(), msg: document.querySelector(".lesson-stage .lv-msg").textContent, slow: !!document.querySelector(".lesson-stage .lv-btn:not([hidden])") && [...document.querySelectorAll(".lesson-stage .lv-btn")].some(b => b.textContent === "Half speed" && !b.hidden), trouble: document.querySelector(".lesson-trouble") && !document.querySelector(".lesson-trouble").hidden ? document.querySelector(".lesson-trouble").textContent : "" }));
+    check(res.wrong >= 1 && /slipped/.test(res.msg) && res.slow, "result: the note that broke stays marked, named, with Half speed beside Hear it [" + res.msg + "]");
+    check(/Having trouble\?/.test(res.trouble) && /Skip for now/.test(res.trouble), "result: after two misses, Having trouble? and Skip for now [" + res.trouble + "]");
+    await lp.evaluate(() => [...document.querySelectorAll(".lesson-trouble button")].find(b => /Having trouble/.test(b.textContent)).click());
+    await lp.waitForFunction(() => { const d = document.querySelector("dialog.sheet[open]"); return d && /TS-0\d/.test(d.textContent); }, { timeout: 5000 }).then(() => check(true, "result: Having trouble? opens the fitting guide over the lesson"), () => check(false, "result: Having trouble? opens the fitting guide over the lesson"));
+    await lp.evaluate(() => [...document.querySelectorAll("dialog.sheet[open] button")].find(b => /Back to the step/.test(b.textContent)).click());
+    await sleep(200);
+    await lp.evaluate(() => [...document.querySelectorAll(".lesson-trouble button")].find(b => /Skip for now/.test(b.textContent)).click());
+    await sleep(300);
+    check(await lp.evaluate(() => document.querySelector(".lesson-stage").dataset.step !== "sgsg" && JSON.parse(localStorage.getItem("bansuri.lessons")).m9.data.sgsg.skipped === true), "result: Skip for now goes on, and the step is remembered as skipped");
+    await tone(0); await ctx.close();
+  });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete
     // each kind of step (the player marks the step's kind on the stage). A fresh learner on the

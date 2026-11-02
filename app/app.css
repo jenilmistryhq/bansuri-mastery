@@ -1208,3 +1208,9 @@ html.fullfocus main { padding-bottom: 0; }
 .lesson-playing .lv-chip.lv-now { font-size: 1.9rem; }
 .lesson-playing .lv-slot { font-size: 1.8rem; min-width: 4rem; }
 @media (prefers-reduced-motion: reduce) { .lesson-playing .lesson-top { transition: none; } }
+
+/* After two misses on a step: help that fits the miss, and a skip (redesign L4c). */
+.lesson-trouble { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; margin: 4px 0 8px; }
+.lesson-trouble[hidden] { display: none; }
+/* The step's own timed "Not yet? Go on" steps aside once the player offers Skip for now. */
+.lesson-introuble .lesson-later { display: none; }

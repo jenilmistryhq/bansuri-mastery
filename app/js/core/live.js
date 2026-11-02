@@ -29,7 +29,7 @@ function lvGlide(from, to) {
   muteListening(t0 + 1.8);
   return new Promise(r => setTimeout(r, 1700));
 }
-import { listenMic, muteListening, holdTracker, noteSequencer, phraseMatcher, tapStats, pitchAdvice, tapLatency, tapCalibrated, emitLive } from "./listen.js";
+import { listenMic, muteListening, holdTracker, noteSequencer, phraseMatcher, tapStats, pitchAdvice, tapLatency, tapCalibrated, emitLive, emitAttempt } from "./listen.js";
 
 function lvEl(tag, attrs, ...kids) {
   const el = document.createElement(tag);
@@ -155,15 +155,18 @@ export function holdMeter(opts) {
   let cur = null, talking = false;
   function noteEnded(n) {
     cur = null;
-    if (talking || finished || n.frames < 8) return;
+    if (finished || n.frames < 8) return;
     const t = targets[idx], near = n.notes.sort((a, b) => b[1] - a[1])[0][0], cents = n.cents / n.frames, clear = n.clarity / n.frames;
-    let refs = null, glide = null;
-    if (t !== null && near !== t) { refs = [["note", near, "is"], ["note", t, "play"]]; glide = [near + cents / 100, t]; }
-    else if (cents > o.cents) { refs = ["sharp"]; glide = t !== null ? [t + cents / 100, t] : null; }
-    else if (cents < -o.cents) { refs = ["flat"]; glide = t !== null ? [t + cents / 100, t] : null; }
-    else if (clear < 0.86) refs = ["airy"];
+    let refs = null, glide = null, fix = "TS-07";
+    if (t !== null && near !== t) { refs = [["note", near, "is"], ["note", t, "play"]]; glide = [near + cents / 100, t]; fix = (near - t) % 12 === 0 ? "TS-02" : "TS-05"; }
+    else if (cents > o.cents) { refs = ["sharp"]; glide = t !== null ? [t + cents / 100, t] : null; fix = "TS-05"; }
+    else if (cents < -o.cents) { refs = ["flat"]; glide = t !== null ? [t + cents / 100, t] : null; fix = "TS-05"; }
+    else if (clear < 0.86) { refs = ["airy"]; fix = "TS-01"; }
     else if (n.secs < 1.5) refs = ["too_short"];
     else refs = ["breathe_again"];
+    // A note that ended before the hold was long enough is a miss (the held one never gets here).
+    emitAttempt({ ok: false, fix });
+    if (talking) return;
     talking = true;
     lvSay(...refs).then(() => glide ? lvGlide(glide[0], glide[1]) : null).then(() => { talking = false; });
   }
@@ -266,6 +269,7 @@ export function holdMeter(opts) {
         lvSay(targets.length > 1 ? "every_note_held" : "held_well");
         msg.textContent = targets[0] === null ? `Held ${o.seconds} s. Well done.` : "Every note held. Well done.";
         el.classList.add("lv-passed");
+        emitAttempt({ ok: true });
         if (o.onPass) { try { o.onPass({ targets, seconds: o.seconds }); } catch (e) { /* ignore */ } }
         stop(); // the goal is met: close the microphone; "Again" starts a fresh attempt
       }
@@ -317,9 +321,13 @@ export function phraseCheck(opts) {
   const count = lvEl("span", { class: "lv-count" }, o.reps > 1 ? `0 of ${o.reps} clean in a row` : "");
   const startBtn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start");
   const hearBtn = lvEl("button", { type: "button", class: "lv-btn" }, "Hear it");
+  // After a miss, the phrase at half speed sits beside Hear it (the fix next to the problem).
+  const slowBtn = lvEl("button", { type: "button", class: "lv-btn", hidden: true }, "Half speed");
+  // A missed pass stays on screen (the note that broke marked) until the next pass begins.
+  let showing = false;
   const el = lvEl("div", { class: "lv lv-phrase" },
     lvEl("p", { class: "lv-goal" }, "Play: ", lvEl("b", { class: "lv-mono" }, exp.map(codeOf).join(" ")), exp.some((x, i) => i && x === exp[i - 1]) ? " (tongue each repeated note)" : ""),
-    slots, lvEl("div", { class: "lv-row" }, count), msg, lvEl("div", { class: "lv-row" }, startBtn, hearBtn));
+    slots, lvEl("div", { class: "lv-row" }, count), msg, lvEl("div", { class: "lv-row" }, startBtn, hearBtn, slowBtn));
   function drawSlots(st) {
     slots.replaceChildren(...exp.map((s, i) => lvEl("span", { class: "lv-slot" + (st && st.marks[i] ? " lv-" + st.marks[i] : i === (st ? st.pos : 0) ? " lv-next" : "") }, lvNote(s))));
   }
@@ -328,6 +336,7 @@ export function phraseCheck(opts) {
     const n = seq.feed(r);
     if (!n) return;
     clearTimeout(quietTimer);
+    if (showing) { showing = false; fresh(); el.classList.remove("lv-missed"); }
     const st = matcher.feed(n.semi);
     drawSlots(st);
     const last = st.marks[st.pos - 1];
@@ -347,9 +356,21 @@ export function phraseCheck(opts) {
         if (o.onPass) { try { o.onPass({ reps: clean }); } catch (e) { /* ignore */ } }
         return;
       }
-      msg.textContent = st.clean ? "Clean. Again from the start." : "Not clean yet. Again from the start, slowly.";
-      // A new pass starts at once, so the next notes belong to it (and cannot count twice).
-      fresh();
+      if (st.clean) {
+        emitAttempt({ ok: true });
+        msg.textContent = "Clean. Again from the start.";
+        // A new pass starts at once, so the next notes belong to it (and cannot count twice).
+        fresh();
+        return;
+      }
+      // The result of a miss: the first note that broke, named, with the fix beside it. The marks
+      // stay until the next note starts a new pass.
+      const at = st.marks.findIndex(m => m && m !== "ok"), mark = st.marks[at];
+      emitAttempt({ ok: false, fix: mark === "octave" ? "TS-02" : "TS-06" });
+      msg.textContent = at < 0 ? "Not clean yet. Again from the start, slowly."
+        : `The ${codeOf(exp[at])} (note ${at + 1}) slipped${mark === "octave" ? ", in the wrong octave" : ""}. Hear it, or try half speed, then again from the start.`;
+      slowBtn.hidden = false; showing = true; el.classList.add("lv-missed");
+      matcher = phraseMatcher(exp);
     }
   }
   async function start() {
@@ -372,6 +393,7 @@ export function phraseCheck(opts) {
   function stop() { life.gen++; clearTimeout(quietTimer); if (unsub) { unsub(); unsub = null; } startBtn.textContent = "Start"; }
   startBtn.addEventListener("click", start);
   hearBtn.addEventListener("click", () => { lvPlayPhrase(exp, o.noteS); if (seq) seq.reset(); });
+  slowBtn.addEventListener("click", () => { lvPlayPhrase(exp, o.noteS * 2); if (seq) seq.reset(); });
   drawSlots(null);
   return { el, start, stop, destroy() { life.dead = true; stop(); } };
 }

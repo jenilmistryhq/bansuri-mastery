@@ -173,7 +173,8 @@
 .lv-slot { min-width: 3rem; padding: 10px 8px; text-align: center; border-radius: 10px; border: 2px dashed var(--line); font-size: 1.15rem; font-weight: 600; }
 .lv-slot.lv-next { border-color: var(--accent); border-style: solid; }
 .lv-slot.lv-ok { border: 2px solid var(--good); background: color-mix(in srgb, var(--good) 15%, transparent); }
-.lv-slot.lv-wrong { border: 2px solid var(--bad); background: color-mix(in srgb, var(--bad) 15%, transparent); }
+/* A missed note is amber, never alarm red (redesign 09: no red for musical mistakes). */
+.lv-slot.lv-wrong { border: 2px solid var(--warn); background: color-mix(in srgb, var(--warn) 15%, transparent); }
 .lv-slot.lv-octave { border: 2px solid var(--warn); background: color-mix(in srgb, var(--warn) 15%, transparent); }
 .lv-pad { width: 100%; min-height: 120px; border-radius: 16px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--ink); font: inherit; font-size: 1.4rem; font-weight: 600; cursor: pointer; touch-action: manipulation; user-select: none; }
 .lv-pad[disabled] { opacity: 0.5; cursor: default; }
