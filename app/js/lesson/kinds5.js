@@ -145,7 +145,69 @@ export function styleEvents(name) {
   return ev;
 }
 
+// L37's energy map: levels 1-5 for each section. A good plan starts calm, rises in waves (at
+// least one dip on the way up) and saves the peak for the end.
+export function energyCheck(levels) {
+  const peak = Math.max(...levels), first = levels.indexOf(peak), n = levels.length;
+  let dip = false;
+  for (let i = 1; i < first; i++) if (levels[i] < levels[i - 1]) dip = true;
+  return { calmStart: levels[0] <= 2, latePeak: first >= n - 2, waves: dip };
+}
+
 export const RAGA_KINDS = {
+  // Plan a presentation's energy, 1 (calm) to 5 (peak), section by section, and see its shape.
+  // { sections: [label] }
+  energy: { make(s, api) {
+    const levels = s.sections.map(() => 0), n = s.sections.length;
+    const NS = "http://www.w3.org/2000/svg";
+    const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v)); return e; };
+    const svg = el("svg", { viewBox: "0 0 300 110", class: "lesson-energy", role: "img", "aria-label": "Energy map" });
+    const xOf = i => 20 + i * 260 / (n - 1), yOf = v => 100 - v * 18;
+    const draw = () => {
+      svg.replaceChildren();
+      for (let v = 1; v <= 5; v++) svg.append(el("line", { x1: 14, x2: 286, y1: yOf(v), y2: yOf(v), class: "energy-grid" }));
+      const pts = levels.map((v, i) => [xOf(i), yOf(v || 0)]).filter((_, i) => levels[i]);
+      if (pts.length > 1) svg.append(el("polyline", { points: pts.map(p => p.join(",")).join(" "), class: "energy-line" }));
+      for (const [x, y] of pts) svg.append(el("circle", { cx: x, cy: y, r: 4, class: "energy-dot" }));
+    };
+    const out = h("div");
+    const check = h("button", { type: "button", class: "btn primary", disabled: true }, "Check the shape");
+    const rows = s.sections.map((label, i) => h("div", { class: "lesson-energy-row" }, h("span", { class: "small" }, label),
+      h("div", { class: "lesson-chips" }, [1, 2, 3, 4, 5].map(v => {
+        const b = h("button", { type: "button", class: "lesson-chip", "aria-pressed": "false" }, String(v));
+        b.addEventListener("click", () => {
+          levels[i] = v; b.parentElement.querySelectorAll("button").forEach(x => { x.classList.toggle("picked", x === b); x.setAttribute("aria-pressed", String(x === b)); });
+          check.disabled = levels.some(x => !x); draw();
+        });
+        return b;
+      }))));
+    check.addEventListener("click", () => {
+      const r = energyCheck(levels), good = r.calmStart && r.latePeak && r.waves;
+      ding(good);
+      out.replaceChildren(h("div", { class: "stack" },
+        h("div", { class: "notice" + (r.calmStart ? " good" : "") }, r.calmStart ? "Starts calm: the alap has room to grow." : "Start lower: the alap introduces the raga slowly."),
+        h("div", { class: "notice" + (r.latePeak ? " good" : "") }, r.latePeak ? "The peak comes at the end." : "The peak comes too early: save taar saptak and fast taans for later."),
+        h("div", { class: "notice" + (r.waves ? " good" : "") }, r.waves ? "It rises in waves, with a calmer moment on the way." : "A straight line up: let one section settle (often the vilambit gat) before the next rise.")));
+      api.data[s.id] = { levels: levels.slice(), good }; api.save(); api.ready();
+    });
+    draw();
+    return { el: h("div", { class: "stack lesson-center" }, svg, h("div", { class: "stack" }, rows), check, out) };
+  } },
+
+  // Write a plan in your own words. { fields: [{ key, label, hint }], required: [key] }
+  plan: { make(s, api) {
+    const saved = api.data[s.id] || {};
+    const check = () => { if (s.required.every(k => (saved[k] || "").trim())) { api.data[s.id] = Object.assign({}, saved); api.save(); api.ready(); } };
+    const fields = s.fields.map(f => {
+      const t = h("textarea", { class: "input", rows: 2, placeholder: f.hint || "", "aria-label": f.label });
+      t.value = saved[f.key] || "";
+      t.addEventListener("input", () => { saved[f.key] = t.value; check(); });
+      return h("label", { class: "field" }, f.label, t);
+    });
+    check();
+    return { el: h("div", { class: "stack" }, fields, s.after ? h("p", { class: "small muted" }, s.after) : null) };
+  } },
+
   // Hear the melody in a style and name it. { rounds: [{ style, options, answer, why }] }
   styles: { make(s, api) {
     let timers = [];

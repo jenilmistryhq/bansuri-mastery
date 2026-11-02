@@ -187,4 +187,10 @@ test("styles: folk is tongued note by note and quick, bhajan slurred and slow; f
   assert.ok(Math.max(...last) - Math.min(...last) > 0.4, "vibrato on the final Sa");
   assert.ok(ev.bhajan[0].pts.some(p => p.semi > 2 && p.semi < 4), "a meend from Ga to Re passes between them");
 });
+test("energy map: calm start, waves on the way up, the peak at the end", () => {
+  assert.deepEqual(K5.energyCheck([1, 2, 3, 2, 4, 5]), { calmStart: true, latePeak: true, waves: true });
+  assert.equal(K5.energyCheck([1, 2, 3, 4, 5, 5]).waves, false, "a straight line up has no wave");
+  assert.equal(K5.energyCheck([2, 5, 3, 2, 3, 4]).latePeak, false, "peaking in the jod is too early");
+  assert.equal(K5.energyCheck([4, 2, 3, 2, 4, 5]).calmStart, false);
+});
 console.log("lesson tests: " + n + " passed");

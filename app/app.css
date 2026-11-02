@@ -1096,3 +1096,8 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .fills-line { background: var(--sunken); color: var(--muted); }
 .fills-gap { background: var(--accent-soft); color: var(--ink); font-weight: 700; }
 .fills-cursor { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--accent); transition: left 50ms linear; }
+.lesson-energy { width: min(420px, 100%); height: auto; background: var(--surface); border-radius: var(--radius); }
+.energy-grid { stroke: var(--line); stroke-width: 1; }
+.energy-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+.energy-dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.lesson-energy-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; width: min(420px, 100%); }
