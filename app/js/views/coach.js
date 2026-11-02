@@ -1,15 +1,20 @@
-// Coach (#/coach): diagnose a practice problem from the course's troubleshooting guides.
-// Works offline; no AI and no network beyond the app's own files. Offers the matching live drill and
-// remembers what helped. Its first section is the Tone check (views/tone.js), which listens to a held
-// note, scores it and runs diagnose() below; "Show the fix" opens the guide here. #/coach/TS-nn opens
-// a guide directly; #/tone opens the Coach at the Tone check.
+// Fix a problem (Skills > Fix, #/skills/fix; the old #/coach): diagnose a practice problem from the
+// course's troubleshooting guides. Works offline; no AI and no network beyond the app's own files.
+// Offers the matching live drill and remembers what helped. Its first section is the Tone check
+// (views/tone.js), which listens to a held note, scores it and runs diagnose() below; "Show the fix"
+// opens the guide here. #/skills/fix/TS-nn (#/coach/TS-nn) opens a guide directly, and
+// #/skills/fix/TS-nn/<skill> also links back to that skill; #/tone opens it at the Tone check.
 import { h, clear, store, storeSet, today, fmtDate } from "../util.js";
 import { renderMarkdown, fetchDoc, tablesOf, sectionOf } from "../content.js";
 import { holdMeter, phraseCheck, echoGame, tapGame } from "../core/live.js";
 import { codeOf } from "../core/theory.js";
 import { toneCheck } from "./tone.js";
+import { SKILLS, skillById } from "../skillmap.js";
 
 const HISTORY = "bansuri.coach.history";
+// The symptoms in four groups (redesign S4), by guide.
+const GROUPS = [["Sound", ["TS-01", "TS-02", "TS-03", "TS-04", "TS-05"]], ["Fingers and body", ["TS-06", "TS-07", "TS-08"]],
+  ["Musicianship", ["TS-09", "TS-10", "TS-11"]], ["The flute", ["TS-12"]]];
 
 // A live drill for each guide: the exercise that practises the fix and shows when it works.
 const DRILLS = {
@@ -63,7 +68,7 @@ export async function render(main, { params } = {}) {
   const page = h("div", { class: "page" });
   main.append(page);
   const cleanups = [];
-  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Coach"), h("h1", null, "What is going wrong?"),
+  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Fix a problem"), h("h1", null, "What is going wrong?"),
     h("p", { class: "muted" }, "Let the app listen to a held note, or pick the closest symptom. You get the likely causes, quick checks to tick, a drill that shows when it works, and when to see a teacher.")));
 
   const md = await fetchDoc("troubleshooting/README.md");
@@ -72,7 +77,9 @@ export async function render(main, { params } = {}) {
   const causeCol = table ? table.head.find(x => /cause/i.test(x)) : null;
   const tsOf = r => ((/TS-\d\d/.exec(r.Guide || "") || [])[0]) || null;
   const out = h("div", { class: "stack", role: "region", "aria-live": "polite", "aria-label": "Diagnosis" });
-  const grid = h("div", { class: "symgrid", role: "group", "aria-label": "Symptoms" });
+  const grid = h("div", { class: "symgroups", role: "group", "aria-label": "Symptoms" });
+  // The skill this was opened from (#/skills/fix/TS-nn/<skill>), else the skill the guide belongs to.
+  const fromSkill = params && params[1] ? skillById(params[1]) : null;
   let drill = null;
   cleanups.push(() => { if (drill) drill.destroy(); });
 
@@ -137,28 +144,38 @@ export async function render(main, { params } = {}) {
           h("button", { type: "button", class: "btn", onclick: e => { remember(ts, r.Symptom, false); e.target.closest(".row").replaceChildren(h("span", { class: "small" }, "Give it 5-10 practice days. If nothing changes, a teacher's eye is the fastest fix (see above).")); } }, "Not yet"))));
       parts.push(h("div", { class: "row" }, h("a", { class: "btn", href: "#/read/" + path }, "Open the full guide"), h("a", { class: "btn", href: "#/read/troubleshooting/README.md" }, "The diagnosis method")));
     }
+    // Back to the skill (redesign W50): the one it was opened from, or the one it belongs to.
+    const hub = fromSkill && fromSkill.fixes.includes(ts) ? fromSkill : SKILLS.find(s => s.fixes.includes(ts));
+    if (hub) parts.push(h("div", { class: "row" }, h("a", { class: "btn ghost fixback", href: "#/skills/" + hub.id }, "Back to " + hub.title)));
     clear(out).append(...parts);
     const head = out.querySelector("h2");
     head.setAttribute("tabindex", "-1"); head.focus({ preventScroll: true });
     head.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  for (const r of rows) {
+  const symCard = r => {
     const first = String((causeCol && r[causeCol]) || "").split(/[;,.]/)[0];
     const b = h("button", { type: "button", class: "symcard", "aria-pressed": "false", "data-sym": r.Symptom }, h("b", null, r.Symptom), first ? h("span", { class: "small muted" }, first) : null);
     b.addEventListener("click", () => openSymptom(r));
-    grid.append(b);
+    return b;
+  };
+  // Grouped as the learner hears the problem; a guide the groups do not name goes last, on its own.
+  const placed = new Set(GROUPS.flatMap(g => g[1]));
+  for (const [label, list] of GROUPS.concat([["", rows.map(tsOf).filter(ts => !placed.has(ts))]])) {
+    const cards = rows.filter(r => list.includes(tsOf(r))).map(symCard);
+    if (cards.length) grid.append(h("div", { class: "symgroup" }, label ? h("h3", { class: "symhead" }, label) : null, h("div", { class: "symgrid" }, cards)));
   }
 
-  // First the Tone check: it listens, and its findings open the guides below.
+  // First the Tone check: it listens, and its findings open the guides below. What you worked on
+  // comes last.
   const tone = toneCheck({ onFix: ts => openSymptom(rows.find(r => tsOf(r) === ts)) });
   cleanups.push(tone.cleanup);
   page.append(tone.top);
-  page.append(histHost);
-  page.append(h("section", { class: "card", id: "symptoms" }, h("h2", null, "Or pick a symptom"), grid, out,
+  page.append(h("section", { class: "card", id: "symptoms" }, h("h2", null, "Or pick what you hear"), grid, out,
     h("p", { class: "small muted" }, "Pain, numbness or tingling that does not go away: stop and see a doctor or physiotherapist. ",
       h("a", { href: "#/read/troubleshooting/TS-08-body-pain-and-tension.md" }, "Read the medical caution"), ". For tone, posture and embouchure, a live teacher sees what no guide can.")));
   page.append(...tone.more);
+  page.append(histHost);
   drawHistory();
   // #/coach/TS-05: opened from a Tone check finding.
   const want = params && /^TS-\d\d$/.test(params[0] || "") ? params[0] : null;

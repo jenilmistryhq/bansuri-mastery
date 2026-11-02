@@ -1,12 +1,10 @@
 // Listen (#/listen): learning by ear, no reading needed. Real bansuri recordings, songs played on an
-// animated flute (watch the fingers), the four tone levels, and each raga's scale.
+// animated flute (watch the fingers), the four tone levels, and the course's listening library.
 import { h, icon } from "../util.js";
 import { fetchDoc } from "../content.js";
 import { parseSongs } from "./songs.js";
-import { ragaInfo } from "./reader.js";
 import { flutePlayer } from "../demo.js";
 import { toneDemo, stopAll } from "../core/audio.js";
-import { codeOf } from "../core/theory.js";
 import { getDay, current } from "../course.js";
 import { speak } from "../voice.js";
 
@@ -66,22 +64,11 @@ export async function render(main) {
     songGrid.replaceChildren(...list.map(s => tile("play", s.title, () => show(s.title, s.notation, s.bpm))));
   }).catch(() => {});
 
-  const ragaCard = h("section", { class: "card" }, h("h2", null, "Raga scales"), h("p", { class: "small muted" }, "Each raga's notes going up and coming down."));
-  const ragaGrid = h("div", { class: "listentiles" });
-  ragaCard.append(ragaGrid);
-  page.append(ragaCard);
-  fetchDoc("ragas/README.md").then(async readme => {
-    const rows = [...readme.matchAll(/^\|\s*\d+\s*\|\s*\[([^\]]+)\]\(([a-z-]+\.md)\)/gm)];
-    for (const m of rows) {
-      const md = await fetchDoc("ragas/" + m[2]).catch(() => "");
-      const info = md ? ragaInfo(md) : null;
-      if (!info || info.notes.length < 4) continue;
-      const up = [...new Set(info.notes)].sort((a, b) => a - b).filter(n => n >= 0 && n <= 12);
-      if (!up.includes(12)) up.push(12);
-      const notation = up.concat(up.slice(0, -1).reverse()).map(codeOf).join(" ") + " -";
-      ragaGrid.append(tile("play", m[1], () => show(m[1], notation, 60)));
-    }
-  }).catch(() => {});
+  // The course's listening library (recordings for every raga, and general listening), in the book.
+  // Each raga's scale is on its own screen now (Music > Ragas).
+  page.append(h("section", { class: "card hubgroup" }, h("div", { class: "hublist" },
+    h("a", { class: "hubrow", href: "#/read/08-LISTENING-LIBRARY.md" }, h("span", { class: "stack" }, h("b", null, "Listening library"), h("span", { class: "small muted" }, "Bansuri recordings for every raga in this curriculum, plus general listening.")), h("span", { class: "chev", "aria-hidden": "true" }, ">")),
+    h("a", { class: "hubrow", href: "#/music/ragas" }, h("span", { class: "stack" }, h("b", null, "Raga scales"), h("span", { class: "small muted" }, "On each raga's page in Ragas.")), h("span", { class: "chev", "aria-hidden": "true" }, ">")))));
 
   return () => { stopAllHere(); };
 }

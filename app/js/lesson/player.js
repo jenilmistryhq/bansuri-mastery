@@ -156,7 +156,8 @@ export function lessonPlayer(lesson, opts) {
   document.addEventListener("keydown", onKey);
   // Playing mode (docs/redesign 09): while the microphone listens, the step is read from a music
   // stand, so the note, the ring and one word grow and everything else steps back.
-  const onMic = e => el.classList.toggle("lesson-playing", !!(e.detail && e.detail.on));
+  // "playmode" is the shared part (the meters grow, app.css), also used by the Skills tools.
+  const onMic = e => { const on = !!(e.detail && e.detail.on); el.classList.toggle("lesson-playing", on); el.classList.toggle("playmode", on); };
   document.addEventListener("bansuri:mic", onMic);
   function showTrouble() {
     const s = steps[at], fix = lastFix && FIX_FILE[lastFix] ? lastFix : "TS-01";
@@ -175,7 +176,7 @@ export function lessonPlayer(lesson, opts) {
     if (misses >= 2) showTrouble();
   };
   document.addEventListener("bansuri:attempt", onAttempt);
-  el.classList.toggle("lesson-playing", micActive());
+  el.classList.toggle("lesson-playing", micActive()); el.classList.toggle("playmode", micActive());
   // Full focus: while the player is on screen, no top bar and no tabs (W2); the close button leads out.
   document.documentElement.classList.add("fullfocus");
   show();

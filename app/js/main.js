@@ -51,6 +51,9 @@ import { evaluate as evaluateBadges } from "./badges.js";
 
 const ROUTES = [
   // The five places and their sections (see docs/redesign/03-structure.md).
+  // Screens inside Skills and Music: a training tool, a game, a fix opened from a skill, a song, a raga.
+  [/^\/skills\/(tone|rhythm|ornaments|ear)\/([a-z]+)$/, "skilltool"], [/^\/skills\/game\/([a-z]+)(?:\/([A-Za-z0-9._-]+))?$/, "play"], [/^\/skills\/fix\/(TS-\d\d)\/(tone|notes|rhythm|ornaments|ear)$/, "coach"],
+  [/^\/music\/song\/([A-Za-z0-9._-]+)$/, "song"], [/^\/music\/raga\/([a-z-]+)$/, "raga"],
   [/^\/course(?:\/path)?$/, "plan"], [/^\/course\/milestones$/, "milestones"], [/^\/course\/book$/, "library"],
   [/^\/skills$/, "skills"], [/^\/skills\/(tone|notes|rhythm|ornaments|ear)$/, "skills"], [/^\/skills\/games$/, "play"], [/^\/skills\/fix$/, "coach"], [/^\/skills\/fix\/(TS-\d\d)$/, "coach"],
   [/^\/music(?:\/songs)?$/, "songs"], [/^\/music\/ragas$/, "ragas"], [/^\/music\/mine$/, "mine"], [/^\/music\/listen$/, "listen"], [/^\/music\/transcribe$/, "transcribe"], [/^\/music\/compose$/, "compose"],
@@ -98,6 +101,9 @@ function placeOf(view, params, path) {
     case "compose": case "mine": return ["music", "mine"];
     case "ragas": return ["music", "ragas"];
     case "listen": return ["music", "listen"];
+    case "skilltool": return ["skills", p];
+    case "song": return ["music", "songs"];
+    case "raga": return ["music", "ragas"];
     case "progress": return ["me", "progress"];
     case "journal": return ["me", "journal"];
     case "review": case "feedback": case "students": case "share": return ["me", "teacher"];
@@ -112,6 +118,9 @@ const sectionsOf = place => (SECTIONS[place] || []).filter(([k]) => !(getSetting
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
 // The view module that draws a screen, when it is not named after the screen.
 const MODULE = { challenge: "play", flute: "settings" };
+Object.assign(MODULE, { song: "songs", raga: "ragas" });
+// Screens inside a section (a tool, a song, a raga) have a back link instead of the section tabs.
+const INNER = new Set(["skilltool", "song", "raga"]);
 // Each place remembers its last section, so coming back lands where you were.
 const LAST = "bansuri.nav.last";
 // Kept in memory for this visit, and saved when storage allows (it can be full or blocked).
@@ -187,6 +196,8 @@ document.addEventListener("bansuri:mic", e => { micPill.hidden = !(e.detail && e
 function shell() {
   const app = document.getElementById("app");
   dock = createDock();
+  // Any screen can open the Flute dock on a tab (the Skills hubs' tuner, fingering and taal rows).
+  document.addEventListener("bansuri:dock", e => dock.open(e.detail && e.detail.tab));
   dayPill = h("a", { class: "daypill", href: "#/today" }, "");
   const top = h("header", { class: "topbar" },
     h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", null, "Bansuri Mastery")),
@@ -342,7 +353,7 @@ async function route() {
     if (token !== routeToken) { if (typeof ret === "function") ret(); return; }
     cleanup = typeof ret === "function" ? ret : null;
     // The place's sections, as tabs at the top.
-    const tabs = sectionTabs();
+    const tabs = INNER.has(view) ? null : sectionTabs();
     if (tabs) mainEl.prepend(tabs);
     if (document.activeElement && document.activeElement.closest && document.activeElement.closest(".tabbar, .topbar")) mainEl.focus({ preventScroll: true });
     if (anchor) {

@@ -6,7 +6,8 @@ import { current } from "./course.js";
 
 const SCREENS = () => [
   ["Today", "#/today", "today"], ["Today's session", "#/session/" + current(), "play"], ["Course", "#/course", "plan"], ["Course book", "#/course/book", "library"],
-  ["Practice Bench: flute, tuner, tanpura, tala", "#/bench", "bench"], ["Coach: check my tone", "#/coach", "coach"], ["Listen", "#/listen", "listen"],
+  ["Practice Bench: flute, tuner, tanpura, tala", "#/bench", "bench"], ["Fix a problem: tone check and symptoms", "#/skills/fix", "coach"], ["Listen", "#/listen", "listen"],
+  ["Long tones", "#/skills/tone/longtones", "mic"], ["Tone check", "#/skills/tone/check", "coach"], ["Tap the beat", "#/skills/rhythm/tap", "mic"], ["Ear quiz", "#/skills/ear/quiz", "listen"], ["Play it back", "#/skills/ear/playback", "mic"], ["Ragas", "#/music/ragas", "note"],
   ["Songs: play along", "#/songs", "note"], ["Games", "#/play", "star"], ["Make a melody", "#/compose", "note"], ["Notation from a recording (YouTube, a file)", "#/transcribe", "note"], ["5-minute practice", "#/quick", "today"],
   ["Progress and level", "#/progress", "progress"], ["Journal: record and log", "#/journal", "journal"], ["Settings", "#/settings", "settings"], ["Privacy", "#/privacy", "settings"], ["My students (for teachers)", "#/students", "me"],
   ["Your flute", "#/me/flute#g-flute", "settings"], ["Settings: voice and language", "#/settings#g-voice", "speaker"],
