@@ -45,7 +45,7 @@ export function nextNote(set, prev, rnd) {
 
 export const colors = () => {
   const css = getComputedStyle(document.documentElement), v = (k, d) => (css.getPropertyValue(k) || "").trim() || d;
-  return { ink: v("--ink", "#1b2420"), muted: v("--muted", "#56645d"), line: v("--line", "#cfd6ca"), accent: v("--accent", "#0d6a6e"), good: v("--good", "#2e7a3a"), bad: v("--bad", "#b3261e"), warn: v("--warn", "#9a6512"), bamboo: v("--bamboo", "#c9a552"), surface: v("--surface", "#f9faf6"), sunken: v("--sunken", "#e3e8de") };
+  return { ink: v("--ink", "#1b2420"), muted: v("--muted", "#56645d"), line: v("--line", "#cfd6ca"), accent: v("--accent", "#0d6a6e"), good: v("--good", "#2e7a3a"), bad: v("--warn", "#9a6512"), warn: v("--warn", "#9a6512"), bamboo: v("--bamboo", "#c9a552"), surface: v("--surface", "#f9faf6"), sunken: v("--sunken", "#e3e8de") };
 };
 
 export function fitCanvas(canvas, aspect) {

@@ -5909,5 +5909,8 @@
 "note": "स्वर",
 "Having trouble?": "दिक़्क़त आ रही है?",
 "The {x} (note {n}) slipped. Hear it, or try half speed, then again from the start.": "{x} (स्वर {n}) फिसल गया। इसे सुनिए, या आधी गति पर आज़माइए, फिर शुरू से दोबारा।",
-"The {x} (note {n}) slipped, in the wrong octave. Hear it, or try half speed, then again from the start.": "{x} (स्वर {n}) फिसल गया, ग़लत सप्तक में। इसे सुनिए, या आधी गति पर आज़माइए, फिर शुरू से दोबारा।"
+"The {x} (note {n}) slipped, in the wrong octave. Hear it, or try half speed, then again from the start.": "{x} (स्वर {n}) फिसल गया, ग़लत सप्तक में। इसे सुनिए, या आधी गति पर आज़माइए, फिर शुरू से दोबारा।",
+"Report it": "इसकी रिपोर्ट कीजिए",
+"Offline. What you have opened before still works.": "ऑफ़लाइन। जो आपने पहले खोला है, वह अब भी चलता है।",
+"Back online.": "फिर से ऑनलाइन।"
 }

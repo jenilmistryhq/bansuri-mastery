@@ -8,7 +8,7 @@
 import { h, icon } from "../util.js";
 import { renderInline, fetchDoc, renderMarkdown } from "../content.js";
 import { plainText } from "../steps.js";
-import { plainCodes } from "../codes.js";
+import { plainCodes, readingName } from "../codes.js";
 import { sayButton, lang, stopSpeaking } from "../voice.js";
 import { makePlayable, stopPlayable } from "../playable.js";
 import { flutePlayer } from "../demo.js";
@@ -38,7 +38,7 @@ const lessonsHi = () => (hiLessons = hiLessons || fetch("app/i18n/lessons-hi.jso
 export function readingList(read) {
   if (!read || !read.length) return null;
   return h("div", { class: "lesson-reads" }, read.map(r => {
-    const name = h("span", null, plainCodes(r.label));
+    const name = h("span", null, readingName(r.label));
     if (lang() === "hi" && /^lessons\/L\d\d/.test(r.path)) lessonsHi().then(all => { const t = all && all[r.path] && all[r.path].title; if (t) { name.textContent = t; name.setAttribute("lang", "hi"); } });
     return h("button", { type: "button", class: "lesson-read", onclick: () => openReading(r) }, icon("read"), name);
   }));

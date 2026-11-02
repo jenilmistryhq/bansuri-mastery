@@ -277,7 +277,7 @@ export function drawPitchPlot(canvas, result) {
   const g = canvas.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
   const css = getComputedStyle(canvas);
   const col = (k, d) => (css.getPropertyValue(k) || "").trim() || d;
-  const C = { ink: col("--ink", "#1b2420"), line: col("--line", "#cfd6ca"), muted: col("--muted", "#56645d"), accent: col("--accent", "#0d6a6e"), good: col("--good", "#2e7a3a"), warn: col("--warn", "#9a6512"), bad: col("--bad", "#b3261e"), mono: col("--mono", "monospace") };
+  const C = { ink: col("--ink", "#1b2420"), line: col("--line", "#cfd6ca"), muted: col("--muted", "#56645d"), accent: col("--accent", "#0d6a6e"), good: col("--good", "#2e7a3a"), warn: col("--warn", "#9a6512"), bad: col("--warn", "#9a6512"), mono: col("--mono", "monospace") };
   const vals = frames.filter(Boolean).map(f => f.s);
   let lo = -1, hi = 13; vals.forEach(v => { if (v < lo) lo = v; if (v > hi) hi = v; });
   lo = Math.floor(lo) - 1; hi = Math.ceil(hi) + 1;

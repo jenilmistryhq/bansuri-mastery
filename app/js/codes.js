@@ -37,3 +37,10 @@ export function plainCodesIn(root) {
   for (let n = w.nextNode(); n; n = w.nextNode()) if (!(n.parentElement && n.parentElement.closest("code, pre"))) nodes.push(n);
   for (const n of nodes) { const v = plainCodes(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; }
 }
+
+// A reading's name on a button: "L00 - Day 0: Your Flute" reads "Day 0: Your Flute" (the lesson code
+// stays when Settings shows codes).
+export function readingName(label) {
+  const s = plainCodes(label);
+  return codesHidden() && s ? String(s).replace(/^\s*L\d{2,3}\s+-\s+/, "") : s;
+}

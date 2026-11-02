@@ -3,7 +3,7 @@ import { stopPlayable } from "./playable.js";
 import { recordLive, bestHold } from "./livestats.js";
 import { advanceQuests, celebrate } from "./fun.js";
 import { codeOf } from "./core/theory.js";
-import { installErrorLog, logError } from "./errors.js";
+import { installErrorLog, logError, problemReport } from "./errors.js";
 import { h, icon, clear, toast } from "./util.js";
 import { getSettings, onSettings } from "./core/settings.js";
 import { setDict, observe } from "./core/i18n.js";
@@ -45,7 +45,8 @@ document.addEventListener("bansuri:live", e => {
   } catch (err) { logError(err && err.message ? err.message : String(err), "live result"); }
 });
 import { getState, onChange, isStorageOk } from "./state.js";
-import { loadPlan, getDay, current } from "./course.js";
+import { loadPlan, getDay, current, dayState } from "./course.js";
+import { feedback } from "./review.js";
 import { evaluate as evaluateBadges } from "./badges.js";
 
 const ROUTES = [
@@ -61,6 +62,10 @@ const ROUTES = [
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/coach\/(TS-\d\d)$/, "coach"], [/^\/songs$/, "songs"],
   [/^\/play$/, "play"], [/^\/play\/([a-z]+)$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/transcribe$/, "transcribe"], [/^\/tone$/, "coach"], [/^\/lesson\/([a-z0-9]+)$/, "lesson"], [/^\/ornaments$/, "ornaments"], [/^\/review$/, "review"], [/^\/review\/([A-Za-z0-9_-]+)$/, "review"], [/^\/feedback\/([A-Za-z0-9_-]+)$/, "feedback"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
+// Old addresses and where they live now (the view is the same; only the address changes).
+const MOVED = { "/plan": "/course", "/library": "/course/book", "/journal": "/me/journal", "/progress": "/me", "/settings": "/me/settings",
+  "/coach": "/skills/fix", "/songs": "/music", "/play": "/skills/games", "/compose": "/music/compose", "/listen": "/music/listen",
+  "/transcribe": "/music/transcribe", "/review": "/me/teacher" };
 // Two levels of navigation. Five places at the bottom (each kind of thing has one home); inside a
 // place, its sections as tabs at the top, swiped or tapped. Today has one job, so no sections.
 const NAV = [["today", "#/today", "Today"], ["course", "#/course", "Course"], ["skills", "#/skills", "Skills"], ["music", "#/music", "Music"], ["me", "#/me", "Me"]];
@@ -172,6 +177,10 @@ onBeat(kind => {
 });
 
 let dock = null;
+// While the microphone listens anywhere, the top bar says so (redesign W legend "(o)").
+const micPill = h("span", { class: "micpill", role: "status", hidden: true }, icon("mic"), h("span", null, "Listening"));
+document.addEventListener("bansuri:mic", e => { micPill.hidden = !(e.detail && e.detail.on); });
+
 function shell() {
   const app = document.getElementById("app");
   dock = createDock();
@@ -179,11 +188,14 @@ function shell() {
   const top = h("header", { class: "topbar" },
     h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", null, "Bansuri Mastery")),
     h("span", { class: "spacer" }),
-    h("span", { class: "statuspills" }, dayPill, dock.pill),
+    h("span", { class: "statuspills" }, dayPill, dock.pill, micPill),
     h("button", { type: "button", class: "iconbtn", title: "Search (press /)", onclick: openPalette }, icon("search", "Search")),
     dock.button,
     h("a", { class: "iconbtn", href: "#/me/settings", title: "Settings" }, icon("settings", "Settings")));
-  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(NAV_ICON[k] || k), h("span", null, label))));
+  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, h("span", { class: "tabicon" }, icon(NAV_ICON[k] || k)), h("span", null, label))));
+  // On a wide screen, search sits at the top of the rail.
+  navEl.prepend(h("button", { type: "button", class: "railsearch", onclick: openPalette }, icon("search"), h("span", null, "Search")));
+  arrowKeys(navEl, "a[data-k], .railsecs a");
   // A tap on a place: its last section; on the place you are in: to the top, then to its first section.
   navEl.addEventListener("click", e => {
     const a = e.target.closest && e.target.closest("a[data-k]");
@@ -200,14 +212,47 @@ function shell() {
   });
   mainEl = h("main", { id: "main", tabindex: "-1" });
   swipeSections(mainEl);
-  clear(app).append(top, h("div", { class: "layout" }, navEl, mainEl), dock.backdrop, dock.sheet);
+  // Offline (redesign 09, top bar states): a quiet line under the top bar while there is no
+  // connection, and a toast when it comes back. Everything opened before keeps working.
+  const offline = h("div", { class: "offlinebar", role: "status", hidden: navigator.onLine !== false }, "Offline. What you have opened before still works.");
+  window.addEventListener("offline", () => { offline.hidden = false; });
+  window.addEventListener("online", () => { if (!offline.hidden) toast("Back online."); offline.hidden = true; });
+  clear(app).append(top, offline, h("div", { class: "layout" }, navEl, mainEl), dock.backdrop, dock.sheet);
+}
+
+// Teacher feedback the learner has not opened yet puts one dot on Me (redesign 03: one dot at most).
+const FB_SEEN = "bansuri.feedback.seen";
+function unseenFeedback() {
+  let seen = []; try { seen = JSON.parse(localStorage.getItem(FB_SEEN) || "[]"); } catch (e) { /* none seen */ }
+  const all = feedback().map(f => f.id || f.date);
+  if (here[0] === "me" && here[1] === "teacher") { try { localStorage.setItem(FB_SEEN, JSON.stringify(all)); } catch (e) { /* this visit only */ } return false; }
+  return all.some(id => !seen.includes(id));
+}
+
+// On a wide screen the rail lists the current place's sections under it, so both levels show at once.
+function railSections() {
+  for (const old of navEl.querySelectorAll(".railsecs")) old.remove();
+  const list = getSettings().simple ? [] : sectionsOf(here[0]);
+  const at = navEl.querySelector('a[data-k="' + here[0] + '"]');
+  if (!list.length || !at) return;
+  at.after(h("div", { class: "railsecs", role: "group", "aria-label": "Sections" }, list.map(([k, href, label]) => h("a", { href, "aria-current": k === here[1] ? "page" : null }, label))));
 }
 
 function updateChrome() {
   const n = current();
   const d = getDay(n);
   dayPill.textContent = d ? (d.kind === "milestone" ? "Milestone " + d.milestone : "Day " + n) : "Day " + n;
-  for (const a of navEl.querySelectorAll("a")) {
+  // Today's tab carries a ring for how much of today's session is done.
+  const todayTab = navEl.querySelector('a[data-k="today"]');
+  if (todayTab && d && d.blocks && d.blocks.length) {
+    const ds = dayState(n) || {}, done = d.blocks.filter(b => (ds.blocks || {})[b.id]).length;
+    todayTab.style.setProperty("--p", String(Math.round(done / d.blocks.length * 100)));
+    todayTab.classList.toggle("ringed", done > 0);
+  }
+  const meTab = navEl.querySelector('a[data-k="me"]');
+  if (meTab) meTab.classList.toggle("dotted", unseenFeedback());
+  railSections();
+  for (const a of navEl.querySelectorAll("a[data-k]")) {
     // Simple mode's three tiles keep their own names (today, play, listen).
     const on = getSettings().simple ? a.dataset.k === (here[0] === "today" ? "today" : here[1] === "games" ? "play" : here[1] === "listen" ? "listen" : "") : a.dataset.k === here[0];
     if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
@@ -239,9 +284,22 @@ function sectionTabs() {
   const list = getSettings().simple ? [] : sectionsOf(here[0]);
   if (!list.length) return null;
   const nav = h("nav", { class: "subnav sectiontabs", "aria-label": "Sections" }, list.map(([k, href, label]) => h("a", { href, "aria-current": k === here[1] ? "page" : null }, label)));
+  arrowKeys(nav, "a");
   const cur = nav.querySelector("[aria-current]");
   if (cur) requestAnimationFrame(() => { const l = cur.offsetLeft - nav.offsetLeft; if (l + cur.offsetWidth > nav.clientWidth) nav.scrollLeft = l - 24; });
   return nav;
+}
+
+// Arrow keys move between the links of a tab row (and Home and End to its ends); Enter opens one.
+function arrowKeys(row, sel) {
+  row.addEventListener("keydown", e => {
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(e.key)) return;
+    const links = [...row.querySelectorAll(sel)].filter(a => a.offsetParent !== null), i = links.indexOf(document.activeElement);
+    if (i < 0) return;
+    const step = e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 1;
+    const j = e.key === "Home" ? 0 : e.key === "End" ? links.length - 1 : (i + step + links.length) % links.length;
+    e.preventDefault(); links[j].focus();
+  });
 }
 
 function parseHash() {
@@ -259,7 +317,11 @@ async function route() {
   const token = ++routeToken;
   // A level reached during a lesson is celebrated once the lesson has closed.
   setTimeout(levelLater, 0);
-  const { path, anchor } = parseHash();
+  const parsed = parseHash(), anchor = parsed.anchor;
+  // Old addresses still work, and the address bar shows the new one (redesign 03, old routes).
+  let path = parsed.path;
+  const moved = MOVED[path] || (/^\/coach\/(TS-\d\d)$/.test(path) ? "/skills/fix/" + path.slice(7) : null);
+  if (moved) { path = moved; try { history.replaceState(history.state, "", "#" + moved + (anchor ? "#" + anchor : "")); } catch (e) { /* the old address stays shown */ } }
   let view = "today", params = [];
   for (const [re, name] of ROUTES) { const m = re.exec(path); if (m) { view = name; params = m.slice(1).filter(x => x !== undefined); break; } }
   if (cleanup) { try { cleanup(); } catch (e) { /* view cleanup errors are not fatal */ } cleanup = null; }
@@ -290,7 +352,13 @@ async function route() {
     const mismatch = /does not provide an export|dynamically imported module|Importing a module script failed/i.test(String(e && e.message));
     clear(mainEl).append(h("div", { class: "page" }, h("div", { class: "card" }, h("h2", null, "Something went wrong"), h("p", null, String(e.message || e)),
       mismatch ? h("p", null, "This usually means an update was only half loaded. Updating fixes it; your progress is kept.") : null,
-      h("div", { class: "row" }, mismatch ? h("button", { type: "button", class: "btn primary", onclick: freshReload }, "Update and reload") : null, h("a", { href: "#/today" }, "Back to today")))));
+      h("div", { class: "row" }, mismatch ? h("button", { type: "button", class: "btn primary", onclick: freshReload }, "Update and reload") : null,
+        // Report it (redesign 09, error state): the problem report, copied, ready to paste.
+        h("button", { type: "button", class: "btn", onclick: async () => {
+          try { await navigator.clipboard.writeText(await problemReport()); toast("Problem report copied. Paste it into your bug report."); }
+          catch (err) { location.hash = "#/me/settings#g-help"; }
+        } }, "Report it"),
+        h("a", { href: "#/today" }, "Back to today")))));
   }
 }
 

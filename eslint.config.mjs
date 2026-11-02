@@ -2,7 +2,7 @@
 import globals from "globals";
 
 export default [
-  { ignores: ["app/vendor/**", "bansuri-mastery/tools/**", "_site/**", "node_modules/**", "site/**", "docs/**"] },
+  { ignores: ["app/vendor/**", "bansuri-mastery/tools/**", "_site/**", "node_modules/**", "site/**", "docs/**", ".claude/**"] },
   {
     files: ["app/js/**/*.js", "sw.js"],
     languageOptions: { ecmaVersion: 2023, sourceType: "module", globals: { ...globals.browser, ...globals.serviceworker } },
