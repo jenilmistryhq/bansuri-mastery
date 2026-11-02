@@ -24,7 +24,7 @@ export async function render(main, { params }) {
   if (!f) { page.append(h("section", { class: "card" }, h("h1", null, "This review link could not be read"), h("p", null, "Ask your teacher to send it again."))); return; }
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "From your teacher"), h("h1", null, f.what), h("p", { class: "muted" }, "Saved in the app. The practice task is on Today until you mark it done.")),
     reviewCard(f, "This review"),
-    h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/today" }, icon("today"), " To Today"), h("a", { class: "btn", href: "#/progress#reviews" }, "All reviews")));
+    h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/today" }, icon("today"), " To Today"), h("a", { class: "btn", href: "#/me/teacher/feedback" }, "All reviews")));
   const older = feedback().slice(1, 4);
   if (older.length) page.append(h("h2", null, "Earlier reviews"), ...older.map(x => reviewCard(x)));
 }

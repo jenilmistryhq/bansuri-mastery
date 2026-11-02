@@ -1,17 +1,17 @@
-// Progress (#/progress): stats, practice calendar, milestones, ear quiz, badges, and a shareable card.
-import { h, today, addDays, parseDate, fmtMinutes, toast, store, storeSet } from "../util.js";
+// Me > Progress (#/me, old #/progress): the five questions (improving, practising, where, what next,
+// level and badges as one row) and your flute. Level and badges open on their own (#/me/level). The
+// share card's payload (encodePayload, sharePayload) is used by Me > Teacher > Share progress.
+import { h, today, addDays, parseDate, fmtMinutes, icon } from "../util.js";
 import { getState } from "../state.js";
 import { totals, streaks, practiceDates, getPlan, getDay, current, milestoneState } from "../course.js";
 import { rules } from "../badges.js";
 import { holdSummary } from "../livestats.js";
-import { codeOf } from "../core/theory.js";
-import { RUBRIC, feedback as feedbackList } from "../review.js";
-import { reviewCard } from "./feedback.js";
+import { codeOf, WEST } from "../core/theory.js";
 import { getSettings } from "../core/settings.js";
 import { levelBar, levelsTable, xpRules } from "../levelui.js";
 import { emblem } from "../ui.js";
 import { ICON_PATHS } from "../util.js";
-import { xpState } from "../xp.js";
+import { xpState, levelOf } from "../xp.js";
 import { ring } from "../ui.js";
 import { weakSpots, weekSummary } from "./today-cards.js";
 
@@ -203,7 +203,11 @@ function milestonePath() {
   }));
 }
 
-export async function render(main) {
+export async function render(main, { params, anchor } = {}) {
+  // Level and badges open on their own (#/me/level); old links to #/progress#level and #badges too.
+  if ((params && params[0] === "level") || anchor === "level" || anchor === "badges") { levelView(main); return; }
+  // Teacher reviews moved to Me > Teacher > Feedback.
+  if (anchor === "reviews") { location.replace("#/me/teacher/feedback"); return; }
   const s = getState(), tt = totals(), st = streaks();
   const page = h("div", { class: "page" });
   const stat = (v, l) => h("div", { class: "stat" }, h("b", null, String(v)), h("span", null, l));
@@ -211,8 +215,9 @@ export async function render(main) {
     s.startedAt ? h("p", { class: "muted" }, "Learning since " + fmtDateLong(s.startedAt) + ": Day " + current() + " of the course.") : h("p", { class: "muted" }, "Start Day 0 to begin tracking.")));
   const q = (n, title) => h("h2", { class: "grouphead dashq" }, h("span", { class: "dashn", "aria-hidden": "true" }, String(n)), title);
 
-  // 1. Am I improving? (what the microphone measured, over time)
-  page.append(q(1, "Am I improving?"), improving(s));
+  // 1. Am I improving? (what the microphone measured, over time), and the Day 0 time capsule beside a
+  // recent recording.
+  page.append(q(1, "Am I improving?"), improving(s), h("div", { class: "row" }, h("a", { class: "btn", href: "#/me/journal/capsule" }, icon("play"), " Day 0 vs today")));
 
   // 2. Am I practising regularly?
   const lastWeek = weekSummary();
@@ -231,8 +236,10 @@ export async function render(main) {
   const phDays = ph ? plan.days.filter(x => x.phase === ph.id) : [], phDone = phDays.filter(x => x.n < current()).length;
   const nextMs = plan.milestones.find(m => milestoneState(m.id).status !== "passed");
   page.append(q(3, "Where am I in the course?"), h("section", { class: "card coursecard" },
-    ph ? h("div", { class: "row coursehead" }, ring(phDays.length ? phDone / phDays.length * 100 : 0, undefined, { size: 64, stroke: 7 }),
-      h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, "Phase " + ph.id + ": " + ph.title), h("span", { class: "small muted" }, phDone + " of " + phDays.length + " days" + (nextMs ? " - next milestone " + nextMs.id + " " + nextMs.title + (nextMs.day > current() ? " in " + (nextMs.day - current()) + " days" : ", ready now") : "")))) : null,
+    // The phase opens Course > Path, where the course map lives.
+    ph ? h("a", { class: "row coursehead courselink", href: "#/course" }, ring(phDays.length ? phDone / phDays.length * 100 : 0, undefined, { size: 64, stroke: 7 }),
+      h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, "Phase " + ph.id + ": " + ph.title), h("span", { class: "small muted" }, phDone + " of " + phDays.length + " days" + (nextMs ? " - next milestone " + nextMs.id + " " + nextMs.title + (nextMs.day > current() ? " in " + (nextMs.day - current()) + " days" : ", ready now") : ""))),
+      h("span", { class: "chev", "aria-hidden": "true" }, ">")) : null,
     milestonePath(), h("p", { class: "small muted" }, tt.msPassed + " of " + plan.milestones.length + " milestones passed.")));
 
   // 4. What should I work on?
@@ -260,11 +267,36 @@ export async function render(main) {
         taps.map(t => h("div", { class: "row between" }, h("span", null, t.bpm + " BPM" + (t.silent ? " with silent bars" : "")), h("span", { class: "small mono" }, Math.round(t.within * 100) + "% within 50 ms, spread " + t.spread + " ms")))) : null));
   }
 
-  // 5. Level and badges, last: rewards, not information.
+  // 5. Level and badges, last: rewards, not information. One row; the full view opens from it.
   // Focus mode (Settings) leaves them out.
   const list = rules();
   const earned = list.filter(r => s.badges[r.id]).length;
-  if (!getSettings().focus) page.append(q(5, "Level and badges"), levelSection(), h("section", { class: "card" }, h("div", { class: "row between" }, h("h2", null, "Badges"), h("span", { class: "chip info" }, earned + " of " + list.length)),
+  const lv = levelOf(xpState().total);
+  if (!getSettings().focus) page.append(q(5, "Level and badges"), h("section", { class: "card" }, h("div", { class: "hublist" },
+    meRow("#/me/level", "Level " + lv.level, [lv.name, (earned === 1 ? "1 badge" : "{n} badges".replace("{n}", earned))]))));
+
+  // Your flute: its current Sa, because a wrong Sa breaks every check.
+  const set = getSettings(), west = WEST[set.saNote];
+  page.append(h("section", { class: "card" }, h("div", { class: "hublist" },
+    meRow("#/me/flute", "Your flute", [/#/.test(west) ? west : "{x} natural".replace("{x}", west), "Sa {x}".replace("{x}", west + set.saOct)]))));
+  main.append(page);
+}
+
+// A row that opens a screen: its name, what it shows now (each part its own phrase), a chevron.
+function meRow(href, title, parts) {
+  return h("a", { class: "hubrow", href }, h("span", { class: "stack" }, h("b", null, title),
+    h("span", { class: "small muted sumlist" }, parts.filter(Boolean).map(p => h("span", null, p)))), h("span", { class: "chev", "aria-hidden": "true" }, ">"));
+}
+
+// Level and badges (#/me/level, old #/progress#level): the level bar, XP per week, every named level,
+// and the badges.
+function levelView(main) {
+  const s = getState(), list = rules();
+  const earned = list.filter(r => s.badges[r.id]).length;
+  const page = h("div", { class: "page" });
+  page.append(h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/me" }, "Progress"), " / ", h("span", null, "Level and badges")),
+    h("section", { class: "hero" }, h("h1", null, "Level and badges")),
+    levelSection(), h("section", { class: "card", id: "badges" }, h("div", { class: "row between" }, h("h2", null, "Badges"), h("span", { class: "chip info" }, earned + " of " + list.length)),
     // Earned badges and the next three to aim for; the rest are folded away.
     (() => {
       const badge = r => h("div", { class: "badge" + (s.badges[r.id] ? " earned" : "") },
@@ -273,33 +305,5 @@ export async function render(main) {
       return [h("div", { class: "badges" }, got.concat(todo.slice(0, 3)).map(badge)),
         todo.length > 3 ? h("details", null, h("summary", null, "All " + list.length + " badges"), h("div", { class: "badges" }, todo.slice(3).map(badge))) : null];
     })()));
-
-  // Teacher reviews: the latest in full, and each point's ratings over time.
-  const fbs = feedbackList();
-  page.append(h("section", { class: "card", id: "reviews" }, h("div", { class: "row between" }, h("h2", null, "Teacher reviews"), h("a", { class: "btn small", href: "#/review" }, "Ask for a review")),
-    fbs.length ? [h("p", { class: "small muted" }, "Latest: " + fbs[0].what + " (" + fbs[0].date + ")"),
-      h("table", { class: "rvtable" }, h("tbody", null, RUBRIC.filter(r => fbs.some(f => f.scores[r.key])).map(r => h("tr", null, h("th", { scope: "row" }, r.name),
-        h("td", { class: "mono" }, fbs.slice(0, 6).reverse().map(f => f.scores[r.key] || "-").join("  ")))))),
-      h("p", { class: "small muted" }, "Ratings from the oldest to the newest of your last six reviews, 1 to 5."),
-      h("details", null, h("summary", null, "The latest review in full"), reviewCard(fbs[0]))]
-      : h("p", { class: "muted" }, "Record yourself and send it to your teacher: their ratings and tasks appear here and on Today.")));
-
-  // Share.
-  const nameIn = h("input", { class: "input", id: "sh-name", maxlength: "40", placeholder: "Your first name (optional)", value: store("bansuri.shareName", "") });
-  const out = h("div", { class: "stack" });
-  const teacherBox = h("input", { type: "checkbox", id: "sh-teacher" });
-  const make = () => {
-    storeSet("bansuri.shareName", nameIn.value.trim());
-    const url = location.href.split("#")[0] + "#/share/" + encodePayload(sharePayload(nameIn.value.trim(), teacherBox.checked));
-    const linkBox = h("input", { class: "input", readonly: true, value: url, "aria-label": "Share link" });
-    const copy = h("button", { type: "button", class: "btn" }, "Copy link");
-    copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(url); toast("Link copied."); } catch (e) { linkBox.select(); toast("Select the link and copy it."); } });
-    const native = navigator.share ? h("button", { type: "button", class: "btn primary", onclick: () => navigator.share({ title: "My bansuri progress", url }).catch(() => {}) }, "Share") : null;
-    out.replaceChildren(linkBox, h("div", { class: "row" }, copy, native, h("a", { class: "btn", href: "#/share/" + url.split("#/share/")[1] }, "Preview the card")));
-  };
-  page.append(h("section", { class: "card" }, h("h2", null, "Share your progress"),
-    h("p", { class: "small muted" }, "Creates a link to a progress card. The data travels inside the link itself; nothing is uploaded. Anyone with the link sees your day, streak, practice time and milestones."),
-    h("label", { class: "check", for: "sh-teacher" }, teacherBox, "For my teacher: add practice per week and what the microphone measured (long tones, play-along, play back)"),
-    h("div", { class: "row" }, h("div", { style: { flex: "1 1 220px" } }, nameIn), h("button", { type: "button", class: "btn primary", onclick: make }, "Create link")), out));
   main.append(page);
 }

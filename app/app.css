@@ -1357,3 +1357,23 @@ html.fullfocus .offlinebar { top: 0; }
   .lesson-playing .lv-hold > .lv-row:not(:last-child) { display: none; }
 }
 .cpphase { display: block; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+/* Redesign: Me */
+/* Level 3: views inside a section (Journal, Teacher), as a segmented control, not a third row of tabs. */
+.segnav { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin: 0 0 var(--s3); background: var(--surface); }
+.segnav a { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 44px; padding: 6px 8px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.92rem; line-height: 1.25; }
+.segnav a + a { border-left: 1px solid var(--line); }
+.segnav a:hover { color: var(--ink); }
+.segnav a[aria-current="page"] { background: var(--accent-soft); color: var(--ink); }
+html.bigtargets .segnav a { min-height: 56px; }
+/* A row's current values, one phrase each, with a dot between. */
+.sumlist > span + span::before { content: "\00B7"; margin: 0 0.45em; }
+/* Me > Progress: the phase opens Course > Path. */
+.courselink { color: var(--ink); text-decoration: none; flex-wrap: nowrap; }
+.courselink > .stack { flex: 1 1 auto; min-width: 0; }
+.courselink:hover b { color: var(--accent); }
+.courselink .chev { margin-left: auto; color: var(--muted); }
+/* Journal > Capsule: Day 0 next to today. */
+.capsulecol { display: grid; gap: 8px; align-content: start; }
+.capsulecol .grouphead { margin: 0; }
+.capsulecol audio { width: 100%; }
+.emptycard { display: grid; gap: 12px; justify-items: center; }

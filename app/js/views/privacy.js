@@ -1,9 +1,10 @@
-// Privacy (#/privacy): what the app keeps, where, and what (rarely) leaves the device.
+// Privacy (#/me/privacy, old #/privacy; under Settings, Help and about): what the app keeps, where, and what (rarely) leaves the device.
 import { h } from "../util.js";
 
 export async function render(main) {
   const item = (title, ...text) => h("section", { class: "card" }, h("h2", null, title), ...text.map(t => h("p", null, t)));
   main.append(h("div", { class: "page" },
+    h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/me/settings" }, "Settings"), " / ", h("a", { href: "#/me/settings/help" }, "Help and about")),
     h("section", { class: "hero" }, h("h1", null, "Privacy"), h("p", { class: "muted" }, "Short version: everything stays on your device. There are no accounts, no tracking and no ads.")),
     item("What is kept, and where", "Your progress, practice log, settings and recordings are stored in this browser on this device (localStorage and IndexedDB). They are never uploaded.",
       "Backups, transfer links and share links are made by you, and go only where you send them."),

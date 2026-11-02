@@ -22,9 +22,11 @@ export function findSa(s, api) {
   const finder = fluteFinder({ onApply: () => { api.data.sa = "found"; api.save(); api.ready(); } });
   const st = getSettings();
   const keep = h("button", { type: "button", class: "linkbtn" }, "No sound yet? Skip: the app stays in " + WEST[st.saNote] + " for now");
-  const kept = h("p", { class: "small muted", hidden: true }, "Kept. You can do this later in Settings, Detect from my flute.");
+  const kept = h("p", { class: "small muted", hidden: true }, "Kept. You can do this later in Me > Flute, Detect from my flute.");
   keep.addEventListener("click", () => { api.data.sa = "skipped"; api.save(); keep.hidden = true; kept.hidden = false; api.ready(); });
-  return { el: h("div", { class: "stack" }, finder.el, keep, kept), destroy() { finder.destroy(); } };
+  // Another flute later: its Sa is changed in Me > Flute.
+  const later = h("p", { class: "small muted" }, h("a", { href: "#/me/flute" }, "Change your flute later in Me > Flute"));
+  return { el: h("div", { class: "stack" }, finder.el, keep, kept, later), destroy() { finder.destroy(); } };
 }
 
 // The drone: switch it on and listen to Sa for a few seconds.

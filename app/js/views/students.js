@@ -1,4 +1,4 @@
-// My students (#/students), for teachers: students send their teacher link (Me > Share, "for my
+// My students (Me > Teacher > Students; #/students), for teachers: students send their teacher link (Me > Teacher > Share, "for my
 // teacher"); paste the links here to see everyone in one table. Kept on this device only; a newer
 // link from the same student replaces the older one.
 import { h, toast, fmtDate, fmtMinutes } from "../util.js";
@@ -24,14 +24,13 @@ export function addStudentLinks(text) {
   return added;
 }
 
-export async function render(main) {
-  const page = h("div", { class: "page" });
-  main.append(page);
+// The students view (Me > Teacher > Students): the paste box and the table.
+export function studentsBody() {
   const input = h("textarea", { class: "input", rows: "3", placeholder: "Paste one or more teacher links from your students", "aria-label": "Student links" });
   const tableHost = h("div");
   const draw = () => {
     const rows = load().map(x => ({ x, c: decode(x.p) })).filter(r => r.c).sort((a, b) => (a.c.name || "").localeCompare(b.c.name || ""));
-    if (!rows.length) { tableHost.replaceChildren(h("p", { class: "emptystate" }, "No students yet. Ask each student to open Me, tick \"For my teacher\" under Share your progress, and send you the link.")); return; }
+    if (!rows.length) { tableHost.replaceChildren(h("p", { class: "emptystate" }, "No students yet. Ask each student to open Me, Teacher, Share progress, tick \"For my teacher\", and send you the link.")); return; }
     const weakest = c => { const hb = (c.holds || []).filter(([k]) => k !== "any").sort((a, b) => a[1] - b[1])[0]; return hb ? codeOf(Number(hb[0])) + " " + hb[1] + " s" : "-"; };
     const lastPlay = c => { const p = (c.plays || [])[c.plays ? c.plays.length - 1 : 0]; return p ? p[1] + "% (" + p[0] + ")" : "-"; };
     tableHost.replaceChildren(h("div", { class: "tablewrap" }, h("table", null,
@@ -42,9 +41,13 @@ export async function render(main) {
         h("td", null, c.ms.length ? c.ms.join(" ") : "-"), h("td", null, weakest(c)), h("td", null, lastPlay(c)), h("td", null, c.date ? fmtDate(c.date) : "-"),
         h("td", null, h("button", { type: "button", class: "btn small ghost", onclick: () => { save(load().filter(y => y.p !== x.p)); draw(); } }, "Remove"))))))));
   };
-  page.append(h("section", { class: "hero" }, h("h1", null, "My students"),
-    h("p", { class: "muted" }, "For teachers. Students send you their progress link; this table keeps them together on this device. Nothing is uploaded, so it updates when a student sends a new link.")),
-    h("section", { class: "card" }, input, h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { const n = addStudentLinks(input.value); input.value = ""; toast(n ? n + " student link" + (n === 1 ? "" : "s") + " added." : "No student links found in that text."); draw(); } }, "Add"))),
-    h("section", { class: "card" }, tableHost));
   draw();
+  return [h("section", { class: "hero" }, h("h1", null, "My students"),
+    h("p", { class: "muted" }, "For teachers. Students send you their progress link; this table keeps them together on this device. Nothing is uploaded, so it updates when a student sends a new link.")),
+  h("section", { class: "card" }, input, h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { const n = addStudentLinks(input.value); input.value = ""; toast(n ? n + " student link" + (n === 1 ? "" : "s") + " added." : "No student links found in that text."); draw(); } }, "Add"))),
+  h("section", { class: "card" }, tableHost)];
+}
+
+export async function render(main) {
+  main.append(h("div", { class: "page" }, studentsBody()));
 }

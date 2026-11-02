@@ -55,6 +55,9 @@ const ROUTES = [
   [/^\/skills$/, "skills"], [/^\/skills\/(tone|notes|rhythm|ornaments|ear)$/, "skills"], [/^\/skills\/games$/, "play"], [/^\/skills\/fix$/, "coach"], [/^\/skills\/fix\/(TS-\d\d)$/, "coach"],
   [/^\/music(?:\/songs)?$/, "songs"], [/^\/music\/ragas$/, "ragas"], [/^\/music\/mine$/, "mine"], [/^\/music\/listen$/, "listen"], [/^\/music\/transcribe$/, "transcribe"], [/^\/music\/compose$/, "compose"],
   [/^\/me$/, "progress"], [/^\/me\/journal$/, "journal"], [/^\/me\/teacher$/, "review"], [/^\/me\/flute$/, "flute"], [/^\/me\/settings$/, "settings"],
+  // Me: level and badges, the Journal's and the Teacher's views (level 3), the settings groups, privacy.
+  [/^\/me\/(level)$/, "progress"], [/^\/me\/journal\/(days|recordings|capsule)$/, "journal"], [/^\/me\/teacher\/(feedback|students|share)$/, "review"], [/^\/(students)$/, "review"],
+  [/^\/me\/settings\/(voice|display|practice|data|help)$/, "settings"], [/^\/me\/privacy$/, "privacy"],
   [/^\/bench\/([a-z]+)$/, "bench"],
   [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
@@ -190,8 +193,8 @@ function shell() {
     h("span", { class: "spacer" }),
     h("span", { class: "statuspills" }, dayPill, dock.pill, micPill),
     h("button", { type: "button", class: "iconbtn", title: "Search (press /)", onclick: openPalette }, icon("search", "Search")),
-    dock.button,
-    h("a", { class: "iconbtn", href: "#/me/settings", title: "Settings" }, icon("settings", "Settings")));
+    // Settings is a Me tab now (redesign 03), so the top bar has no gear.
+    dock.button);
   navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, h("span", { class: "tabicon" }, icon(NAV_ICON[k] || k)), h("span", null, label))));
   // On a wide screen, search sits at the top of the rail.
   navEl.prepend(h("button", { type: "button", class: "railsearch", onclick: openPalette }, icon("search"), h("span", null, "Search")));
