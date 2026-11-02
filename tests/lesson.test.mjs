@@ -177,4 +177,14 @@ test("fills: gaps sit between the singer's lines; a gap counts when played in, a
   segs[1].sound = 0.6; segs[3].sound = 0.2; segs[2].sound = 0.3;
   assert.deepEqual(K5.fillsScore(segs), { fills: 1, gaps: 2, covered: 1 });
 });
+test("styles: folk is tongued note by note and quick, bhajan slurred and slow; film has vibrato on the last note", () => {
+  const ev = Object.fromEntries(Object.keys(K5.STYLES).map(k => [k, K5.styleEvents(k)]));
+  const len = e => e[e.length - 1].at + e[e.length - 1].pts[e[e.length - 1].pts.length - 1].t;
+  assert.equal(ev.bhajan.length, 2);
+  assert.ok(ev.folk.length > 15);
+  assert.ok(len(ev.bhajan) > len(ev.folk) * 1.5, "bhajan is much slower");
+  const last = ev.film[ev.film.length - 1].pts.slice(-40).map(p => p.semi);
+  assert.ok(Math.max(...last) - Math.min(...last) > 0.4, "vibrato on the final Sa");
+  assert.ok(ev.bhajan[0].pts.some(p => p.semi > 2 && p.semi < 4), "a meend from Ga to Re passes between them");
+});
 console.log("lesson tests: " + n + " passed");

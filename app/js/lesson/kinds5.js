@@ -108,7 +108,58 @@ export function fillsScore(segs, minFill = 0.4, minCover = 0.25) {
   return { fills: gaps.filter(x => x.sound >= minFill).length, gaps: gaps.length, covered: lines.filter(x => x.sound >= minCover).length };
 }
 
+// One plain melody (L36: S R G - | P - G R || G P D P | G R S -) in four styles. Each style is
+// groups of slurred notes; a new group is a new attack (tonguing). A note: [semi, beats, opts]
+// with opts glide (a meend into it, in beats), vib (vibrato depth in semitones), stretch
+// (rubato), grace (a kan from that note).
+const MURKI = (a, b, c, d) => [[a, 0.14], [b, 0.14], [c, 0.14], [d, 0.58]];
+export const STYLES = {
+  film: { bpm: 84, groups: [[[0, 1], [2, 1], [4, 1]], [[4, 1], [7, 2], [4, 0.5], [2, 0.5], [4, 1]], [[4, 1], [7, 1], [9, 1], [7, 1], [4, 1], [2, 1], [0, 2, { vib: 0.3 }]]] },
+  bhajan: { bpm: 60, groups: [[[0, 1], [2, 1], [4, 2], [7, 2], [4, 1], [2, 1, { glide: 0.5 }]], [[4, 1], [7, 1], [9, 2], [7, 1], [4, 1, { glide: 0.5 }], [2, 1], [0, 2, { glide: 0.5 }]]] },
+  ghazal: { bpm: 70, groups: [[[0, 1], [2, 1, { grace: 4 }], [4, 2, { stretch: 1.3 }], [7, 2], ...MURKI(7, 4, 2, 4), [2, 1, { stretch: 1.2 }]], [[4, 1], [7, 1], [9, 1, { grace: 12 }], [7, 1], [4, 1], ...MURKI(4, 2, 0, 2), [0, 2, { stretch: 1.4 }]]] },
+  folk: { bpm: 100, groups: [[0, 0.5], [0, 0.5], [2, 0.5], [2, 0.5], [4, 1], [4, 1], [7, 0.5], [7, 0.5], [7, 1], [4, 1], [2, 1], [4, 0.5], [4, 0.5], [7, 0.5], [7, 0.5], [9, 1], [7, 1], [4, 1], [2, 1], [0, 1], [0, 1]].map(n => [n]) },
+};
+// -> [{ at (s), pts: [{ t, semi }] }]: one event per attack, curves sampled every 0.02 s.
+export function styleEvents(name) {
+  const st = STYLES[name], beat = 60 / st.bpm, ev = [], dt = 0.02;
+  let at = 0, prev = null;
+  for (const group of st.groups) {
+    const pts = [];
+    let t = 0;
+    for (const [semi, beats, o = {}] of group) {
+      const dur = beats * beat * (o.stretch || 1), t1 = t + dur;
+      const glide = o.glide && prev !== null ? Math.min(o.glide * beat, dur / 2) : 0, from = prev;
+      for (let x = t; x < t1 - 1e-9; x += dt) {
+        let s = semi;
+        if (o.grace !== undefined && x - t < 0.06) s = o.grace;
+        else if (glide && x - t < glide) s = from + (semi - from) * (x - t) / glide;
+        else if (o.vib) s = semi + o.vib * Math.sin(2 * Math.PI * 5.5 * (x - t));
+        pts.push({ t: Math.round(x * 1000) / 1000, semi: s });
+      }
+      t = t1; prev = semi;
+    }
+    pts.push({ t: Math.round(t * 1000) / 1000, semi: prev });
+    ev.push({ at, pts });
+    at += t + 0.05;
+  }
+  return ev;
+}
+
 export const RAGA_KINDS = {
+  // Hear the melody in a style and name it. { rounds: [{ style, options, answer, why }] }
+  styles: { make(s, api) {
+    let timers = [];
+    const stop = () => { timers.forEach(clearTimeout); timers = []; };
+    const play = name => { stop(); for (const e of styleEvents(name)) timers.push(setTimeout(() => playCurve(e.pts), e.at * 1000)); };
+    const R = chipRounds(s, api, { onShow: stop });
+    const hear = h("button", { type: "button", class: "btn primary" }, icon("play"), " Hear it");
+    hear.addEventListener("click", () => play(R.round().style));
+    const plain = h("button", { type: "button", class: "btn" }, "The plain melody");
+    plain.addEventListener("click", () => { stop(); [0, 2, 4, 4, 7, 7, 4, 2, 4, 7, 9, 7, 4, 2, 0, 0].forEach((n, k) => timers.push(setTimeout(() => playNote(n, 0.6), k * 650))); });
+    R.show();
+    return { el: h("div", { class: "stack lesson-center" }, R.tally, h("div", { class: "row" }, hear, plain), R.opts, R.out), destroy: stop };
+  } },
+
   // Play fills in the singer's gaps, never over the words. The singer's line is played on a
   // second flute voice; a note the mic hears that matches the line's current note is that
   // speaker, not you. { bpm, gap (beats), lines: [[semi per beat]] }
