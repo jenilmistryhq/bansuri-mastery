@@ -1,7 +1,23 @@
 // Placement test for learners who already play: a few short items, from a held Sa to the upper
 // octave, each checked by the microphone. The last item passed in a row decides where to start.
-import { h } from "./util.js";
+import { h, today, toast } from "./util.js";
 import { holdMeter, phraseCheck } from "./core/live.js";
+import { getPlan } from "./course.js";
+import { update } from "./state.js";
+
+// Start the course at a phase (the playing test's advice): earlier milestones are marked as skipped,
+// and can still be taken. Returns the day started on, or null for an unknown phase.
+export function startAtPhase(phaseId) {
+  const plan = getPlan(), ph = plan.phases.find(p => String(p.id) === String(phaseId));
+  if (!ph) return null;
+  update(st => {
+    st.current = ph.firstDay;
+    if (!st.startedAt) st.startedAt = today();
+    for (const m of plan.milestones) if (m.day < ph.firstDay && (!st.milestones[m.id] || st.milestones[m.id].status !== "passed")) st.milestones[m.id] = Object.assign({ attempts: [] }, st.milestones[m.id] || {}, { status: "skipped" });
+  });
+  toast("Now on Day " + ph.firstDay + ". Earlier milestones are marked as skipped; you can still take them.");
+  return ph.firstDay;
+}
 
 // Each item, and the phase that passing it (and every item before it) leads to.
 export const PLACEMENT = [

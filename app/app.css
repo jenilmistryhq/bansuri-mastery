@@ -1214,3 +1214,49 @@ html.fullfocus main { padding-bottom: 0; }
 .lesson-trouble[hidden] { display: none; }
 /* The step's own timed "Not yet? Go on" steps aside once the player offers Skip for now. */
 .lesson-introuble .lesson-later { display: none; }
+
+/* Redesign: Today */
+/* The day block (05 L1, L1b): one column, the main button full width on a phone. */
+.todayhero { grid-template-columns: minmax(0, 1fr); }
+.todayline { display: inline-flex; flex-wrap: wrap; gap: 0 8px; }
+.todayline > span + span::before { content: "\00B7"; margin-right: 8px; }
+.todaygoal { margin: 0; max-width: 60ch; }
+.todaysub { gap: 4px 14px; margin: 0; }
+.todaytime { margin: 0; }
+.todayhero .resume-body > .btn.big, .todayhero .resume-body > .row { margin-top: 4px; }
+@media (max-width: 560px) {
+  .todayhero .resume-body { justify-items: stretch; }
+  .todayhero .resume-body > .btn.big { justify-content: center; text-align: center; }
+  .todayhero .resume-body > .row > .btn.big { flex: 1 1 100%; justify-content: center; }
+}
+.todaydone { border-left-color: var(--good); }
+.donetitle { display: flex; align-items: center; gap: 10px; }
+.donetick { display: inline-grid; place-items: center; width: 34px; height: 34px; flex: none; border-radius: 50%; background: var(--good); color: var(--surface); }
+.donetick .icon { width: 20px; height: 20px; }
+.todayrec:empty { display: none; }
+.todayrec audio, .todayrec video { width: min(100%, 420px); }
+.todaynext { gap: 8px 14px; }
+.todayor { gap: 8px; }
+/* The current unit: the days around today, ending at the milestone. */
+.unitstrip { gap: 10px; }
+.unit-dots { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+.unit-dots > i { width: 12px; height: 12px; flex: none; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); }
+.unit-dots > i.done { background: var(--accent); border-color: var(--accent); }
+.unit-dots > i.now { width: 18px; height: 18px; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.unit-dots > i.unit-more { width: 16px; height: 2px; border: 0; border-radius: 1px; background: var(--line); }
+.unit-ms { padding: 2px 8px; border-radius: 8px; border: 2px solid var(--accent); font-size: 0.8rem; color: var(--ink); }
+.unit-ms.now { background: var(--accent-soft); }
+.unit-link { display: flex; justify-content: space-between; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); padding-top: 8px; border-top: 1px solid var(--line); }
+.unit-link:hover span:first-child { text-decoration: underline; }
+/* One-time messages (news, backup, install): a toast with its buttons. */
+.msgtoasts { z-index: 45; }
+.msgtoast { display: grid; gap: 8px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 12px; padding: 12px 14px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22); animation: toast-in 180ms ease-out; transition: opacity 180ms, transform 180ms; }
+.msgtoast.leaving { opacity: 0; transform: translateY(6px); }
+.msgtoast p, .msgtoast ul { margin: 0; }
+.msgtoast ul { padding-left: 1.2em; display: grid; gap: 2px; max-height: 28vh; overflow: auto; }
+/* First run (F1): one choice per screen. */
+.firstflow { display: grid; gap: var(--s3); }
+.firstchoice { display: grid; gap: 10px; max-width: 420px; }
+.firstchoice > .btn { justify-content: center; }
+.firstchoice[hidden] { display: none; }
+.firstplay { border-left: 4px solid var(--accent); }

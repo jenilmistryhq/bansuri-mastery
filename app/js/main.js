@@ -55,7 +55,7 @@ const ROUTES = [
   [/^\/music(?:\/songs)?$/, "songs"], [/^\/music\/ragas$/, "ragas"], [/^\/music\/mine$/, "mine"], [/^\/music\/listen$/, "listen"], [/^\/music\/transcribe$/, "transcribe"], [/^\/music\/compose$/, "compose"],
   [/^\/me$/, "progress"], [/^\/me\/journal$/, "journal"], [/^\/me\/teacher$/, "review"], [/^\/me\/flute$/, "flute"], [/^\/me\/settings$/, "settings"],
   [/^\/bench\/([a-z]+)$/, "bench"],
-  [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
+  [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/today\/quick$/, "quick"],[/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/coach\/(TS-\d\d)$/, "coach"], [/^\/songs$/, "songs"],
