@@ -63,7 +63,52 @@ export function tihaiBeats(phrase, gap, start) {
   return out;
 }
 
+function chipRounds(s, api, { onShow, onRight }) {
+  let i = 0, right = 0, missed = false;
+  const tally = h("p", { class: "small muted" });
+  const opts = h("div", { class: "lesson-chips" });
+  const out = h("div");
+  function show() {
+    const r = s.rounds[i]; missed = false; out.replaceChildren();
+    tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length;
+    onShow(r);
+    opts.replaceChildren(...r.options.map(o => {
+      const b = h("button", { type: "button", class: "lesson-chip mono" }, o);
+      b.addEventListener("click", () => {
+        if (o !== r.answer) { missed = true; b.classList.add("wrong"); b.disabled = true; ding(false); return; }
+        if (!missed) right++;
+        b.classList.add("picked"); opts.querySelectorAll("button").forEach(x => { x.disabled = true; }); ding(true);
+        if (onRight) onRight(r);
+        const last = i === s.rounds.length - 1;
+        const next = last ? null : h("button", { type: "button", class: "btn" }, "Next one");
+        if (next) next.addEventListener("click", () => { i++; show(); });
+        out.replaceChildren(...[r.why ? h("div", { class: "lesson-reveal good" }, h("b", null, "Right."), h("p", null, r.why)) : null, next].filter(Boolean));
+        if (last) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
+      });
+      return b;
+    }));
+  }
+  return { tally, opts, out, show, round: () => s.rounds[i] };
+}
+
 export const RAGA_KINDS = {
+  // Hear a phrase and name the note it rests on (the nyas). { rounds: [{ phrase: [[semi, seconds]], options, answer, why }] }
+  nyas: { make(s, api) {
+    let timers = [];
+    const stop = () => { timers.forEach(clearTimeout); timers = []; };
+    const R = chipRounds(s, api, { onShow: () => { stop(); } });
+    const play = () => {
+      stop();
+      const k = window.__lessonTime ? 0.25 : 1;
+      let t = 0;
+      for (const [semi, dur] of R.round().phrase) { timers.push(setTimeout(() => playNote(semi, dur * k * 0.95), t * 1000)); t += dur * k; }
+    };
+    const hear = h("button", { type: "button", class: "btn primary" }, icon("play"), " Hear the phrase");
+    hear.addEventListener("click", play);
+    R.show();
+    return { el: h("div", { class: "stack lesson-center" }, R.tally, hear, R.opts, R.out), destroy: stop };
+  } },
+
   // Tap the beat a tihai must start on, then hear it against teentaal: does it land?
   // { bpm, rounds: [{ phrase: [semi per beat], gap, land: 17 | 13, why }] }
   tihai: { make(s, api) {
@@ -137,15 +182,12 @@ export const RAGA_KINDS = {
 
   // Read a note on the treble staff. { rounds: [{ semi (from C5), options, answer, why }] }
   staff: { make(s, api) {
-    let i = 0, right = 0, missed = false;
     const NS = "http://www.w3.org/2000/svg";
     const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v)); return e; };
     const svg = el("svg", { viewBox: "0 0 240 150", class: "lesson-staff", role: "img", "aria-label": "A note on the treble staff" });
-    const tally = h("p", { class: "small muted" });
-    const opts = h("div", { class: "lesson-chips" });
-    const out = h("div");
+    const R = chipRounds(s, api, { onShow: r => draw(r.semi), onRight: r => playNote(r.semi, 0.6) });
     const hear = h("button", { type: "button", class: "btn" }, icon("play"), " Hear it");
-    hear.addEventListener("click", () => playNote(s.rounds[i].semi, 0.7));
+    hear.addEventListener("click", () => playNote(R.round().semi, 0.7));
     const Y0 = 105, GAP = 10; // the bottom line (E4) and the space between lines
     const yOf = step => Y0 - step * GAP / 2;
     function draw(semi) {
@@ -162,27 +204,8 @@ export const RAGA_KINDS = {
       svg.append(el("line", { x1: sx, x2: sx, y1: yOf(step), y2: yOf(step) + (down ? 30 : -30), class: "staff-stem" }));
       if (sharp) { const t = el("text", { x: x - 24, y: yOf(step) + 5, class: "staff-sharp" }); t.textContent = "#"; svg.append(t); }
     }
-    function show() {
-      const r = s.rounds[i]; missed = false; out.replaceChildren();
-      tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length;
-      draw(r.semi);
-      opts.replaceChildren(...r.options.map(o => {
-        const b = h("button", { type: "button", class: "lesson-chip mono" }, o);
-        b.addEventListener("click", () => {
-          if (o !== r.answer) { missed = true; b.classList.add("wrong"); b.disabled = true; ding(false); return; }
-          if (!missed) right++;
-          b.classList.add("picked"); opts.querySelectorAll("button").forEach(x => { x.disabled = true; }); ding(true); playNote(r.semi, 0.6);
-          const last = i === s.rounds.length - 1;
-          const next = last ? null : h("button", { type: "button", class: "btn" }, "Next one");
-          if (next) next.addEventListener("click", () => { i++; show(); });
-          out.replaceChildren(...[r.why ? h("div", { class: "lesson-reveal good" }, h("b", null, "Right."), h("p", null, r.why)) : null, next].filter(Boolean));
-          if (last) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
-        });
-        return b;
-      }));
-    }
-    show();
-    return { el: h("div", { class: "stack lesson-center" }, tally, svg, hear, opts, out) };
+    R.show();
+    return { el: h("div", { class: "stack lesson-center" }, R.tally, svg, hear, R.opts, R.out) };
   } },
 
   // Call and response: the app plays a question; you answer on the flute and come home to Sa.
