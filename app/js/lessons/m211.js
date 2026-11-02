@@ -39,7 +39,7 @@ export const M211 = {
     ] },
     { title: "Murki", steps: [
       { id: "slow", kind: "phrase", title: "Slow motion first", intro: "Murki on Re, (GRSR): first as four equal notes, one per beat. G R S R, then a held R.", phrase: [4, 2, 0, 2], giveUp: 120 },
-      { id: "fast", kind: "ornament", key: "murki", ex: { id: "grsr", notes: [4, 2, 0, 2], each: 0.11 }, title: "Now at speed", intro: "Two per beat, then four, then the whole group in a fraction of a beat before a held R. Make it light: the first notes softer and shorter, the arrival note full." },
+      { id: "fast", drill: { title: "Murki at speed", intro: "Murki on Re (GRSR): two per beat, then four, then the whole group in a fraction of a beat before a held R. Light: the first notes softer and shorter, the arrival note full." }, kind: "ornament", key: "murki", ex: { id: "grsr", notes: [4, 2, 0, 2], each: 0.11 }, title: "Now at speed", intro: "Two per beat, then four, then the whole group in a fraction of a beat before a held R. Make it light: the first notes softer and shorter, the arrival note full." },
       { id: "which", kind: "quiz", title: "Khatka or murki?", intro: "Both are quick groups of 3-5 notes around a main note, inside its time.",
         questions: [{ q: "What is the difference?", options: [{ text: "Khatka is usually more forceful; murki lighter: but definitions differ", right: true }, { text: "A fixed rule: khatka has 4 notes, murki 3", why: "Disputed: teachers and books define them slightly differently, and the boundary is not fixed." }], why: "In practice, copy the ornament you hear in a recording (L24). Murki is very common in thumri, ghazal, bhajan and film songs." }] },
     ] },

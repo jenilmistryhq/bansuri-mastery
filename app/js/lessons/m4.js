@@ -45,7 +45,7 @@ export const M4 = {
           { curve: WOBBLES, options: opts("wobbles") },
           { curve: FALLS, options: opts("falls") },
         ] },
-      { id: "drone", kind: "hold", title: "Now with the drone", intro: "Tick Drone below the ring. Hold Sa and listen rather than look: do you hear the wah-wah? Roll the flute very slightly in (lower) or out (higher) until it slows and stops.",
+      { id: "drone", drill: { title: "Sa with the drone" }, kind: "hold", title: "Now with the drone", intro: "Tick Drone below the ring. Hold Sa and listen rather than look: do you hear the wah-wah? Roll the flute very slightly in (lower) or out (higher) until it slows and stops.",
         target: 0, seconds: 4, cents: 30, giveUp: 60 },
       { id: "clear", kind: "record", title: "How clear is it?", intro: "Record a long tone. What share of the sound is tone, and what share is hiss? A smaller lip opening and a little less air reduce the hiss.",
         seconds: 8, day: 4, label: "Day 4: long tone on Sa", analyse: true },

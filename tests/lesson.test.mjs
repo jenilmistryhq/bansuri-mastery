@@ -230,6 +230,19 @@ test("energy map: calm start, waves on the way up, the peak at the end", () => {
     assert.ok(!PR.toneNotes(100, 99).some(x => x > 9), "no upper octave before Day 141");
     assert.deepEqual([300, 301, 302].map(n => PR.toneNotes(n, 281)[0]), [-5, 0, 11], "low, middle, upper on three days running");
   });
+  test("practice days: no drill opens with words that lean on its lesson's previous step", () => {
+    for (const [n, , l] of built) for (const s of P.flatSteps(l)) if (s.from) {
+      assert.ok(!/^(Now|Same notes|Then)\b/.test(s.intro || "") && !/^Now\b/.test(s.title || ""), "Day " + n + " " + s.id + ": give it drill wording");
+      assert.ok(s.from.day < n && s.from.title, "Day " + n + " " + s.id + ": names its lesson");
+    }
+  });
+  test("practice days: blocks already ticked in the step list are skipped, count as done, and leave the other drills as they were", () => {
+    const [n, d] = built[300];
+    const whole = PR.buildPractice(n, d, null), part = PR.buildPractice(n, d, null, LESSONS, { W: true, T: true });
+    assert.equal(part.chapters.length, whole.chapters.length - 2);
+    const drills = l => P.flatSteps(l).filter(s => s.from).map(s => s.id).join();
+    assert.equal(drills(part), drills(whole));
+  });
   test("practice days: drills come only from lessons already reached", () => {
     for (const [n, , l] of built) for (const s of P.flatSteps(l)) {
       const m = /^[KME]-(m\d+)-/.exec(s.id);

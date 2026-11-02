@@ -27,7 +27,7 @@ export const M281 = {
         items: [{ label: "Ear" }, { label: "Notation" }, { label: "Fingers" }, { label: "Structure" }, { label: "Stress test" }],
         prompt: "Tap them in order.", done: "Sing it without the flute; write it from memory; play it slowly with eyes closed; know the sections and mark 4 starting points; then let someone call a starting point." },
       { id: "start1", kind: "phrase", title: "Stress test: from the start", intro: "Your Bhupali composition (Day 141). Start immediately: G G R S | .D S R G", phrase: notes("G G R S .D S R G"), giveUp: 120 },
-      { id: "start2", kind: "phrase", title: "Stress test: from the middle", intro: "Now from the third bar, at once, no run-up: P G D P | G R S -", phrase: notes("P G D P G R S"), giveUp: 120 },
+      { id: "start2", drill: { intro: "Your Bhupali composition (Day 141), from the third bar, at once, no run-up: P G D P | G R S -" }, kind: "phrase", title: "Stress test: from the middle", intro: "Now from the third bar, at once, no run-up: P G D P | G R S -", phrase: notes("P G D P G R S"), giveUp: 120 },
     ] },
     { title: "A mock performance", steps: [
       { id: "mock", kind: "record", title: "Play it as if it were real", intro: "Announce the piece first. Then play your Bhupali composition, or any piece you know. The rule: never stop. A mistake? Keep going, and rejoin at the next beat or phrase.", seconds: 40, day: 281, label: "Day 281: mock performance" },

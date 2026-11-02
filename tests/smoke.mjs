@@ -1504,6 +1504,14 @@ try {
       if (lesson.id[0] === "p") {
         await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" }); await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
         check(!!(await lp.$('#main a[href="#/lesson/' + lesson.id + '"]')) && !!(await lp.$('#main a[href="#/session/' + lesson.day + '"]')), "Today (Day " + lesson.day + ") starts the practice lesson, with the step list one tap away");
+        if (lesson.id === "p47") {
+          // A block ticked in the step list carries over: the lesson leaves it out, Today says Continue.
+          await lp.evaluate(n => { const st = JSON.parse(localStorage.getItem("bansuri.progress")); st.days[n] = { blocks: { W: true } }; localStorage.setItem("bansuri.progress", JSON.stringify(st)); }, lesson.day);
+          await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+          check(/Continue today's practice/.test(await lp.$eval('#main a[href="#/lesson/p47"]', e => e.textContent)), "Today: a practice day started in the step list continues as a lesson");
+          await lp.goto(BASE + "#/lesson/p47", { waitUntil: "networkidle0" }); await sleep(300);
+          check(!(await lp.$$eval("#main .lesson-chapters li", l => l.map(x => x.textContent))).includes("Warm-up"), "practice lesson: a block done in the step list is left out");
+        }
       }
       await lp.goto(BASE + "#/lesson/" + lesson.id, { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });

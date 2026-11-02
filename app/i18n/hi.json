@@ -5786,5 +5786,17 @@
 "Your first Sa (Day {n})": "आपका पहला सा (दिन {n})",
 "Melody with rubric (Day {n})": "रूब्रिक के साथ धुन (दिन {n})",
 "M{n} rehearsal (Day {m})": "M{n} की तैयारी (दिन {m})",
-"M{n} test": "M{n} परीक्षा"
+"M{n} test": "M{n} परीक्षा",
+"Practice from Day {n}: {x}": "दिन {n} से अभ्यास: {x}",
+"Hold Sa: two seconds": "सा रोकिए: दो सेकंड",
+"Hold Sa, gently, for 2 seconds. Do not chase volume: a soft, clear note is the goal.": "सा को धीरे से 2 सेकंड रोकिए। ज़ोर के पीछे मत भागिए: धीमा, साफ़ स्वर ही लक्ष्य है।",
+"A song's first phrase": "गीत का पहला वाक्यांश",
+"S S P P D D P: the first phrase of the song you wrote down on Day 99. Slowly; repeated notes need a small \"hu\" or \"tu\".": "S S P P D D P: वह गीत जिसका पहला वाक्यांश आपने दिन 99 पर लिखा था। धीरे; दोहराए स्वरों को हल्का \"हु\" या \"तु\" चाहिए।",
+"Bhatkhande marks": "भातखंडे चिह्न",
+"Read each note with its marks: look above and below the letter.": "हर स्वर को उसके चिह्नों के साथ पढ़िए: अक्षर के ऊपर और नीचे देखिए।",
+"Murki at speed": "तेज़ गति में मुर्की",
+"Murki on Re (GRSR): two per beat, then four, then the whole group in a fraction of a beat before a held R. Light: the first notes softer and shorter, the arrival note full.": "रे पर मुर्की (GRSR): हर मात्रा पर दो, फिर चार, फिर पूरा समूह एक मात्रा के छोटे हिस्से में, फिर रुका हुआ R। हल्का: पहले स्वर धीमे और छोटे, पहुँचने वाला स्वर भरा हुआ।",
+"Your Bhupali composition (Day 141), from the third bar, at once, no run-up: P G D P | G R S -": "आपकी भूपाली रचना (दिन 141), तीसरे बार से, तुरंत, बिना तैयारी: P G D P | G R S -",
+"A melody as a bhajan": "भजन की तरह एक धुन",
+"S R G P G R G P D P G R S at 60 BPM: slurred, sustained, a meend from Ga down to Re and from Re into Sa.": "S R G P G R G P D P G R S, 60 BPM पर: जुड़ा हुआ, टिका हुआ, ग से नीचे रे तक और रे से सा में मींड।"
 }

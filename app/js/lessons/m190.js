@@ -29,7 +29,7 @@ export const M190 = {
           { tokens: [T("प")], options: ["P", "m", "S"], answer: "P" },
           { tokens: [T("नि")], options: ["N", "R", "D"], answer: "N" },
         ] },
-      { id: "marks", kind: "bhatkhande", title: "The marks", intro: "Now with marks. Look above and below the letter.",
+      { id: "marks", drill: { title: "Bhatkhande marks", intro: "Read each note with its marks: look above and below the letter." }, kind: "bhatkhande", title: "The marks", intro: "Now with marks. Look above and below the letter.",
         rounds: [
           { tokens: [T("रे", "komal")], options: ["R", "r", "R'"], answer: "r", why: "A short line under the letter: komal (flat). The course writes it in lower case." },
           { tokens: [T("म", "tivra")], options: ["m", "M", ".m"], answer: "M", why: "A short vertical line above Ma: tivra Ma, upper-case M." },

@@ -28,7 +28,7 @@ export const M467 = {
     ] },
     { title: "Your turn", steps: [
       { id: "plain", kind: "phrase", title: "The plain melody", intro: "First as written, straight: S R G P G R G P D P G R S.", phrase: [0, 2, 4, 7, 4, 2, 4, 7, 9, 7, 4, 2, 0], giveUp: 120 },
-      { id: "bhajan", kind: "phrase", title: "Now as a bhajan", intro: "60 BPM, slurred, sustained, a meend from Ga down to Re and from Re into Sa. Same notes, different accent. Record it and listen back.", phrase: [0, 2, 4, 7, 4, 2, 4, 7, 9, 7, 4, 2, 0], giveUp: 150 },
+      { id: "bhajan", drill: { title: "A melody as a bhajan", intro: "S R G P G R G P D P G R S at 60 BPM: slurred, sustained, a meend from Ga down to Re and from Re into Sa." }, kind: "phrase", title: "Now as a bhajan", intro: "60 BPM, slurred, sustained, a meend from Ga down to Re and from Re into Sa. Same notes, different accent. Record it and listen back.", phrase: [0, 2, 4, 7, 4, 2, 4, 7, 9, 7, 4, 2, 0], giveUp: 150 },
       { id: "dhun", kind: "improv", title: "A dhun in Khamaj", intro: "A dhun is a light, raga-based tune, played with variations. Forty seconds in Khamaj: shuddha Ni going up, komal Ni coming down. Keep coming back to S G m P and D m G.", ...KHAMAJ, seconds: 40 },
     ] },
     { title: "Further afield", steps: [

@@ -6,7 +6,7 @@
 // music from recent ones, and one ear game from any lesson so far (spaced review).
 import { LESSONS } from "./index.js";
 import { dayReward } from "./common.js";
-import { getDay, current, finishSession } from "../course.js";
+import { getDay, current, dayState, finishSession } from "../course.js";
 import { holdSpec } from "../views/session.js";
 import { plainText } from "../steps.js";
 
@@ -40,7 +40,8 @@ export function taughtBy(n, lessons = LESSONS) {
 }
 
 // Build day n's practice lesson from its plan entry. next: the following day (for the teaser).
-export function buildPractice(n, day, next, lessons = LESSONS) {
+// done: blocks already ticked in the step list today: they are skipped, and count as done.
+export function buildPractice(n, day, next, lessons = LESSONS, done = {}) {
   if (!day || day.kind !== "practice" || !day.blocks || !day.blocks.length) return null;
   const taught = taughtBy(n, lessons);
   if (!taught.length || taught[taught.length - 1].day === n) return null;
@@ -56,9 +57,11 @@ export function buildPractice(n, day, next, lessons = LESSONS) {
     while (out.length < k && out.length < free.length) { const c = free[i % free.length]; used.add(c.l.id + "/" + c.s.id); out.push(c); i++; }
     return out;
   };
-  const copy = (c, prefix) => Object.assign({}, c.s, { id: prefix + "-" + c.l.id + "-" + c.s.id, from: "Day " + c.l.day + ": " + c.l.title });
+  // A drill keeps its lesson's step, with the step's own practice wording (drill) where its
+  // lesson's words lean on the step before; "from" names the lesson it comes from.
+  const copy = (c, prefix) => Object.assign({}, c.s, c.s.drill || {}, { id: prefix + "-" + c.l.id + "-" + c.s.id, from: { day: c.l.day, title: c.l.title } });
   const keepGoing = (b, seconds) => ({ id: b.id + "-time", kind: "timer", title: "Keep going: " + (b.label || "practice"), intro: plainBlock(b.text), src: b.text, seconds, start: "Start " + Math.round(seconds / 60) + " minutes", checks: ["Done for today"], read: b.read || [] });
-  const chapters = [], rows = [];
+  const parts = [];
   for (const b of day.blocks) {
     const role = ROLE[b.id] || "read", secs = Math.max(60, (b.minutes || 5) * 60);
     const st = [];
@@ -83,17 +86,18 @@ export function buildPractice(n, day, next, lessons = LESSONS) {
     } else {
       st.push(keepGoing(b, secs));
     }
-    chapters.push({ title: b.label || b.id, steps: st });
-    rows.push(b.label || b.id);
+    // The drills are chosen for every block first, so skipping a done one never changes the rest.
+    parts.push({ b, steps: st, done: !!done[b.id] });
   }
+  const chapters = parts.filter(p => !p.done).map(p => ({ title: p.b.label || p.b.id, steps: p.steps }));
   const teaser = next ? { when: "Tomorrow", title: "Day " + next.n + ": " + next.title, text: next.kind === "milestone" ? "A milestone: show what you can do." : next.kind === "review" ? "A review day." : "Another step on the way.", notes: [0, 2, 4, 2, 0] } : { when: "Tomorrow", title: "Keep going", text: "", notes: [0, 2, 4, 2, 0] };
   chapters.push({ title: "Done", steps: [{ id: "done", kind: "custom", title: "Day " + n + " practised", next: "Finish Day " + n,
-    make: dayReward(d => chapters.slice(0, -1).map((c, i) => [rows[i], c.steps.some(s => d[s.id])]), teaser) }] });
+    make: dayReward(d => parts.map(p => [p.b.label || p.b.id, p.done || p.steps.some(s => d[s.id])]), teaser) }] });
   return {
     id: "p" + n, day: n, practice: true, title: day.title, minutes: day.minutes || 45, chapters,
     finish(d) {
       const was = current(), blocks = {};
-      day.blocks.forEach((b, i) => { blocks[b.id] = chapters[i].steps.some(s => d[s.id]); });
+      for (const p of parts) blocks[p.b.id] = p.done || p.steps.some(s => d[s.id]);
       finishSession(n, { minutes: day.minutes || 45, note: "Day " + n + " practice.", passed: true, blocks });
       return { advanced: was === n && current() > n };
     },
@@ -107,7 +111,9 @@ export function practiceLesson(id) {
   if (!m) return null;
   const n = Number(m[1]), day = getDay(n);
   const next = getDay(n + 1);
-  return buildPractice(n, day, next && Object.assign({}, next, { n: n + 1 }));
+  // Today's blocks ticked in the step list carry over; a past day is practised whole again.
+  const done = n === current() ? ((dayState(n) || {}).blocks || {}) : {};
+  return buildPractice(n, day, next && Object.assign({}, next, { n: n + 1 }), LESSONS, done);
 }
 
 // The block instructions in plain words, in the learner's language (the same texts the session

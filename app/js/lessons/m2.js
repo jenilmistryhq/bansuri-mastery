@@ -27,7 +27,7 @@ export const M2 = {
         ] },
       { id: "sound", kind: "firstSound", title: "Find the sweet spot, three times", intro: "Holes 1-3 closed (Sa). Find the sound, then take the flute away from your lips, breathe, and find it again. Airy is fine: any sound on Sa counts today.",
         target: 0, times: 3, giveUp: 90 },
-      { id: "hold", kind: "hold", title: "Make it last: two seconds", intro: "Now hold Sa, gently, for 2 seconds. Do not chase volume: a soft, clear note is the goal. The ring fills while the note stays.",
+      { id: "hold", drill: { title: "Hold Sa: two seconds", intro: "Hold Sa, gently, for 2 seconds. Do not chase volume: a soft, clear note is the goal." }, kind: "hold", title: "Make it last: two seconds", intro: "Now hold Sa, gently, for 2 seconds. Do not chase volume: a soft, clear note is the goal. The ring fills while the note stays.",
         target: 0, seconds: 2, cents: 50, giveUp: 45 },
     ] },
     { title: "Sa inside you", steps: [

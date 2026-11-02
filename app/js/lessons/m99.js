@@ -32,7 +32,7 @@ export const M99 = {
         notes: KEYS, rounds: [P1] },
     ] },
     { title: "Play it", steps: [
-      { id: "p1", kind: "phrase", title: "Play phrase 1", intro: "Now find your notes on the flute, slowly. Repeated notes need a small \"hu\" or \"tu\".", phrase: P1, giveUp: 120 },
+      { id: "p1", drill: { title: "A song's first phrase", intro: "S S P P D D P: the first phrase of the song you wrote down on Day 99. Slowly; repeated notes need a small \"hu\" or \"tu\"." }, kind: "phrase", title: "Play phrase 1", intro: "Now find your notes on the flute, slowly. Repeated notes need a small \"hu\" or \"tu\".", phrase: P1, giveUp: 120 },
       { id: "p2", kind: "phrase", title: "Phrase 2", intro: "m m G G R R S: the answer comes home. Shuddha Ma is your half-hole from Day 64.", phrase: P2, giveUp: 120 },
       { id: "rec", kind: "record", title: "Compare with the reference", intro: "Record both phrases, then play the reference (Hear it) straight after your recording. Listen to both.", seconds: 15, day: 99, label: "Day 99: song 1, phrases 1-2" },
       { id: "check", kind: "order", title: "Correct in this order", intro: "Check your recording one thing at a time, in this order:",

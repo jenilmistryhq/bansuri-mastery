@@ -68,7 +68,9 @@ export function lessonPlayer(lesson, opts) {
     const kind = s.kind === "custom" ? { make: s.make } : STEP_KINDS[s.kind];
     live = kind ? kind.make(s, api) : { el: h("p", null, "This step is missing.") };
     const head = s.title ? h("h2", { class: "lesson-title", tabindex: "-1" }, s.title) : null;
-    stage.replaceChildren(...[head, s.intro ? h("p", { class: "lesson-intro" }, s.intro) : null, live.el].filter(Boolean));
+    // A practice-day drill names the lesson it comes from.
+    const from = s.from ? h("p", { class: "small muted lesson-from" }, "Practice from Day " + s.from.day + ": " + s.from.title) : null;
+    stage.replaceChildren(...[from, head, s.intro ? h("p", { class: "lesson-intro" }, s.intro) : null, live.el].filter(Boolean));
     stage.dataset.kind = s.kind; stage.dataset.step = s.id; stage.dataset.target = s.target === undefined ? "" : String(s.target);
     stage.dataset.notes = (s.phrase || s.targets || (s.ex ? [s.ex.from ?? s.ex.grace ?? s.ex.note ?? (s.ex.notes || [])[0], s.ex.to ?? s.ex.main].filter(x => x !== undefined) : [])).join(","); // for the tests' lesson walker
     if (head) head.focus({ preventScroll: true });
