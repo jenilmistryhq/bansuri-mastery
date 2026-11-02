@@ -1,4 +1,5 @@
-// Library (#/library): every course page, grouped, with title filter and full-text search.
+// Course > Book (#/course/book, was the Library): every course page, grouped, with a title filter
+// and full-text search.
 import { h, clear } from "../util.js";
 import { filesList, fetchDoc } from "../content.js";
 import { getPlan, current } from "../course.js";
@@ -23,9 +24,14 @@ function lessonCatalogue(docs) {
 }
 
 const GROUPS = [
-  ["start", "Start here"], ["phases", "Roadmap"], ["lessons", "Lessons"], ["exercises", "Exercises"], ["ragas", "Ragas"],
-  ["projects", "Milestones"], ["troubleshooting", "Troubleshooting"], ["reference", "Reference"], ["knowledge-tree", "Knowledge tree"],
+  ["start", "Start here"], ["phases", "Roadmap"], ["lessons", "Lessons"], ["exercises", "Exercises"],
+  ["projects", "Milestones"], ["reference", "Reference"], ["knowledge-tree", "Knowledge tree"],
 ];
+// The book in three parts (docs/redesign 05 L8): the course's own text, things to look up, and the
+// things that have their one home elsewhere (raga cards, listening, fixes, the fingering chart),
+// linked instead of copied here [IA1]. Full-text search still reads every page.
+const PARTS = [["The course", ["start", "phases", "lessons", "exercises", "projects"]], ["Look it up", ["reference", "knowledge-tree"]]];
+const ELSEWHERE = [["In Music: raga cards", "#/music/ragas"], ["In Music: listening", "#/music/listen"], ["In Skills: fix a problem", "#/skills/fix"], ["In Skills: the fingering chart", "#/bench/chart"]];
 
 function groupOf(path) {
   if (!path.includes("/")) return /^0[0359]-|^README/.test(path) ? "start" : "reference";
@@ -36,7 +42,7 @@ function groupOf(path) {
 export async function render(main) {
   const files = await filesList();
   const page = h("div", { class: "page" });
-  const input = h("input", { class: "input", type: "search", id: "lib-q", placeholder: "Filter by title, e.g. meend, Yaman, L12", "aria-label": "Filter pages" });
+  const input = h("input", { class: "input", type: "search", id: "lib-q", placeholder: "Search the course: meend, alankar, L12", "aria-label": "Filter pages" });
   const fullBtn = h("button", { type: "button", class: "btn" }, "Search all text");
   const results = h("div", { class: "stack" });
   const listHost = h("div", { class: "stack" });
@@ -44,13 +50,19 @@ export async function render(main) {
   function drawList() {
     const q = input.value.trim().toLowerCase();
     clear(listHost);
-    for (const [key, label] of GROUPS) {
-      const docs = files.docs.filter(d => groupOf(d.path) === key && (!q || (d.title + " " + d.path).toLowerCase().includes(q)));
-      if (!docs.length) continue;
-      listHost.append(h("section", { class: "card" }, h("h2", null, label),
-        key === "lessons" ? lessonCatalogue(docs) : h("div", { class: "libgroup" }, docs.map(d => h("a", { href: "#/read/" + d.path }, d.title)))));
+    for (const [part, keys] of PARTS) {
+      const cards = [];
+      for (const [key, label] of GROUPS.filter(g => keys.includes(g[0]))) {
+        const docs = files.docs.filter(d => groupOf(d.path) === key && (!q || (d.title + " " + d.path).toLowerCase().includes(q)));
+        if (!docs.length) continue;
+        cards.push(h("section", { class: "card" }, h("h3", null, label),
+          key === "lessons" ? lessonCatalogue(docs) : h("div", { class: "libgroup" }, docs.map(d => h("a", { href: "#/read/" + d.path }, d.title)))));
+      }
+      if (cards.length) listHost.append(h("h2", { class: "bookpart" }, part), ...cards);
     }
     if (!listHost.childNodes.length) listHost.append(h("p", { class: "muted" }, "No page titles match. Try Search all text."));
+    listHost.append(h("h2", { class: "bookpart" }, "Elsewhere"),
+      h("nav", { class: "card bookelse", "aria-label": "Elsewhere" }, ELSEWHERE.map(([label, href]) => h("a", { class: "bookrow", href }, h("span", null, label), h("span", { class: "chev", "aria-hidden": "true" }, ">")))));
   }
 
   fullBtn.addEventListener("click", async () => {
@@ -75,8 +87,8 @@ export async function render(main) {
   input.addEventListener("input", drawList);
   input.addEventListener("keydown", e => { if (e.key === "Enter") fullBtn.click(); });
 
-  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Library"), h("h1", null, "The whole course"),
-    h("p", { class: "muted" }, "Every lesson, exercise, raga card and reference page. Also available as a ", h("a", { href: "docs/" }, "website"), ".")),
+  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Course book"), h("h1", null, "The whole course"),
+    h("p", { class: "muted" }, "Every lesson, exercise and reference page. Also available as a ", h("a", { href: "docs/" }, "website"), ".")),
     h("div", { class: "row" }, h("div", { style: { flex: "1 1 260px" } }, input), fullBtn), results, listHost);
   drawList();
   main.append(page);

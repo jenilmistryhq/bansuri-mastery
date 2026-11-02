@@ -7,8 +7,29 @@ import { award } from "../xp.js";
 import { playNote } from "../core/audio.js";
 import { nameOf } from "../core/theory.js";
 import { getState } from "../state.js";
-import { today } from "../util.js";
-import { holdGrowth } from "../livestats.js";
+import { today, addDays } from "../util.js";
+import { holdGrowth, monthGrowth } from "../livestats.js";
+import { listRecordings } from "../recorder.js";
+
+// The newest audio recording kept in this browser whose date passes test(date), or null.
+async function newestRecording(test) {
+  try { return (await listRecordings()).find(r => r && r.blob && r.kind !== "video" && test(r.date || "")) || null; }
+  catch (e) { return null; }
+}
+// A recording played on the spot (the lesson is not left): one button, play and pause.
+function playButton(rec, label) {
+  let audio = null, url = null;
+  const b = h("button", { type: "button", class: "btn lesson-recplay" }, icon("play"), label);
+  const stop = () => { if (audio) audio.pause(); if (url) URL.revokeObjectURL(url); audio = null; url = null; b.replaceChildren(icon("play"), label); };
+  b.addEventListener("click", () => {
+    if (audio && !audio.paused) { stop(); return; }
+    url = URL.createObjectURL(rec.blob); audio = new Audio(url);
+    audio.addEventListener("ended", stop);
+    audio.play().catch(stop);
+    b.replaceChildren(icon("pause"), label);
+  });
+  return { el: b, stop };
+}
 
 export const holdingSide = () => { const r = lessonRecord("m0"); return (r && r.data && r.data.side) || "right"; };
 // The hand on holes 1-3 (the top hand): the left hand when the flute points right.
@@ -27,13 +48,43 @@ export function rewardLists(rows) {
 }
 
 // Your sound: the note held longest today against the same note about a month back, from the holds
-// the app already keeps (nothing when nothing was held today).
-export function rewardSound() {
+// the app already keeps; under it, today's recording when one was saved today (W33). Hidden when
+// there is neither. stops: where the recording's player is registered, to stop when the step goes.
+export function rewardSound(stops) {
   const g = holdGrowth(getState().live.holds, today());
-  if (!g) return null;
-  const name = g.key === "any" ? "note" : nameOf(Number(g.key));
-  return h("div", { class: "stack tight lesson-sound" }, h("span", { class: "eyebrow" }, "Your sound"),
-    h("p", null, "Longest steady " + name + ": ", g.then !== null ? h("span", { class: "muted" }, g.then.toFixed(1) + " s a few weeks ago, ") : null, h("b", null, g.now.toFixed(1) + " s today")));
+  const name = g ? (g.key === "any" ? "note" : nameOf(Number(g.key))) : "";
+  const box = h("div", { class: "stack tight lesson-sound", hidden: !g }, h("span", { class: "eyebrow" }, "Your sound"),
+    g ? h("p", null, "Longest steady " + name + ": ", g.then !== null ? h("span", { class: "muted" }, g.then.toFixed(1) + " s a few weeks ago, ") : null, h("b", null, g.now.toFixed(1) + " s today")) : null);
+  const day = today();
+  newestRecording(d => d === day).then(rec => {
+    if (!rec) return;
+    const p = playButton(rec, "Today's recording");
+    if (stops) stops.push(p.stop);
+    box.append(h("div", { class: "row" }, p.el)); box.hidden = false;
+  });
+  return box;
+}
+
+// A review day's growth (F6, W34): this month's longest holds against a month back, and this
+// week's recording next to last week's, when both are kept. { els, destroy() }.
+export function reviewGrowth() {
+  const stops = [], day = today();
+  const growth = monthGrowth(getState().live.holds, day).filter(x => x.then === null || x.now > x.then);
+  const month = growth.length ? h("div", { class: "stack tight lesson-growth" }, h("span", { class: "eyebrow" }, "Growth this month"),
+    h("ul", { class: "lesson-done" }, growth.map(x => {
+      const name = x.key === "any" ? "Any note" : nameOf(Number(x.key));
+      return h("li", { class: "ok" }, h("span", { class: "lesson-tick", "aria-hidden": "true" }, icon("check")),
+        h("span", null, x.then === null ? name + ": " + x.now.toFixed(1) + " s this month" : name + ": " + x.then.toFixed(1) + " s a month ago, " + x.now.toFixed(1) + " s now"));
+    }))) : null;
+  const weeks = h("div", { class: "stack tight lesson-weeks", hidden: true });
+  Promise.all([newestRecording(d => d >= addDays(day, -6) && d <= day), newestRecording(d => d >= addDays(day, -13) && d < addDays(day, -6))]).then(([now, before]) => {
+    if (!now || !before) return;
+    const a = playButton(before, "Last week"), b = playButton(now, "This week");
+    stops.push(a.stop, b.stop);
+    weeks.append(h("span", { class: "eyebrow" }, "Your recordings"), h("div", { class: "row" }, a.el, b.el));
+    weeks.hidden = false;
+  });
+  return { els: [month, weeks], destroy() { stops.forEach(f => f()); } };
 }
 
 // Tomorrow's taste: { when, title, text, notes: [semitones] (played as a little tune) | audio: url }
@@ -50,20 +101,23 @@ function rewardTeaser(teaser) {
 // The reward, in the order the end is remembered (redesign L5): the star, what went well, for later,
 // your sound, any extra notes, tomorrow. Points come last, quietly, on the card after Finish.
 export function rewardView(rows, teaser, extra) {
-  const t = rewardTeaser(teaser);
+  const t = rewardTeaser(teaser), stops = [];
   return {
     el: h("div", { class: "stack lesson-reward" },
       h("div", { class: "lesson-burst", "aria-hidden": "true" }, icon("star")),
-      ...rewardLists(rows), rewardSound(), ...(extra || []), t.el),
-    destroy() { t.stop(); },
+      ...rewardLists(rows), rewardSound(stops), ...(extra || []), t.el),
+    destroy() { t.stop(); stops.forEach(f => f()); },
   };
 }
 
-// The last step of a day: what was done (rows: [text, done]), and a taste of tomorrow.
-export function dayReward(rows, teaser) {
+// The last step of a day: what was done (rows: [text, done]), and a taste of tomorrow. more(): extra
+// parts for the reward, { els, destroy() } (a review day's growth).
+export function dayReward(rows, teaser, more) {
   return (s, api) => {
     setTimeout(() => api.ready(), 0);
-    return rewardView(typeof rows === "function" ? rows(api.data) : rows, teaser);
+    const m = more ? more() : null;
+    const v = rewardView(typeof rows === "function" ? rows(api.data) : rows, teaser, m ? m.els : null);
+    return m ? { el: v.el, destroy() { v.destroy(); m.destroy(); } } : v;
   };
 }
 

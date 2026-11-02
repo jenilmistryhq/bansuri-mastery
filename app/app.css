@@ -1250,3 +1250,110 @@ html.fullfocus .offlinebar { top: 0; }
   .tabbar .railsecs a[aria-current="page"] { color: var(--ink); font-weight: 600; background: color-mix(in srgb, var(--accent-soft) 60%, transparent); }
   main > .sectiontabs, main .subnav.sectiontabs { display: none; }
 }
+/* Redesign: Course and lessons */
+/* A back link at the top of a cover or a Course view ("< Course"). */
+.backlink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.92rem; }
+.backlink::before { content: ""; width: 7px; height: 7px; margin-left: 3px; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+.backlink:hover { color: var(--accent); }
+.lesson-cover .backlink, .coursepage .hero .backlink { margin: -10px 0 0; }
+.lesson-opens { margin: 6px 0 0; font-weight: 600; color: var(--muted); }
+.lesson-coverways { margin-top: 2px; gap: 8px; }
+
+/* Course > Path (L2, W18): the unit as a path of days; runs of practice days fold. */
+.cpunit .journey { margin: 10px 0 14px; }
+.coursepath { list-style: none; margin: 0; padding: 0; }
+.cpnode { position: relative; }
+.cpnode::before { content: ""; position: absolute; left: 22px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.cpnode:first-child::before { top: 50%; }
+.cpnode:last-child::before { bottom: 50%; }
+.cpnode:only-child::before { display: none; }
+.cpnode > a, .cpnode summary { position: relative; display: flex; gap: 12px; align-items: center; min-height: 52px; padding: 8px 6px; color: var(--ink); text-decoration: none; border-radius: var(--radius); }
+.cpnode > a:hover, .cpnode summary:hover { background: var(--sunken); }
+.cpnode summary { cursor: pointer; list-style: none; flex-wrap: wrap; }
+.cpnode summary::-webkit-details-marker { display: none; }
+.cpmark { flex: 0 0 auto; width: 24px; height: 24px; margin-left: 5px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); display: grid; place-items: center; box-sizing: border-box; }
+.cpmark .icon { width: 15px; height: 15px; stroke-width: 3; }
+.cpnode.done > a .cpmark, .cpnode.done summary .cpmark { background: var(--good); border-color: var(--good); color: var(--bg); }
+.cpnode.today > a { background: var(--accent-soft); }
+.cpnode.today .cpmark { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.cpbody { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.cprow { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: baseline; }
+.cpday { font-weight: 600; font-variant-numeric: tabular-nums; }
+.cpwhat { color: var(--muted); }
+.cpnote { margin-left: auto; }
+.cptitle { overflow-wrap: anywhere; }
+.cpnode.cpms > a { min-height: 64px; }
+.cpmark.cpmsmark { width: 36px; height: 36px; margin-left: 0; border-width: 3px; border-color: var(--accent); font-size: 0.78rem; font-weight: 700; color: var(--ink); }
+.cpnode.cpms.done .cpmark.cpmsmark { background: var(--good); border-color: var(--good); color: var(--bg); }
+.cprundays { list-style: none; margin: 0 0 10px 46px; padding: 0; display: grid; gap: 6px; }
+.cprundays a { font-weight: 600; display: inline-block; min-height: 24px; }
+.cpmore { margin-top: 18px; gap: 10px; }
+.cpunits { margin-top: 8px; }
+.coursepage details.phasebox { margin-bottom: 10px; }
+
+/* Milestone (L7, W35-W38). */
+.ms-checked { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 10px; }
+.ms-checked > li { display: flex; gap: 10px; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.ms-checked > li:last-child { border-bottom: 0; padding-bottom: 0; }
+.ms-ways { gap: 10px; align-items: center; }
+.ms-test[hidden] { display: none; }
+.ms-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.ms-pair audio { width: 100%; }
+.ms-thennow[hidden] { display: none; }
+
+/* Course > Book (L8, W39). */
+.bookpart { margin: 18px 0 0; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.bookelse { display: grid; padding: 4px 0; }
+.bookrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px; color: var(--ink); text-decoration: none; border-top: 1px solid var(--line); }
+.bookrow:first-child { border-top: 0; }
+.bookrow:hover { color: var(--accent); }
+.bookrow .chev { color: var(--muted); font-weight: 700; }
+
+/* The quiz (L6, W27): the right answer has a tick and a word; a wrong one is amber, with a cross. */
+.lesson-option.wrong { border-color: var(--warn); }
+.lesson-option.right, .lesson-option.wrong { display: flex; align-items: center; gap: 10px; }
+.lesson-optmark { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 0.9rem; white-space: nowrap; }
+.lesson-optmark .icon { width: 18px; height: 18px; stroke-width: 2.6; }
+.lesson-option.right .lesson-optmark .icon { color: var(--good); }
+.lesson-option.wrong .lesson-optmark { color: var(--warn); }
+
+/* Inside a step (L4, W23): numbered chapters, the drone switch, why Continue waits. */
+.lesson-chaps { list-style: none; margin: 0; padding: 3px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.lesson-chaps::-webkit-scrollbar { display: none; }
+.lesson-chaps li { position: relative; flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 600; color: var(--muted); border: 1.5px solid var(--line); background: var(--surface); box-sizing: border-box; }
+.lesson-chaps li.done { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--ink); }
+.lesson-chaps li.now { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.lesson-tools { display: flex; justify-content: flex-end; }
+.lesson-tools[hidden] { display: none; }
+.lesson-drone { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+.lesson-drone input { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; }
+.lesson-stage[data-kind="hold"] .lv-dronebox { display: none; }
+.lesson-nextwrap { position: relative; display: inline-flex; }
+.lesson-nextwrap .lesson-next { flex: 1; }
+.lesson-foot > .btn.ghost[hidden] + .lesson-nextwrap { margin-left: auto; }
+.lesson-nextwhy { position: absolute; inset: 0; padding: 0; border: 0; background: transparent; border-radius: var(--radius); cursor: not-allowed; }
+.lesson-nextwhy[hidden] { display: none; }
+.lesson-nextwhy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lesson-whymsg { margin: 0; text-align: center; font-weight: 600; color: var(--ink); }
+.lesson-whymsg[hidden] { display: none; }
+@media (max-width: 560px) { .lesson-foot .lesson-nextwrap { flex: 1; } }
+.lesson-growth .lesson-done, .lesson-weeks .row { margin: 0; }
+.lesson-recplay { gap: 6px; }
+
+/* Playing mode's one word (09): large, with the sentence small under it. */
+.lesson-playing .lv-word { display: block; margin: 0; text-align: center; font-family: var(--display); font-size: clamp(1.9rem, 9vw, 2.6rem); line-height: 1.15; min-height: 1.15em; color: var(--ink); }
+.lesson-playing .lv-msg { font-size: 1rem; font-weight: 500; color: var(--muted); min-height: 1.4em; }
+.lesson-playing .lesson-tools { opacity: 0.3; }
+/* Phone on a stand, landscape (10-responsive, W89): the ring on the left, the note and the word on the right. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .lesson-playing .lesson-top, .lesson-playing .lesson-chapter, .lesson-playing .lesson-title, .lesson-playing .lesson-tools, .lesson-playing .lv-hold > .lv-goal { display: none; }
+  .lesson-playing .lv-hold { grid-template-columns: auto minmax(0, 1fr); column-gap: 36px; row-gap: 6px; align-items: center; }
+  .lesson-playing .lv-hold > *, .lesson-playing .lv-hold .lv-stage > *, .lesson-playing .lv-hold .lv-ringwrap > * { grid-column: 2; }
+  .lesson-playing .lv-hold .lv-stage, .lesson-playing .lv-hold .lv-ringwrap { display: contents; }
+  .lesson-playing .lv-hold .lv-ring { grid-column: 1; grid-row: 1 / span 7; width: min(64vh, 240px); height: min(64vh, 240px); }
+  .lesson-playing .lv-hold .lv-ringtxt { position: static; display: flex; align-items: baseline; justify-content: center; gap: 14px; }
+  .lesson-playing .lv-hold .lv-tune { width: min(100%, 300px); justify-self: center; }
+  .lesson-playing .lv-big { font-size: clamp(3.5rem, 18vh, 6rem); }
+  .lesson-playing .lv-hold > .lv-row:not(:last-child) { display: none; }
+}
+.cpphase { display: block; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }

@@ -7,12 +7,26 @@
 // step:   { id, kind, title, ... } - kinds in ./steps.js; kind "custom" takes make(step, api).
 import { h, store, storeSet, today, icon } from "../util.js";
 import { STEP_KINDS } from "./steps.js";
-import { stopAll } from "../core/audio.js";
+import { stopAll, tanpura } from "../core/audio.js";
 import { micActive } from "../core/listen.js";
 import { whyLayer, openReading } from "./learn.js";
 import { FIX_INFO, FIX_FILE } from "../skillmap.js";
 
 const KEY = "bansuri.lessons";
+// The steps you play on the flute (they get the drone switch), and the drone's remembered state.
+const PLAYS = new Set(["hold", "phrase", "firstSound", "ornament", "bend", "swell", "improv", "answer", "fills", "timer"]);
+const DRONE_KEY = "bansuri.lessons.drone";
+// Why Continue waits, by the kind of step.
+const WHY = {
+  quiz: "Finish the step first: answer the questions above.",
+  listen: "Finish the step first: choose an answer above.", choose: "Finish the step first: choose an answer above.",
+  record: "Finish the step first: record it, or skip it for now.",
+  timer: "Finish the step first: start the timer, then tick what you did.",
+  cards: "Finish the step first: go through each card above.",
+  form: "Finish the step first: choose your answers above.", plan: "Finish the step first: write your answers above.",
+};
+const WHY_PLAY = "Finish the step first: play it while the app listens.";
+const WHY_ANY = "Finish the step first: do what it asks above.";
 export const lessonRecord = id => store(KEY, {})[id] || null;
 function saveRecord(id, rec) { const all = store(KEY, {}); all[id] = rec; storeSet(KEY, all); }
 
@@ -33,27 +47,47 @@ export function lessonPlayer(lesson, opts) {
   const save = () => saveRecord(lesson.id, rec);
 
   const closeBtn = h("button", { type: "button", class: "lesson-close", "aria-label": "Close the lesson (it resumes where you left it)" }, icon("x"));
-  const bar = h("div", { class: "lesson-bar", role: "progressbar", "aria-label": "Lesson progress", "aria-valuemin": "1", "aria-valuemax": String(steps.length) },
-    steps.map((s, i) => h("i", { class: (i && s.chapter !== steps[i - 1].chapter ? "gap" : "") })));
+  // The chapter strip (W23): the chapters by number, the current one marked; the step count beside it.
+  const bar = h("ol", { class: "lesson-chaps", "aria-label": "Chapters" },
+    lesson.chapters.map((c, i) => h("li", null, h("span", { "aria-hidden": "true" }, String(i + 1)), h("span", { class: "sr-only" }, c.title))));
   const count = h("span", { class: "lesson-count small muted" });
   const chapterEl = h("span", { class: "lesson-chapter" });
   const stage = h("div", { class: "lesson-stage", "aria-live": "polite" });
   const backBtn = h("button", { type: "button", class: "btn ghost" }, "Back");
   const nextBtn = h("button", { type: "button", class: "btn primary big lesson-next" }, "Continue");
+  // A tap on Continue while it waits says why, in one line (09: disabled, with the reason on tap).
+  const whyBtn = h("button", { type: "button", class: "lesson-nextwhy", "aria-label": "Why is Continue not ready?" });
+  const whyMsg = h("p", { class: "lesson-whymsg small", role: "status", hidden: true });
+  let whyTimer = 0;
+  whyBtn.addEventListener("click", () => {
+    whyMsg.textContent = WHY[steps[at].kind] || (PLAYS.has(steps[at].kind) ? WHY_PLAY : WHY_ANY);
+    whyMsg.hidden = false; clearTimeout(whyTimer); whyTimer = setTimeout(() => { whyMsg.hidden = true; }, 5000);
+  });
+  // A drone for the steps that play (W23): one switch, remembered, under the step.
+  const droneBox = h("input", { type: "checkbox" });
+  const tools = h("div", { class: "lesson-tools", hidden: true }, h("label", { class: "lesson-drone" }, droneBox, "Drone"));
+  let droneMine = false;
+  const droneStart = () => { if (!tanpura.isOn()) { try { tanpura.start(); droneMine = true; } catch (e) { /* no audio */ } } };
+  const droneLeave = () => { if (droneMine && tanpura.isOn()) tanpura.stop(); droneMine = false; };
+  droneBox.addEventListener("change", () => {
+    storeSet(DRONE_KEY, droneBox.checked);
+    if (droneBox.checked) droneStart(); else { if (tanpura.isOn()) tanpura.stop(); droneMine = false; }
+  });
   // After two misses on a step (redesign L4c, F9): help that fits the miss, and a respectable skip.
   const trouble = h("div", { class: "lesson-trouble", hidden: true });
   let misses = 0, lastFix = null;
   const el = h("div", { class: "lesson" },
     h("header", { class: "lesson-top" }, closeBtn, bar, count),
-    chapterEl, stage, trouble,
-    h("footer", { class: "lesson-foot" }, backBtn, nextBtn));
+    chapterEl, stage, tools, trouble, whyMsg,
+    h("footer", { class: "lesson-foot" }, backBtn, h("span", { class: "lesson-nextwrap" }, nextBtn, whyBtn)));
 
   const api = {
     data: rec.data,
     ready(on = true) {
       isReady = !!on; nextBtn.disabled = !isReady;
       nextBtn.classList.toggle("lesson-go", isReady);
-      if (isReady) trouble.hidden = true;
+      whyBtn.hidden = isReady;
+      if (isReady) { trouble.hidden = true; whyMsg.hidden = true; }
     },
     save() { save(); },
     next() { go(at + 1); },
@@ -65,9 +99,16 @@ export function lessonPlayer(lesson, opts) {
     stopAll();
     const s = steps[at];
     rec.at = at; save();
-    bar.setAttribute("aria-valuenow", String(at + 1));
-    bar.querySelectorAll("i").forEach((b, i) => { b.classList.toggle("on", i <= at); b.classList.toggle("now", i === at); });
+    bar.querySelectorAll("li").forEach((b, i) => {
+      b.classList.toggle("done", i < s.chapter); b.classList.toggle("now", i === s.chapter);
+      if (i === s.chapter) { b.setAttribute("aria-current", "step"); if (bar.scrollWidth > bar.clientWidth) bar.scrollLeft = Math.max(0, b.offsetLeft - bar.offsetLeft - bar.clientWidth / 2); } else b.removeAttribute("aria-current");
+    });
     count.textContent = (at + 1) + " / " + steps.length;
+    // The drone switch shows on the steps that play, as it was left; elsewhere a drone it started stops.
+    const plays = PLAYS.has(s.kind);
+    tools.hidden = !plays;
+    if (plays) { const want = !!store(DRONE_KEY, false); droneBox.checked = want || tanpura.isOn(); if (want) droneStart(); } else droneLeave();
+    whyMsg.hidden = true;
     chapterEl.textContent = s.chapterTitle;
     backBtn.hidden = at === 0;
     nextBtn.textContent = s.next || (at === steps.length - 1 ? "Finish" : "Continue");
@@ -99,6 +140,7 @@ export function lessonPlayer(lesson, opts) {
     // The end card is an ordinary screen again: the top bar and tabs come back (and a level reached
     // by finishing is celebrated there).
     document.documentElement.classList.remove("fullfocus");
+    droneLeave();
     try { result = lesson.finish ? lesson.finish(rec.data, { first }) : null; } catch (e) { result = null; }
     if (o.onFinished) o.onFinished(result || {});
   }
@@ -144,6 +186,7 @@ export function lessonPlayer(lesson, opts) {
       document.removeEventListener("bansuri:mic", onMic);
       document.removeEventListener("bansuri:attempt", onAttempt);
       document.documentElement.classList.remove("fullfocus");
+      clearTimeout(whyTimer); droneLeave();
       if (live && live.destroy) { try { live.destroy(); } catch (e) { /* ignore */ } }
       stopAll();
       // A reading left open over the lesson goes with it.

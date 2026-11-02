@@ -102,7 +102,7 @@ try {
 
   });
   await section("Routes render", async () => {
-    for (const [route, needle] of [["/plan", "Your path to independent musicianship"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/me/flute", "Your flute"], ["/me/settings", "Voice and language"], ["/skills", "Get better at one thing"], ["/skills/tone", "Tone and breath"], ["/skills/ornaments", "Meend bridge"], ["/skills/games", "Notes and tuning"], ["/skills/fix", "Tone check"], ["/course/milestones", "First Stable Tone"], ["/course/book", "The whole course"], ["/music", "Songs"], ["/music/ragas", "Bhupali"], ["/music/mine", "Your tunes"], ["/me", "Your progress"], ["/me/teacher", "What to review"], ["/bench/tones", "Long tones"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Locked"]]) {
+    for (const [route, needle] of [["/plan", "All phases"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/me/flute", "Your flute"], ["/me/settings", "Voice and language"], ["/skills", "Get better at one thing"], ["/skills/tone", "Tone and breath"], ["/skills/ornaments", "Meend bridge"], ["/skills/games", "Notes and tuning"], ["/skills/fix", "Tone check"], ["/course/milestones", "First Stable Tone"], ["/course/book", "The whole course"], ["/music", "Songs"], ["/music/ragas", "Bhupali"], ["/music/mine", "Your tunes"], ["/me", "Your progress"], ["/me/teacher", "What to review"], ["/bench/tones", "Long tones"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Opens after Day 299"]]) {
       await go(route);
       t = await text();
       check(t.includes(needle.toLowerCase()), route + " shows \"" + needle + "\"");
@@ -232,6 +232,7 @@ try {
     await new Promise(r => setTimeout(r, 600));
     check((await progress()).current === 0, "Day 0 does not advance before M0 is passed");
     await go("/milestone/M0");
+    await clickText("#main button", "Take the test");
     const req = await page.$$("#main .mitem input[type=checkbox]");
     for (const b of req) await b.click();
     check(req.length >= 6, "M0 checklist parsed (" + req.length + " items)");
@@ -539,6 +540,7 @@ try {
       await lp.goto(BASE + "#/milestone/M1", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .mrow");
+      await clickTextOn(lp, "#main button", "Take the test");
       await lp.evaluate(() => [...document.querySelectorAll("#main .mrow button")].find(b => /Check with mic/.test(b.textContent)).click());
       await lp.click("#main .micpanel .lv-primary");
       await sleep(300); await tone(-0.05);
@@ -571,6 +573,7 @@ try {
       await lp.goto(BASE + "#/milestone/M4", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .mrow");
+      await clickTextOn(lp, "#main button", "Take the test");
       await lp.evaluate(() => [...document.querySelectorAll("#main .mrow button")].find(b => /Check with mic/.test(b.textContent)).click());
       check(await lp.$("#main .micpanel .lv-quiz") !== null, "milestone M4: identifying notes opens a note-naming test");
 
@@ -1024,7 +1027,7 @@ try {
     check(await page.$("#main .resume .btn.primary") !== null && await page.$("#main .resume .streakchip") !== null && await page.$("#main .progresscard .weekstrip") !== null && await page.$$eval("#main .quickact", x => x.length) === 0, "today: Resume (with the streak) on top, progress at the side, nothing else competing");
     await go("/progress");
     check(await page.$$eval("#main .dashq", x => x.length) === 5, "me: the progress dashboard answers its five questions in order");
-    await go("/plan");
+    await go("/course#phases");
     check(await page.$$eval("#main .pathhead .ring", x => x.length) >= 5, "course map: every phase shows a progress ring");
     await page.keyboard.press("/");
     await page.waitForSelector(".palette input", { timeout: 3000 }).catch(() => {});
@@ -1617,6 +1620,93 @@ try {
     await sleep(300);
     check(await lp.evaluate(() => document.querySelector(".lesson-stage").dataset.step !== "sgsg" && JSON.parse(localStorage.getItem("bansuri.lessons")).m9.data.sgsg.skipped === true), "result: Skip for now goes on, and the step is remembered as skipped");
     await tone(0); await ctx.close();
+  });
+  await section("Course: path, one cover per day, milestone, book, quiz, inside a step", async () => {
+    // docs/redesign 05 L2-L8: the unit as a path, #/day/N and the cover as one, the milestone cover,
+    // the course book, the quiz's marks, and the chapter strip, drone switch and why-Continue-waits.
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const lp = await ctx.newPage();
+    lp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    const lgo = async hash => { await lp.goto(BASE + "#" + hash, { waitUntil: "networkidle0" }); await lp.waitForFunction(() => { const m = document.querySelector("#main"); return m && m.children.length && !m.querySelector(":scope > .boot"); }, { timeout: 10000 }).catch(() => {}); await sleep(400); };
+    const learner = (cur, lessons) => lp.evaluate((cur, lessons) => {
+      localStorage.clear();
+      localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 }));
+      const ms = {}; ["M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7"].forEach(m => { ms[m] = { status: "passed", passedOn: "2026-06-01", attempts: [] }; });
+      localStorage.setItem("bansuri.progress", JSON.stringify({ current: cur, startedAt: "2025-11-01", prefs: { howChosen: true }, milestones: ms }));
+      localStorage.setItem("bansuri.lessons", JSON.stringify(Object.assign({ m0: { at: 0, done: "2025-11-01", data: { side: "right" } }, p315: { at: 0, done: "2026-09-01", data: { quiz: { firstTry: 5, of: 6 } } } }, lessons || {})));
+    }, cur, lessons || null);
+    await lgo("/today"); await learner(330);
+    await lgo("/course"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(400);
+    const path = await lp.evaluate(() => ({ today: !!document.querySelector("#main .coursepath .cpnode.today"), cont: (document.querySelector("#main .cpunit .btn.primary") || {}).getAttribute?.("href"),
+      folds: document.querySelectorAll("#main .cprun details").length, at: /day \d+ of \d+/.test(document.querySelector("#main .cpunit").textContent), text: document.querySelector("#main .coursepath").textContent }));
+    check(path.today && path.at && path.folds >= 1, "course path: today's unit, with day N of M, today's node and folded runs of days");
+    check(path.cont === "#/lesson/p330", "course path: Continue opens the day's lesson (" + path.cont + ")");
+    check(/quiz 5\/6/.test(path.text), "course path: a review day shows its quiz score");
+    const cover = await lp.evaluate(async () => {
+      const { units } = await import(new URL("app/js/views/plan.js", location.href).href);
+      const { getPlan } = await import(new URL("app/js/course.js", location.href).href);
+      const list = units(getPlan()); let next = 0, ok = true;
+      for (const u of list) { if (u.from !== next) ok = false; next = u.to + 1; }
+      return ok && next === getPlan().days.length && list.length > 10;
+    });
+    check(cover, "course path: the units cover every day of the plan, in order");
+    await lgo("/course#phases");
+    check(await lp.$$eval("#main details.phasebox", x => x.length) === 6 && await lp.$$eval("#main .cpunits a[href^='#/course#u']", x => x.length) > 10, "course: All phases lists every phase with its units");
+    await lgo("/day/330");
+    check(await lp.evaluate(() => location.hash) === "#/lesson/p330" && !!(await lp.$("#main .lesson-cover .backlink[href='#/course']")) && /Talk me through/.test(await lp.$eval("#main .lesson-cover", e => e.textContent)), "day: #/day/N opens the lesson cover, with a Course back link and Talk me through");
+    await lgo("/day/14");
+    check(await lp.evaluate(() => location.hash) === "#/milestone/M1", "day: a test day opens its milestone");
+    await lgo("/day/345");
+    check(/Opens after Day 344/.test(await lp.$eval("#main .lesson-cover", e => e.textContent)) && !(await lp.$("#main .lesson-cover .btn.primary")), "day: a future day shows its cover, with when it opens instead of Start");
+    // Part done: opening the day goes to the step; closing comes back to the cover.
+    await learner(330, { p330: { at: 3, data: {}, done: null } });
+    await lgo("/day/330"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(500);
+    check(/#resume$/.test(await lp.evaluate(() => location.hash)) && !!(await lp.$(".lesson-stage")), "day: a part-done lesson opens straight at its step");
+    check(await lp.$eval(".lesson-chaps li[aria-current=step]", e => e.textContent.trim()).catch(() => "") !== "" && /^\d+ \/ \d+$/.test(await lp.$eval(".lesson-count", e => e.textContent)), "step: numbered chapters with the current one marked, and the step count");
+    await lp.evaluate(() => document.querySelector(".lesson-close").click()); await sleep(300);
+    check(!!(await lp.$("#main .lesson-cover")) && /You stopped at step 4/.test(await lp.$eval("#main .lesson-cover", e => e.textContent)), "step: closing the player comes back to the cover, the place kept");
+    // A long-tone step: the drone switch, the word element, and why Continue waits.
+    const i = await lp.evaluate(async () => {
+      const u = q => import(new URL("app/js/" + q, location.href).href);
+      const [PR, OD, C, P] = await Promise.all([u("lessons/practice.js"), u("lessons/oneday.js"), u("course.js"), u("lesson/player.js")]);
+      return P.flatSteps(OD.oneDay(PR.practiceLesson("p330"), C.getDay(330))).findIndex(s => s.kind === "hold");
+    });
+    await learner(330, { p330: { at: i, data: {}, done: null } });
+    await lgo("/day/330"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(500);
+    check(await lp.$eval(".lesson-stage", e => e.dataset.kind) === "hold" && !!(await lp.$(".lesson-tools:not([hidden]) .lesson-drone input")) && await lp.$$eval(".lesson-stage .lv-dronebox", x => x.filter(e => getComputedStyle(e).display !== "none").length) === 0, "step: one Drone switch on a step that plays");
+    await lp.evaluate(() => document.querySelector(".lesson-drone input").click()); await sleep(200);
+    check(await lp.evaluate(() => localStorage.getItem("bansuri.lessons.drone")) === "true", "step: the drone switch is remembered");
+    await lp.evaluate(() => document.querySelector(".lesson-drone input").click());
+    check(await lp.$eval(".lesson-stage .lv-hold .lv-word", e => getComputedStyle(e).display === "none").catch(() => false), "step: the one word waits for playing mode");
+    await lp.evaluate(() => document.querySelector(".lesson-nextwhy").click()); await sleep(150);
+    check(/^Finish the step first: play it/.test(await lp.$eval(".lesson-whymsg", e => e.hidden ? "" : e.textContent)), "step: a tap on the waiting Continue says why, in one line");
+    // A review day's quiz: a symbol and a word on each answer, amber for a wrong one.
+    await learner(336);
+    await lgo("/lesson/p336"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(400);
+    await lp.evaluate(() => document.querySelector("#main .lesson-cover .btn.primary").click()); await sleep(400);
+    const q = await lp.evaluate(() => {
+      const opts = [...document.querySelectorAll(".lesson-option")];
+      for (const o of opts) { o.click(); if (o.classList.contains("right")) break; }
+      const w = document.querySelector(".lesson-option.wrong"), r = document.querySelector(".lesson-option.right");
+      return { right: r ? r.querySelector(".lesson-optmark").textContent + (r.querySelector(".lesson-optmark svg") ? "+icon" : "") : "", wrong: w ? w.querySelector(".lesson-optmark").textContent : "none",
+        amber: w ? getComputedStyle(w).borderTopColor === getComputedStyle(document.querySelector(".lesson-optmark") ? w.querySelector(".lesson-optmark") : w).color : true };
+    });
+    check(q.right === "Right+icon" && (q.wrong === "none" || (q.wrong === "Not this one" && q.amber)), "quiz: the right answer has a tick and a word, a wrong one an amber cross and a word [" + q.right + ", " + q.wrong + "]");
+    // The milestone cover (L7), then Not yet leading with what passed.
+    await learner(434);
+    await lgo("/milestone/M8"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(500);
+    check(await lp.evaluate(() => { const h = [...document.querySelectorAll("#main .ms-cover h2")].map(e => e.textContent); return h[0] === "What is checked" && h[1] === "How to take it"; }) && /Take the test/.test(await lp.$eval("#main .ms-ways", e => e.textContent)) && /Rehearse first/.test(await lp.$eval("#main .ms-ways", e => e.textContent)), "milestone: what is checked, then how to take it, then Take the test beside Rehearse first");
+    await clickTextOn(lp, "#main button", "Take the test"); await sleep(200);
+    await lp.evaluate(() => document.querySelector("#main .mitem input[type=checkbox]").click());
+    await clickTextOn(lp, "#main button", "Save this attempt"); await sleep(400);
+    check(/Passed 1 of 7/.test(await lp.$eval("#main .ms-test", e => e.textContent)) && !!(await lp.$("#main .ms-notyet")), "milestone: Not yet shows what passed, then what is for next time");
+    // The course book (L8).
+    await lgo("/course/book");
+    const book = await lp.evaluate(() => ({ parts: [...document.querySelectorAll("#main .bookpart")].map(e => e.textContent).join("|"), ragas: !!document.querySelector('#main a[href="#/music/ragas"]'), fix: !!document.querySelector('#main a[href="#/skills/fix"]'), copies: [...document.querySelectorAll("#main h3")].some(e => /^(Ragas|Troubleshooting)$/.test(e.textContent)) }));
+    check(book.parts === "The course|Look it up|Elsewhere" && book.ragas && book.fix && !book.copies, "book: The course, Look it up, Elsewhere; ragas and fixes linked, not copied");
+    await lgo("/read/lessons/L04-first-sound.md");
+    check(await lp.$eval("#main .crumbs a", e => e.textContent + " " + e.getAttribute("href")) === "Course book #/course/book", "book: the reader's breadcrumb says Course book");
+    await ctx.close();
   });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete

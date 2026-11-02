@@ -81,3 +81,17 @@ export function holdGrowth(holds, day) {
   const then = older.length ? older[older.length - 1] : null;
   return { key: best.key, now: best.now, then: then ? then.s : null, thenDay: then ? then.d : null };
 }
+
+// Growth this month, for a review day's reward: each note held in the last 30 days, its best there
+// against where it stood a month back (the latest day before those 30 days; null when it was not
+// held before). [{ key, now, then }], the most grown first, at most `limit`.
+export function monthGrowth(holds, day, limit = 3) {
+  const from = addDays(day, -29), out = [];
+  for (const [key, list] of Object.entries(holds || {})) {
+    const recent = (list || []).filter(x => x && x.d >= from && x.d <= day), older = (list || []).filter(x => x && x.d < from);
+    if (!recent.length) continue;
+    out.push({ key, now: Math.max(...recent.map(x => x.s)), then: older.length ? older[older.length - 1].s : null });
+  }
+  const gain = x => (x.then === null ? 0 : x.now - x.then);
+  return out.sort((a, b) => gain(b) - gain(a) || b.now - a.now).slice(0, limit);
+}

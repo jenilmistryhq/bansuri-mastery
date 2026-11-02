@@ -15,6 +15,7 @@ import { newsCard } from "../news.js";
 import { lessonForDay } from "../lessons/index.js";
 import { oneDay } from "../lessons/oneday.js";
 import { practiceLesson } from "../lessons/practice.js";
+import { dayHref } from "../lessons/days.js";
 import { lessonRecord } from "../lesson/player.js";
 import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard, teacherTaskCard } from "./today-cards.js";
 
@@ -100,6 +101,9 @@ export async function render(main, { params, view }) {
   const n = isToday ? cur : Math.max(0, Number(params[0]));
   const day = getDay(n);
   const cleanups = [];
+  // One way into a day: #/day/N opens the day's lesson cover (at the step, when part done) or its
+  // milestone, so a day has a single cover (redesign L3).
+  if (!isToday && day) { const to = dayHref(n); if (to) { location.replace(to); return undefined; } }
   if (!day) { main.append(h("div", { class: "page" }, h("p", null, "That day does not exist."))); return; }
   const ds = dayState(n) || {};
   const phase = phaseOf(day);

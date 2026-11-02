@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { codeOf, fingOf, lessonFor, octName, tuneCents, hzOf } from "../app/js/core/theory.js";
 import { parseNotation, buildEvents, analyzeRange, PRESETS } from "../app/js/core/notation.js";
 import { getSettings, setSettings, saHz } from "../app/js/core/settings.js";
-import { holdGrowth } from "../app/js/livestats.js";
+import { holdGrowth, monthGrowth } from "../app/js/livestats.js";
 import { CHECK_PLANS, verdict, segmentsFrom, compareToExpected, cleanFrames, tuningOffset, playableOnly, toneProfile } from "../app/js/core/pitch.js";
 
 let passed = 0;
@@ -272,6 +272,11 @@ test("reward growth: today's longest hold against the same note about a month ba
   assert.deepEqual(holdGrowth(H, "2026-11-03"), { key: "0", now: 14, then: 8, thenDay: "2026-10-10" });
   assert.equal(holdGrowth(H, "2026-11-04"), null, "nothing held today: no line");
   assert.deepEqual(holdGrowth({ any: [{ d: "2026-11-03", s: 3 }] }, "2026-11-03"), { key: "any", now: 3, then: null, thenDay: null });
+});
+test("review growth: this month's best holds against a month back, the most grown first", () => {
+  const H = { "0": [{ d: "2026-09-20", s: 6 }, { d: "2026-10-20", s: 9 }, { d: "2026-11-01", s: 12 }], "4": [{ d: "2026-10-28", s: 5 }], "2": [{ d: "2026-09-01", s: 4 }] };
+  assert.deepEqual(monthGrowth(H, "2026-11-03"), [{ key: "0", now: 12, then: 6 }, { key: "4", now: 5, then: null }]);
+  assert.deepEqual(monthGrowth({}, "2026-11-03"), []);
 });
 
 console.log(`core tests: ${passed} passed`);
