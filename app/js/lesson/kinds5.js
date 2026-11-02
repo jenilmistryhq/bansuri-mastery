@@ -43,7 +43,66 @@ export function melodyCheck(cells) {
   return { questionOpen: q !== null && pc(q) !== 0, answerHome: a !== null && pc(a) === 0, filled: cells.filter(c => c !== null).length };
 }
 
+// The treble staff position of a note (semitones from C5 = Sa): diatonic steps above E4 (the
+// bottom line, 0), and whether it needs a sharp. C5 is 5 steps up (the third space).
+export function staffStep(semi) {
+  const LETTER = [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6], SHARP = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0];
+  const pc = ((semi % 12) + 12) % 12, oct = Math.floor(semi / 12);
+  // E4 is letter 2 of octave 4; C5 is letter 0 of octave 5: C5 - E4 = 7 - 2 = 5 steps.
+  return { step: 5 + LETTER[pc] + 7 * oct, sharp: !!SHARP[pc] };
+}
+
 export const RAGA_KINDS = {
+  // Read a note on the treble staff. { rounds: [{ semi (from C5), options, answer, why }] }
+  staff: { make(s, api) {
+    let i = 0, right = 0, missed = false;
+    const NS = "http://www.w3.org/2000/svg";
+    const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v)); return e; };
+    const svg = el("svg", { viewBox: "0 0 240 150", class: "lesson-staff", role: "img", "aria-label": "A note on the treble staff" });
+    const tally = h("p", { class: "small muted" });
+    const opts = h("div", { class: "lesson-chips" });
+    const out = h("div");
+    const hear = h("button", { type: "button", class: "btn" }, icon("play"), " Hear it");
+    hear.addEventListener("click", () => playNote(s.rounds[i].semi, 0.7));
+    const Y0 = 105, GAP = 10; // the bottom line (E4) and the space between lines
+    const yOf = step => Y0 - step * GAP / 2;
+    function draw(semi) {
+      svg.replaceChildren();
+      for (let k = 0; k < 5; k++) svg.append(el("line", { x1: 20, x2: 220, y1: yOf(k * 2), y2: yOf(k * 2), class: "staff-line" }));
+      const clef = el("text", { x: 26, y: yOf(2) + 16, class: "staff-clef" }); clef.textContent = "\u{1D11E}"; svg.append(clef);
+      const { step, sharp } = staffStep(semi), x = 140;
+      // Ledger lines below (C4 and lower) or above (A5 and higher).
+      for (let k = -2; k >= step; k -= 2) svg.append(el("line", { x1: x - 16, x2: x + 16, y1: yOf(k), y2: yOf(k), class: "staff-line" }));
+      for (let k = 10; k <= step; k += 2) svg.append(el("line", { x1: x - 16, x2: x + 16, y1: yOf(k), y2: yOf(k), class: "staff-line" }));
+      svg.append(el("ellipse", { cx: x, cy: yOf(step), rx: 7.5, ry: 5.5, transform: `rotate(-20 ${x} ${yOf(step)})`, class: "staff-note" }));
+      // Stems go up on the right below the middle line (B4, step 4), down on the left from it.
+      const down = step >= 4, sx = down ? x - 7 : x + 7;
+      svg.append(el("line", { x1: sx, x2: sx, y1: yOf(step), y2: yOf(step) + (down ? 30 : -30), class: "staff-stem" }));
+      if (sharp) { const t = el("text", { x: x - 24, y: yOf(step) + 5, class: "staff-sharp" }); t.textContent = "#"; svg.append(t); }
+    }
+    function show() {
+      const r = s.rounds[i]; missed = false; out.replaceChildren();
+      tally.textContent = "Round " + (i + 1) + " of " + s.rounds.length;
+      draw(r.semi);
+      opts.replaceChildren(...r.options.map(o => {
+        const b = h("button", { type: "button", class: "lesson-chip mono" }, o);
+        b.addEventListener("click", () => {
+          if (o !== r.answer) { missed = true; b.classList.add("wrong"); b.disabled = true; ding(false); return; }
+          if (!missed) right++;
+          b.classList.add("picked"); opts.querySelectorAll("button").forEach(x => { x.disabled = true; }); ding(true); playNote(r.semi, 0.6);
+          const last = i === s.rounds.length - 1;
+          const next = last ? null : h("button", { type: "button", class: "btn" }, "Next one");
+          if (next) next.addEventListener("click", () => { i++; show(); });
+          out.replaceChildren(...[r.why ? h("div", { class: "lesson-reveal good" }, h("b", null, "Right."), h("p", null, r.why)) : null, next].filter(Boolean));
+          if (last) { api.data[s.id] = { right, of: s.rounds.length }; api.save(); api.ready(); }
+        });
+        return b;
+      }));
+    }
+    show();
+    return { el: h("div", { class: "stack lesson-center" }, tally, svg, hear, opts, out) };
+  } },
+
   // Call and response: the app plays a question; you answer on the flute and come home to Sa.
   // { questions: [[semi]] }
   answer: { make(s, api) {

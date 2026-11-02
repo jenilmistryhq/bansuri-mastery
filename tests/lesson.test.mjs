@@ -154,4 +154,9 @@ test("half-hole on any hole: komal Ga sits between Re (covered) and Ga (open)", 
   assert.equal(K3.halfHoleSemi(0, 0.5, 2, 4), 4);
   assert.equal(K3.halfHoleSemi(0.5, 0.5, 2, 4), 3);
 });
+test("staff: E4 bottom line, G4 the clef's line, C5 the third space, A5 the first ledger line, sharps marked", () => {
+  assert.deepEqual([-8, -5, 0, 5, 9, 12].map(x => K5.staffStep(x).step), [0, 2, 5, 8, 10, 12]);
+  assert.ok(K5.staffStep(6).sharp && !K5.staffStep(7).sharp);
+  assert.equal(K5.staffStep(6).step, K5.staffStep(5).step, "F# sits where F does, with a sharp");
+});
 console.log("lesson tests: " + n + " passed");
