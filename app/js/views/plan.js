@@ -19,15 +19,10 @@ export async function render(main) {
     h("h1", null, "Your path to independent musicianship"),
     h("p", { class: "muted" }, "Days are practice days, not calendar days. Move on by finishing each day and passing each milestone. Click any day to see its plan.")));
 
-  // Milestones strip.
-  page.append(h("section", { class: "card" }, h("h2", null, "Milestones"),
-    h("div", { class: "mslist" }, plan.milestones.map(m => {
-      const st = milestoneState(m.id).status;
-      // A steady grid: the milestone's name wraps on its own line; day and status stay in their columns.
-      return h("a", { class: "msrow " + st, href: "#/milestone/" + m.id },
-        h("span", { class: "msid" }, m.id), h("span", { class: "mstitle" }, m.title), h("span", { class: "small muted" }, "Day " + m.day),
-        h("span", { class: "chip " + (st === "passed" ? "good" : st === "failed" ? "warn" : m.day <= cur ? "info" : "mutedc") }, st === "passed" ? "Passed" : st === "failed" ? "Not yet" : m.day <= cur ? "Ready" : "Ahead"));
-    }))));
+  // The next milestone, in one line; every milestone is listed under Course > Milestones.
+  const nextMs = plan.milestones.find(m => milestoneState(m.id).status !== "passed");
+  if (nextMs) page.append(h("a", { class: "card row between nextms", href: "#/milestone/" + nextMs.id },
+    h("span", null, h("span", { class: "small muted" }, "Next milestone: "), h("b", null, nextMs.id + " " + nextMs.title)), h("span", { class: "small muted" }, "Day " + nextMs.day)));
 
   const curPhase = (getDay(cur) || {}).phase;
   for (const ph of plan.phases) {

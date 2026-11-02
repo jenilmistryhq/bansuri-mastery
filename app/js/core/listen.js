@@ -52,9 +52,16 @@ export function micStats() {
 
 // listenMic(fn) calls fn about 30 times a second with a reading ({ semi: null } when no clear note).
 // Resolves to an unsubscribe function; the microphone closes when the last listener leaves.
+// Whether the shared microphone is open now. Screens follow it through the "bansuri:mic" event
+// ({ detail: { on } }), sent when it opens and when it closes (the player's playing mode uses it).
+export const micActive = () => !!micShared;
+function micEvent(on) {
+  try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:mic", { detail: { on } })); } catch (e) { /* no DOM */ }
+}
+
 export async function listenMic(fn) {
   if (!micShared) {
-    if (!micPending) micPending = openMic().then(m => { micShared = m; micPending = null; return m; }, e => { micPending = null; throw e; });
+    if (!micPending) micPending = openMic().then(m => { micShared = m; micPending = null; micEvent(true); return m; }, e => { micPending = null; throw e; });
     await micPending;
   }
   const m = micShared;
@@ -68,6 +75,7 @@ export async function listenMic(fn) {
       try { m.src.disconnect(); } catch (e) { /* already disconnected */ }
       m.stream.getTracks().forEach(tr => tr.stop());
       micShared = null;
+      micEvent(false);
     }
   };
 }

@@ -63,7 +63,12 @@ const clickText = async (selector, label) => {
   const ok = await page.evaluate((sel, lab) => { const el = [...document.querySelectorAll(sel)].find(e => e.textContent.trim().startsWith(lab)); if (el) el.click(); return !!el; }, selector, label);
   if (!ok) throw new Error("No " + selector + " starting with \"" + label + "\"");
 };
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+// SMOKE_TIMING=1: print how long each section (and each walked lesson) takes, and the time in fixed sleeps.
+const timing = !!process.env.SMOKE_TIMING;
+let slept = 0, navMs = 0, navs = 0;
+const sleep = ms => { slept += ms; return new Promise(r => setTimeout(r, ms)); };
+if (timing) for (const m of ["goto", "reload"]) { const proto = Object.getPrototypeOf(page), orig = proto[m]; proto[m] = async function (...a) { const t = Date.now(); try { return await orig.apply(this, a); } finally { navMs += Date.now() - t; navs++; } }; }
+process.on("exit", () => { if (timing) console.log("TIME total: fixed sleeps " + (slept / 1000).toFixed(0) + " s; " + navs + " navigations (goto/reload) took " + (navMs / 1000).toFixed(0) + " s"); });
 const clickTextOn = async (pg, selector, label) => {
   const ok = await pg.evaluate((sel, lab) => { const el = [...document.querySelectorAll(sel)].find(e => e.textContent.trim().startsWith(lab)); if (el) el.click(); return !!el; }, selector, label);
   if (!ok) throw new Error("No " + selector + " starting with \"" + label + "\"");
@@ -78,7 +83,9 @@ try {
   async function section(name, fn) {
     if (process.env.SECTION && !new RegExp(process.env.SECTION).test(name)) return;
     console.log(name);
+    const t0 = Date.now(), s0 = slept;
     try { await fn(); } catch (e) { failures++; console.log("  FAIL " + name + ": " + (e && e.message ? e.message.split("\n")[0] : e)); }
+    if (timing) console.log("  TIME " + ((Date.now() - t0) / 1000).toFixed(1) + " s (fixed sleeps " + ((slept - s0) / 1000).toFixed(1) + " s): " + name);
   }
   // Shared between sections.
   let link, plays, t, walkSteps, yes;
@@ -95,7 +102,7 @@ try {
 
   });
   await section("Routes render", async () => {
-    for (const [route, needle] of [["/plan", "Course map"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/settings", "Your flute"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Locked"]]) {
+    for (const [route, needle] of [["/plan", "Your path to independent musicianship"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/me/flute", "Your flute"], ["/me/settings", "Voice and language"], ["/skills", "Get better at one thing"], ["/skills/tone", "Tone and breath"], ["/skills/ornaments", "Meend bridge"], ["/skills/games", "Notes and tuning"], ["/skills/fix", "Tone check"], ["/course/milestones", "First Stable Tone"], ["/course/book", "The whole course"], ["/music", "Songs"], ["/music/ragas", "Bhupali"], ["/music/mine", "Your tunes"], ["/me", "Your progress"], ["/me/teacher", "What to review"], ["/bench/tones", "Long tones"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Locked"]]) {
       await go(route);
       t = await text();
       check(t.includes(needle.toLowerCase()), route + " shows \"" + needle + "\"");
@@ -607,7 +614,7 @@ try {
       await lp.waitForSelector("#main .liverow", { timeout: 4000 }).then(() => check(true, "progress shows the measured long tones"), () => check(false, "progress shows the measured long tones"));
 
       // Find my flute: playing E5 as Sa sets the flute to E.
-      await lp.goto(BASE + "#/settings", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/me/flute", { waitUntil: "networkidle0" });
       await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Detect from my flute/.test(b.textContent)), { timeout: 5000 });
       await clickTextOn(lp, "#main button", "Detect from my flute");
       await clickTextOn(lp, "#main .lv-finder button", "Listen for my Sa");
@@ -724,11 +731,13 @@ try {
       await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 3, startedAt: "2026-10-01", prefs: { howChosen: true }, xp: { total: 450, day: null, caps: {}, once: {}, recent: [], days: {}, seen: 1 } })));
       await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
-      await lp.waitForSelector(".levelpill");
-      check(await lp.$eval(".levelpill", e => e.textContent) === "Lv 1" && /Level 1/.test(await lp.$eval("#main .progresscard", e => e.innerText)), "levels: Level 1 [Newcomer] shows on Today and in the top bar");
+      await lp.waitForSelector("#main .progresscard");
+      check(await lp.$(".levelpill") === null && !/Level \d/.test(await lp.$eval("#main .progresscard", e => e.innerText)), "levels: quiet: no level in the top bar or on Today (redesign decision 6)");
+      await lp.goto(BASE + "#/me", { waitUntil: "networkidle0" });
+      await lp.waitForFunction(() => /Level 1/.test(document.querySelector("#main").innerText), { timeout: 3000 }).then(() => check(true, "levels: Level 1 [Newcomer] shows in Me"), () => check(false, "levels: Level 1 [Newcomer] shows in Me"));
       await lp.evaluate(async () => { const x = await import(new URL("app/js/xp.js", location.href).href); x.award("lesson", { key: "smoke" }); x.award("lesson", { key: "smoke2" }); });
-      await lp.waitForFunction(() => document.querySelector(".levelpill").textContent === "Lv 2", { timeout: 3000 })
-        .then(() => check(true, "levels: earning XP moves the learner up to Level 2, celebrated"), () => check(false, "levels: earning XP moves the learner up to Level 2, celebrated"));
+      await lp.waitForFunction(() => [...document.querySelectorAll(".toasts *")].some(t => /Level 2/.test(t.textContent)) && document.querySelector(".xpfloat") === null, { timeout: 3000 })
+        .then(() => check(true, "levels: earning XP moves the learner up to Level 2, celebrated, with no floating points"), () => check(false, "levels: earning XP moves the learner up to Level 2, celebrated, with no floating points"));
       await lp.goto(BASE + "#/progress", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#level .levelrow");
       check(await lp.$$eval("#level .levelrow", x => x.length) === 30 && /Listener/.test(await lp.$eval("#level .levelrow.now", e => e.textContent)), "levels: Progress lists the 30 named levels, the current one marked");
@@ -1294,12 +1303,58 @@ try {
     }
     fs.unlinkSync(wavPath);
   });
+  await section("Navigation: five places, section tabs", async () => {
+    await go("/today");
+    const tabs = await page.$$eval("nav.tabbar a", a => a.map(x => x.textContent.trim()));
+    check(tabs.join() === "Today,Course,Skills,Music,Me" && !(await page.$("#main .sectiontabs")), "five places at the bottom, and no section tabs on Today [" + tabs.join(", ") + "]");
+    await go("/skills/rhythm");
+    const cur = await page.$eval("#main .sectiontabs [aria-current=page]", e => e.textContent.trim()).catch(() => "");
+    const place = await page.$eval("nav.tabbar [aria-current=page]", e => e.textContent.trim()).catch(() => "");
+    check(cur === "Rhythm" && place === "Skills" && (await page.$$eval("#main .sectiontabs a", a => a.length)) === 8, "a skill shows its place and its section as current (" + place + " > " + cur + ")");
+    // The place remembers its section: away to Today, then the Skills tab lands on Rhythm again.
+    await go("/today");
+    await page.click("nav.tabbar a[data-k=skills]"); // a real click (an earlier test stubs scripted link clicks)
+    await page.waitForFunction(() => location.hash === "#/skills/rhythm", { timeout: 3000 }).catch(() => {});
+    const h1 = await page.evaluate(() => location.hash);
+    check(h1 === "#/skills/rhythm", "each place remembers its last section (" + h1 + ")");
+    // Tapping the place you are in (at the top) goes to its first section.
+    await page.click("nav.tabbar a[data-k=skills]"); // a real click (an earlier test stubs scripted link clicks)
+    await page.waitForFunction(() => location.hash === "#/skills", { timeout: 3000 }).catch(() => {});
+    const h2 = await page.evaluate(() => location.hash);
+    check(h2 === "#/skills", "tapping the current place goes to its first section (" + h2 + ")");
+    // Old addresses still open, under their new place.
+    for (const [route, want] of [["/bench", "Skills"], ["/songs", "Music"], ["/plan", "Course"], ["/journal", "Me"], ["/coach/TS-05", "Skills"], ["/play", "Skills"]]) {
+      await go(route);
+      check(await page.$eval("nav.tabbar [aria-current=page]", e => e.textContent.trim()).catch(() => "") === want, route + " still opens, under " + want);
+    }
+    await page.evaluate(() => { try { localStorage.removeItem("bansuri.nav.last"); } catch (e) { /* storage blocked */ } });
+  });
+  await section("Flute dock", async () => {
+    await go("/today");
+    await page.click(".topbar .dockbtn");
+    await page.waitForSelector(".dock:not([hidden]) .bb-bench", { timeout: 8000 }).catch(() => {});
+    const tabs = await page.$$eval(".dock .bb-tabs button", b => b.map(x => x.dataset.tab));
+    check(tabs.join() === "rhythm,chart,check", "the dock holds drone and taal, the tuner and the fingering chart [" + tabs.join(", ") + "]");
+    await page.evaluate(() => document.querySelector(".dock [data-ref=tanBtn]").click());
+    await page.click(".dock .dockhead button");
+    await go("/skills");
+    const st = await page.evaluate(() => ({ open: !document.querySelector(".dock").hidden, pill: !document.querySelector(".dronepill").hidden, bench: !!document.querySelector(".dock .bb-bench") }));
+    check(!st.open && st.pill && !st.bench, "closing the dock keeps its drone playing across screens, shown as a pill " + JSON.stringify(st));
+    await page.click(".dronepill");
+    await page.waitForSelector(".dock:not([hidden]) [data-ref=tanBtn]", { timeout: 8000 }).catch(() => {});
+    await page.evaluate(() => document.querySelector(".dock [data-ref=tanBtn]").click());
+    await page.keyboard.press("Escape");
+    check(await page.evaluate(() => document.querySelector(".dock").hidden && document.querySelector(".dronepill").hidden), "the pill reopens the dock; stopping the drone and Escape close everything");
+  });
   await section("Focus mode", async () => {
     await page.evaluate(() => { const st = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); st.focus = true; localStorage.setItem("bansuri.settings", JSON.stringify(st)); });
     await page.reload({ waitUntil: "networkidle0" }); await go("/today");
     const tabs = await page.$$eval("nav.tabbar a", a => a.map(x => x.textContent.trim().toLowerCase()));
     const pill = await page.$eval(".levelpill", e => getComputedStyle(e).display).catch(() => "none");
-    check(tabs.includes("listen") && !tabs.includes("play") && pill === "none", "focus mode: no Play tab and no level, Listen instead [" + tabs.join(", ") + "]");
+    await go("/skills/tone");
+    const secs = await page.$$eval("#main .sectiontabs a", a => a.map(x => x.textContent.trim().toLowerCase()));
+    const games = await page.$$eval("#main a[href^='#/play/']", a => a.length);
+    check(tabs.join() === "today,course,skills,music,me" && !secs.includes("games") && !games && pill === "none", "focus mode: no Games section, no games in a skill, no level [" + tabs.join(", ") + " | " + secs.join(", ") + "]");
     await page.evaluate(() => { const st = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); st.focus = false; localStorage.setItem("bansuri.settings", JSON.stringify(st)); });
     await page.reload({ waitUntil: "networkidle0" });
   });
@@ -1352,11 +1407,19 @@ try {
     const tapPart = id => lp.evaluate(id => document.querySelector(`[data-part="${id}"]`).dispatchEvent(new MouseEvent("click", { bubbles: true })), id);
     const ready = () => lp.$eval(".lesson-next", b => !b.disabled);
     const title = () => lp.$eval(".lesson-title", e => e.textContent);
+    // One Day N: the session's blocks come as cards between the steps ("learn"); next() reads each
+    // card it passes (ready at once, with the block's words) and goes on to the next step.
+    const cardsSeen = [];
     const next = async () => {
-      const t0 = await title();
-      await lp.evaluate(() => document.querySelector(".lesson-next").click());
-      await lp.waitForFunction(t => { const e = document.querySelector(".lesson-title"); return !e || e.textContent !== t; }, { timeout: 4000 }, t0).catch(() => {});
-      await sleep(150);
+      for (let k = 0; k < 3; k++) {
+        const t0 = await title();
+        await lp.evaluate(() => document.querySelector(".lesson-next").click());
+        await lp.waitForFunction(t => { const e = document.querySelector(".lesson-title"); return !e || e.textContent !== t; }, { timeout: 4000 }, t0).catch(() => {});
+        await sleep(150);
+        const card = await lp.evaluate(() => { const s = document.querySelector(".lesson-stage"); return s && s.dataset.kind === "learn" ? { id: s.dataset.step, text: s.querySelector(".lesson-lead").textContent, ready: !document.querySelector(".lesson-next").disabled } : null; });
+        if (!card) break;
+        cardsSeen.push(card);
+      }
     };
     await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
     await lp.evaluate(() => { localStorage.clear(); localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 })); });
@@ -1368,6 +1431,8 @@ try {
     check(/Meet your flute/.test(await lp.$eval("#main .lesson-cover h1", e => e.textContent)) && await lp.$$eval("#main .lesson-chapters li", l => l.length) === 6, "lesson: the cover names the lesson and its six chapters");
     await clickL("#main button", /^Start$/);
     await lp.waitForSelector(".lesson-title");
+    const shown = sel => lp.evaluate(q => { const e = document.querySelector(q); return !!e && getComputedStyle(e).display !== "none"; }, sel);
+    check(!(await shown(".topbar")) && !(await shown("nav.tabbar")), "lesson: full focus, no top bar and no tabs while the lesson plays (W2)");
 
     // 1. The hook: a guess, then the answer explained.
     check(await ready() === false, "lesson: Continue waits until the step is done");
@@ -1394,6 +1459,16 @@ try {
     // 4. The flute check: a problem found gets its advice.
     await lp.evaluate(() => { const cards = document.querySelectorAll(".lesson-card"); cards.forEach((c, i) => [...c.querySelectorAll("button")][i === 3 ? 1 : 0].click()); });
     check(/splinter/.test(await lp.$eval(".lesson-card.found", e => e.textContent)) && await ready(), "lesson check: a splinter found gets TS-12's advice");
+    // The session's reading for this block, from the step itself: a sheet over the lesson that
+    // closes back to the same step.
+    const atStep = await title();
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lesson-why summary").click());
+    await clickL(".lesson-stage .lesson-why .lesson-read", /Your Flute/);
+    await lp.waitForSelector("dialog.sheet[open] .sheet-body .reader", { timeout: 8000 }).catch(() => {});
+    check(/Your Flute/i.test(await lp.$eval("dialog.sheet[open] .sheet-title", e => e.textContent).catch(() => "")), "lesson: a step's reading (L00) opens in a sheet over the lesson");
+    await clickL("dialog.sheet .sheet-head .btn.primary", /Back to the step/);
+    await sleep(200);
+    check(!(await lp.$("dialog.sheet")) && await title() === atStep && await ready(), "lesson: closing the reading goes back to the same step, still done");
     await next();
     // 5. The side, then holding the flute.
     await clickL(".lesson-choice", /Pointing left/);
@@ -1407,11 +1482,13 @@ try {
     await clickL(".lesson-stage button", /Listen for my Sa/);
     await lp.waitForSelector(".lesson-stage .lv-intro .lv-primary", { timeout: 3000 }).then(b => b.click()).catch(() => {});
     await sleep(300); await tone(523.251);
+    check(await lp.evaluate(() => document.querySelector(".lesson").classList.contains("lesson-playing")), "lesson: playing mode while the microphone listens");
     await lp.waitForFunction(() => [...document.querySelectorAll(".lesson-stage button")].some(b => /Use this for my flute/.test(b.textContent) && !b.hidden), { timeout: 10000 }).catch(() => {});
     await clickL(".lesson-stage button", /Use this for my flute/);
     await tone(0);
     check(await ready(), "lesson finder: the flute's Sa is found (C5) and used");
     await next();
+    await lp.waitForFunction(() => !document.querySelector(".lesson").classList.contains("lesson-playing"), { timeout: 3000 }).then(() => check(true, "lesson: playing mode ends when the microphone closes"), () => check(false, "lesson: playing mode ends when the microphone closes"));
     // 7. The drone; 8. the metronome.
     await clickL("button", /Play the drone/); await sleep(4500);
     check(await ready(), "lesson drone: ten seconds of listening (four, in the test) done");
@@ -1441,8 +1518,13 @@ try {
     await next();
     // 12. The reward, then Day 0 is done and M0 passed.
     check(/Setup complete/.test(await title()) && await lp.$$eval(".lesson-done li.ok", l => l.length) === 8, "lesson reward: every item is ticked");
+    check(cardsSeen.map(c => c.id).join() === "learn-M,learn-READ,learn-K,learn-E,learn-R" && cardsSeen.every(c => c.ready && c.text.length > 20),
+      "one day: the session's five blocks come as cards in the lesson, each ready at once (" + cardsSeen.map(c => c.id).join() + ")");
+    check(/Complete M0/.test(await lp.$eval(".lesson-stage .lesson-goal", e => e.textContent).catch(() => "")), "one day: the reward shows the day's pass check");
+    check(await lp.evaluate(() => { const ey = [...document.querySelectorAll(".lesson-stage .eyebrow")].map(e => e.textContent); const w = ey.indexOf("What went well"), t = ey.findIndex(x => /Tomorrow/.test(x)); return w >= 0 && t > w && !/XP/.test(document.querySelector(".lesson-stage").textContent); }), "lesson reward: what went well first, tomorrow after, no points on the reward");
     await clickL(".lesson-next", /Finish Day 0/);
     await lp.waitForSelector(".lesson-end", { timeout: 5000 }).catch(() => {});
+    check(await shown(".topbar") && /XP today/.test(await lp.$eval(".lesson-end", e => e.textContent).catch(() => "")), "lesson end: the top bar is back, and the points come last, quietly");
     const st = await lp.evaluate(() => JSON.parse(localStorage.getItem("bansuri.progress")));
     check(st.current === 1 && st.milestones.M0.status === "passed" && st.days[0].done, "lesson: finishing passes M0 and opens Day 1");
     check(/Holding side: left/.test(st.log.map(l => l.note).join(" ")), "lesson: the choices are written in the practice log");
@@ -1468,7 +1550,10 @@ try {
     // Plus a sample of practice days, built from their blocks (lessons/practice.js), across all five phases.
     const PRACTICE = [6, 20, 47, 101, 160, 260, 330, 421, 520, 640, 695].map(n => ({ id: "p" + n, day: n }))
       .concat([7, 98, 259, 553].map(n => ({ id: "p" + n, day: n, review: true }))); // and review days
-    for (const lesson of Object.values(LESSONS).concat(PRACTICE).filter(l => !process.env.WALK_ONLY || process.env.WALK_ONLY.split(",").includes(l.id))) {
+    // WALK_SHARD=k/n walks every n-th lesson from the k-th (1-based), so tests/run.mjs can walk them in parallel processes.
+    const [shardK, shardN] = (process.env.WALK_SHARD || "1/1").split("/").map(Number);
+    for (const lesson of Object.values(LESSONS).concat(PRACTICE).filter(l => !process.env.WALK_ONLY || process.env.WALK_ONLY.split(",").includes(l.id)).filter((l, i) => i % shardN === shardK - 1)) {
+      const lt0 = Date.now(), ls0 = slept;
       const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
       const lp = await ctx.newPage();
       await collectI18n(lp);
@@ -1513,7 +1598,7 @@ try {
           await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
           check(/Continue today's practice/.test(await lp.$eval('#main a[href="#/lesson/p47"]', e => e.textContent)), "Today: a practice day started in the step list continues as a lesson");
           await lp.goto(BASE + "#/lesson/p47", { waitUntil: "networkidle0" }); await sleep(300);
-          check(!(await lp.$$eval("#main .lesson-chapters li", l => l.map(x => x.textContent))).includes("Warm-up"), "practice lesson: a block done in the step list is left out");
+          check(!(await lp.$$eval("#main .lesson-chapters li", l => l.map(x => x.firstChild.textContent))).includes("Warm-up"), "practice lesson: a block done in the step list is left out");
         }
       }
       await lp.goto(BASE + "#/lesson/" + lesson.id, { waitUntil: "networkidle0" });
@@ -1527,6 +1612,7 @@ try {
         const hzOf = n => SA * Math.pow(2, n / 12);
         const NOTE = SA * Math.pow(2, target / 12); // the step's note (Sa unless it asks for another)
         steps++;
+        const st0 = Date.now();
         if (kind === "listen" || kind === "choose") await lp.evaluate(() => document.querySelector(".lesson-option, .lesson-choice").click());
         else if (kind === "quiz") {
           for (let q = 0; q < 12 && !(await isReady()); q++) {
@@ -1535,7 +1621,7 @@ try {
           }
         } else if (kind === "cards") await lp.evaluate(() => document.querySelectorAll(".lesson-card").forEach(c => c.querySelector("button").click()));
         else if (kind === "form") await lp.evaluate(() => document.querySelectorAll(".lesson-chips").forEach(g => g.children[0].click()));
-        else if (kind === "timer") { await clickL(".lesson-stage button", /^Start/); await lp.waitForFunction(() => !document.querySelector(".lesson-stage .stack[hidden]"), { timeout: 8000 }).catch(() => {}); await lp.evaluate(() => document.querySelectorAll(".lesson-stage input[type=checkbox]").forEach(c => c.click())); }
+        else if (kind === "timer") { await clickL(".lesson-stage button", /^Start/); if (await clickL(".lesson-stage .linkbtn", /^Done early$/)) await sleep(50); else await lp.waitForFunction(() => !document.querySelector(".lesson-stage .stack[hidden]"), { timeout: 8000 }).catch(() => {}); await lp.evaluate(() => document.querySelectorAll(".lesson-stage input[type=checkbox]").forEach(c => c.click())); }
         else if (kind === "parts" || kind === "tapquiz") { for (let i = 0; i < 12 && !(await isReady()); i++) { const id = await lp.$eval(".lesson-stage .lesson-q b[data-part]", e => e.dataset.part).catch(() => null); if (!id) break; await tapPart(id); await sleep(50); } }
         else if (kind === "holes") { const goal = await lp.$eval(".lesson-stage [data-goal]", e => e.dataset.goal); for (let i = 0; i < 6; i++) { const closed = await lp.$eval(`.lesson-stage [data-part="h${i + 1}"]`, e => e.classList.contains("fl-closed")); if (closed !== (goal[i] === "X")) await tapPart("h" + (i + 1)); } await clickL(".lesson-stage button", /^Blow$/); }
         else if (kind === "beat") { await clickL(".lesson-stage button", /^Start$/); await sleep(3400); for (let i = 0; i < 8; i++) { await lp.evaluate(() => document.querySelector(".lesson-pad").dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))); await sleep(833); } await waitReady(6000); }
@@ -1575,6 +1661,7 @@ try {
           // Custom steps: a skip link, or the main button (then wait).
           if (!(await isReady())) { if (!(await clickL(".lesson-stage .linkbtn", /Skip/))) await clickL(".lesson-stage .btn.primary", /./); await waitReady(8000); }
         }
+        if (timing) console.log("    step " + ((Date.now() - st0) / 1000).toFixed(1) + " s: " + step + " (" + kind + ")");
         if (process.env.WALK_DEBUG) await lp.screenshot({ path: process.env.WALK_DEBUG + "/" + lesson.id + "-" + step + ".png" }).catch(() => {});
         if (!(await lp.$(".lesson-next"))) { stuck = step + " (" + kind + "): left the lesson, now at " + await lp.evaluate(() => location.hash); break; }
         if (!(await isReady())) { stuck = step + " (" + kind + ")"; break; }
@@ -1595,6 +1682,7 @@ try {
       }
       check(!errs.length, "lesson " + lesson.id + ": no page errors" + (errs.length ? ": " + errs[0] : ""));
       await ctx.close();
+      if (timing) console.log("  TIME " + ((Date.now() - lt0) / 1000).toFixed(1) + " s (fixed sleeps " + ((slept - ls0) / 1000).toFixed(1) + " s): lesson " + lesson.id + ", " + steps + " steps");
     }
   });
   await section("Tone check", async () => {
@@ -1620,7 +1708,7 @@ try {
   });
   await section("No stray null, undefined or NaN on any screen", async () => {
     const bad = [];
-    for (const r of ["/today", "/session/0", "/session/2", "/plan", "/bench", "/coach", "/listen", "/songs", "/transcribe", "/tone", "/ornaments", "/play", "/compose", "/quick", "/progress", "/journal", "/settings", "/review", "/read/ragas/yaman.md"]) {
+    for (const r of ["/today", "/session/0", "/session/2", "/plan", "/bench", "/coach", "/listen", "/songs", "/transcribe", "/tone", "/ornaments", "/play", "/compose", "/quick", "/progress", "/journal", "/settings", "/review", "/read/ragas/yaman.md", "/skills", "/skills/tone", "/skills/notes", "/skills/rhythm", "/skills/ornaments", "/skills/ear", "/course/milestones", "/music/ragas", "/music/mine", "/me/flute"]) {
       await go(r);
       const hits = await page.evaluate(() => { const out = []; const w = document.createTreeWalker(document.querySelector("#main"), NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) if (/null|undefined|NaN/.test(n.nodeValue)) out.push(n.nodeValue.trim().slice(0, 60)); return out; });
       if (hits.length) bad.push(r + ": " + hits.join(" | "));
@@ -1630,7 +1718,7 @@ try {
   await section("Accessibility (axe-core: WCAG 2.1 A and AA rules)", async () => {
     {
       const axeSrc = fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "node_modules", "axe-core", "axe.min.js"), "utf8");
-      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/tone", "/ornaments", "/review", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach"]) {
+      for (const route of ["/today", "/session/2", "/play", "/listen", "/compose", "/quick", "/transcribe", "/tone", "/ornaments", "/review", "/settings", "/bench", "/plan", "/progress", "/journal", "/coach", "/skills", "/skills/tone", "/course/milestones", "/music/ragas", "/music/mine", "/me/flute"]) {
         await go(route);
         await sleep(400);
         await page.evaluate(axeSrc);
@@ -1645,7 +1733,7 @@ try {
   });
   await section("Phone layout (iPhone 13 emulation: size, touch, user agent; the engine is still Chromium)", async () => {
     await page.emulate(KnownDevices["iPhone 13"]);
-    for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"], ["/listen", "18-phone-listen"], ["/play", "15-phone-play"], ["/compose", "16-phone-compose"], ["/quick", "17-phone-quick"], ["/transcribe", "19-phone-transcribe"]]) {
+    for (const [route, name] of [["/today", "05-phone-today"], ["/session/2", "06-phone-session"], ["/bench", "07-phone-bench"], ["/coach", "09-phone-coach"], ["/journal", "10-phone-journal"], ["/plan", "11-phone-plan"], ["/milestone/M1", "12-phone-milestone"], ["/skills", "13-phone-skills"], ["/skills/tone", "14-phone-skill-tone"], ["/music/ragas", "15-phone-ragas"], ["/progress", "13-phone-progress"], ["/settings", "14-phone-settings"], ["/listen", "18-phone-listen"], ["/play", "15-phone-play"], ["/compose", "16-phone-compose"], ["/quick", "17-phone-quick"], ["/transcribe", "19-phone-transcribe"]]) {
       await go(route);
       const ov = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       check(ov <= 1, route + " fits an iPhone screen (" + ov + "px overflow)");

@@ -11,9 +11,9 @@ import { setSpeaker } from "./core/live.js";
 import { onBeat } from "./core/audio.js";
 import { say, removeSavedVoice } from "./voice.js";
 import { award, onXp, levelOf, xpState, markLevelSeen } from "./xp.js";
-import { floatXp } from "./levelui.js";
 import { openPalette, installPaletteKey } from "./palette.js";
 import { notePractice } from "./reminder.js";
+import { createDock } from "./dock.js";
 installPaletteKey();
 // The browser's install offer is kept so Today can show it at a good moment (after a few days).
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window.__installEvent = e; });
@@ -49,26 +49,68 @@ import { loadPlan, getDay, current } from "./course.js";
 import { evaluate as evaluateBadges } from "./badges.js";
 
 const ROUTES = [
+  // The five places and their sections (see docs/redesign/03-structure.md).
+  [/^\/course(?:\/path)?$/, "plan"], [/^\/course\/milestones$/, "milestones"], [/^\/course\/book$/, "library"],
+  [/^\/skills$/, "skills"], [/^\/skills\/(tone|notes|rhythm|ornaments|ear)$/, "skills"], [/^\/skills\/games$/, "play"], [/^\/skills\/fix$/, "coach"], [/^\/skills\/fix\/(TS-\d\d)$/, "coach"],
+  [/^\/music(?:\/songs)?$/, "songs"], [/^\/music\/ragas$/, "ragas"], [/^\/music\/mine$/, "mine"], [/^\/music\/listen$/, "listen"], [/^\/music\/transcribe$/, "transcribe"], [/^\/music\/compose$/, "compose"],
+  [/^\/me$/, "progress"], [/^\/me\/journal$/, "journal"], [/^\/me\/teacher$/, "review"], [/^\/me\/flute$/, "flute"], [/^\/me\/settings$/, "settings"],
+  [/^\/bench\/([a-z]+)$/, "bench"],
   [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/coach\/(TS-\d\d)$/, "coach"], [/^\/songs$/, "songs"],
   [/^\/play$/, "play"], [/^\/play\/([a-z]+)$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/transcribe$/, "transcribe"], [/^\/tone$/, "coach"], [/^\/lesson\/([a-z0-9]+)$/, "lesson"], [/^\/ornaments$/, "ornaments"], [/^\/review$/, "review"], [/^\/review\/([A-Za-z0-9_-]+)$/, "review"], [/^\/feedback\/([A-Za-z0-9_-]+)$/, "feedback"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
 ];
-// Five tabs; related screens sit together under one tab, with a small menu at the top of each.
-const NAV = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["play", "#/play", "Play"], ["progress", "#/progress", "Me"]];
-const NAV_ICON = { today: "today", plan: "plan", bench: "bench", play: "play", progress: "me", listen: "listen" };
-const GROUPS = {
-  plan: [["plan", "#/plan", "Course map"], ["library", "#/library", "Library"]],
-  bench: [["bench", "#/bench", "Bench"], ["coach", "#/coach", "Coach"], ["listen", "#/listen", "Listen"], ["songs", "#/songs", "Songs"], ["transcribe", "#/transcribe", "Transcribe"], ["ornaments", "#/ornaments", "Ornaments"]],
-  play: [["play", "#/play", "Games"], ["compose", "#/compose", "Make a melody"], ["quick", "#/quick", "5 minutes"]],
-  progress: [["progress", "#/progress", "Progress"], ["journal", "#/journal", "Journal"], ["review", "#/review", "Teacher review"], ["settings", "#/settings", "Settings"]],
+// Two levels of navigation. Five places at the bottom (each kind of thing has one home); inside a
+// place, its sections as tabs at the top, swiped or tapped. Today has one job, so no sections.
+const NAV = [["today", "#/today", "Today"], ["course", "#/course", "Course"], ["skills", "#/skills", "Skills"], ["music", "#/music", "Music"], ["me", "#/me", "Me"]];
+const NAV_ICON = { today: "today", course: "plan", skills: "wave", music: "note", me: "me", play: "play", listen: "listen" };
+const SECTIONS = {
+  course: [["path", "#/course", "Path"], ["milestones", "#/course/milestones", "Milestones"], ["book", "#/course/book", "Book"]],
+  skills: [["foryou", "#/skills", "For you"], ["tone", "#/skills/tone", "Tone"], ["notes", "#/skills/notes", "Notes"], ["rhythm", "#/skills/rhythm", "Rhythm"],
+    ["ornaments", "#/skills/ornaments", "Ornaments"], ["ear", "#/skills/ear", "Ear"], ["games", "#/skills/games", "Games"], ["fix", "#/skills/fix", "Fix"]],
+  music: [["songs", "#/music", "Songs"], ["ragas", "#/music/ragas", "Ragas"], ["mine", "#/music/mine", "Mine"], ["listen", "#/music/listen", "Listen"]],
+  me: [["progress", "#/me", "Progress"], ["journal", "#/me/journal", "Journal"], ["teacher", "#/me/teacher", "Teacher"], ["flute", "#/me/flute", "Flute"], ["settings", "#/me/settings", "Settings"]],
 };
-// Which tab a screen belongs to.
-const TAB_OF = { today: "today", session: "today", lesson: "today", plan: "plan", library: "plan", reader: "plan", milestone: "plan", bench: "bench", coach: "bench", listen: "bench", songs: "bench", transcribe: "bench", tone: "bench", ornaments: "bench", play: "play", challenge: "play", compose: "play", quick: "play", progress: "progress", journal: "progress", settings: "progress", share: "progress", move: "progress", privacy: "progress", students: "progress", review: "progress", feedback: "progress" };
+// The Bench's tabs, by the place and section each one serves.
+const BENCH_HOME = { tones: ["skills", "tone"], echo: ["skills", "ear"], ear: ["skills", "ear"], rhythm: ["skills", "rhythm"], chart: ["skills", "notes"], check: ["me", "flute"], play: ["music", "songs"] };
+// Which place, and which of its sections, a screen belongs to.
+function placeOf(view, params, path) {
+  const p = params && params[0];
+  switch (view) {
+    case "plan": return ["course", "path"];
+    case "milestones": case "milestone": return ["course", "milestones"];
+    case "library": case "reader": return ["course", "book"];
+    case "skills": return ["skills", p || "foryou"];
+    case "play": case "challenge": return ["skills", "games"];
+    case "coach": return ["skills", /^\/tone/.test(path || "") ? "tone" : "fix"];
+    case "ornaments": return ["skills", "ornaments"];
+    case "bench": return BENCH_HOME[p] || ["skills", null];
+    case "songs": case "transcribe": return ["music", "songs"];
+    case "compose": case "mine": return ["music", "mine"];
+    case "ragas": return ["music", "ragas"];
+    case "listen": return ["music", "listen"];
+    case "progress": return ["me", "progress"];
+    case "journal": return ["me", "journal"];
+    case "review": case "feedback": case "students": case "share": return ["me", "teacher"];
+    case "flute": return ["me", "flute"];
+    case "settings": case "move": case "privacy": return ["me", "settings"];
+    default: return ["today", null];
+  }
+}
+// Focus mode: no games, points or quests (CSS hides most; the Games section goes).
+const sectionsOf = place => (SECTIONS[place] || []).filter(([k]) => !(getSettings().focus && k === "games"));
 // Simple mode: three big choices, no reading needed.
-const NAV_FOCUS = [["today", "#/today", "Today"], ["plan", "#/plan", "Course"], ["bench", "#/bench", "Practice"], ["listen", "#/listen", "Listen"], ["progress", "#/progress", "Me"]];
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
+// The view module that draws a screen, when it is not named after the screen.
+const MODULE = { challenge: "play", flute: "settings" };
+// Each place remembers its last section, so coming back lands where you were.
+const LAST = "bansuri.nav.last";
+// Kept in memory for this visit, and saved when storage allows (it can be full or blocked).
+const lastSeen = (() => { try { return JSON.parse(localStorage.getItem(LAST) || "{}") || {}; } catch (e) { return {}; } })();
+const lastSection = place => lastSeen[place] || null;
+const rememberSection = (place, href) => { lastSeen[place] = href; try { localStorage.setItem(LAST, JSON.stringify(lastSeen)); } catch (e) { /* remembered for this visit only */ } };
+let here = ["today", null];
 
 let mainEl, navEl, dayPill, cleanup = null, routeToken = 0, updateReady = false;
 
@@ -101,19 +143,21 @@ function applyAccess() {
   root.lang = s.lang === "hi" ? "hi" : "en";
 }
 
-// XP earned floats up from the level badge; a new level is celebrated, and spoken.
-let levelPill = null;
-function showLevel() {
-  if (!levelPill) return;
-  const lv = levelOf(xpState().total);
-  levelPill.textContent = "Lv " + lv.level;
-  levelPill.title = "Level " + lv.level + " [" + lv.name + "], " + lv.xp.toLocaleString() + " XP";
-  levelPill.setAttribute("aria-label", levelPill.title);
+// Points stay quiet (redesign decision 6): no level in the top bar and no "+XP" floating over
+// what you play. A new level is still celebrated and spoken, but never over a lesson: one reached
+// while the player is open waits until it closes.
+let levelWaiting = null;
+function celebrateLevel(level) {
+  celebrate("Level " + level.level + ": " + level.name + "!"); say("level_reached"); markLevelSeen();
 }
-onXp(({ gained, level, leveledUp }) => {
-  if (!getSettings().focus) floatXp(gained);
-  showLevel();
-  if (leveledUp && !getSettings().focus) { celebrate("Level " + level.level + ": " + level.name + "!"); say("level_reached"); markLevelSeen(); }
+function levelLater() {
+  if (!levelWaiting || document.documentElement.classList.contains("fullfocus")) return;
+  const lv = levelWaiting; levelWaiting = null; celebrateLevel(lv);
+}
+onXp(({ level, leveledUp }) => {
+  if (!leveledUp || getSettings().focus) return;
+  if (document.documentElement.classList.contains("fullfocus")) levelWaiting = level;
+  else celebrateLevel(level);
 });
 
 // Beats seen and felt: a flash at the edge of the screen, and a buzz on phones that can.
@@ -127,28 +171,77 @@ onBeat(kind => {
   if (s.vibrate && navigator.vibrate) { try { navigator.vibrate(kind === "sam" ? 60 : 25); } catch (e) { /* not supported */ } }
 });
 
+let dock = null;
 function shell() {
   const app = document.getElementById("app");
+  dock = createDock();
   dayPill = h("a", { class: "daypill", href: "#/today" }, "");
   const top = h("header", { class: "topbar" },
     h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", null, "Bansuri Mastery")),
     h("span", { class: "spacer" }),
-    h("span", { class: "statuspills" }, dayPill, (levelPill = h("a", { class: "levelpill", href: "#/progress#level" }, ""))),
+    h("span", { class: "statuspills" }, dayPill, dock.pill),
     h("button", { type: "button", class: "iconbtn", title: "Search (press /)", onclick: openPalette }, icon("search", "Search")),
-    h("a", { class: "iconbtn", href: "#/settings", title: "Settings" }, icon("settings", "Settings")));
-  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : getSettings().focus ? NAV_FOCUS : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(NAV_ICON[k] || k), h("span", null, label))));
+    dock.button,
+    h("a", { class: "iconbtn", href: "#/me/settings", title: "Settings" }, icon("settings", "Settings")));
+  navEl = h("nav", { class: "tabbar", "aria-label": "Main" }, (getSettings().simple ? NAV_SIMPLE : NAV).map(([k, href, label]) => h("a", { href, dataset: { k } }, icon(NAV_ICON[k] || k), h("span", null, label))));
+  // A tap on a place: its last section; on the place you are in: to the top, then to its first section.
+  navEl.addEventListener("click", e => {
+    const a = e.target.closest && e.target.closest("a[data-k]");
+    if (!a || getSettings().simple || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    const k = a.dataset.k, first = (sectionsOf(k)[0] || [])[1];
+    if (k === here[0]) {
+      e.preventDefault();
+      if (window.scrollY > 40) window.scrollTo({ top: 0, behavior: "smooth" });
+      else if (first && location.hash !== first) location.hash = first;
+      return;
+    }
+    const last = lastSection(k);
+    if (last && sectionsOf(k).some(s => s[1] === last)) { e.preventDefault(); location.hash = last; }
+  });
   mainEl = h("main", { id: "main", tabindex: "-1" });
-  clear(app).append(top, h("div", { class: "layout" }, navEl, mainEl));
+  swipeSections(mainEl);
+  clear(app).append(top, h("div", { class: "layout" }, navEl, mainEl), dock.backdrop, dock.sheet);
 }
 
-function updateChrome(viewName) {
+function updateChrome() {
   const n = current();
   const d = getDay(n);
   dayPill.textContent = d ? (d.kind === "milestone" ? "Milestone " + d.milestone : "Day " + n) : "Day " + n;
   for (const a of navEl.querySelectorAll("a")) {
-    const on = a.dataset.k === viewName || a.dataset.k === TAB_OF[viewName];
+    // Simple mode's three tiles keep their own names (today, play, listen).
+    const on = getSettings().simple ? a.dataset.k === (here[0] === "today" ? "today" : here[1] === "games" ? "play" : here[1] === "listen" ? "listen" : "") : a.dataset.k === here[0];
     if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   }
+}
+
+// Swipe left or right on a place to move to its next or previous section. Not on anything that
+// takes its own touches (inputs, canvases, sliders, games, the Bench, scrolling rows).
+function swipeSections(el) {
+  let x0 = 0, y0 = 0, t0 = 0, ok = false;
+  el.addEventListener("touchstart", e => {
+    const t = e.touches[0], tgt = e.target;
+    ok = e.touches.length === 1 && !!sectionsOf(here[0]).length && !(tgt.closest && tgt.closest("input, textarea, select, canvas, svg, audio, video, [data-noswipe], .game-card, .bb-bench, .sectiontabs, .tablewrap, .bb-tablewrap, pre"));
+    x0 = t.clientX; y0 = t.clientY; t0 = Date.now();
+  }, { passive: true });
+  el.addEventListener("touchend", e => {
+    if (!ok) return;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Math.abs(dx) < 70 || Math.abs(dy) > 45 || Date.now() - t0 > 600) return;
+    const list = sectionsOf(here[0]), i = list.findIndex(s => s[0] === here[1]);
+    if (i < 0) return;
+    const next = list[i + (dx < 0 ? 1 : -1)];
+    if (next) location.hash = next[1];
+  }, { passive: true });
+}
+
+// The section tabs of the place a screen belongs to: one row, scrolled so the current one shows.
+function sectionTabs() {
+  const list = getSettings().simple ? [] : sectionsOf(here[0]);
+  if (!list.length) return null;
+  const nav = h("nav", { class: "subnav sectiontabs", "aria-label": "Sections" }, list.map(([k, href, label]) => h("a", { href, "aria-current": k === here[1] ? "page" : null }, label)));
+  const cur = nav.querySelector("[aria-current]");
+  if (cur) requestAnimationFrame(() => { const l = cur.offsetLeft - nav.offsetLeft; if (l + cur.offsetWidth > nav.clientWidth) nav.scrollLeft = l - 24; });
+  return nav;
 }
 
 function parseHash() {
@@ -164,23 +257,28 @@ async function route() {
   // in memory never meets newer modules (and an active session is never interrupted).
   if (updateReady) { location.reload(); return; }
   const token = ++routeToken;
+  // A level reached during a lesson is celebrated once the lesson has closed.
+  setTimeout(levelLater, 0);
   const { path, anchor } = parseHash();
   let view = "today", params = [];
-  for (const [re, name] of ROUTES) { const m = re.exec(path); if (m) { view = name; params = m.slice(1); break; } }
+  for (const [re, name] of ROUTES) { const m = re.exec(path); if (m) { view = name; params = m.slice(1).filter(x => x !== undefined); break; } }
   if (cleanup) { try { cleanup(); } catch (e) { /* view cleanup errors are not fatal */ } cleanup = null; }
   stopPlayable();
-  updateChrome(view);
+  here = placeOf(view, params, path);
+  const sec = sectionsOf(here[0]).find(s => s[0] === here[1]);
+  if (sec && "#" + path === sec[1]) rememberSection(here[0], sec[1]);
+  updateChrome();
   clear(mainEl).append(h("div", { class: "boot" }, "Loading..."));
   try {
-    const mod = await import("./views/" + (view === "challenge" ? "play" : view) + ".js");
+    const mod = await import("./views/" + (MODULE[view] || view) + ".js");
     if (token !== routeToken) return;
     clear(mainEl);
     const ret = await mod.render(mainEl, { params, anchor, view });
     if (token !== routeToken) { if (typeof ret === "function") ret(); return; }
     cleanup = typeof ret === "function" ? ret : null;
-    // The small menu of the tab's other screens.
-    const group = !getSettings().simple && GROUPS[TAB_OF[view]];
-    if (group) mainEl.prepend(h("nav", { class: "subnav", "aria-label": "In this section" }, group.map(([k, href, label]) => h("a", { href, "aria-current": k === view || (view === "challenge" && k === "play") || (view === "reader" && k === "library") ? "page" : null }, label))));
+    // The place's sections, as tabs at the top.
+    const tabs = sectionTabs();
+    if (tabs) mainEl.prepend(tabs);
     if (document.activeElement && document.activeElement.closest && document.activeElement.closest(".tabbar, .topbar")) mainEl.focus({ preventScroll: true });
     if (anchor) {
       const target = document.getElementById(anchor);
@@ -201,8 +299,7 @@ function afterChange() {
   if (evaluating) return;
   evaluating = true;
   try { evaluateBadges(); } catch (e) { console.warn("Badge check failed", e); } finally { evaluating = false; }
-  updateChrome(parseHash().path.split("/")[1] || "today");
-  showLevel();
+  updateChrome();
 }
 
 function offerUpdate(worker) {
@@ -241,7 +338,6 @@ async function boot() {
   onChange(s => { applyTheme(); afterChange(); const last = s.log.length ? s.log[s.log.length - 1].date : null; if (last) notePractice(last); });
   window.addEventListener("hashchange", route);
   await route();
-  showLevel();
   // Ask the browser to keep this site's storage (progress, recordings) even when space runs low or
   // the site is not opened for a while. Granted silently for installed or often-used apps.
   if (getState().startedAt && navigator.storage && navigator.storage.persist) navigator.storage.persisted().then(p => p || navigator.storage.persist()).catch(() => {});

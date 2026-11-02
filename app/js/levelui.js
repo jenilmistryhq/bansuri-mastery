@@ -32,13 +32,3 @@ export function xpRules() {
   return h("ul", { class: "xprules" }, Object.values(RULES).map(r => h("li", null, h("b", { class: "mono" }, "+" + r.xp), " ", r.label, r.cap ? h("span", { class: "small muted" }, " (up to " + r.cap + " a day)") : null)),
     h("li", null, h("b", { class: "mono" }, "+10%"), " while your practice streak is 7 days or more"));
 }
-
-// "+12 XP" floating up from the level badge.
-export function floatXp(n) {
-  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const badge = document.querySelector(".levelpill");
-  const el = h("span", { class: "xpfloat", "aria-hidden": "true" }, "+" + n + " XP");
-  if (badge) { const r = badge.getBoundingClientRect(); el.style.left = (r.left + r.width / 2) + "px"; el.style.top = (r.bottom + 4) + "px"; }
-  document.body.append(el);
-  setTimeout(() => el.remove(), 1300);
-}

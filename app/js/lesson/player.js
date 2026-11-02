@@ -8,6 +8,8 @@
 import { h, store, storeSet, today, icon } from "../util.js";
 import { STEP_KINDS } from "./steps.js";
 import { stopAll } from "../core/audio.js";
+import { micActive } from "../core/listen.js";
+import { whyLayer } from "./learn.js";
 
 const KEY = "bansuri.lessons";
 export const lessonRecord = id => store(KEY, {})[id] || null;
@@ -70,7 +72,10 @@ export function lessonPlayer(lesson, opts) {
     const head = s.title ? h("h2", { class: "lesson-title", tabindex: "-1" }, s.title) : null;
     // A practice-day drill names the lesson it comes from.
     const from = s.from ? h("p", { class: "small muted lesson-from" }, "Practice from Day " + s.from.day + ": " + s.from.title) : null;
-    stage.replaceChildren(...[from, head, s.intro ? h("p", { class: "lesson-intro" }, s.intro) : null, live.el].filter(Boolean));
+    // The day's explanation for this step's chapter, folded under the step (lesson/learn.js), and
+    // under the reward, the day's pass check.
+    const goal = s.goal ? h("div", { class: "lesson-goal" }, h("span", { class: "eyebrow" }, "Today's goal"), h("p", null, s.goal)) : null;
+    stage.replaceChildren(...[from, head, s.intro ? h("p", { class: "lesson-intro" }, s.intro) : null, live.el, goal, whyLayer(s.blocks)].filter(Boolean));
     stage.dataset.kind = s.kind; stage.dataset.step = s.id; stage.dataset.target = s.target === undefined ? "" : String(s.target);
     stage.dataset.notes = (s.phrase || s.targets || (s.ex ? [s.ex.from ?? s.ex.grace ?? s.ex.note ?? (s.ex.notes || [])[0], s.ex.to ?? s.ex.main].filter(x => x !== undefined) : [])).join(","); // for the tests' lesson walker
     if (head) head.focus({ preventScroll: true });
@@ -85,6 +90,9 @@ export function lessonPlayer(lesson, opts) {
     const first = !rec.done;
     rec.done = rec.done || today(); rec.at = 0; save();
     let result = null;
+    // The end card is an ordinary screen again: the top bar and tabs come back (and a level reached
+    // by finishing is celebrated there).
+    document.documentElement.classList.remove("fullfocus");
     try { result = lesson.finish ? lesson.finish(rec.data, { first }) : null; } catch (e) { result = null; }
     if (o.onFinished) o.onFinished(result || {});
   }
@@ -92,16 +100,31 @@ export function lessonPlayer(lesson, opts) {
   backBtn.addEventListener("click", () => go(at - 1));
   closeBtn.addEventListener("click", () => { if (o.onExit) o.onExit(); });
   const onKey = e => {
-    if (e.key !== "Enter" || !isReady) return;
+    if (e.key !== "Enter" || !isReady || document.querySelector("dialog.sheet[open]")) return;
     const t = e.target;
     if (t && (/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(t.tagName) || (t.getAttribute && t.getAttribute("role") === "button"))) return;
     go(at + 1);
   };
   document.addEventListener("keydown", onKey);
+  // Playing mode (docs/redesign 09): while the microphone listens, the step is read from a music
+  // stand, so the note, the ring and one word grow and everything else steps back.
+  const onMic = e => el.classList.toggle("lesson-playing", !!(e.detail && e.detail.on));
+  document.addEventListener("bansuri:mic", onMic);
+  el.classList.toggle("lesson-playing", micActive());
+  // Full focus: while the player is on screen, no top bar and no tabs (W2); the close button leads out.
+  document.documentElement.classList.add("fullfocus");
   show();
   return {
     el,
-    destroy() { document.removeEventListener("keydown", onKey); if (live && live.destroy) { try { live.destroy(); } catch (e) { /* ignore */ } } stopAll(); },
+    destroy() {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("bansuri:mic", onMic);
+      document.documentElement.classList.remove("fullfocus");
+      if (live && live.destroy) { try { live.destroy(); } catch (e) { /* ignore */ } }
+      stopAll();
+      // A reading left open over the lesson goes with it.
+      document.querySelectorAll("dialog.sheet").forEach(d => { if (d.open) d.close(); d.remove(); });
+    },
     restart() { rec.at = 0; save(); go(0); },
   };
 }

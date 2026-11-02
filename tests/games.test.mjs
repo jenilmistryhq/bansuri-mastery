@@ -168,4 +168,28 @@ test("three floors: the floor of a note", () => {
     assert.equal(G4.taarScore(steady.slice(0, 5), 12), null);
   });
 }
+// The Skills place: every game on the games list has exactly one home (a skill, or Music), the hubs'
+// "also good for this" rows point at games that exist, and each troubleshooting guide is a fix once.
+{
+  const fs = await import("node:fs");
+  const src = fs.readFileSync(new URL("../app/js/views/play.js", import.meta.url), "utf8");
+  const block = src.slice(src.indexOf("const GAMES = {"), src.indexOf("};", src.indexOf("const GAMES = {")));
+  const playKeys = [...block.matchAll(/^\s{4}([a-z]+): \[/gm)].map(m => m[1]).filter(k => k !== "compose" && k !== "quick");
+  const map = fs.readFileSync(new URL("../app/js/skillmap.js", import.meta.url), "utf8");
+  const lists = [...map.matchAll(/games: \[([^\]]*)\]/g)].map(m => [...m[1].matchAll(/"([a-z]+)"/g)].map(x => x[1]));
+  const music = [...(/MUSIC_GAMES = \[([^\]]*)\]/.exec(map) || ["", ""])[1].matchAll(/"([a-z]+)"/g)].map(x => x[1]);
+  const homes = lists.flat().concat(music);
+  test("skills: every game on the games list has exactly one home", () => {
+    assert.equal(lists.length, 5);
+    assert.deepEqual([...homes].sort(), [...playKeys].sort());
+    assert.equal(new Set(homes).size, homes.length);
+  });
+  test("skills: 'also good for this' games exist, and every guide TS-01..TS-12 is named once", () => {
+    const also = [...map.matchAll(/also: \[([^\]]*)\]/g)].flatMap(m => [...m[1].matchAll(/"([a-z]+)"/g)].map(x => x[1]));
+    also.forEach(k => assert.ok(playKeys.includes(k), k));
+    const fixes = [...map.matchAll(/fixes: \[([^\]]*)\]/g)].flatMap(m => [...m[1].matchAll(/"(TS-\d\d)"/g)].map(x => x[1]));
+    assert.equal(new Set(fixes).size, fixes.length);
+    for (let i = 1; i <= 12; i++) assert.ok(map.includes("\"TS-" + String(i).padStart(2, "0") + "\": \""), "TS-" + i);
+  });
+}
 console.log("game tests: " + n + " passed");

@@ -135,18 +135,13 @@ export function resumeCard(n, day, ds, phase, action) {
 
 // Your progress in one card: level and how far to the next (in days, not XP), this week, quests.
 export function progressCard() {
-  const lv = levelOf(xpState().total), x = xpState(), t = today();
-  let recent = 0; for (let i = 0; i < 14; i++) recent += (x.days || {})[addDays(t, -i)] || 0;
-  const perDay = recent / 14, daysLeft = lv.next && perDay > 0 ? Math.ceil((lv.to - lv.xp) / perDay) : null;
+  // Points stay quiet (redesign decision 6): the level lives in Me > Progress and on the reward;
+  // Today keeps the week and one line of quests.
   const qs = questState(), left = qs.list.filter(q => !q.done);
   return h("section", { class: "card progresscard" },
-    h("a", { class: "profile-level", href: "#/progress" },
-      h("span", { class: "levelbadge", "aria-hidden": "true" }, String(lv.level)),
-      h("span", { class: "profile-text" }, h("b", null, "Level " + lv.level + " "), h("span", { class: "leveltitle" }, lv.name),
-        h("span", { class: "progressbar levelbar thin", role: "progressbar", "aria-label": "Toward the next level", "aria-valuemin": "0", "aria-valuemax": String(lv.need || 1), "aria-valuenow": String(lv.into) }, h("i", { style: { width: lv.pct + "%" } })),
-        h("span", { class: "small muted" }, !lv.next ? "The highest level" : daysLeft ? "About " + daysLeft + (daysLeft === 1 ? " day" : " days") + " to Level " + lv.next.level + " at your pace" : (lv.to - lv.xp).toLocaleString() + " XP to Level " + lv.next.level))),
+    h("a", { class: "small muted", href: "#/me" }, "Your week"),
     weekStrip(new Set(practiceDates().keys())),
-    h("a", { class: "questline small", href: "#/play" }, left.length ? "Quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done. Next: " + left[0].text : "All of today's quests are done."));
+    h("a", { class: "questline small", href: "#/skills" }, left.length ? "Quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done. Next: " + left[0].text : "All of today's quests are done."));
 }
 
 // One tap to the tools used most.

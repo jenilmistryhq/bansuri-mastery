@@ -262,6 +262,83 @@ test("energy map: calm start, waves on the way up, the peak at the end", () => {
     }
     assert.ok(firstRight / all < 0.7, "answers are shuffled: the right one first in " + firstRight + " of " + all);
   });
+  // One Day N (lessons/oneday.js, docs/redesign/13-one-day.md): the lesson carries the whole session.
+  const OD = await import("../app/js/lessons/oneday.js");
+  // Every text of the merged lesson that comes from the plan: learn cards, folds and step sources.
+  const planTexts = l => { const out = new Set(); for (const s of P.flatSteps(l)) { if (s.block) out.add(s.block.text); for (const b of s.blocks || []) out.add(b.text); if (s.src) out.add(s.src); } return out; };
+  const fullDay = (n, l) => {
+    const d = dayOf(n), m = OD.oneDay(l, d), steps = P.flatSteps(m), texts = planTexts(m), home = OD.homes(m);
+    for (const b of d.blocks) {
+      assert.ok(texts.has(b.text), "Day " + n + " (" + m.id + "): block " + b.id + "'s text is in the lesson");
+      assert.ok(home[b.id], "Day " + n + " (" + m.id + "): block " + b.id + " has a home");
+      // Its readings are reachable from a step of its chapter (a card or the fold), and its minutes come with it.
+      const carriers = steps.filter(s => s.block === b || (s.blocks || []).includes(b));
+      assert.ok(carriers.length, "Day " + n + ": a step carries block " + b.id);
+      for (const r of b.read || []) assert.ok(m.oneDay.read.some(x => x.path === r.path && (x.anchor || "") === (r.anchor || "")), "Day " + n + ": the cover lists " + r.path);
+    }
+    const ids = steps.map(s => s.id);
+    assert.equal(new Set(ids).size, ids.length, "Day " + n + " (" + m.id + "): unique ids");
+    for (const s of steps) assert.ok(s.kind === "custom" ? typeof s.make === "function" : S.STEP_KINDS[s.kind], "Day " + n + " " + s.id + ": kind " + s.kind);
+    assert.equal(steps[steps.length - 1].id, "done", "Day " + n + ": ends on the reward");
+    if (d.pass) assert.equal(steps[steps.length - 1].goal, d.pass, "Day " + n + ": the reward shows the day's pass check");
+    assert.equal(m.oneDay.pass, d.pass || "", "Day " + n + ": the cover's goal is the pass check");
+    assert.ok(steps.length < 60, "Day " + n + " (" + m.id + "): " + steps.length + " steps, within the smoke walker's reach");
+    const whole = d.blocks.reduce((a, b) => a + (b.minutes || 0), 0);
+    assert.ok(m.minutes >= whole, "Day " + n + ": the cover's " + m.minutes + " minutes cover the session's " + whole);
+    // A card never stands first in a row of two: one idea per screen.
+    for (let i = 1; i < steps.length; i++) assert.ok(!(steps[i].kind === "learn" && steps[i - 1].kind === "learn"), "Day " + n + ": two cards in a row at " + steps[i].id);
+    return m;
+  };
+  test("one day: every lesson day's lesson carries every block of its session (text, readings, pass check)", () => {
+    for (const l of Object.values(LESSONS)) {
+      const before = JSON.stringify(P.flatSteps(l).map(s => s.id));
+      fullDay(l.day, l);
+      assert.equal(JSON.stringify(P.flatSteps(l).map(s => s.id)), before, l.id + ": the original lesson is left as it was");
+    }
+  });
+  test("one day: each placement names a step of its lesson and a block of its day", () => {
+    for (const [id, place] of Object.entries(OD.PLACE)) {
+      const l = LESSONS[id], d = dayOf(l.day), ids = P.flatSteps(l).map(s => s.id);
+      for (const [bid, p] of Object.entries(place)) {
+        const at = (typeof p === "string" ? p : p.at).replace(/^=/, "");
+        assert.ok(ids.includes(at), id + ": " + bid + " at " + at);
+        assert.ok(d.blocks.some(b => b.id === bid), id + ": Day " + l.day + " has block " + bid);
+      }
+    }
+  });
+  test("one day: every practice and review day's lesson carries every block of its session", () => {
+    let count = 0;
+    for (let n = 0; n < plan.days.length; n++) {
+      const d = dayOf(n);
+      if (!["practice", "review"].includes(d.kind) || lessonForDay(n)) continue;
+      const l = PR.buildPractice(n, d, dayOf(n + 1), LESSONS, {}, []);
+      if (!l) continue;
+      fullDay(n, l); count++;
+    }
+    assert.ok(count > 600, count + " days");
+  });
+  test("one day: Day 0 is the session's five blocks, each where it is done", () => {
+    const m = OD.oneDay(M0, dayOf(0)), home = OD.homes(m), steps = P.flatSteps(m).map(s => s.id);
+    assert.deepEqual(m.chapters.map(c => c.title), M0.chapters.map(c => c.title), "the same six chapters");
+    assert.deepEqual(steps.slice(0, 4), ["hook", "learn-M", "parts", "holes"], "the hook first, then the fingers, then the parts");
+    assert.equal(P.flatSteps(m).find(s => s.id === "learn-M").demo, "S R G R S -", "the session's finger demo comes along");
+    assert.equal(home.READ.step, "learn-READ"); assert.ok(steps.indexOf("learn-READ") === steps.indexOf("inspect") - 1, "L00 and the checklist open the flute check");
+    assert.ok(steps.indexOf("learn-K") === steps.indexOf("sa") - 1, "the tools card opens Your tools");
+    assert.ok(steps.indexOf("safety") < steps.indexOf("learn-E") && steps.indexOf("learn-E") === steps.indexOf("plan") - 1, "the safety questions come before the reading (recall first)");
+    assert.ok(steps.indexOf("learn-R") === steps.indexOf("done") - 1, "safety and next steps, then the reward");
+    assert.equal(m.minutes, dayOf(0).blocks.reduce((a, b) => a + b.minutes, 0), "the cover shows the session's real total");
+    assert.equal(m.minutes, 58, "Day 0 is 58 minutes");
+    assert.equal(m.oneDay.read.length, 7, "the day's seven readings, once each");
+  });
+  test("one day: a lesson day's untaught blocks become chapters of their own: warm-up and tone first, the rest before the reward", () => {
+    const l = LESSONS.m617, m = OD.oneDay(l, dayOf(617));
+    const titles = m.chapters.map(c => c.title);
+    assert.equal(titles[0], "Warm-up"); assert.equal(titles[1], "Tone and breath");
+    assert.equal(titles[titles.length - 1], "Done");
+    assert.ok(titles.indexOf("Record and log") > titles.indexOf(l.chapters[l.chapters.length - 2].title), "the recording after the lesson's own chapters");
+    assert.ok(m.minutes > l.minutes, "the cover counts the added time");
+    assert.ok(P.flatSteps(m).some(s => s.id === "day-R-rec" && s.kind === "record"), "the record block is recorded");
+  });
   test("practice days: drills come only from lessons already reached", () => {
     for (const [n, , l] of built) for (const s of P.flatSteps(l)) {
       const m = /^[KME]-(m\d+)-/.exec(s.id);

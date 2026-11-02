@@ -13,6 +13,7 @@ import { finishSession, recordAttempt, current, milestoneState } from "../course
 import { award } from "../xp.js";
 import { fluteSvg } from "../lesson/flute.js";
 import { ding } from "../lesson/steps.js";
+import { rewardView } from "./common.js";
 
 const sidePic = side => () => h("span", { class: "lesson-sidepic" }, fluteSvg({ side, numbers: false }).el);
 
@@ -58,19 +59,11 @@ function reward(s, api) {
     ["Know what to do if you feel dizzy or sore", true],
     ["Fixed your practice time and place", !!d.time],
   ];
-  const audio = new Audio("app/audio/bansuri-sa-middle-octave-sankalp.mp3");
-  const hear = h("button", { type: "button", class: "btn" }, icon("play"), " Hear it");
-  hear.addEventListener("click", () => { audio.currentTime = 0; audio.play().catch(() => {}); });
   setTimeout(() => api.ready(), 0);
-  return {
-    el: h("div", { class: "stack" },
-      h("div", { class: "lesson-burst", "aria-hidden": "true" }, icon("star")),
-      h("ul", { class: "lesson-done" }, rows.map(([t, ok]) => h("li", { class: ok ? "ok" : "later" }, h("span", { class: "lesson-tick", "aria-hidden": "true" }, ok ? icon("check") : ""), h("span", null, t), ok ? null : h("span", { class: "small muted" }, " (later)")))),
-      found.length ? h("div", { class: "lesson-reveal warn" }, h("b", null, "Your flute check found something."), h("p", null, "Read TS-12 (flute damage and care) before you play: a crack or a splinter should be seen to first.")) : null,
-      h("div", { class: "lesson-teaser" }, h("div", { class: "stack tight" }, h("span", { class: "eyebrow" }, "Tomorrow, Day 1"), h("b", null, "Your first sound"), h("span", { class: "small muted" }, "A steady note like this one is where it starts.")), hear),
-      h("p", { class: "small muted" }, "Recommended: find a teacher for an occasional check, around Week 2-3, when you can make a sound (Me, Teacher review).")),
-    destroy() { audio.pause(); },
-  };
+  return rewardView(rows, { when: "Tomorrow, Day 1", title: "Your first sound", text: "A steady note like this one is where it starts.", audio: "app/audio/bansuri-sa-middle-octave-sankalp.mp3" }, [
+    found.length ? h("div", { class: "lesson-reveal warn" }, h("b", null, "Your flute check found something."), h("p", null, "Read TS-12 (flute damage and care) before you play: a crack or a splinter should be seen to first.")) : null,
+    h("p", { class: "small muted" }, "Recommended: find a teacher for an occasional check, around Week 2-3, when you can make a sound (Me, Teacher review)."),
+  ]);
 }
 
 export const M0 = {

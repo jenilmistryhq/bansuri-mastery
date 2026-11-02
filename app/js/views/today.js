@@ -13,6 +13,7 @@ import { stepMeta, plainText } from "../steps.js";
 import { plainCodes } from "../codes.js";
 import { newsCard } from "../news.js";
 import { lessonForDay } from "../lessons/index.js";
+import { oneDay } from "../lessons/oneday.js";
 import { practiceLesson } from "../lessons/practice.js";
 import { lessonRecord } from "../lesson/player.js";
 import { adaptiveCard, backupNudge, fixToday, installCard, journey, progressCard, realBansuriCard, resumeCard, reviewsCard, teacherTaskCard } from "./today-cards.js";
@@ -79,7 +80,7 @@ function firstRun(day) {
     h("h1", null, "Learn the bansuri, one day at a time"),
     h("p", { class: "muted" }, "A short guided session each day. The app listens to your flute and tells you how it went."),
     h("a", { class: "btn primary big", href: lessonForDay(0) ? "#/lesson/" + lessonForDay(0).id : "#/session/0" }, "Start Day 0"),
-    h("p", { class: "small muted" }, "About " + (lessonForDay(0) ? lessonForDay(0).minutes : day.minutes || 45) + " minutes: get to know your flute and find its Sa. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), "."));
+    h("p", { class: "small muted" }, "About " + (lessonForDay(0) ? oneDay(lessonForDay(0), day).minutes : day.minutes || 45) + " minutes: get to know your flute and find its Sa. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), "."));
 }
 
 function welcome() {
@@ -160,8 +161,6 @@ export async function render(main, { params, view }) {
   // Today: what to do now. One action on top; at most one notice; the session; progress at the side.
   if (isToday && !firstTime) {
     page.append(resumeCard(n, day, ds, phase, action));
-    const notice = adaptiveCard(cur) || newsCard() || backupNudge() || installCard();
-    if (notice) { notice.classList.add("notice-one"); page.append(notice); }
   }
   else if (!firstTime) page.append(h("section", { class: "hero" },
     h("span", { class: "eyebrow" }, (phase ? "Phase " + phase.id + ": " + phase.title : "") + (day.week ? " - Week " + day.week : "") + " - Day " + n + (day.repeatOf !== null ? " (repeats Day " + day.repeatOf + ")" : "")),
@@ -175,18 +174,21 @@ export async function render(main, { params, view }) {
   const mainCol = h("div", { class: "todaymain" }), side = h("aside", { class: "todayside", "aria-label": "Your progress and extras" });
   page.append(h("div", { class: "todaygrid" }, mainCol, side));
   if (isToday && !firstTime) {
-    const task = teacherTaskCard();
-    if (task) mainCol.append(task);
-    const fix = fixToday();
-    if (fix) mainCol.append(fix);
-    const rc = reviewsCard(cleanups);
-    if (rc) mainCol.append(rc);
+    // Two messages at most, the most important first: the teacher's task; coming back or being stuck;
+    // pieces due for review (not on a review day, which plays them); today's fix; then news, the
+    // backup nudge or the install offer. The day stays the first thing on the screen.
+    const picks = [() => teacherTaskCard(), () => adaptiveCard(cur), () => (day.kind === "review" ? null : reviewsCard(cleanups)), () => fixToday(), () => newsCard() || backupNudge() || installCard()];
+    const cards = [];
+    for (const make of picks) { if (cards.length >= 2) break; const c = make(); if (c) cards.push(c); }
+    cards.forEach(c => { if (/notice/.test(c.className)) c.classList.add("notice-one"); mainCol.append(c); });
   }
 
   mainCol.append(h("section", { class: "card" },
     h("div", { class: "row between" }, h("h2", null, firstTime ? "Day 0 at a glance" : "The session"), h("span", { class: "small muted" }, day.blocks.reduce((a, b) => a + (b.minutes || 0), 0) + " min planned")),
     blockLines(day),
     day.pass ? h("p", { class: "small passline" }, h("b", null, "To pass: "), day.pass) : null));
+
+  if (isToday && !firstTime) mainCol.append(h("p", { class: "row between quickline" }, h("span", { class: "muted" }, "Short on time?"), h("a", { class: "btn", href: "#/quick" }, "5 minutes")));
 
   // Lessons to read.
   const lessons = (day.lessons || []).map(id => [id, lessonInfo(id)]).filter(([, l]) => l);
@@ -214,7 +216,7 @@ export async function render(main, { params, view }) {
   // Neighbours.
   page.append(h("nav", { class: "pager" },
     n > 0 ? h("a", { class: "btn ghost", href: "#/day/" + (n - 1) }, "Day " + (n - 1)) : h("span"),
-    h("a", { class: "btn ghost", href: "#/plan" }, "Course map"),
+    h("a", { class: "btn ghost", href: "#/course" }, "Course"),
     n < lastIndex() + 200 ? h("a", { class: "btn ghost", href: "#/day/" + (n + 1) }, "Day " + (n + 1)) : h("span")));
   if (phase) page.append(h("p", { class: "small muted" }, "This day comes from the ", h("a", { href: "#/read/" + phase.doc }, "Phase " + phase.id + " roadmap"), "."));
 

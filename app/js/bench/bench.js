@@ -704,7 +704,7 @@ export function mountBench(container, opts) {
     listen(q("tanBtn"), "click", () => {
       seqDrone = false; // the tanpura panel takes over control of the drone
       if (tanpura.isOn()) tanpura.stop();
-      else { tanpura.setFirst(q("tanFirst").value); tanpura.setSpeed(Number(q("tanSpeed").value) / 100); tanpura.setLevel(Number(q("tanVol").value) / 100); tanpura.start(); startedTan = true; }
+      else { tanpura.setFirst(q("tanFirst").value); tanpura.setSpeed(Number(q("tanSpeed").value) / 100); tanpura.setLevel(Number(q("tanVol").value) / 100); tanpura.start(); startedTan = !opts.keepDrone; }
     });
     listen(q("tanFirst"), "change", () => { tanpura.setFirst(q("tanFirst").value); benchSet("tanFirst", q("tanFirst").value); });
     // A raga preset sets the first string (Pa for most ragas; Ma when the raga omits Pa; Ni for a few).

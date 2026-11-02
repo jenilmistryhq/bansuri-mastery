@@ -6,7 +6,9 @@
     "serve": "python -m http.server 8000",
     "build": "python scripts/build_bench.py && python scripts/build_plan.py && python scripts/build_app.py && python scripts/gen_nav.py",
     "test": "node tests/core.test.mjs && node tests/live.test.mjs && node tests/plan.test.mjs && node tests/transcribe.test.mjs && node tests/ornaments.test.mjs && node tests/games.test.mjs && node tests/lesson.test.mjs && node tests/smoke.mjs",
-    "test:webkit": "node tests/webkit.mjs",
+    "test:fast": "node tests/run.mjs --fast",
+    "test:full": "node tests/run.mjs",
+    "test:webkit":"node tests/webkit.mjs",
     "test:visual": "node tests/visual.mjs",
     "test:real": "node tests/transcribe-real.mjs",
     "lint": "eslint ."

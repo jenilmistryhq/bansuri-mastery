@@ -45,6 +45,24 @@ export function plainBlock(text) {
   return String(text || "").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/[`*]/g, "").replace(/\s+/g, " ").trim();
 }
 
+// The timed rest of a block, with its instruction and readings. pre: an id prefix.
+export const keepGoing = (b, seconds, pre = "") => ({ id: pre + b.id + "-time", kind: "timer", title: "Keep going: " + (b.label || "practice"), intro: plainBlock(b.text), src: b.text, seconds, start: "Start " + Math.round(seconds / 60) + " minutes", checks: ["Done for today"], read: b.read || [] });
+
+// A block done as written, with no drills: long tones for a tone block, a recording for a record
+// block, the block's time on a timer for anything else. n: the day; latestDay: the last lesson
+// reached (for long-tone notes); pre: an id prefix.
+export function blockSteps(b, n, latestDay, pre = "") {
+  const role = ROLE[b.id] || "read", secs = Math.max(60, (b.minutes || 5) * 60);
+  if (role === "tone") {
+    const spec = holdSpec(b) || {};
+    const targets = (spec.targets || toneNotes(n, latestDay)).slice(0, 6);
+    return [{ id: pre + "T-long", kind: "hold", title: "Long tones", intro: plainBlock(b.text), src: b.text, targets, seconds: spec.seconds || 8, cents: 30, giveUp: 90 },
+      keepGoing(b, Math.max(60, secs - 180), pre)];
+  }
+  if (role === "record") return [{ id: pre + "R-rec", kind: "record", title: b.record || "Today's recording", intro: "Play something from today, once, as if for a listener. Then listen back: one thing to keep, one to fix.", seconds: 30, day: n, label: "Day " + n + ": " + (b.record || "practice") }];
+  return [keepGoing(b, secs, pre)];
+}
+
 // The lessons taught by day n, oldest first.
 export function taughtBy(n, lessons = LESSONS) {
   return Object.values(lessons).filter(l => l.day !== undefined && l.day <= n).sort((a, b) => a.day - b.day);
@@ -73,18 +91,12 @@ export function buildPractice(n, day, next, lessons = LESSONS, done = {}, due = 
   // A drill keeps its lesson's step, with the step's own practice wording (drill) where its
   // lesson's words lean on the step before; "from" names the lesson it comes from.
   const copy = (c, prefix) => Object.assign({}, c.s, c.s.drill || {}, { id: prefix + "-" + c.l.id + "-" + c.s.id, from: { day: c.l.day, title: c.l.title } });
-  const keepGoing = (b, seconds) => ({ id: b.id + "-time", kind: "timer", title: "Keep going: " + (b.label || "practice"), intro: plainBlock(b.text), src: b.text, seconds, start: "Start " + Math.round(seconds / 60) + " minutes", checks: ["Done for today"], read: b.read || [] });
   const parts = [];
   for (const b of day.blocks) {
     const role = ROLE[b.id] || "read", secs = Math.max(60, (b.minutes || 5) * 60);
     const st = [];
-    if (role === "warm") {
-      st.push(keepGoing(b, secs));
-    } else if (role === "tone") {
-      const spec = holdSpec(b) || {};
-      const targets = (spec.targets || toneNotes(n, latest.day)).slice(0, 6);
-      st.push({ id: "T-long", kind: "hold", title: "Long tones", intro: plainBlock(b.text), src: b.text, targets, seconds: spec.seconds || 8, cents: 30, giveUp: 90 });
-      st.push(keepGoing(b, Math.max(60, secs - 180)));
+    if (role === "warm" || role === "tone") {
+      st.push(...blockSteps(b, n, latest.day));
     } else if (review && (role === "tech" || role === "music") && due.length && !parts.some(p => p.items)) {
       // Repertoire due in the spaced review: play each, checked note by note (three at most).
       const items = due.filter(it => itemNotes(it).length >= 3).slice(0, 3);
@@ -104,15 +116,14 @@ export function buildPractice(n, day, next, lessons = LESSONS, done = {}, due = 
     } else if (role === "record" && review) {
       st.push({ id: "R-reflect", kind: "plan", title: "This week", intro: "Look back over the week's practice and recordings.", fields: [{ key: "changed", label: "What changed this week?", hint: "e.g. Sa steadier; Ga still flat" }, { key: "next", label: "One thing for next week" }], required: ["changed"] });
       st.push({ id: "R-rec", kind: "record", title: b.record || "Today's recording", intro: "Play something from this week, once, as if for a listener. Then listen back.", seconds: 30, day: n, label: "Day " + n + ": " + (b.record || "review") });
-    } else if (role === "record") {
-      st.push({ id: "R-rec", kind: "record", title: b.record || "Today's recording", intro: "Play something from today, once, as if for a listener. Then listen back: one thing to keep, one to fix.", seconds: 30, day: n, label: "Day " + n + ": " + (b.record || "practice") });
     } else {
-      st.push(keepGoing(b, secs));
+      st.push(...blockSteps(b, n, latest.day));
     }
     // The drills are chosen for every block first, so skipping a done one never changes the rest.
     parts.push({ b, steps: st, done: !!done[b.id] });
   }
-  const chapters = parts.filter(p => !p.done).map(p => ({ title: p.b.label || p.b.id, steps: p.steps }));
+  // Each chapter keeps its block, so the lesson can carry the block's explanation (lessons/oneday.js).
+  const chapters = parts.filter(p => !p.done).map(p => ({ title: p.b.label || p.b.id, block: p.b, steps: p.steps }));
   // A review day opens with a quiz: questions from the last six weeks' lessons and a few older
   // ones, answers shuffled, then one ear game.
   if (review) {

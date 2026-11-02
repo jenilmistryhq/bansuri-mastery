@@ -14,6 +14,7 @@ import { parseSongs } from "./songs.js";
 import { ragaPhrases, ragaInfo } from "./reader.js";
 import { ragaGrammar } from "../ragagrammar.js";
 import { encodePayload } from "./progress.js";
+import { SKILLS, MUSIC_GAMES } from "../skillmap.js";
 
 export function decodeChallenge(p) {
   try {
@@ -159,10 +160,8 @@ export async function render(main, { params, view }) {
 
   // The other games.
   const card = (title, text, onClick) => h("button", { type: "button", class: "gamecard", onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
-  const GROUPS = [["With your flute", ["steer", "balloon", "falling", "jam", "boat", "road", "lanterns", "bullseye", "floors"]],
-    ["Ornaments and technique", ["phrase", "meendbridge", "kanflick", "murkichase", "andolanlamp", "swell", "taar"]],
-    ["Rhythm: laya and taal", ["laya", "tihai", "tongue", "sam"]],
-    ["By ear (no microphone)", ["nameorn", "wrong", "bingo", "higherlower"]], ["Make and practise", ["compose", "quick"]]];
+  // Grouped by the skill each game trains (see skillmap.js), then the games that are pieces of music.
+  const GROUPS = SKILLS.map(s => [s.title, s.games]).concat([["Music", MUSIC_GAMES], ["Make and practise", ["compose", "quick"]]]);
   for (const [head, keys] of GROUPS) page.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, keys.filter(k => k !== pick).map(k => card(GAMES[k][0], GAMES[k][1], NAV_ONLY.has(k) ? GAMES[k][2] : () => go(k)))));
   // #/play/<game>: open that game (the list stays underneath).
   if (view === "play" && params[0]) {

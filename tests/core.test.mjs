@@ -4,6 +4,7 @@ import fs from "node:fs";
 import { codeOf, fingOf, lessonFor, octName, tuneCents, hzOf } from "../app/js/core/theory.js";
 import { parseNotation, buildEvents, analyzeRange, PRESETS } from "../app/js/core/notation.js";
 import { getSettings, setSettings, saHz } from "../app/js/core/settings.js";
+import { holdGrowth } from "../app/js/livestats.js";
 import { CHECK_PLANS, verdict, segmentsFrom, compareToExpected, cleanFrames, tuningOffset, playableOnly, toneProfile } from "../app/js/core/pitch.js";
 
 let passed = 0;
@@ -264,6 +265,13 @@ test("lesson codes read as plain words (the course keeps them for teachers)", ()
   assert.equal(plainCodes("see TS-03 if it fails"), "see troubleshooting guide 3 if it fails");
   assert.equal(plainCodes("ORN-01, why ornaments are grammar"), "Why ornaments are grammar");
   assert.equal(plainCodes("Sa (`XXX OOO`) and Re"), "Sa (`XXX OOO`) and Re", "other brackets stay");
+});
+
+test("reward growth: today's longest hold against the same note about a month back", () => {
+  const H = { "0": [{ d: "2026-10-01", s: 6 }, { d: "2026-10-10", s: 8 }, { d: "2026-10-30", s: 11 }, { d: "2026-11-03", s: 14 }], "2": [{ d: "2026-11-03", s: 5 }] };
+  assert.deepEqual(holdGrowth(H, "2026-11-03"), { key: "0", now: 14, then: 8, thenDay: "2026-10-10" });
+  assert.equal(holdGrowth(H, "2026-11-04"), null, "nothing held today: no line");
+  assert.deepEqual(holdGrowth({ any: [{ d: "2026-11-03", s: 3 }] }, "2026-11-03"), { key: "any", now: 3, then: null, thenDay: null });
 });
 
 console.log(`core tests: ${passed} passed`);

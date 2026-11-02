@@ -11,6 +11,7 @@ import { MORE_KINDS } from "./kinds2.js";
 import { LISTEN_KINDS } from "./kinds3.js";
 import { PITCH_KINDS } from "./kinds4.js";
 import { RAGA_KINDS } from "./kinds5.js";
+import { LEARN_KINDS, readingList } from "./learn.js";
 import { decodeAudioFile, toneProfile } from "../core/pitch.js";
 import { MEASURES, BAND, BAND_CLS, bandOf } from "../views/tone.js";
 
@@ -34,6 +35,7 @@ export const STEP_KINDS = {
   ...LISTEN_KINDS,
   ...PITCH_KINDS,
   ...RAGA_KINDS,
+  ...LEARN_KINDS,
   // Listen to a recording, then guess. { audio, prompt, options: [{ text, right }], yes, no, explain }
   listen: { make(s, api) {
     // s.audio (a recording) or s.seq (notes, played on the flute voice).
@@ -180,8 +182,8 @@ export const STEP_KINDS = {
         ding(true); stopRun();
       }, 1000);
     });
-    // read: the block's readings (a practice day's timer), one tap away.
-    const read = s.read && s.read.length ? h("div", { class: "linklist" }, s.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : "") }, r.label))) : null;
+    // read: the block's readings (a practice day's timer), one tap away in a sheet over the lesson.
+    const read = readingList(s.read);
     return { el: h("div", { class: "stack lesson-center" }, ringEl, h("div", { class: "row" }, btn, early), checks, read), destroy() { clearInterval(timer); } };
   } },
 

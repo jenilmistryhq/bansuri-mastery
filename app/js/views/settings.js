@@ -132,7 +132,9 @@ function accessSection() {
     check("cues", "Game sounds for playing without looking: the next note is spoken, and progress is heard as ticks"))];
 }
 
-export async function render(main) {
+export async function render(main, ctx = {}) {
+  // Me > Flute (#/me/flute) shows the flute's setup and checks; Me > Settings shows the preferences.
+  const fluteView = ctx.view === "flute";
   const s = getState();
   const set = getSettings();
   const page = h("div", { class: "page" });
@@ -449,19 +451,29 @@ export async function render(main) {
   page.append(h("section", { class: "card" }, h("h2", null, "Calibrate with your flute"),
     h("p", { class: "small muted" }, "Four 10-second tasks with your flute. The app saves what its pitch detector measured (no sound) as a file you can send to the course author, so the in-tune, airy and steady thresholds can be set from real players."), calibBtn, calibHost));
   // Groups, in this order, each with its heading; a row of links jumps to each group.
-  const GROUPS = [["g-flute", "Flute", ["Your flute"]], ["g-practice", "Practice", ["Daily practice time", "Countdown", "Daily practice reminder", "Already play?"]],
-    ["g-voice", "Voice and language", ["Voice and language"]], ["g-access", "Accessibility", ["Easier to use", "Display and sound"]],
-    ["g-data", "Your data", ["Your data", "Start over"]], ["g-help", "Help", ["Microphone check", "Calibrate with your flute", "Problem report", "About"]]];
+  const GROUPS = fluteView
+    ? [["g-flute", "Sa and tuning", ["Your flute"]], ["g-checks", "Checks", ["Microphone check", "Calibrate with your flute"]]]
+    : [["g-voice", "Voice and language", ["Voice and language"]], ["g-access", "Display and ease of use", ["Easier to use", "Display and sound"]],
+      ["g-practice", "Practice and reminders", ["Daily practice time", "Countdown", "Daily practice reminder", "Already play?"]],
+      ["g-data", "Your data", ["Your data", "Start over"]], ["g-help", "Help and about", ["Problem report", "About"]]];
+  // Cards that belong to the other section are left out here (each lives in one place).
+  const OTHER = new Set(["Your flute", "Microphone check", "Calibrate with your flute"]);
   const cards = [...page.querySelectorAll(":scope > section.card")].concat(access);
   const byTitle = new Map(cards.map(c => [(c.querySelector("h2") || {}).textContent, c]));
   const hero = page.querySelector(":scope > .hero");
-  const jump = h("nav", { class: "jumpnav", "aria-label": "Settings groups" }, GROUPS.map(([id, label]) => h("a", { href: "#/settings#" + id }, label)));
+  const jump = h("nav", { class: "jumpnav", "aria-label": "Settings groups" }, GROUPS.map(([id, label]) => h("a", { href: (fluteView ? "#/me/flute#" : "#/me/settings#") + id }, label)));
+  if (fluteView) {
+    hero.replaceChildren(h("span", { class: "eyebrow" }, "Me"), h("h1", null, "Your flute"),
+      h("p", { class: "muted" }, "Every pitch and check in the app follows your flute's Sa. Set it here, and check the flute and the microphone."));
+  }
   page.replaceChildren(hero, jump);
   for (const [id, label, titles] of GROUPS) {
     page.append(h("h2", { class: "grouphead", id }, label));
     for (const t of titles) if (byTitle.has(t)) { page.append(byTitle.get(t)); byTitle.delete(t); }
   }
-  byTitle.forEach(c => page.append(c)); // anything not grouped stays, at the end
+  if (fluteView) page.append(h("section", { class: "card row between" }, h("span", null, "Check my flute: play each note and see how in tune it is."), h("a", { class: "btn", href: "#/bench/check" }, "Check my flute")));
+  // Anything not grouped stays, at the end: only on Settings, and never the flute's own cards.
+  else byTitle.forEach((c, t) => { if (!OTHER.has(t)) page.append(c); });
   main.append(page);
   return () => { if (calib) calib.destroy(); if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
 }

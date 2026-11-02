@@ -66,3 +66,18 @@ export function lastPlayedDay() {
 }
 
 export function yesterday() { return addDays(today(), -1); }
+
+// Growth you can hear, for the reward: the note held longest today, and the same note's best day
+// about a month back (the latest day at least three weeks ago), or null when nothing was held today.
+// holds: the stored { key: [{ d, s }] }; day: today's date.
+export function holdGrowth(holds, day) {
+  let best = null;
+  for (const [key, list] of Object.entries(holds || {})) {
+    const now = list.find(x => x.d === day);
+    if (now && (!best || now.s > best.now)) best = { key, now: now.s };
+  }
+  if (!best) return null;
+  const back = addDays(day, -21), older = holds[best.key].filter(x => x.d <= back);
+  const then = older.length ? older[older.length - 1] : null;
+  return { key: best.key, now: best.now, then: then ? then.s : null, thenDay: then ? then.d : null };
+}
