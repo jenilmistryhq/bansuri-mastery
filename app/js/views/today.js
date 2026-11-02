@@ -140,10 +140,11 @@ export async function render(main, { params, view }) {
         h("a", { class: "btn primary big", href: "#/session/" + n }, sessionLabel),
         h("a", { class: "btn", href: "#/milestone/" + day.milestone }, "Then complete " + day.milestone));
     } else if (practiceLesson("p" + n)) {
-      // A practice day: its blocks as a lesson, drills from the lessons so far; the step list stays one tap away.
-      const r = lessonRecord("p" + n);
+      // A practice or review day: its blocks as a lesson, drills from the lessons so far (a review
+      // day opens with a quiz); the step list stays one tap away.
+      const r = lessonRecord("p" + n), started = (r && r.at > 0) || blocksDone;
       action = h("div", { class: "row" },
-        h("a", { class: "btn primary big", href: "#/lesson/p" + n }, (r && r.at > 0) || blocksDone ? "Continue today's practice" : "Start today's practice"),
+        h("a", { class: "btn primary big", href: "#/lesson/p" + n }, day.kind === "review" ? (started ? "Continue today's review" : "Start today's review") : started ? "Continue today's practice" : "Start today's practice"),
         h("a", { class: "btn ghost", href: "#/session/" + n }, "The step list"));
     } else {
       action = h("a", { class: "btn primary big", href: "#/session/" + n }, sessionLabel);

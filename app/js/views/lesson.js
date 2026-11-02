@@ -42,7 +42,7 @@ export async function render(main, { params }) {
   const rec = lessonRecord(lesson.id), steps = flatSteps(lesson);
   const inProgress = rec && !rec.done && rec.at > 0;
   page.append(h("section", { class: "card lesson-cover" },
-    h("span", { class: "eyebrow" }, lesson.practice ? "Day " + lesson.day + " practice" : lesson.day !== undefined ? "Day " + lesson.day + " lesson" : "Lesson"),
+    h("span", { class: "eyebrow" }, lesson.review ? "Day " + lesson.day + " review" : lesson.practice ? "Day " + lesson.day + " practice" : lesson.day !== undefined ? "Day " + lesson.day + " lesson" : "Lesson"),
     h("h1", null, lesson.title),
     h("p", { class: "muted" }, "About " + lesson.minutes + " minutes. Have your flute with you, and headphones or a speaker."),
     h("ol", { class: "lesson-chapters" }, lesson.chapters.map(c => h("li", null, c.title))),

@@ -243,6 +243,25 @@ test("energy map: calm start, waves on the way up, the peak at the end", () => {
     const drills = l => P.flatSteps(l).filter(s => s.from).map(s => s.id).join();
     assert.equal(drills(part), drills(whole));
   });
+  test("review days: all build, open with a 6-question quiz of shuffled answers, and play the repertoire due", () => {
+    const due = [{ id: "EX-MEL-1.1", label: "EX-MEL 1.1 Morning Steps", bench: { notation: "S R G - | G R S - ||" + String.fromCharCode(10) + "S S R R | G - - - ||" } }];
+    let firstRight = 0, all = 0;
+    for (let n = 0; n < plan.days.length; n++) {
+      const d = dayOf(n);
+      if (d.kind !== "review") continue;
+      const l = PR.buildPractice(n, d, null, LESSONS, {}, due);
+      assert.ok(l && l.review, "Day " + n + " builds");
+      const quiz = P.flatSteps(l)[0];
+      assert.equal(quiz.kind, "quiz", "Day " + n + " opens with the quiz");
+      assert.equal(quiz.questions.length, 6, "Day " + n + ": six questions");
+      for (const q of quiz.questions) { assert.equal(q.options.filter(o => o.right).length, 1); all++; if (q.options[0].right) firstRight++; }
+      const steps = P.flatSteps(l), ids = steps.map(s => s.id);
+      assert.equal(new Set(ids).size, ids.length, "Day " + n + ": unique ids");
+      if (d.blocks.some(b => b.id === "M" || b.id === "K")) assert.deepEqual(steps.find(s => s.item).phrase, [0, 2, 4, 4, 2, 0], "Day " + n + ": the due piece, first line, holds dropped");
+      if (d.blocks.some(b => b.id === "R")) assert.ok(ids.includes("R-reflect"), "Day " + n + ": the weekly reflection");
+    }
+    assert.ok(firstRight / all < 0.7, "answers are shuffled: the right one first in " + firstRight + " of " + all);
+  });
   test("practice days: drills come only from lessons already reached", () => {
     for (const [n, , l] of built) for (const s of P.flatSteps(l)) {
       const m = /^[KME]-(m\d+)-/.exec(s.id);

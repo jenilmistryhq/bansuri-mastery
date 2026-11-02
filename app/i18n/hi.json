@@ -5798,5 +5798,18 @@
 "Murki on Re (GRSR): two per beat, then four, then the whole group in a fraction of a beat before a held R. Light: the first notes softer and shorter, the arrival note full.": "रे पर मुर्की (GRSR): हर मात्रा पर दो, फिर चार, फिर पूरा समूह एक मात्रा के छोटे हिस्से में, फिर रुका हुआ R। हल्का: पहले स्वर धीमे और छोटे, पहुँचने वाला स्वर भरा हुआ।",
 "Your Bhupali composition (Day 141), from the third bar, at once, no run-up: P G D P | G R S -": "आपकी भूपाली रचना (दिन 141), तीसरे बार से, तुरंत, बिना तैयारी: P G D P | G R S -",
 "A melody as a bhajan": "भजन की तरह एक धुन",
-"S R G P G R G P D P G R S at 60 BPM: slurred, sustained, a meend from Ga down to Re and from Re into Sa.": "S R G P G R G P D P G R S, 60 BPM पर: जुड़ा हुआ, टिका हुआ, ग से नीचे रे तक और रे से सा में मींड।"
+"S R G P G R G P D P G R S at 60 BPM: slurred, sustained, a meend from Ga down to Re and from Re into Sa.": "S R G P G R G P D P G R S, 60 BPM पर: जुड़ा हुआ, टिका हुआ, ग से नीचे रे तक और रे से सा में मींड।",
+"Due for review. Its first line is checked here; play the whole piece in the time that follows, from memory if you can.": "दोहराने का समय। यहाँ इसकी पहली पंक्ति जाँची जाती है; बाद के समय में पूरी रचना बजाइए, हो सके तो याद से।",
+"Look back over the week's practice and recordings.": "हफ़्ते के अभ्यास और रिकॉर्डिंग पर नज़र डालिए।",
+"What changed this week?": "इस हफ़्ते क्या बदला?",
+"One thing for next week": "अगले हफ़्ते के लिए एक चीज़",
+"Play something from this week, once, as if for a listener. Then listen back.": "इस हफ़्ते का कुछ एक बार बजाइए, जैसे किसी सुनने वाले के लिए। फिर वापस सुनिए।",
+"Review quiz": "दोहराने की प्रश्नोत्तरी",
+"What do you remember?": "आपको क्या याद है?",
+"Questions from the lessons so far, mostly the last few weeks.": "अब तक के पाठों से सवाल, ज़्यादातर पिछले कुछ हफ़्तों के।",
+"Quiz: {n} of {m} right first time": "प्रश्नोत्तरी: {m} में से {n} पहली बार में सही",
+"Day {n} reviewed": "दिन {n} दोहराया गया",
+"Day {n} review": "दिन {n} का दोहराव",
+"Start today's review": "आज का दोहराव शुरू कीजिए",
+"Continue today's review": "आज का दोहराव जारी रखिए"
 }

@@ -1466,7 +1466,8 @@ try {
     // lesson's day, a synthetic microphone (Sa), fast timers. Finishing must open the next day.
     const { LESSONS } = await import("../app/js/lessons/index.js");
     // Plus a sample of practice days, built from their blocks (lessons/practice.js), across all five phases.
-    const PRACTICE = [6, 20, 47, 101, 160, 260, 330, 421, 520, 640, 695].map(n => ({ id: "p" + n, day: n }));
+    const PRACTICE = [6, 20, 47, 101, 160, 260, 330, 421, 520, 640, 695].map(n => ({ id: "p" + n, day: n }))
+      .concat([7, 98, 259, 553].map(n => ({ id: "p" + n, day: n, review: true }))); // and review days
     for (const lesson of Object.values(LESSONS).concat(PRACTICE).filter(l => !process.env.WALK_ONLY || process.env.WALK_ONLY.split(",").includes(l.id))) {
       const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
       const lp = await ctx.newPage();
@@ -1497,7 +1498,9 @@ try {
         localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 }));
         if (day > 0) {
           const days = {}; for (let i = 0; i < day; i++) days[i] = { done: true };
-          localStorage.setItem("bansuri.progress", JSON.stringify({ current: day, startedAt: "2026-01-01", days, milestones: { M0: { status: "passed", attempts: [] } }, prefs: { howChosen: true } }));
+          // One repertoire piece due for review (review days play it).
+          const reviews = { "EX-MEL-1.1": { label: "EX-MEL 1.1 Morning Steps", learned: "2026-01-01", next: "2026-01-02", stage: 0, bench: { notation: "S R G - | G R S - ||" }, done: 0 } };
+          localStorage.setItem("bansuri.progress", JSON.stringify({ current: day, startedAt: "2026-01-01", days, reviews, milestones: { M0: { status: "passed", attempts: [] } }, prefs: { howChosen: true } }));
           localStorage.setItem("bansuri.lessons", JSON.stringify({ m0: { at: 0, done: "2026-01-01", data: { side: "right" } } }));
         }
       }, lesson.day);
@@ -1585,6 +1588,11 @@ try {
       const st = await lp.evaluate(() => JSON.parse(localStorage.getItem("bansuri.progress") || "{}"));
       check(!stuck && st.current === lesson.day + 1 && st.days && st.days[lesson.day] && st.days[lesson.day].done,
         "lesson " + lesson.id + " (Day " + lesson.day + ", " + steps + " steps): walked through; Day " + (lesson.day + 1) + " opens" + (stuck ? " - stuck at " + stuck : ""));
+      if (lesson.review) {
+        const r = st.reviews && st.reviews["EX-MEL-1.1"], logged = (st.log || []).map(l => l.note).join(" ");
+        check(r && r.stage === 1 && r.done === 1, "review day " + lesson.day + ": the piece played moves along its review schedule");
+        check(/Quiz \d\/6/.test(logged), "review day " + lesson.day + ": the quiz score goes in the practice log");
+      }
       check(!errs.length, "lesson " + lesson.id + ": no page errors" + (errs.length ? ": " + errs[0] : ""));
       await ctx.close();
     }
