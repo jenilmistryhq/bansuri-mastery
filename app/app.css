@@ -1091,3 +1091,8 @@ main:has(.dashq) > .subnav, main:has(.todaygrid) > .subnav { max-width: 1180px; 
 .lesson-tihaibeat.now { background: var(--accent); color: var(--accent-ink); }
 .lesson-tihaibeat:disabled { cursor: default; }
 .tihai-mark { font-style: normal; font-weight: 700; color: var(--accent); padding: 0 4px; border: 1px solid var(--accent); border-radius: 999px; font-size: 0.75em; }
+.lesson-fills { position: relative; display: flex; gap: 2px; width: min(420px, 100%); height: 40px; border-radius: var(--radius); overflow: hidden; }
+.lesson-fills span { display: grid; place-items: center; font-size: 0.8rem; min-width: 0; overflow: hidden; }
+.fills-line { background: var(--sunken); color: var(--muted); }
+.fills-gap { background: var(--accent-soft); color: var(--ink); font-weight: 700; }
+.fills-cursor { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--accent); transition: left 50ms linear; }

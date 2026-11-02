@@ -171,4 +171,10 @@ test("taals: Rupak's sam is a wave; the instruction names each taal's own marks"
   assert.match(K3.taalHow("rupak"), /sam itself is a wave/);
   assert.match(K3.taalHow("ektaal"), /Clap on X, 2, 3 and 4/);
 });
+test("fills: gaps sit between the singer's lines; a gap counts when played in, a line when covered", () => {
+  const segs = K5.fillsTimeline([[0, 2], [4], [2, 0]], 2, 0.5);
+  assert.deepEqual(segs.map(x => [x.kind, x.t0, x.t1]), [["line", 0, 1], ["gap", 1, 2], ["line", 2, 2.5], ["gap", 2.5, 3.5], ["line", 3.5, 4.5]]);
+  segs[1].sound = 0.6; segs[3].sound = 0.2; segs[2].sound = 0.3;
+  assert.deepEqual(K5.fillsScore(segs), { fills: 1, gaps: 2, covered: 1 });
+});
 console.log("lesson tests: " + n + " passed");

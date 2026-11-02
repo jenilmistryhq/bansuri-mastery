@@ -91,7 +91,81 @@ function chipRounds(s, api, { onShow, onRight }) {
   return { tally, opts, out, show, round: () => s.rounds[i] };
 }
 
+// Accompanying a singer: the timeline of the singer's lines and the gaps between them, in
+// seconds from the start. lines: [[semi per beat]], gap in beats.
+export function fillsTimeline(lines, gap, beat) {
+  const segs = [];
+  let t = 0;
+  lines.forEach((notes, i) => {
+    segs.push({ kind: "line", t0: t, t1: t + notes.length * beat, notes, sound: 0 }); t += notes.length * beat;
+    if (i < lines.length - 1) { segs.push({ kind: "gap", t0: t, t1: t + gap * beat, sound: 0 }); t += gap * beat; }
+  });
+  return segs;
+}
+// Seconds of your playing heard in each part -> gaps filled, and lines where you covered the words.
+export function fillsScore(segs, minFill = 0.4, minCover = 0.25) {
+  const gaps = segs.filter(x => x.kind === "gap"), lines = segs.filter(x => x.kind === "line");
+  return { fills: gaps.filter(x => x.sound >= minFill).length, gaps: gaps.length, covered: lines.filter(x => x.sound >= minCover).length };
+}
+
 export const RAGA_KINDS = {
+  // Play fills in the singer's gaps, never over the words. The singer's line is played on a
+  // second flute voice; a note the mic hears that matches the line's current note is that
+  // speaker, not you. { bpm, gap (beats), lines: [[semi per beat]] }
+  fills: { make(s, api) {
+    const k = window.__lessonTime ? 0.5 : 1, beat = 60 / (s.bpm || 72) * k;
+    const pc = n => ((n % 12) + 12) % 12;
+    let unsub = null, timers = [], tick = 0, segs = [];
+    const bar = h("div", { class: "lesson-fills", "aria-hidden": "true" });
+    const cursor = h("i", { class: "fills-cursor" });
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, "Press Start. The singer sings four lines; play a short fill in each gap, and stop before the next line.");
+    const btn = h("button", { type: "button", class: "btn primary" }, icon("play"), " Start");
+    const out = h("div");
+    const root = h("div", { class: "stack lesson-center" }, bar, msg, btn, out);
+    const draw = () => { segs = fillsTimeline(s.lines, s.gap || 4, beat); bar.replaceChildren(...segs.map(x => h("span", { class: "fills-" + x.kind, style: "flex:" + (x.t1 - x.t0) }, x.kind === "line" ? "Singer" : "Fill")), cursor); cursor.style.left = "0%"; };
+    const stop = () => { timers.forEach(clearTimeout); timers = []; clearInterval(tick); if (unsub) { unsub(); unsub = null; } };
+    draw();
+    btn.addEventListener("click", async () => {
+      if (unsub) return;
+      draw(); out.replaceChildren();
+      const now = () => performance.now() / 1000;
+      let T0 = Infinity, last = 0, singer = null;
+      const total = segs[segs.length - 1].t1;
+      const u = await openMic(btn.parentElement, btn, r => {
+        const t = now() - T0;
+        if (t < 0 || t > total) return;
+        const dt = Math.min(0.1, Math.max(0, t - last)); last = t;
+        if (r.semi === null) return;
+        if (singer && t < singer.until && pc(r.near) === pc(singer.semi)) return;
+        const seg = segs.find(x => t >= x.t0 && t < x.t1);
+        // A moment's grace as a line starts: a fill that ends just late is not covering words.
+        if (seg && !(seg.kind === "line" && t - seg.t0 < 0.15)) seg.sound += dt;
+      });
+      if (!u) { msg.textContent = "The microphone is not available here."; api.ready(); return; }
+      unsub = u; btn.disabled = true;
+      T0 = now() + 0.3;
+      for (const x of segs) if (x.kind === "line") x.notes.forEach((semi, j) => {
+        const at = x.t0 + j * beat;
+        timers.push(setTimeout(() => { singer = { semi, until: at + beat + 0.3 }; playNote(semi, beat * 0.95); }, (at + 0.3) * 1000));
+      });
+      tick = setInterval(() => {
+        const t = now() - T0, seg = segs.find(x => t >= x.t0 && t < x.t1);
+        cursor.style.left = Math.max(0, Math.min(100, 100 * t / total)) + "%";
+        root.dataset.phase = seg ? seg.kind : "";
+        if (seg) msg.textContent = seg.kind === "line" ? "The singer: listen." : "Your fill.";
+      }, 50);
+      timers.push(setTimeout(() => {
+        stop(); delete root.dataset.phase; btn.disabled = false; btn.replaceChildren(icon("play"), " Again");
+        const r = fillsScore(segs, 0.4 * k, 0.25 * k), good = r.fills >= r.gaps - 1 && !r.covered;
+        ding(good);
+        msg.textContent = r.fills + " of " + r.gaps + " gaps filled.";
+        out.replaceChildren(h("div", { class: "notice" + (r.covered ? "" : " good") }, r.covered ? "You played over the singer in " + r.covered + " of " + s.lines.length + " lines: stop before the next line starts." : "Never over the words."));
+        api.data[s.id] = r; api.save(); api.ready();
+      }, (total + 0.6) * 1000));
+    });
+    return { el: root, destroy: stop };
+  } },
+
   // Hear a phrase and name the note it rests on (the nyas). { rounds: [{ phrase: [[semi, seconds]], options, answer, why }] }
   nyas: { make(s, api) {
     let timers = [];
