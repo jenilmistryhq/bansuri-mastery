@@ -1189,24 +1189,25 @@ html.fullfocus .layout { min-height: 100vh; }
 html.fullfocus main { padding-bottom: 0; }
 
 /* Playing mode (redesign 09): while the microphone listens, the step is read from a music stand.
-   The note, the ring and the word grow; the reading parts step back until the attempt ends. */
+   The note, the ring and the word grow; the reading parts step back until the attempt ends.
+   .playmode is shared by the lesson player and the Skills tools; .lesson-playing is the player's own. */
 .lesson-playing .lesson-intro, .lesson-playing .lesson-from, .lesson-playing .lesson-goal,
-.lesson-playing .lesson-why, .lesson-playing .lv-count { display: none; }
+.lesson-playing .lesson-why, .playmode .lv-count { display: none; }
 .lesson-playing .lesson-top, .lesson-playing .lesson-chapter, .lesson-playing .lesson-title { opacity: 0.3; transition: opacity 200ms; }
 .lesson-playing .lesson-foot .btn:not(.lesson-go) { opacity: 0.3; }
-.lesson-playing .lv-stage { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 12px; }
-.lesson-playing .lv-ringwrap { width: min(72vw, 260px); height: min(72vw, 260px); }
-.lesson-playing .lv-track, .lesson-playing .lv-arc { stroke-width: 11; }
-.lesson-playing .lv-big { font-size: clamp(4rem, 20vw, 7.5rem); }
-.lesson-playing .lv-big .notepic .fingpic { width: 150px; height: 48px; }
-.lesson-playing .lv-secs { font-size: 1.1rem; }
-.lesson-playing .lv-tune { width: min(100%, 320px); }
-.lesson-playing .lv-msg { font-size: clamp(1.5rem, 6vw, 2.25rem); font-weight: 600; text-align: center; min-height: 1.3em; }
-.lesson-playing .lv-glowtxt { font-size: 1.1rem; }
-.lesson-playing .lv-chips { justify-content: center; gap: 10px; }
-.lesson-playing .lv-chip { font-size: 1.3rem; padding: 6px 14px; }
-.lesson-playing .lv-chip.lv-now { font-size: 1.9rem; }
-.lesson-playing .lv-slot { font-size: 1.8rem; min-width: 4rem; }
+.playmode .lv-stage { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 12px; }
+.playmode .lv-ringwrap { width: min(72vw, 260px); height: min(72vw, 260px); }
+.playmode .lv-track, .playmode .lv-arc { stroke-width: 11; }
+.playmode .lv-big { font-size: clamp(4rem, 20vw, 7.5rem); }
+.playmode .lv-big .notepic .fingpic { width: 150px; height: 48px; }
+.playmode .lv-secs { font-size: 1.1rem; }
+.playmode .lv-tune { width: min(100%, 320px); }
+.playmode .lv-msg { font-size: clamp(1.5rem, 6vw, 2.25rem); font-weight: 600; text-align: center; min-height: 1.3em; }
+.playmode .lv-glowtxt { font-size: 1.1rem; }
+.playmode .lv-chips { justify-content: center; gap: 10px; }
+.playmode .lv-chip { font-size: 1.3rem; padding: 6px 14px; }
+.playmode .lv-chip.lv-now { font-size: 1.9rem; }
+.playmode .lv-slot { font-size: 1.8rem; min-width: 4rem; }
 @media (prefers-reduced-motion: reduce) { .lesson-playing .lesson-top { transition: none; } }
 
 /* After two misses on a step: help that fits the miss, and a skip (redesign L4c). */
@@ -1214,3 +1215,58 @@ html.fullfocus main { padding-bottom: 0; }
 .lesson-trouble[hidden] { display: none; }
 /* The step's own timed "Not yet? Go on" steps aside once the player offers Skip for now. */
 .lesson-introuble .lesson-later { display: none; }
+
+/* Redesign: Skills and Music */
+/* A screen inside a section (a tool, a song, a raga): a back link and the title (W1). */
+.backhead { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.backhead h1 { flex: 1 1 100%; margin: 0; font-size: clamp(1.5rem, 5vw, 2rem); }
+.backhead .chip { margin-top: -4px; }
+.backlink { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--muted); text-decoration: none; font-weight: 600; }
+.backlink:hover { color: var(--accent); }
+.backlink .chev { font-size: 1.1rem; }
+/* The switch between a skill's tools (Long tones / Tone check), and a raga's views (About / Play). */
+.toolswitch { display: flex; width: 100%; }
+.toolswitch > a, .toolswitch > button { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 12px; text-align: center; text-decoration: none; color: var(--ink); background: var(--surface); font-weight: 600; }
+.toolswitch > * + * { border-left: 1px solid var(--line); }
+.toolswitch > a[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
+.toolbest { margin: 0; font-size: 1.05rem; }
+.toolbody { display: grid; gap: 18px; min-width: 0; }
+.toolbody > .page { max-width: none; margin: 0; }
+.toolpage .bb-panel > .bb-card > h2, .toolpage .bb-panel > .bb-grid2 > .bb-card > h2:first-child { display: none; }
+.toolbody .ornpage > .hero > .eyebrow, .toolbody .ornpage > .hero > h1 { display: none; }
+/* Playing mode on a tool: the meters grow (.playmode, shared with the lesson player) and the rest steps back. */
+.toolplaying .backhead, .toolplaying .toolswitch, .toolplaying .toolbest { opacity: 0.3; transition: opacity 200ms; }
+.toolplaying .bb-card > p.bb-muted, .toolplaying .tonepage > .card > p.muted { display: none; }
+@media (prefers-reduced-motion: reduce) { .toolplaying .backhead { transition: none; } }
+/* Skill hubs: the main tool, the last few results, rows that open the Flute dock. */
+.hubgroup > .hubmain { width: 100%; justify-content: center; }
+.hubmainsub { margin: -4px 0 0; }
+button.hubrow { width: 100%; background: none; border: 0; border-top: 1px solid var(--line); font: inherit; text-align: left; cursor: pointer; }
+button.hubrow:first-child { border-top: 0; }
+.hubhist { display: flex; flex-wrap: wrap; align-items: baseline; margin: 0; color: var(--muted); }
+.hubhist > span + span::before { content: "\00B7"; margin: 0 8px; }
+.hubhist .hubbest { color: var(--ink); font-weight: 700; }
+.hublatest .chips { margin-top: 2px; }
+/* Fix a problem: the symptoms in groups. */
+.symgroup + .symgroup { margin-top: 14px; }
+.symhead { margin: 0 0 6px; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.fixback { justify-self: start; }
+/* Games: the filter; Songs: the filter, the list and a song. */
+.gamefilter, .songfilter { margin-bottom: 4px; }
+.gamefilter .chipbtn, .songfilter .chipbtn { min-height: 40px; }
+.carryon .eyebrow { margin-bottom: -6px; }
+.carryon h2 { margin: 0; }
+.carryon .btn.big, .songpage .btn.big, .ragapage .btn.big { width: 100%; justify-content: center; }
+.songlist .songlevel { margin: 14px 0 2px; font-size: 1rem; }
+.songlist .songlevel:first-child { margin-top: 0; }
+.songrow.learned b::after { content: " \2713"; color: var(--good); }
+.songfrom { justify-content: space-between; align-items: center; gap: 8px; }
+.songnotation { display: grid; gap: 4px; font-size: 1.05rem; line-height: 1.5; overflow-x: auto; white-space: pre; }
+.songcontrols { align-items: center; gap: 10px 16px; }
+.songbpm { display: inline-flex; align-items: center; gap: 6px; }
+.songbpm .input { width: 5.5rem; }
+/* A raga: its scale, and the card's text. */
+.ragascale { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; margin: 0; }
+.ragascale dt { color: var(--muted); font-weight: 600; }
+.ragascale dd { margin: 0; overflow-wrap: anywhere; }
+.ragarow .chip { justify-self: end; }

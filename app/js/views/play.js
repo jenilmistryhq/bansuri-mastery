@@ -1,9 +1,10 @@
-// Play (#/play, #/challenge/<payload>): daily quests, games played with the real flute, the
-// collection of songs and ragas, and challenges shared as links.
-import { h, store } from "../util.js";
-import { getDay, current, phaseOf } from "../course.js";
+// Skills > Games (#/skills/games, also #/play): every game grouped by the skill it trains, with a
+// "No microphone" filter; a game at #/skills/game/<game> (also #/play/<game>) plays full focus; and
+// challenges shared as links (#/challenge/<payload>). Falling notes can start on one song
+// (#/skills/game/falling/<song id>, from the song's screen in Music).
+import { h, store, storeSet } from "../util.js";
+import { getDay, current } from "../course.js";
 import { fetchDoc } from "../content.js";
-import { questState } from "../fun.js";
 import { pitchSteer, balloon, fallingNotes, jam, NOTE_SETS } from "../games.js";
 import { ragaPhrases as phraseGame, layaLadder, tihai, taarSaptak } from "../games4.js";
 import { meendBridge, kanFlick, murkiChase, andolanLamp, nameOrnament, swellFade, tonguedBeats } from "../games3.js";
@@ -14,7 +15,8 @@ import { parseSongs } from "./songs.js";
 import { ragaPhrases, ragaInfo } from "./reader.js";
 import { ragaGrammar } from "../ragagrammar.js";
 import { encodePayload } from "./progress.js";
-import { SKILLS, MUSIC_GAMES } from "../skillmap.js";
+import { SKILLS, MUSIC_GAMES, NO_MIC } from "../skillmap.js";
+import { GAME_FROM } from "./skills.js";
 
 export function decodeChallenge(p) {
   try {
@@ -58,20 +60,26 @@ export async function render(main, { params, view }) {
   let game = null;
   const stage = h("div", { class: "card game-card", hidden: true });
   const onKey = e => { if (e.key === "Escape" && game) leave(); };
-  // Close: back to the list (the previous history entry when the game was opened from it).
+  // The new address (#/skills/game/<game>) and the old one (#/play/<game>) open the same game; a
+  // game opened from a skill's screen (or the For you card) closes back to it.
+  const newRoute = /^#\/skills\/game\//.test(location.hash);
+  let fromHub = null;
+  try { fromHub = sessionStorage.getItem(GAME_FROM); sessionStorage.removeItem(GAME_FROM); } catch (e) { fromHub = null; }
+  // Close: back to the list or the skill (the previous history entry when the game was opened from it).
   const leave = () => {
-    if (view === "play" && params[0]) { if (fromList) { fromList = false; history.back(); } else location.replace("#/play"); }
+    if (view === "play" && params[0]) { if (fromList || fromHub) { fromList = false; history.back(); } else location.replace(newRoute ? "#/skills/games" : "#/play"); }
     else closeGame();
   };
-  const closeGame = () => { if (game) { game.destroy(); game = null; } stage.hidden = true; stage.replaceChildren(); stage.classList.remove("game-full"); document.documentElement.classList.remove("noscroll"); document.removeEventListener("keydown", onKey); };
+  const closeGame = () => { if (game) { game.destroy(); game = null; } stage.hidden = true; stage.replaceChildren(); stage.classList.remove("game-full"); document.documentElement.classList.remove("noscroll", "fullfocus"); document.removeEventListener("keydown", onKey); };
   cleanups.push(closeGame);
   function open(title, make, note) {
     closeGame();
     game = make();
     stage.append(...[h("div", { class: "row between" }, h("h2", null, title), h("button", { type: "button", class: "btn ghost small", onclick: leave }, "Close")), note, game.el].filter(Boolean));
-    // Full screen while playing: a bigger playing field and nothing else to scroll past.
+    // Full screen and full focus while playing (redesign W2): a bigger playing field, no top bar or
+    // tabs, and nothing else to scroll past; Close leads out.
     stage.hidden = false; stage.classList.add("game-full"); stage.scrollTop = 0;
-    document.documentElement.classList.add("noscroll"); document.addEventListener("keydown", onKey);
+    document.documentElement.classList.add("noscroll", "fullfocus"); document.addEventListener("keydown", onKey);
   }
   // A finished round offers a link that replays the same course for a friend.
   const shareBox = (g, l, seed, score) => {
@@ -89,8 +97,9 @@ export async function render(main, { params, view }) {
     return { el: wrap, destroy: () => widget.destroy() };
   };
 
-  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Play"), h("h1", null, "Play with your flute"),
-    h("p", { class: "muted" }, "Games that listen to your real flute, a band to jam with, and today's quests. Every game counts as practice.")));
+  // The section tab names the screen; the heading is for screen readers (the quest card lives on
+  // Skills > For you, the songs and ragas in Music).
+  page.append(h("h1", { class: "sr-only" }, "Games"));
 
   // A challenge opened from a link.
   if (view === "challenge" && params[0]) {
@@ -109,17 +118,29 @@ export async function render(main, { params, view }) {
     }
   }
 
-  // One clear action: the game that moves today's quests on (or a favourite), then everything else.
   const ragasP = loadRagas().catch(() => []);
   const songsP = fetchDoc("exercises/EX-MEL-practice-melodies.md").then(parseSongs).catch(() => []);
   const GAMES = {
     steer: ["Steer by pitch", "Fly a bird through gates by playing their notes.", () => open("Steer by pitch", withShare("steer", done => pitchSteer({ onEnd: done })))],
     balloon: ["Balloon", "Hold the note in tune to blow up the balloon. Pop as many as you can.", () => open("Balloon", withShare("balloon", done => balloon({ onEnd: done })))],
-    falling: ["Falling notes", "A song's notes fall in time: play each as it lands.", async () => {
-      const reached = lessonReached(), songs = (await songsP).map(s => ({ title: s.id + " " + s.title, notation: s.notation, bpm: s.bpm, ready: s.lesson <= reached }));
-      open("Falling notes", () => fallingNotes({ songs: songs.filter(s => s.ready).concat(songs.filter(s => !s.ready)) }));
+    falling: ["Falling notes", "A song's notes fall in time: play each as it lands.", async songId => {
+      const reached = lessonReached(), songs = (await songsP).map(s => ({ id: s.id, title: s.id + " " + s.title, notation: s.notation, bpm: s.bpm, ready: s.lesson <= reached }));
+      let list = songs.filter(s => s.ready).concat(songs.filter(s => !s.ready));
+      // Opened from a song's screen: that song first (a course song, or one of My songs).
+      if (songId) {
+        const mine = store("bansuri.mysongs", []).find(m => m.id === songId);
+        const one = mine ? { id: mine.id, title: mine.title, notation: mine.notation, bpm: mine.bpm, ready: true } : list.find(s => s.id === songId);
+        if (one) list = [one].concat(list.filter(s => s !== one));
+      }
+      open("Falling notes", () => fallingNotes({ songs: list }));
     }],
-    jam: ["Jam with the band", "Tanpura and tabla in a raga: improvise, and the app keeps you in the raga.", async () => { const ragas = await ragasP; open("Jam with the band", () => jam({ ragas })); }],
+    jam: ["Jam with the band", "Tanpura and tabla in a raga: improvise, and the app keeps you in the raga.", async ragaId => {
+      let ragas = await ragasP;
+      // Opened from a raga's screen (#/skills/game/jam/<raga>): that raga first.
+      const one = ragaId ? ragas.find(r => r.file === ragaId + ".md") : null;
+      if (one) ragas = [one].concat(ragas.filter(r => r !== one));
+      open("Jam with the band", () => jam({ ragas }));
+    }],
     boat: ["Long-breath boat", "Sail while you hold one long, steady note; in tune, it sails twice as fast.", () => open("Long-breath boat", () => boat())],
     road: ["Glide road", "Keep your pitch on a road that holds and glides between notes (meend).", () => open("Glide road", () => glideRoad())],
     lanterns: ["Light the lanterns", "Play a lantern's note to light it before it fades.", () => open("Light the lanterns", () => lanterns())],
@@ -143,47 +164,37 @@ export async function render(main, { params, view }) {
     compose: ["Make a melody", "Build a tune from a raga's notes, play it, and challenge a friend.", () => { location.hash = "#/compose"; }],
     quick: ["5-minute practice", "Short on time? A long tone, a game and a song.", () => { location.hash = "#/quick"; }],
   };
-  // Which game helps with which quest.
-  const FOR_QUEST = { phrase: "phrase", laya: "laya", tihai: "tihai", ornament: "meendbridge", swell: "swell", boat: "boat", bullseye: "bullseye", wrong: "wrong", sam: "sam", road: "road", hold: "boat", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
-  // Opening a game goes to its address; the route then opens it (below).
-  const go = key => { fromList = true; location.hash = "#/play/" + key; };
+  // Opening a game goes to its address (the old #/play/<game> from the old list); the route then opens it (below).
+  const go = key => { fromList = true; location.hash = (/^#\/play/.test(location.hash) ? "#/play/" : "#/skills/game/") + key; };
   const NAV_ONLY = new Set(["compose", "quick"]);
-  const qs = questState(), left = qs.list.filter(q => !q.done && FOR_QUEST[q.id]);
-  const pick = left.length ? FOR_QUEST[left[0].id] : "balloon";
-  const [pTitle, pText, pGo] = GAMES[pick];
-  page.append(h("section", { class: "card playnow" },
-    h("span", { class: "small muted" }, left.length ? "For today's quest: " + left[0].text : "A good one to play now"),
-    h("h2", null, pTitle), h("p", { class: "small muted" }, pText),
-    h("button", { type: "button", class: "btn primary big", onclick: () => (NAV_ONLY.has(pick) ? pGo() : go(pick)) }, "Play " + pTitle)), stage);
-  const done = qs.list.filter(q => q.done).length;
-  page.append(h("a", { class: "questline small", href: "#/progress" }, "Quests: " + done + " of " + qs.list.length + " done today (20 XP each, 20 more for all three). Every game round earns a little XP."));
 
-  // The other games.
-  const card = (title, text, onClick) => h("button", { type: "button", class: "gamecard", onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
-  // Grouped by the skill each game trains (see skillmap.js), then the games that are pieces of music.
+  // Every game, grouped by the skill it trains (see skillmap.js), then the games that are pieces of
+  // music; "No microphone" keeps the games played by ear or by tapping.
+  const FILTER = "bansuri.games.filter";
+  let noMic = store(FILTER, "all") === "nomic";
+  const card = (k, title, text, onClick) => h("button", { type: "button", class: "gamecard", dataset: { game: k }, onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
   const GROUPS = SKILLS.map(s => [s.title, s.games]).concat([["Music", MUSIC_GAMES], ["Make and practise", ["compose", "quick"]]]);
-  for (const [head, keys] of GROUPS) page.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, keys.filter(k => k !== pick).map(k => card(GAMES[k][0], GAMES[k][1], NAV_ONLY.has(k) ? GAMES[k][2] : () => go(k)))));
-  // #/play/<game>: open that game (the list stays underneath).
+  const list = h("div", { class: "gamelist" });
+  const chip = (label, on) => h("button", { type: "button", class: "chipbtn", "aria-pressed": String(on) }, label);
+  const allBtn = chip("All", !noMic), micBtn = chip("No microphone", noMic);
+  const draw = () => {
+    allBtn.setAttribute("aria-pressed", String(!noMic)); micBtn.setAttribute("aria-pressed", String(noMic));
+    list.replaceChildren();
+    for (const [head, keys] of GROUPS) {
+      const shown = keys.filter(k => !noMic || NO_MIC.includes(k));
+      if (shown.length) list.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, shown.map(k => card(k, GAMES[k][0], GAMES[k][1], NAV_ONLY.has(k) ? GAMES[k][2] : () => go(k)))));
+    }
+  };
+  const setFilter = v => { noMic = v; storeSet(FILTER, v ? "nomic" : "all"); draw(); };
+  allBtn.addEventListener("click", () => setFilter(false));
+  micBtn.addEventListener("click", () => setFilter(true));
+  page.append(h("div", { class: "chips gamefilter", role: "group", "aria-label": "Show games" }, allBtn, micBtn), stage, list);
+  draw();
+  // #/skills/game/<game> or #/play/<game>: open that game (the list stays underneath).
   if (view === "play" && params[0]) {
-    if (GAMES[params[0]] && !NAV_ONLY.has(params[0])) await GAMES[params[0]][2]();
-    else location.replace("#/play");
+    if (GAMES[params[0]] && !NAV_ONLY.has(params[0])) await GAMES[params[0]][2](params[1]);
+    else location.replace(newRoute ? "#/skills/games" : "#/play");
   }
-
-  // Collection.
-  const coll = h("details", { class: "card" }, h("summary", null, h("b", null, "Your collection: songs and ragas")), h("p", { class: "small muted" }, "Songs and ragas unlock as the course reaches them. A song is mastered when you mark it \"I can play it\" or get 2 stars on it."));
-  page.append(coll);
-  Promise.all([songsP, ragasP]).then(([songs, ragas]) => {
-    const reached = lessonReached(), learned = store("bansuri.songs.learned", {}), d = getDay(current()), phase = d ? (phaseOf(d) || { id: 0 }).id : 0;
-    const starred = id => Object.keys(localStorage).some(k => k.startsWith("bansuri.game.falling.best.") && k.includes(id + " ") && Number(localStorage.getItem(k)) > 0);
-    coll.append(h("h3", null, "Songs"), h("div", { class: "collection" }, songs.map(s => {
-      const state = learned[s.id] || starred(s.id) ? "mastered" : s.lesson <= reached ? "open" : "locked";
-      return h("a", { class: "ccard " + state, href: "#/songs", title: state === "locked" ? "Unlocks after L" + String(s.lesson).padStart(2, "0") : s.title },
-        h("b", null, state === "locked" ? "?" : s.title), h("span", { class: "small" }, state === "mastered" ? "mastered" : state === "open" ? "ready" : "after L" + String(s.lesson).padStart(2, "0")));
-    })), h("h3", null, "Ragas"), h("div", { class: "collection" }, ragas.map(r => {
-      const open2 = phase >= r.phase;
-      return h("a", { class: "ccard " + (open2 ? "open" : "locked"), href: "#/read/ragas/" + r.file }, h("b", null, open2 ? r.name : "?"), h("span", { class: "small" }, open2 ? r.notes.map(codeOf).join(" ") : "Phase " + r.phase));
-    })));
-  });
 
   return () => cleanups.forEach(f => f());
 }

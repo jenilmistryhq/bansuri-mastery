@@ -38,7 +38,7 @@ try {
   await page.reload(); await page.waitForLoadState("networkidle"); await sleep(500);
   check(await page.locator("#main .resume").count() === 1 && await page.locator("#main .progresscard").count() === 1, "today: the Resume card and the progress card render");
   for (const [route, sel] of [["/session/12", "#main .block"], ["/plan", "#main .pathhead"], ["/library", "#main .catcard"], ["/read/lessons/L09-fingering-sa-re-ga.md", "#main .lcard"],
-    ["/bench", ".bb-flute"], ["/play", "#main .gamecard"], ["/listen", "#main .listentile"], ["/songs", "#main .song"], ["/coach", "#main"], ["/journal", "#main .card"], ["/progress", "#main .headline"], ["/settings", "#main .jumpnav"], ["/compose", "#main .ccell"], ["/quick", "#main .lv-hold"]]) {
+    ["/bench", ".bb-flute"], ["/play", "#main .gamecard"], ["/listen", "#main .listentile"], ["/songs", "#main .songfilter"], ["/coach", "#main"], ["/journal", "#main .card"], ["/progress", "#main .headline"], ["/settings", "#main .jumpnav"], ["/compose", "#main .ccell"], ["/quick", "#main .lv-hold"]]) {
     await go(route);
     const n = await page.locator(sel).count();
     const broken = await page.locator("#main").innerText().then(t => /Something went wrong/.test(t));

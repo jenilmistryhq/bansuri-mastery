@@ -177,11 +177,14 @@ try {
   });
   await section("Songs and ragas", async () => {
     await go("/songs");
-    await page.evaluate(() => { const f = document.getElementById("songs-ready"); if (f.checked) f.click(); });
-    const nSongs = await page.$$eval("#main .song", x => x.length);
+    // One list with All / Ready now / Mine (redesign U2); a song opens on its own screen (U3).
+    await clickText("#main .songfilter button", "All");
+    const nSongs = await page.$$eval("#main .songrow", x => x.length);
     check(nSongs >= 15, "the song library lists the melodies (" + nSongs + ")");
-    await clickText("#main .song button", "Play along");
-    check(await page.$("#main .song .bb-bench [data-ref=checkMe]:checked") !== null, "a song opens in play-along with the mic check on");
+    await page.click("#main .songrow");
+    await page.waitForSelector("#main .songpage", { timeout: 5000 }).catch(() => {});
+    await clickText("#main .songpage button", "Play along");
+    check(await page.$("#main .songpage .bb-bench [data-ref=checkMe]:checked") !== null, "a song opens in play-along with the mic check on");
     await go("/read/ragas/malkauns.md");
     check(/ma \(this raga leaves out pa\)/.test(await text()), "Malkauns: the drone uses Ma, since the raga leaves out Pa");
     await clickText("#main button", "Play back phrases in this raga");
@@ -648,7 +651,8 @@ try {
 
       await lp.goto(BASE + "#/play", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .gamecard");
-      check(await lp.$("#main .playnow .btn.primary") !== null && /of 3 done/.test(await lp.$eval("#main .questline", e => e.textContent)), "play: one game suggested for today's quests, quests in one line");
+      // The quest card moved to Skills > For you (redesign S5): the games list has no hero, quest card or quest line.
+      check(!(await lp.$("#main .playnow")) && !(await lp.$("#main .questline")) && !!(await lp.$("#main .gamefilter")), "games: the list starts with its filter, the quest card lives on Skills > For you");
       const startGame = async label => {
         // The suggested game is in the "play now" card; the others are in the grid.
         const inGrid = await lp.evaluate(l => [...document.querySelectorAll("#main .gamecard")].some(e => e.textContent.trim().startsWith(l)), label);
@@ -1589,6 +1593,107 @@ try {
     await sleep(300);
     check(await lp.evaluate(() => document.querySelector(".lesson-stage").dataset.step !== "sgsg" && JSON.parse(localStorage.getItem("bansuri.lessons")).m9.data.sgsg.skipped === true), "result: Skip for now goes on, and the step is remembered as skipped");
     await tone(0); await ctx.close();
+  });
+  // Skills and Music (redesign 06 and 07): each tool on its own screen, the hubs' measures, Fix a
+  // problem in groups, the games list and a game in full focus, songs, a song, ragas and a raga.
+  const seedSkills = async () => {
+    await page.evaluate(() => {
+      const day = n => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
+      localStorage.setItem("bansuri.progress", JSON.stringify({ v: 1, current: 230, startedAt: day(30), live: {
+        holds: { "0": [{ d: day(6), s: 6 }, { d: day(4), s: 9 }, { d: day(2), s: 14 }, { d: day(1), s: 11 }] }, taps: [], echo: {},
+        plays: [{ d: day(1), piece: "1.1 Morning Steps", ok: 8, n: 10, onTime: 7, timed: 10, bpm: 60 }] }, ear: { "2": { right: 8, total: 10 } } }));
+      localStorage.setItem("bansuri.game.balloon.best.srg", "7");
+      localStorage.removeItem("bansuri.game.boat.best");
+      localStorage.setItem("bansuri.mysongs", JSON.stringify([{ id: "mysmoke", title: "Smoke bhajan", notation: "S R G - | G R S -", bpm: 70, added: day(1) }]));
+      localStorage.setItem("bansuri.coach.history", JSON.stringify([{ d: day(3), ts: "TS-02", symptom: "Squeaks / note jumps up an octave", helped: true }]));
+      localStorage.removeItem("bansuri.songs.last");
+    });
+    await page.reload({ waitUntil: "networkidle0" });
+  };
+  await section("Skills: tools on their own screens, hubs, fix, games", async () => {
+    await seedSkills();
+    await go("/skills/tone");
+    const hub = await page.evaluate(() => ({
+      hist: (document.querySelector("#main .hubhist") || {}).innerText || "",
+      main: (document.querySelector("#main .hubmain") || {}).getAttribute?.("href"),
+      best: [...document.querySelectorAll("#main a.hubrow")].find(a => a.getAttribute("href") === "#/skills/game/balloon")?.innerText || "",
+      boat: [...document.querySelectorAll("#main a.hubrow")].find(a => a.getAttribute("href") === "#/skills/game/boat")?.innerText || "",
+      fix: !!document.querySelector("#main a.hubrow[href='#/skills/fix/TS-02/tone']"),
+    }));
+    check(/6 s/.test(hub.hist) && /14 s \(best\)/.test(hub.hist) && hub.main === "#/skills/tone/longtones", "tone hub: your latest shows the last holds with the best marked, Long tones is the one main tool [" + hub.hist.replace(/\n/g, " ") + "]");
+    check(/best 7/.test(hub.best) && /new/.test(hub.boat) && hub.fix, "tone hub: games show their best or new, fixes link back to the hub");
+    await go("/skills/tone/longtones");
+    const tool = await page.evaluate(() => ({ back: (document.querySelector("#main .backhead .backlink") || {}).getAttribute?.("href"), sw: document.querySelectorAll("#main .toolswitch a").length,
+      hold: !!document.querySelector("#main .lv-hold"), tabs: !!document.querySelector("#main .sectiontabs"), bench: /Practice Bench/.test(document.querySelector("#main").innerText) }));
+    check(tool.back === "#/skills/tone" && tool.sw === 2 && tool.hold && !tool.tabs && !tool.bench, "long tones: its own screen with a back link to Tone and breath, the Long tones / Tone check switch, the meter, no Practice Bench " + JSON.stringify(tool));
+    await page.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:mic", { detail: { on: true } })));
+    const playing = await page.evaluate(() => document.querySelector("#main .toolpage").classList.contains("playmode"));
+    await page.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:mic", { detail: { on: false } })));
+    check(playing && !(await page.evaluate(() => document.querySelector("#main .toolpage").classList.contains("playmode"))), "long tones: playing mode (the shared class) while the microphone listens");
+    for (const [route, sel, what] of [["/skills/tone/check", "#tone", "tone check"], ["/skills/rhythm/tap", ".lv-pad", "tap the beat"], ["/skills/ornaments/trainer", ".ornTabs", "ornament trainer"], ["/skills/ear/quiz", ".bb-bench [data-ref=earNext]", "ear quiz"], ["/skills/ear/playback", ".lv-echo", "play it back"]]) {
+      await go(route);
+      check(!!(await page.$("#main " + sel)) && !!(await page.$("#main .backhead")), what + ": opens on its own screen (" + route + ")");
+    }
+    await go("/skills/notes");
+    await clickText("#main button.hubmain", "Tuner");
+    await page.waitForSelector(".dock:not([hidden]) .bb-bench", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => !document.querySelector(".dock").hidden && document.querySelector(".dock .bb-tabs [aria-selected=true]")?.dataset.tab === "check"), "notes hub: the tuner opens in the Flute dock");
+    await page.keyboard.press("Escape");
+    await go("/skills/fix");
+    const fix = await page.evaluate(() => ({ heads: [...document.querySelectorAll("#main .symhead")].map(x => x.textContent.trim()), last: [...document.querySelectorAll("#main .page > *")].pop().innerText, eyebrow: document.querySelector("#main .hero .eyebrow").textContent }));
+    check(fix.heads.join() === "Sound,Fingers and body,Musicianship,The flute" && /^What you worked on/.test(fix.last) && fix.eyebrow === "Fix a problem", "fix: symptoms in four groups, what you worked on last, named Fix a problem [" + fix.heads.join(", ") + "]");
+    await go("/skills/fix/TS-02/tone");
+    await page.waitForSelector("#main .fixback", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => { const a = document.querySelector("#main .fixback"); return !!a && a.getAttribute("href") === "#/skills/tone" && a.textContent === "Back to Tone and breath"; }), "a fix opened from a hub links back to it");
+    await go("/skills/games");
+    await clickText("#main .gamefilter button", "No microphone");
+    const noMic = await page.$$eval("#main .gamecard", x => x.map(e => e.dataset.game).sort().join());
+    check(noMic === "bingo,higherlower,nameorn,sam,wrong", "games: No microphone keeps the games played by ear or by tapping [" + noMic + "]");
+    await clickText("#main .gamefilter button", "All");
+    await go("/skills/tone");
+    await page.click("#main a.hubrow[href='#/skills/game/balloon']");
+    await page.waitForSelector("#main .game-card:not([hidden]) .game", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => location.hash === "#/skills/game/balloon" && document.documentElement.classList.contains("fullfocus") && getComputedStyle(document.querySelector("nav.tabbar")).display === "none"), "a game has its address under Skills and plays full focus");
+    await page.evaluate(() => [...document.querySelectorAll("#main .game-card button")].find(b => b.textContent.trim() === "Close").click());
+    await page.waitForFunction(() => location.hash === "#/skills/tone", { timeout: 5000 }).catch(() => {});
+    check(await page.evaluate(() => location.hash === "#/skills/tone" && !document.documentElement.classList.contains("fullfocus")), "closing a game opened from a hub returns to the hub, out of full focus");
+  });
+  await section("Music: songs, a song, ragas, a raga, listen", async () => {
+    await seedSkills();
+    await go("/music");
+    await page.waitForFunction(() => /open/.test(document.querySelector("#main .hubgroup")?.innerText || ""), { timeout: 8000 }).catch(() => {});
+    const top = await page.evaluate(() => ({ carry: (document.querySelector("#main .carryon") || {}).innerText || "", counts: document.querySelector("#main .hubgroup").innerText }));
+    check(/Morning Steps/.test(top.carry) && /ready now/.test(top.counts) && /\d+ open/.test(top.counts) && /saved/.test(top.counts), "songs: Carry on with the last song played, then counted rows [" + top.counts.replace(/\n/g, " ") + "]");
+    await clickText("#main .songfilter button", "Mine");
+    check((await page.$$eval("#main .songrow", x => x.map(e => e.innerText))).join("|").includes("Smoke bhajan"), "songs: Mine keeps the songs made from recordings");
+    await go("/music/song/1.1");
+    const song = await page.evaluate(() => ({ hear: [...document.querySelectorAll("#main button")].some(b => /Hear it/.test(b.textContent)), bpm: !!document.querySelector("#main .songbpm input"), drone: !!document.getElementById("song-drone"), taal: !!document.getElementById("song-taal"),
+      game: (document.querySelector("#main a[href^='#/skills/game/falling/']") || {}).getAttribute?.("href"), back: (document.querySelector("#main .backlink") || {}).getAttribute?.("href") }));
+    check(song.hear && song.bpm && song.drone && song.taal && song.game === "#/skills/game/falling/1.1" && song.back === "#/music", "a song: Hear it, BPM, drone and taal, and Falling notes with this song " + JSON.stringify(song));
+    await page.click("#main a[href='#/skills/game/falling/1.1']");
+    await page.waitForSelector("#main .game-card:not([hidden]) select", { timeout: 8000 }).catch(() => {});
+    check(/^1\.1 /.test(await page.$eval("#main .game-card select", s => s.selectedOptions[0].textContent).catch(() => "")), "Falling notes opens on the song it came from");
+    await page.evaluate(() => [...document.querySelectorAll("#main .game-card button")].find(b => b.textContent.trim() === "Close").click());
+    await page.waitForFunction(() => location.hash === "#/music/song/1.1", { timeout: 5000 }).catch(() => {});
+    check(await page.evaluate(() => location.hash) === "#/music/song/1.1", "closing the game returns to the song");
+    await go("/music/ragas");
+    await page.waitForSelector("#main .ragarow", { timeout: 8000 }).catch(() => {});
+    const st = await page.$$eval("#main .ragarow .chip", x => x.map(e => e.textContent));
+    check(st.length >= 14 && st.includes("open") && st.some(s => /^after L\d\d$/.test(s)), "ragas: each raga is open or after its lesson [" + st.join(", ") + "]");
+    await go("/music/raga/khamaj");
+    await page.waitForSelector("#main .ragascale", { timeout: 8000 }).catch(() => {});
+    const about = await page.evaluate(() => ({ dt: [...document.querySelectorAll("#main .ragascale dt")].map(x => x.textContent).join(), hear: [...document.querySelectorAll("#main button")].some(b => b.textContent === "Hear the scale"), card: /Character/.test(document.querySelector("#main").innerText) }));
+    check(about.dt === "Aroh,Avroh,Pakad" && about.hear && about.card, "a raga: aroh, avroh and pakad, Hear the scale and the card's text " + JSON.stringify(about));
+    await clickText("#main .toolswitch button", "Play it");
+    const play = await page.evaluate(() => ({ jam: (document.querySelector("#main a[href^='#/skills/game/jam/']") || {}).getAttribute?.("href"), phrase: !!document.querySelector("#main a[href='#/skills/game/phrase']"), day: /In the course: Day \d+/.test(document.querySelector("#main").innerText) }));
+    check(play.jam === "#/skills/game/jam/khamaj" && play.phrase && play.day, "a raga: Jam with the band, Raga phrases and its day in the course " + JSON.stringify(play));
+    await page.click("#main a[href='#/skills/game/jam/khamaj']");
+    await page.waitForSelector("#main .game-card:not([hidden]) select", { timeout: 8000 }).catch(() => {});
+    check(await page.$eval("#main .game-card select", s => s.selectedOptions[0].textContent).catch(() => "") === "Khamaj", "Jam with the band opens in the raga it came from");
+    await go("/music/listen");
+    const lis = await page.evaluate(() => ({ lib: !!document.querySelector("#main a[href='#/read/08-LISTENING-LIBRARY.md']"), scales: [...document.querySelectorAll("#main h2")].some(x => /Raga scales/.test(x.textContent)) }));
+    check(lis.lib && !lis.scales, "listen: the listening library is a row, and raga scales moved onto each raga");
+    await page.evaluate(() => { for (const k of ["bansuri.mysongs", "bansuri.coach.history", "bansuri.game.balloon.best.srg", "bansuri.songs.last"]) localStorage.removeItem(k); });
   });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete

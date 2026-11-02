@@ -148,7 +148,7 @@ export function progressCard() {
 export function quickActions() {
   const a = (href, ic, label) => h("a", { class: "quickact", href }, h("span", { class: "quickicon", "aria-hidden": "true" }, icon(ic)), h("span", null, label));
   return h("nav", { class: "quickacts", "aria-label": "Quick actions" },
-    a("#/bench", "bench", "Flute and tuner"), a("#/tone", "coach", "Tone check"), getSettings().focus ? a("#/coach", "coach", "Coach") : a("#/play", "star", "Play a game"),
+    a("#/bench", "bench", "Flute and tuner"), a("#/skills/tone/check", "coach", "Tone check"), getSettings().focus ? a("#/skills/fix", "coach", "Fix a problem") : a("#/play", "star", "Play a game"),
     a("#/songs", "note", "Songs"), a("#/listen", "listen", "Listen"), a("#/quick", "today", "5 minutes"));
 }
 
@@ -221,9 +221,9 @@ export function adaptiveCard(cur) {
       h("p", null, "That is normal: " + tries + " sessions on Day " + cur + " so far. Three things usually help:"),
       h("ul", { class: "stack", style: { margin: "0", paddingLeft: "1.2em" } },
         h("li", null, bench ? "Slow down: play the exercises 10 BPM slower (" + Math.max(30, bench.bench.bpm - 10) + " BPM), then build back up." : "Slow down: play everything at a slower tempo, then build back up."),
-        h("li", null, "Find the exact problem: ", h("a", { href: "#/coach" }, "let the Coach listen"), " to a long note, or loop the hard bar in the Bench."),
+        h("li", null, "Find the exact problem: ", h("a", { href: "#/skills/tone/check" }, "let the app listen"), " to a long note, or loop the hard bar in the Bench."),
         h("li", null, "Rest a day if your lips or hands are tired; it often clicks the day after.")),
-      h("div", { class: "row" }, h("a", { class: "btn", href: "#/coach" }, "Open the Coach"), h("a", { class: "btn", href: "#/session/" + Math.max(0, cur - 1) }, "Practise Day " + Math.max(0, cur - 1) + " again")));
+      h("div", { class: "row" }, h("a", { class: "btn", href: "#/skills/fix" }, "Fix a problem"), h("a", { class: "btn", href: "#/session/" + Math.max(0, cur - 1) }, "Practise Day " + Math.max(0, cur - 1) + " again")));
   }
   return null;
 }

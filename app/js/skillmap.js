@@ -57,19 +57,70 @@ export const FIX_FILE = {
 };
 
 const last = list => (list && list.length ? list[list.length - 1] : null);
+// The last few days' results, oldest first, with the best one marked (for "Your latest").
+const recent = (list, value, n = 4) => {
+  if (!list || !list.length) return [];
+  const best = Math.max(...list.map(value));
+  const shown = list.slice(-n).map(x => ({ v: value(x), best: false }));
+  const top = shown.map(x => x.v).lastIndexOf(best);
+  if (top >= 0) shown[top].best = true;
+  return shown;
+};
+
+// The stored best of a game (the games keep it in this browser as bansuri.game.<name>.best, some per
+// level); null when it has never been played (no result kept).
+const BEST_KEY = { lanterns: "lantern", bullseye: "bull", higherlower: "hl" };
+export function gameBest(key) {
+  const pre = "bansuri.game." + (BEST_KEY[key] || key) + ".best";
+  let best = null;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k !== pre && !k.startsWith(pre + ".")) continue;
+      const v = Number(JSON.parse(localStorage.getItem(k)));
+      if (Number.isFinite(v)) best = Math.max(best === null ? 0 : best, v);
+    }
+  } catch (e) { /* storage unavailable */ }
+  return best;
+}
+
+// The games that need no microphone (the Games tab's "No microphone" filter).
+export const NO_MIC = ["wrong", "bingo", "higherlower", "sam", "nameorn"];
+
+// The four ornaments of the trainer (ornaments.js), and which of them the learner has passed: an
+// exercise with every check passed, from the trainer's results (bansuri.ornaments).
+const ORNAMENT_NAMES = [["meend", "Meend"], ["kan", "Kan"], ["murki", "Murki"], ["andolan", "Andolan"]];
+function ornamentsPassed() {
+  let hist = {};
+  try { hist = JSON.parse(localStorage.getItem("bansuri.ornaments") || "{}") || {}; } catch (e) { hist = {}; }
+  const passed = Object.entries(hist).filter(([, b]) => b && b.of > 0 && b.passed >= b.of).map(([k, b]) => ({ key: k.split("/")[0], date: b.date || "" }));
+  passed.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  return { latest: last(passed), keys: new Set(passed.map(x => x.key)) };
+}
+
+// The tools of each skill that open on their own screen (#/skills/<skill>/<tool>), in the order of
+// the switch at the top of that screen.
+export const TOOLS = {
+  tone: [["longtones", "Long tones"], ["check", "Tone check"]],
+  rhythm: [["tap", "Tap the beat"]],
+  ornaments: [["trainer", "Ornament trainer"]],
+  ear: [["quiz", "Ear quiz"], ["playback", "Play it back"]],
+};
 
 // Each skill: the section tab's id and label, its full name, the latest measure (or null), the tools
-// that train it, its games (home here), games shown here but at home in another skill, and its fixes.
+// that train it ("dock:<tab>" opens the Flute dock on that tab), its games (home here), games shown
+// here but at home in another skill, and its fixes. latest() gives { label, text } and, when there
+// is more to show, history: [{ v, best }] with its unit, more: [[label, text]], chips: [[name, on]].
 export const SKILLS = [
   {
     id: "tone", tab: "Tone", title: "Tone and breath",
     latest: () => {
-      const sa = bestHold(0), any = bestHold(null);
-      if (sa) return { text: "Sa held {n} s".replace("{n}", Math.round(sa)), label: "Longest steady Sa" };
-      if (any) return { text: "{n} s".replace("{n}", Math.round(any)), label: "Longest steady note" };
+      const holds = getState().live.holds, sa = bestHold(0), any = bestHold(null);
+      if (sa) return { text: "Sa held {n} s".replace("{n}", Math.round(sa)), label: "Longest steady Sa", value: "{n} s".replace("{n}", Math.round(sa)), history: recent(holds["0"], x => Math.round(x.s)), unit: "{n} s" };
+      if (any) return { text: "{n} s".replace("{n}", Math.round(any)), label: "Longest steady note", history: recent(holds.any, x => Math.round(x.s)), unit: "{n} s" };
       return null;
     },
-    train: [["Long tones", "#/bench/tones", "Hold each note with live feedback on pitch and steadiness."], ["Tone check", "#/tone", "Hold one note: the app says what it hears and which fix to try."]],
+    train: [["Long tones", "#/skills/tone/longtones", "Hold each note with live feedback on pitch and steadiness."], ["Tone check", "#/skills/tone/check", "Hold one note: the app says what it hears and which fix to try."]],
     games: ["balloon", "boat", "swell", "taar"], also: [],
     fixes: ["TS-01", "TS-02", "TS-03", "TS-04", "TS-07"],
     more: [["Good tone, step by step", "#/music/listen"]],
@@ -77,10 +128,12 @@ export const SKILLS = [
   {
     id: "notes", tab: "Notes", title: "Notes and tuning",
     latest: () => {
-      const p = last(getState().live.plays);
-      return p ? { text: "{n}% of notes right".replace("{n}", Math.round(p.ok / p.n * 100)), label: "Latest play-along" } : null;
+      const b = gameBest("bullseye"), p = last(getState().live.plays);
+      const more = p ? [["Latest play-along", "{n}% of notes right".replace("{n}", Math.round(p.ok / p.n * 100))]] : [];
+      if (b !== null) return { text: "best {n}".replace("{n}", b), label: "Bullseye", more };
+      return p ? { text: more[0][1], label: more[0][0] } : null;
     },
-    train: [["Tuner: which note, how many cents", "#/bench/check", "Play any note and see it, with how far it is from true."], ["Fingering chart", "#/bench/chart", "Tap a note to see its holes and hear it."]],
+    train: [["Tuner: which note, how many cents", "dock:check", "Play any note and see it, with how far it is from true."], ["Fingering chart", "dock:chart", "Tap a note to see its holes and hear it."]],
     games: ["steer", "bullseye", "lanterns", "floors", "road"], also: [],
     fixes: ["TS-05", "TS-06"],
     more: [],
@@ -88,18 +141,23 @@ export const SKILLS = [
   {
     id: "rhythm", tab: "Rhythm", title: "Rhythm",
     latest: () => {
-      const t = last(getState().live.taps);
-      return t ? { text: "{n}% on the beat".replace("{n}", Math.round(t.within * 100)), label: "Latest tap the beat" } : null;
+      const taps = getState().live.taps, t = last(taps);
+      return t ? { text: "{n}% on the beat".replace("{n}", Math.round(t.within * 100)), label: "Latest tap the beat", history: recent(taps, x => Math.round(x.within * 100)), unit: "{n}%" } : null;
     },
-    train: [["Tala and drone, tap the beat", "#/bench/rhythm", "Teentaal and other taals on tabla, and a test of how evenly you keep the beat."]],
+    train: [["Tap the beat", "#/skills/rhythm/tap", "Tap with the click to see whether you rush or drag."], ["Tala and drone", "dock:rhythm", "Teentaal and other taals on tabla, and the tanpura."]],
     games: ["tongue", "laya", "tihai", "sam"], also: [],
     fixes: ["TS-09"],
     more: [],
   },
   {
     id: "ornaments", tab: "Ornaments", title: "Ornaments",
-    latest: () => null,
-    train: [["Ornament trainer", "#/ornaments", "Meend, kan, murki and andolan: hear them slowly, then play against the target curve."]],
+    latest: () => {
+      const o = ornamentsPassed();
+      if (!o.latest) return null;
+      const name = (ORNAMENT_NAMES.find(x => x[0] === o.latest.key) || [null, o.latest.key])[1];
+      return { text: name, label: "Last ornament passed", chips: ORNAMENT_NAMES.map(([k, n]) => [n, o.keys.has(k)]) };
+    },
+    train: [["Ornament trainer", "#/skills/ornaments/trainer", "Meend, kan, murki and andolan: hear them slowly, then play against the target curve."]],
     games: ["meendbridge", "kanflick", "murkichase", "andolanlamp"], also: ["road", "nameorn", "phrase"],
     fixes: [],
     more: [],
@@ -107,11 +165,15 @@ export const SKILLS = [
   {
     id: "ear", tab: "Ear", title: "Ear",
     latest: () => {
-      const all = Object.values(getState().live.echo || {});
-      const right = all.reduce((a, e) => a + e.right, 0), total = all.reduce((a, e) => a + e.total, 0);
-      return total ? { text: "{n} of {m} right".replace("{n}", right).replace("{m}", total), label: "Play it back" } : null;
+      const s = getState(), sum = list => list.reduce((a, e) => [a[0] + e.right, a[1] + e.total], [0, 0]);
+      const [qr, qt] = sum(Object.values(s.ear || {})), [er, et] = sum(Object.values(s.live.echo || {}));
+      const of = (r, t) => "{n} of {m} right".replace("{n}", r).replace("{m}", t);
+      const lines = [];
+      if (qt) lines.push(["Ear quiz", of(qr, qt)]);
+      if (et) lines.push(["Play it back", of(er, et)]);
+      return lines.length ? { label: lines[0][0], text: lines[0][1], more: lines.slice(1) } : null;
     },
-    train: [["Ear quiz", "#/bench/ear", "Hear a note over the drone and name it."], ["Play it back", "#/bench/echo", "Hear a short phrase, then play it back on your flute."]],
+    train: [["Ear quiz", "#/skills/ear/quiz", "Hear a note over the drone and name it."], ["Play it back", "#/skills/ear/playback", "Hear a short phrase, then play it back on your flute."]],
     games: ["higherlower", "wrong", "bingo", "nameorn"], also: [],
     fixes: ["TS-10"],
     more: [],
