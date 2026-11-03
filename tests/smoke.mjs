@@ -2237,7 +2237,7 @@ try {
   await section("Tone check", async () => {
     await go("/tone");
     check(/tone check: let the app listen/.test(await text()), "tone: the Tone check opens in the Coach");
-    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Hold the note/.test(b.textContent)).click());
+    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Hold a note now/.test(b.textContent)).click());
     await page.waitForFunction(() => /out of 10|No steady note|could not be read/.test(document.querySelector("#main").textContent), { timeout: 30000 }).catch(() => {});
     check(/out of 10|No steady note/.test(await page.$eval("#main", e => e.textContent)), "tone: a check with the (fake) microphone ends in a result or a clear message");
   });
