@@ -530,7 +530,9 @@ try {
       check(await lp.$eval(".lv-hold .lv-glowtxt", e => e.style.visibility === "visible" && /Tone: (clear|fairly clear|airy)/.test(e.textContent)), "long tones: the ring glows with the tone quality heard");
       await tone(null);
 
-      await tab("echo");
+      // (The Bench's tabs are screens of their own now: Play it back in Skills > Ear, Play along in a song.)
+      await lp.goto(BASE + "#/skills/ear/playback", { waitUntil: "networkidle0" });
+      await lp.waitForSelector(".lv-echo select");
       await lp.select(".lv-echo select", "sp");
       await lp.click(".lv-echo .lv-check input");
       await lp.click(".lv-echo .lv-primary");
@@ -541,7 +543,8 @@ try {
       await lp.waitForFunction(() => /Correct/.test(document.querySelector(".lv-echo .lv-msg").textContent), { timeout: 4000 })
         .then(() => check(true, "play it back: echoing " + phrase.join(" ") + " is marked correct"), async () => check(false, "play it back: " + await lp.$eval(".lv-echo .lv-msg", e => e.textContent)));
 
-      await tab("play");
+      await lp.goto(BASE + "#/music/song/1.1#play", { waitUntil: "networkidle0" });
+      await lp.waitForSelector(".bb-bench [data-ref=notation]");
       await lp.evaluate(() => {
         const n = document.querySelector(".bb-bench [data-ref=notation]"); n.value = "S - - -"; n.dispatchEvent(new Event("input"));
         document.querySelector(".bb-bench [data-ref=bpm]").value = "120";
@@ -560,12 +563,13 @@ try {
       await lp.evaluate(() => { const me = document.querySelector(".bb-bench [data-ref=checkMe]"); if (me.checked) me.click(); });
 
       // No microphone is left open: a double Start, then leaving the tab; and leaving a page mid-start.
-      await tab("tones");
+      await lp.goto(BASE + "#/skills/tone/longtones", { waitUntil: "networkidle0" });
+      await lp.waitForSelector(".lv-hold .lv-primary");
       await lp.evaluate(() => { const b = document.querySelector(".lv-hold .lv-primary"); b.click(); b.click(); });
       await sleep(400);
-      await tab("chart");
+      await lp.goto(BASE + "#/skills/notes", { waitUntil: "networkidle0" });
       await sleep(300);
-      check(await lp.evaluate(() => window.__openMics()) === 0, "a double Start, then leaving the tab, leaves no microphone open");
+      check(await lp.evaluate(() => window.__openMics()) === 0, "a double Start, then leaving the screen, leaves no microphone open");
 
       await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 14 })));
       await lp.goto(BASE + "#/milestone/M1", { waitUntil: "networkidle0" });
