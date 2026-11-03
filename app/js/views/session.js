@@ -302,8 +302,7 @@ export async function render(main, { params }) {
       h("header", { class: "blockhead", onclick: e => { if (!e.target.closest(".blockctl") && activeId !== b.id) { setActive(b.id); card.scrollIntoView({ behavior: "smooth", block: "start" }); } } },
         h("span", { class: "stepicon " + b.id, "aria-hidden": "true" }, icon(stepMeta(b).icon), h("span", { class: "stepdone" }, icon("check"))),
         h("h3", null, h("button", { type: "button", class: "blockopen", "aria-expanded": "false" }, h("span", { class: "stepno small muted" }, "Step " + (day.blocks.indexOf(b) + 1) + " "), b.label, b.minutes ? h("span", { class: "muted small" }, " " + b.minutes + " min") : null)),
-        total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null,
-        h("span", { class: "blocktick", "aria-hidden": "true" }, icon("check"))),
+        total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null),
       b.text ? h("p", { class: "steptext", translate: "no" }, renderInline(b.text, "phases/README.md")) : null,
       b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : ""), target: "_blank", rel: "noopener" }, plainCodes(r.label)))) : null,
     ];

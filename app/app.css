@@ -1642,9 +1642,6 @@ a.symcard { text-decoration: none; }
 .segtoggle { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
 .segbtn { font: inherit; font-size: 0.92rem; min-height: 40px; padding: 6px 14px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
 .segbtn[aria-pressed="true"] { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
-.blocktick { display: none; width: 24px; height: 24px; flex: none; place-items: center; border-radius: 50%; background: var(--good); color: var(--surface); margin-left: auto; }
-.blocktick .icon { width: 14px; height: 14px; stroke-width: 3; }
-.block.done .blocktick { display: grid; }
 /* W22: 5 minutes, a full-focus screen. */
 .quicktop { display: flex; align-items: center; gap: 12px; }
 .quicktop h1 { margin: 0; font-size: 1.3rem; }

@@ -2486,7 +2486,7 @@ try {
     check(await lp.$$eval("#main .block", b => b.filter(x => getComputedStyle(x).display !== "none").length) > 1 && await lp.$eval('#main .segbtn[data-view="list"]', b => b.getAttribute("aria-pressed")) === "true", "step list: Whole page shows every block");
     await lp.evaluate(() => { const c = document.querySelector("#main .block label.check input"); c.click(); });
     await sleep(150);
-    check(await lp.evaluate(() => { const b = document.querySelector("#main .block.done .blocktick"); return !!b && getComputedStyle(b).display !== "none"; }), "step list: a done block shows its tick");
+    check(await lp.evaluate(() => { const b = document.querySelector("#main .block.done .stepdone"); return !!b && getComputedStyle(b).display !== "none"; }), "step list: a done block shows its tick");
     await snap("r2-w21-steplist");
 
     // W22: 5 minutes: full focus, (x), the three chips, 1 of 3.
