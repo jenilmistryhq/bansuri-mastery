@@ -2,7 +2,10 @@
 // "No microphone" filter; a game at #/skills/game/<game> (also #/play/<game>) plays full focus; and
 // challenges shared as links (#/challenge/<payload>). Falling notes can start on one song
 // (#/skills/game/falling/<song id>, from the song's screen in Music).
-import { h, store, storeSet } from "../util.js";
+import { h, store, storeSet, icon } from "../util.js";
+import { tanpura } from "../core/audio.js";
+import { getSettings } from "../core/settings.js";
+import { questState } from "../fun.js";
 import { getDay, current } from "../course.js";
 import { fetchDoc } from "../content.js";
 import { pitchSteer, balloon, fallingNotes, jam, NOTE_SETS } from "../games.js";
@@ -15,14 +18,24 @@ import { parseSongs } from "./songs.js";
 import { ragaPhrases, ragaInfo } from "./reader.js";
 import { ragaGrammar } from "../ragagrammar.js";
 import { encodePayload } from "./progress.js";
-import { SKILLS, MUSIC_GAMES, NO_MIC } from "../skillmap.js";
+import { SKILLS, MUSIC_GAMES, NO_MIC, gameBest } from "../skillmap.js";
 import { GAME_FROM } from "./skills.js";
+
+// The games a friend can be challenged in: those whose score means the same for both players (06 S6).
+// Steer by pitch and Balloon also replay the same course (notes and seed); Raga phrases can also
+// carry a phrase to play. Jam and Falling notes are left out (their score depends on the song or the
+// raga chosen and how long you play).
+export const CHALLENGE = new Set(["steer", "balloon", "phrase", "boat", "road", "lanterns", "bullseye", "floors", "wrong", "bingo", "higherlower", "sam",
+  "meendbridge", "kanflick", "murkichase", "andolanlamp", "nameorn", "swell", "tongue", "laya", "tihai", "taar"]);
+// Games with their own drone or band: the shell offers no drone of its own.
+const NO_DRONE = new Set(["jam", "bingo"]);
+const DRONE = "bansuri.game.drone";
 
 export function decodeChallenge(p) {
   try {
     const bin = atob(String(p).replace(/-/g, "+").replace(/_/g, "/"));
     const o = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
-    if (!o || typeof o !== "object" || !["steer", "balloon", "phrase"].includes(o.g)) return null;
+    if (!o || typeof o !== "object" || !CHALLENGE.has(o.g)) return null;
     return {
       g: o.g, l: NOTE_SETS.some(s => s[0] === o.l) ? o.l : "srg", s: Number.isInteger(o.s) ? o.s : 1, n: Number.isFinite(o.n) ? Math.max(0, Math.min(9999, o.n)) : 0,
       p: Array.isArray(o.p) ? o.p.filter(x => Number.isInteger(x) && x >= -12 && x <= 24).slice(0, 32) : [], by: typeof o.by === "string" ? o.by.slice(0, 30) : "",
@@ -70,59 +83,101 @@ export async function render(main, { params, view }) {
     if (view === "play" && params[0]) { if (fromList || fromHub) { fromList = false; history.back(); } else location.replace(newRoute ? "#/skills/games" : "#/play"); }
     else closeGame();
   };
-  const closeGame = () => { if (game) { game.destroy(); game = null; } stage.hidden = true; stage.replaceChildren(); stage.classList.remove("game-full"); document.documentElement.classList.remove("noscroll", "fullfocus"); document.removeEventListener("keydown", onKey); };
+  const closeGame = () => { if (shellOff) { shellOff(); shellOff = null; } stage.classList.remove("gshell"); delete stage.dataset.phase; if (game) { game.destroy(); game = null; } stage.hidden = true; stage.replaceChildren(); stage.classList.remove("game-full"); document.documentElement.classList.remove("noscroll", "fullfocus"); document.removeEventListener("keydown", onKey); };
   cleanups.push(closeGame);
-  function open(title, make, note) {
+  // The game shell (redesign W52-W54) around each game's own widget: How to play (the game's own
+  // instructions and options, then Play and the drone), Playing (the game, nothing else), Result
+  // (the score, your best, a quest moved on, the game's own result, Again, Another game). The games
+  // keep their logic and buttons; the shell presses the game's own Start for Play and Again, and
+  // hears the score from the result the game sends out ("bansuri:live", type "game").
+  let key = params[0] || null, chal = null, lastEnd = null;
+  const ended = res => { lastEnd = res; };
+  function open(title, make, opts = {}) {
     closeGame();
     game = make();
-    stage.append(...[h("div", { class: "row between" }, h("h2", null, title), h("button", { type: "button", class: "btn ghost small", onclick: leave }, "Close")), note, game.el].filter(Boolean));
+    const head = h("div", { class: "row between gs-head" }, h("h2", null, title), h("button", { type: "button", class: "btn ghost small", onclick: leave }, "Close"));
     // Full screen and full focus while playing (redesign W2): a bigger playing field, no top bar or
     // tabs, and nothing else to scroll past; Close leads out.
     stage.hidden = false; stage.classList.add("game-full"); stage.scrollTop = 0;
     document.documentElement.classList.add("noscroll", "fullfocus"); document.addEventListener("keydown", onKey);
+    if (opts.plain) { stage.append(head, game.el); return; }
+    shell(head, game, opts);
   }
-  // A finished round offers a link that replays the same course for a friend.
-  const shareBox = (g, l, seed, score) => {
+  function shell(head, widget, opts) {
+    const el = widget.el, start = el.querySelector(".btn.primary");
+    // How to play shows the game's first row (its options) and its instructions; the rest waits.
+    const optsRow = el.querySelector(":scope > .row"), instr = el.querySelector(":scope > p[aria-live]");
+    for (const c of el.children) if (c !== optsRow && c !== instr) c.classList.add("gs-later");
+    if (optsRow) optsRow.querySelectorAll("button").forEach(b => b.classList.add("gs-later"));
+    if (start) start.classList.add("gs-start");
+    stage.classList.add("gshell");
+    const setPhase = p => { stage.dataset.phase = p; stage.scrollTop = 0; };
+    // The drone under the game (a game with its own drone or band leaves it out).
+    let droneMine = false;
+    const droneBox = h("input", { type: "checkbox", id: "gs-drone", checked: tanpura.isOn() || store(DRONE, false) });
+    droneBox.addEventListener("change", () => storeSet(DRONE, droneBox.checked));
+    const droneOff = () => { if (droneMine) { tanpura.stop(); droneMine = false; } };
+    const play = h("button", { type: "button", class: "btn primary big gs-play" }, "Play");
+    play.addEventListener("click", () => { if (start) start.click(); });
+    const intro = h("div", { class: "gs-intro" }, play, NO_DRONE.has(key) ? null : h("label", { class: "check gs-drone", for: "gs-drone" }, droneBox, "Drone"));
+    // Result: above the game's own result, the score, your best and a moved quest; under it, Again
+    // and Another game (and the challenge links).
+    const resTop = h("div", { class: "gs-result gs-restop", "aria-live": "polite" }), resEnd = h("div", { class: "gs-result gs-resend" });
+    const again = h("button", { type: "button", class: "btn primary big gs-again" }, "Play again");
+    again.addEventListener("click", () => { if (start) start.click(); });
+    const other = h("button", { type: "button", class: "btn gs-other", onclick: leave }, "Another game");
+    let before = null;
+    const questSnap = () => JSON.stringify(questState().list.map(q => [q.id, q.progress, q.done]));
+    if (start) start.addEventListener("click", () => {
+      if (stage.dataset.phase === "play") return;
+      before = getSettings().focus ? null : questSnap(); lastEnd = null;
+      if (droneBox.checked && !NO_DRONE.has(key) && !tanpura.isOn()) { tanpura.start(); droneMine = true; }
+      setPhase("play");
+    }, true);
+    const onResult = e => {
+      const d = e.detail || {};
+      if (d.type !== "game" || !game || game.el !== el) return;
+      droneOff();
+      const best = gameBest(key), moved = before !== null && questSnap() !== before;
+      resTop.replaceChildren(...[
+        h("p", { class: "gs-score" }, h("span", null, "Score"), " ", h("b", null, String(d.score === undefined ? 0 : d.score))),
+        d.best && d.score ? h("p", { class: "gs-best" }, "A new best!") : best !== null ? h("p", { class: "gs-best" }, h("span", null, "Your best:"), " ", h("b", null, String(best))) : null,
+        moved ? h("p", { class: "chip good gs-quest" }, icon("check"), h("span", null, "Quest moved on")) : null,
+        chal ? h("p", { class: "gs-vs" }, (d.score || 0) > chal.n ? "You beat " + (chal.by || "your friend") + "'s " + chal.n + "!" : "To beat: " + chal.n) : null].filter(Boolean));
+      resEnd.replaceChildren(again, other);
+      // A challenge: send your score back; a game that has challenges: challenge a friend.
+      if (CHALLENGE.has(key) && d.score) resEnd.append(shareBox(chal, d.score));
+      setPhase("result");
+    };
+    document.addEventListener("bansuri:live", onResult);
+    shellOff = () => { document.removeEventListener("bansuri:live", onResult); droneOff(); };
+    stage.append(head, h("p", { class: "eyebrow gs-howto" }, "How to play"), resTop, el, intro, resEnd);
+    setPhase(opts.phase || "intro");
+  }
+  let shellOff = null;
+  // A finished round offers a link that replays the same course for a friend; from a challenge, the
+  // same course goes back with your score ("Send your score back").
+  const shareBox = (from, score) => {
     const name = store("bansuri.share.name", "");
-    const link = challengeLink({ g, l, s: seed, n: score, by: name });
+    // The course (notes and seed) travels only for the games that replay it.
+    const course = key === "steer" || key === "balloon";
+    const l = !course ? undefined : lastEnd && lastEnd.level ? lastEnd.level : from ? from.l : undefined, s = !course ? undefined : lastEnd && lastEnd.seed ? lastEnd.seed : from ? from.s : undefined;
+    const link = challengeLink(Object.assign({ g: key, n: score, by: name }, l ? { l } : {}, s ? { s } : {}));
     const input = h("input", { class: "input", readonly: true, value: link, "aria-label": "Challenge link" });
-    return h("div", { class: "row challenge-share" }, h("span", { class: "small" }, "Challenge a friend to beat " + score + ":"), input,
-      h("button", { type: "button", class: "btn small", onclick: async () => { try { if (navigator.share) await navigator.share({ title: "Bansuri challenge", url: link }); else { await navigator.clipboard.writeText(link); input.select(); } } catch (e) { input.select(); } } }, "Share"));
-  };
-  const withShare = (g, make) => () => {
-    let widget = null;
-    const wrap = h("div");
-    widget = make(res => { const old = wrap.querySelector(".challenge-share"); if (old) old.remove(); if (res.score) wrap.append(shareBox(g, res.level, res.seed, res.score)); });
-    wrap.prepend(widget.el);
-    return { el: wrap, destroy: () => widget.destroy() };
+    return h("div", { class: "stack challenge-share" }, h("span", { class: "small" }, from ? "Send this link to your friend:" : "Challenge a friend to beat " + score + ":"),
+      h("div", { class: "row" }, input, h("button", { type: "button", class: "btn small", onclick: async () => { try { if (navigator.share) await navigator.share({ title: "Bansuri challenge", url: link }); else { await navigator.clipboard.writeText(link); input.select(); } } catch (e) { input.select(); } } }, from ? "Send your score back" : "Share")));
   };
 
   // The section tab names the screen; the heading is for screen readers (the quest card lives on
   // Skills > For you, the songs and ragas in Music).
   page.append(h("h1", { class: "sr-only" }, "Games"));
 
-  // A challenge opened from a link.
-  if (view === "challenge" && params[0]) {
-    const c = decodeChallenge(params[0]);
-    if (!c) page.append(h("p", { class: "notice" }, "This challenge link could not be read."));
-    else {
-      const who = c.by ? c.by : "A friend";
-      if (c.g === "phrase" && c.p.length) {
-        page.append(h("section", { class: "card challenge" }, h("h2", null, who + " challenges you"), h("p", null, "Play this phrase cleanly on your flute: ", h("b", { class: "mono" }, c.p.map(codeOf).join(" ")))));
-        open("Play the phrase", () => phraseCheck({ phrase: c.p, reps: 1 }));
-      } else {
-        const label = (NOTE_SETS.find(s => s[0] === c.l) || NOTE_SETS[0])[1];
-        page.append(h("section", { class: "card challenge" }, h("h2", null, who + " scored " + c.n), h("p", null, (c.g === "steer" ? "Steer by pitch" : "Balloon") + ", notes " + label + ", the same course. Can you beat it?")));
-        open(c.g === "steer" ? "Steer by pitch" : "Balloon", withShare(c.g, done => (c.g === "steer" ? pitchSteer : balloon)({ level: c.l, seed: c.s, onEnd: done })));
-      }
-    }
-  }
-
   const ragasP = loadRagas().catch(() => []);
   const songsP = fetchDoc("exercises/EX-MEL-practice-melodies.md").then(parseSongs).catch(() => []);
   const GAMES = {
-    steer: ["Steer by pitch", "Fly a bird through gates by playing their notes.", () => open("Steer by pitch", withShare("steer", done => pitchSteer({ onEnd: done })))],
-    balloon: ["Balloon", "Hold the note in tune to blow up the balloon. Pop as many as you can.", () => open("Balloon", withShare("balloon", done => balloon({ onEnd: done })))],
+    // From a challenge, the same course (its notes and seed).
+    steer: ["Steer by pitch", "Fly a bird through gates by playing their notes.", () => open("Steer by pitch", () => pitchSteer(chal ? { level: chal.l, seed: chal.s, onEnd: ended } : { onEnd: ended }))],
+    balloon: ["Balloon", "Hold the note in tune to blow up the balloon. Pop as many as you can.", () => open("Balloon", () => balloon(chal ? { level: chal.l, seed: chal.s, onEnd: ended } : { onEnd: ended }))],
     falling: ["Falling notes", "A song's notes fall in time: play each as it lands.", async songId => {
       const reached = lessonReached(), songs = (await songsP).map(s => ({ id: s.id, title: s.id + " " + s.title, notation: s.notation, bpm: s.bpm, ready: s.lesson <= reached }));
       let list = songs.filter(s => s.ready).concat(songs.filter(s => !s.ready));
@@ -194,6 +249,30 @@ export async function render(main, { params, view }) {
   if (view === "play" && params[0]) {
     if (GAMES[params[0]] && !NAV_ONLY.has(params[0])) await GAMES[params[0]][2](params[1]);
     else location.replace(newRoute ? "#/skills/games" : "#/play");
+  }
+  // A challenge opened from a friend's link (W55; the view "challenge", from any address that names
+  // it): who scored what, in which game, and Take it on; then the game's How to play.
+  if (view === "challenge" && params[0]) {
+    const c = decodeChallenge(params[0]);
+    if (!c) page.prepend(h("p", { class: "notice" }, "This challenge link could not be read."));
+    else {
+      const who = c.by ? c.by : "Your friend";
+      const phrase = c.g === "phrase" && c.p.length;
+      const title = phrase ? "Play the phrase" : GAMES[c.g][0];
+      const take = h("button", { type: "button", class: "btn primary big gs-take" }, "Take it on");
+      const label = (NOTE_SETS.find(s => s[0] === c.l) || NOTE_SETS[0])[1];
+      const card = h("section", { class: "challenge stack" },
+        phrase ? h("p", { class: "gs-chal" }, h("b", null, who + " challenges you")) : h("p", { class: "gs-chal" }, who + " scored " + c.n + " in " + title + "."),
+        phrase ? h("p", null, "Play this phrase cleanly on your flute: ", h("b", { class: "mono" }, c.p.map(codeOf).join(" ")))
+          : h("p", { class: "small muted" }, c.g === "steer" || c.g === "balloon" ? "Notes " + label + ", the same course. Can you beat it?" : "Can you beat it?"),
+        take);
+      key = c.g;
+      open("A challenge", () => ({ el: card, destroy() {} }), { plain: true });
+      take.addEventListener("click", () => {
+        if (phrase) open("Play the phrase", () => phraseCheck({ phrase: c.p, reps: 1 }), { plain: true });
+        else { chal = c; GAMES[c.g][2](); }
+      });
+    }
   }
 
   return () => cleanups.forEach(f => f());

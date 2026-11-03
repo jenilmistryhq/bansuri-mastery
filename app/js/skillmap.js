@@ -161,12 +161,16 @@ export const SKILLS = [
   {
     id: "ornaments", tab: "Ornaments", title: "Ornaments",
     latest: () => {
-      const o = ornamentsPassed();
-      if (!o.latest) return null;
+      // The four chips show from the start (W44); passed ones are ticked.
+      const o = ornamentsPassed(), chips = ORNAMENT_NAMES.map(([k, n]) => [n, o.keys.has(k)]);
+      if (!o.latest) return { text: null, label: null, chips };
       const name = (ORNAMENT_NAMES.find(x => x[0] === o.latest.key) || [null, o.latest.key])[1];
-      return { text: name, label: "Last ornament passed", chips: ORNAMENT_NAMES.map(([k, n]) => [n, o.keys.has(k)]) };
+      return { text: name, label: "Last ornament passed", chips };
     },
     train: [["Ornament trainer", "#/skills/ornaments/trainer", "Meend, kan, murki and andolan: hear them slowly, then play against the target curve."]],
+    // Train it as four tiles, each opening the trainer on its ornament (W44).
+    tiles: ORNAMENT_NAMES.map(([k, n]) => [k, n, "#/skills/ornaments/trainer/" + k]),
+    judge: "#/skills/ornaments/trainer#judge",
     games: ["meendbridge", "kanflick", "murkichase", "andolanlamp"], also: ["road", "nameorn", "phrase"],
     fixes: [],
     more: [],

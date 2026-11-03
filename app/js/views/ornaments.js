@@ -18,14 +18,16 @@ const KEY = "bansuri.ornaments";
 const MODELS = "bansuri.ornament.models";
 const name = s => codeOf(s);
 
-export async function render(main) {
+// opts (Skills' tool screen, #/skills/ornaments/trainer[/<ornament>]): { tool: true, orn: the
+// ornament to open on, onTitle(text): names the screen after the ornament and exercise }.
+export async function render(main, opts = {}) {
   const page = h("div", { class: "page ornpage" });
   main.append(page);
   const cleanups = [];
   let gone = false, unsub = null, timer = 0, player = null;
   cleanups.push(() => { gone = true; clearInterval(timer); if (unsub) { unsub(); unsub = null; } if (player) try { player.voice.stop(); } catch (e) { /* ended */ } });
 
-  let orn = ORNAMENTS[0], ex = orn.ex[0], attempt = null;
+  let orn = ORNAMENTS.find(o => o.key === opts.orn) || ORNAMENTS[0], ex = orn.ex[0], attempt = null;
   const hist = store(KEY, {});
   const tabs = h("div", { class: "row ornTabs", role: "tablist", "aria-label": "Ornament" });
   const exSel = h("select", { class: "input", "aria-label": "Exercise" });
@@ -95,6 +97,7 @@ export async function render(main) {
     const b = hist[orn.key + "/" + ex.id];
     best.textContent = b ? "Your best: " + b.passed + " of " + b.of + " checks (" + b.date + "), " + b.tries + (b.tries === 1 ? " try." : " tries.") : "Not tried yet.";
     msg.textContent = "Hear the target, then press Try it and play it once.";
+    if (opts.onTitle) opts.onTitle(orn.name, ex.label, orn.key);
     showModel();
     draw();
   }
@@ -171,15 +174,20 @@ export async function render(main) {
   // Refresh the "best" line without clearing the result.
   function showAllKeep() { const m = msg.textContent; showAll(); msg.textContent = m; }
 
+  // On Skills (redesign W45, S3): the setup above (the ornament, the exercise, Hear it at a speed),
+  // the curves, then one Try it; the title names the ornament and the exercise.
+  const setup = opts.tool
+    ? [tabs, about, h("div", { class: "row" }, h("label", { class: "field" }, "Exercise", exSel)), h("div", { class: "row ornhear" }, hearBtn, h("label", { class: "field" }, "Speed", speedSel)),
+      h("div", { class: "ornwrap" }, canvas), h("p", { class: "small muted" }, "Dashed: the target. Solid: your attempt, from your first clear note."), tryBtn, msg, out, best, modelBox]
+    : [tabs, about, h("div", { class: "row" }, h("label", { class: "field" }, "Exercise", exSel), h("label", { class: "field" }, "Demonstration", speedSel)),
+      h("div", { class: "ornwrap" }, canvas), h("p", { class: "small muted" }, "Dashed: the target. Solid: your attempt, from your first clear note."),
+      h("div", { class: "row" }, hearBtn, tryBtn), msg, out, best, modelBox];
+  if (opts.tool) tryBtn.classList.add("big", "toolstart");
   page.append(
-    h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Practice"), h("h1", null, "Ornament trainer"),
+    opts.tool ? document.createDocumentFragment() : h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Practice"), h("h1", null, "Ornament trainer"),
       h("p", { class: "muted" }, "Meend, kan, murki and andolan on your own flute: hear the shape, play it, and compare your pitch curve with the target.")),
-    h("section", { class: "card" }, tabs, about,
-      h("div", { class: "row" }, h("label", { class: "field" }, "Exercise", exSel), h("label", { class: "field" }, "Demonstration", speedSel)),
-      h("div", { class: "ornwrap" }, canvas),
-      h("p", { class: "small muted" }, "Dashed: the target. Solid: your attempt, from your first clear note."),
-      h("div", { class: "row" }, hearBtn, tryBtn), msg, out, best, modelBox),
-    h("section", { class: "card" }, h("h2", null, "What the microphone can judge"),
+    h("section", { class: "card" }, ...setup),
+    h("section", { class: "card", id: "judge" }, h("h2", null, "What the microphone can judge"),
       h("p", { class: "small" }, "It reads the pitch about 30 times a second, so it can judge the shape, width, speed and evenness of a meend or an andolan well. A kan shorter than about 40 ms, or the notes of a very fast murki, can slip between readings: if a check says a note was missing and you heard it clearly, record again a little slower."),
       h("p", { class: "small" }, "It cannot judge whether the ornament suits the raga or the song, or how it sounds. The shapes here are one common way to play them; teachers differ on how wide and slow an andolan is and how a murki is shaped (Disputed). Ask your teacher, and listen to recordings. ",
         h("a", { href: "#/read/knowledge-tree/D11-ORN-ornaments.md" }, "Read about ornaments"), ".")));

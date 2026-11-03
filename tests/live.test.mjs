@@ -241,7 +241,18 @@ await test("challenge links round-trip and reject junk", async () => {
   assert.deepEqual(c, { g: "steer", l: "srgmp", s: 1234, n: 17, p: [], by: "Asha" });
   assert.deepEqual(decodeChallenge(encodePayload({ g: "phrase", p: [0, 2, "x", 99, 4] })).p, [0, 2, 4]);
   assert.equal(decodeChallenge(encodePayload({ g: "evil" })), null);
+  // The other scored games can be challenges too (06 S6); Jam cannot.
+  assert.equal(decodeChallenge(encodePayload({ g: "bullseye", n: 34, by: "Asha" })).n, 34);
+  assert.equal(decodeChallenge(encodePayload({ g: "jam", n: 3 })), null);
   assert.equal(decodeChallenge("%%%"), null);
+});
+
+await test("tone check: a result as three chips (Steady, In tune, Air), each with its fix", async () => {
+  const { toneChips } = await import("../app/js/views/tone.js");
+  const good = { pitchSD: 4, levelCV: 9, air: 0.5, attack: 100, overshoot: 20, cents: -5 };
+  assert.deepEqual(toneChips(good).map(c => [c.key, c.ok, c.ts]), [["steady", true, "TS-07"], ["tune", true, "TS-05"], ["air", true, "TS-01"]]);
+  assert.deepEqual(toneChips(Object.assign({}, good, { air: 6, cents: 30 })).map(c => c.ok), [true, false, false]);
+  assert.deepEqual(toneChips(Object.assign({}, good, { pitchSD: 25 })).map(c => c.ok), [false, true, true]);
 });
 
 await test("a composed grid becomes notation with holds, rests and bars", async () => {

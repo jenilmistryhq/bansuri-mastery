@@ -15,6 +15,8 @@ import { openPalette, installPaletteKey } from "./palette.js";
 import { notePractice } from "./reminder.js";
 import { createDock } from "./dock.js";
 installPaletteKey();
+// The address before this one, for screens whose Back returns to where they were opened from (a fix).
+window.addEventListener("hashchange", e => { try { sessionStorage.setItem("bansuri.nav.prev", new URL(e.oldURL).hash); } catch (x) { /* Back then goes to the screen's home */ } });
 // The browser's install offer is kept so Today can show it at a good moment (after a few days).
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window.__installEvent = e; });
 installErrorLog();
@@ -51,6 +53,8 @@ import { evaluate as evaluateBadges } from "./badges.js";
 
 const ROUTES = [
   // The five places and their sections (see docs/redesign/03-structure.md).
+  // Skills (redesign 2): a fix on its own screen (W50); the ornament trainer opened on one ornament (W44).
+  [/^\/skills\/fix\/(TS-\d\d)(?:\/(tone|notes|rhythm|ornaments|ear))?$/, "fix"], [/^\/skills\/(ornaments)\/(trainer)\/(meend|kan|murki|andolan)$/, "skilltool"],
   // Screens inside Skills and Music: a training tool, a game, a fix opened from a skill, a song, a raga.
   [/^\/skills\/(tone|rhythm|ornaments|ear)\/([a-z]+)$/, "skilltool"], [/^\/skills\/game\/([a-z]+)(?:\/([A-Za-z0-9._-]+))?$/, "play"], [/^\/skills\/fix\/(TS-\d\d)\/(tone|notes|rhythm|ornaments|ear)$/, "coach"],
   [/^\/music\/song\/([A-Za-z0-9._-]+)$/, "song"], [/^\/music\/raga\/([a-z-]+)$/, "raga"],
@@ -102,6 +106,7 @@ function placeOf(view, params, path) {
     case "ragas": return ["music", "ragas"];
     case "listen": return ["music", "listen"];
     case "skilltool": return ["skills", p];
+    case "fix": return ["skills", "fix"];
     case "song": return ["music", "songs"];
     case "raga": return ["music", "ragas"];
     case "progress": return ["me", "progress"];
@@ -121,6 +126,8 @@ const MODULE = { challenge: "play", flute: "settings" };
 Object.assign(MODULE, { song: "songs", raga: "ragas" });
 // Screens inside a section (a tool, a song, a raga) have a back link instead of the section tabs.
 const INNER = new Set(["skilltool", "song", "raga"]);
+// A fix on its own screen (redesign W50) is drawn by the Fix tab's module, with a back link instead of the tabs.
+MODULE.fix = "coach"; INNER.add("fix");
 // Each place remembers its last section, so coming back lands where you were.
 const LAST = "bansuri.nav.last";
 // Kept in memory for this visit, and saved when storage allows (it can be full or blocked).

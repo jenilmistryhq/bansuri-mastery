@@ -1,7 +1,7 @@
 // Skills (#/skills): "For you" first, then one section per ability (#/skills/tone ...). Each ability
 // shows the learner's latest measure, the tools that train it, its games and the fixes for when it is
 // not working. Nothing new happens here: every row opens a screen that already exists.
-import { h } from "../util.js";
+import { h, icon } from "../util.js";
 import { getSettings } from "../core/settings.js";
 import { questState } from "../fun.js";
 import { SKILLS, GAME_INFO, FIX_INFO, MUSIC_GAMES, skillById, gameBest, questGame } from "../skillmap.js";
@@ -35,7 +35,7 @@ function forYou(focus) {
   page.append(h("section", { class: "card row between fixcta" }, h("span", null, "Something wrong with the sound?"), h("a", { class: "btn", href: "#/skills/fix" }, "Fix a problem")));
   page.append(h("h2", { class: "grouphead" }, "Your skills"), h("div", { class: "skillgrid" }, SKILLS.map(s => {
     const m = s.latest();
-    return h("a", { class: "skillcard", href: "#/skills/" + s.id }, h("b", null, s.title), h("span", { class: "small muted" }, m ? m.text : "Not measured yet"));
+    return h("a", { class: "skillcard", href: "#/skills/" + s.id }, h("b", null, s.title), h("span", { class: "small muted" }, m && m.text ? m.text : "Not measured yet"));
   })));
   const links = [];
   if (!focus) links.push(row("#/skills/games", "All 24 games", "Grouped by the skill they train"));
@@ -48,26 +48,38 @@ function forYou(focus) {
 function latest(m) {
   const box = h("section", { class: "card hublatest" }, h("h2", { class: "grouphead" }, "Your latest"));
   if (!m) { box.append(h("p", { class: "small muted" }, "Not measured yet. Use a tool below and your result appears here.")); return box; }
-  box.append(h("p", null, h("span", { class: "small muted" }, h("span", null, m.label), ": "), h("b", null, m.value || m.text)));
+  if (m.label) box.append(h("p", null, h("span", { class: "small muted" }, h("span", null, m.label), ": "), h("b", null, m.value || m.text)));
   if (m.history && m.history.length > 1) {
     box.append(h("p", { class: "hubhist", "aria-label": "Your last results, oldest first" }, m.history.map(x =>
       h("span", { class: x.best ? "hubbest" : null }, h("span", null, m.unit.replace("{n}", x.v)), x.best ? h("span", { class: "small" }, " (best)") : null))));
   }
   for (const [label, text] of m.more || []) box.append(h("p", { class: "small" }, h("span", { class: "muted" }, h("span", null, label), ": "), h("b", null, text)));
-  if (m.chips) box.append(h("div", { class: "chips" }, m.chips.map(([name, on]) => h("span", { class: "chip " + (on ? "good" : "mutedc") }, on ? name + " (passed)" : name))));
+  if (m.chips) box.append(h("div", { class: "chips hubchips" }, m.chips.map(([name, on]) => h("span", { class: "chip " + (on ? "good" : "mutedc") }, on ? icon("check") : null, h("span", null, name), on ? h("span", { class: "sr-only" }, "(passed)") : null))));
   return box;
+}
+
+// The shape of each ornament, drawn small on its tile (W44): a glide, a flick, a turn, a swing.
+const GLYPH = {
+  meend: "M4 22 C 16 22, 22 6, 40 6", kan: "M4 20 L12 20 L15 5 L18 20 L40 20",
+  murki: "M4 16 L10 7 L16 22 L22 7 L28 16 L40 16", andolan: "M4 14 Q 10 2 16 14 T 28 14 T 40 14",
+};
+function glyph(k) {
+  const s = h("span", { class: "orntile-glyph", "aria-hidden": "true" });
+  s.innerHTML = '<svg viewBox="0 0 44 28" width="66" height="42"><path d="' + GLYPH[k] + '" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return s;
 }
 
 function hub(s, focus) {
   const page = h("div", { class: "page" });
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Skills"), h("h1", null, s.title)));
   page.append(latest(s.latest()));
-  // Train it: the hub's main tool as its one primary button, the others as rows under it.
-  const [first, ...rest] = s.train;
-  const main = /^dock:/.test(first[1]) ? h("button", { type: "button", class: "btn primary big hubmain", onclick: () => openDock(first[1].slice(5)) }, first[0])
-    : h("a", { class: "btn primary big hubmain", href: first[1] }, first[0]);
-  page.append(h("section", { class: "card hubgroup" }, h("h2", { class: "grouphead" }, "Train it"), main, h("p", { class: "small muted hubmainsub" }, first[2]),
-    rest.length ? h("div", { class: "hublist" }, rest.map(([t, href, sub]) => (/^dock:/.test(href) ? dockRow(href.slice(5), t, sub) : row(href, t, sub)))) : null));
+  // Train it: four tiles, one per ornament, each opening the trainer on it (W44); then what the
+  // microphone can judge.
+  if (s.tiles) {
+    page.append(h("section", { class: "card hubgroup" }, h("h2", { class: "grouphead" }, "Train it"),
+      h("div", { class: "orntiles" }, s.tiles.map(([k, name, href]) => h("a", { class: "orntile", href, dataset: { orn: k } }, h("b", null, name), glyph(k)))),
+      h("div", { class: "hublist" }, row(s.judge, "What the microphone can judge"))));
+  } else page.append(trainIt(s));
   if (!focus) {
     page.append(group("Games", s.games.map(k => gameRow(k))));
     if (s.also.length) page.append(group("Also good for this", s.also.map(k => gameRow(k, MUSIC_GAMES.includes(k) ? "In Music" : (SKILLS.find(x => x.games.includes(k)) || {}).title))));
@@ -75,6 +87,15 @@ function hub(s, focus) {
   page.append(group("If it isn't working", s.fixes.map(ts => row("#/skills/fix/" + ts + "/" + s.id, FIX_INFO[ts], null, ts))));
   page.append(group("Learn more", s.more.map(([t, href]) => row(href, t))));
   return page;
+}
+
+// Train it: the hub's main tool as its one primary button, the others as rows under it.
+function trainIt(s) {
+  const [first, ...rest] = s.train;
+  const main = /^dock:/.test(first[1]) ? h("button", { type: "button", class: "btn primary big hubmain", onclick: () => openDock(first[1].slice(5)) }, first[0])
+    : h("a", { class: "btn primary big hubmain", href: first[1] }, first[0]);
+  return h("section", { class: "card hubgroup" }, h("h2", { class: "grouphead" }, "Train it"), main, h("p", { class: "small muted hubmainsub" }, first[2]),
+    rest.length ? h("div", { class: "hublist" }, rest.map(([t, href, sub]) => (/^dock:/.test(href) ? dockRow(href.slice(5), t, sub) : row(href, t, sub)))) : null);
 }
 
 export async function render(main, { params }) {
