@@ -1,6 +1,7 @@
-// Reader (#/read/<path>): renders a curriculum Markdown file inside the app.
-import { getSettings } from "../core/settings.js";
-import { h, store, storeSet } from "../util.js";
+// Reader (#/read/<path>): renders a curriculum Markdown file inside the app. Its tools (W40):
+// the page's contents, hearing it read in the app's natural voice, and A A for its text size.
+import { getSettings, setSettings } from "../core/settings.js";
+import { h, store, storeSet, icon } from "../util.js";
 import { fetchDoc, renderMarkdown, filesList } from "../content.js";
 import { makePlayable, stopPlayable } from "../playable.js";
 import { lessonCards, cardDeck } from "../lessoncards.js";
@@ -9,6 +10,7 @@ import { parseNotation } from "../core/notation.js";
 import { tanpura } from "../core/audio.js";
 import { echoGame, ragaQuiz } from "../core/live.js";
 import { award } from "../xp.js";
+import { readButton, sayButton, textOf, stopSpeaking } from "../voice.js";
 
 // Phrases from a raga card for "Name that raga": the aroh, the avroh and each pakad phrase
 // (pakad phrases are separated by commas).
@@ -48,11 +50,36 @@ export function ragaInfo(md) {
   return { notes, first };
 }
 
+// The reader's text sizes (A A), on top of the app's own text size.
+export const READER_SIZES = [0.85, 1, 1.15, 1.3, 1.45, 1.6];
+
+// The text a page reads aloud: headings, paragraphs, list items and table cells, each once (an
+// item inside another is read with it), leaving out the tools placed in the page.
+export function pageText(root) {
+  const sel = "h1, h2, h3, p, li, td";
+  return [...root.querySelectorAll(sel)].filter(n => !n.parentElement.closest(sel) && !n.closest(".toolhost, .origtext, .hititle"))
+    .map(n => n.textContent.replace(/\s+/g, " ").trim()).filter(Boolean).join(" ");
+}
+
+// Contents (W40): the page's sections in a sheet; choosing one goes to it.
+function openContents(heads, go) {
+  const closeBtn = h("button", { type: "button", class: "btn ghost small", "aria-label": "Close the contents" }, icon("x"));
+  const dlg = h("dialog", { class: "sheet rd-toc", "aria-label": "Contents" },
+    h("header", { class: "sheet-head" }, h("h2", { class: "sheet-title" }, "Contents"), closeBtn),
+    h("nav", { class: "sheet-body" }, h("ol", { class: "rd-toclist", translate: "no" }, heads.map(x => h("li", { class: x.tagName === "H3" ? "sub" : "" },
+      h("button", { type: "button", class: "linkbtn", onclick: () => { dlg.close(); go(x.id); } }, x.textContent.trim()))))));
+  closeBtn.addEventListener("click", () => dlg.close());
+  dlg.addEventListener("close", () => dlg.remove());
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+  document.body.append(dlg);
+  dlg.showModal();
+}
+
 const GROUP_LABEL = { lessons: "Lessons", phases: "Roadmap", exercises: "Exercises", ragas: "Ragas", projects: "Milestones", troubleshooting: "Troubleshooting", "knowledge-tree": "Knowledge tree", tools: "Practice Bench" };
 
 export async function render(main, { params }) {
   const path = params[0].replace(/^\/+/, "");
-  const page = h("div", { class: "page" });
+  const page = h("div", { class: "page readerpage" });
   main.append(page);
   if (!/^[A-Za-z0-9._\/-]+\.md$/.test(path) || path.includes("..")) {
     page.append(h("div", { class: "card" }, h("h2", null, "Page not found"), h("p", null, "That address does not point to a course page."), h("a", { href: "#/course/book" }, "Open the course book")));
@@ -69,7 +96,10 @@ export async function render(main, { params }) {
   const crumbs = h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/course/book" }, "Course book"), folder ? [" / ", h("span", null, GROUP_LABEL[folder] || folder)] : null);
   node.classList.add("reader");
   const full = h("article", { class: "card" }, node);
-  page.append(crumbs);
+  // The tools row sits under the breadcrumbs; it is filled once the page knows its mode.
+  const tools = h("div", { class: "row rd-tools" });
+  page.append(crumbs, tools);
+  let showFull = null;
   // Lessons open as cards (one idea at a time); the full text is one tap away.
   // In Hindi, lessons show their Hindi text (title, objectives, explanation, steps) where it exists.
   let hiLesson = null;
@@ -86,6 +116,7 @@ export async function render(main, { params }) {
     const fullBtn = h("button", { type: "button", class: "seg-btn" }, "Full lesson");
     cards.forEach(c => { if (c.cleanup) cleanups.push(c.cleanup); });
     const deck = cardDeck(cards, path, { doneLabel: "Done", onDone: () => { if (!award("lesson", { key: path })) award("lessonAgain"); location.hash = "#/today"; } });
+    showFull = () => show("full");
     const show = m => {
       mode = m; storeSet("bansuri.readerMode", m);
       deck.hidden = m !== "cards"; full.hidden = m === "cards";
@@ -122,7 +153,7 @@ export async function render(main, { params }) {
     });
     page.insertBefore(h("section", { class: "card" }, h("h2", null, "Name that raga"),
       h("p", { class: "small muted" }, "A phrase from one of these ragas plays over the drone; name the raga. Listen for the missing notes and the notes the phrase leans on (EAR-12)."),
-      h("div", { class: "row" }, btn), host), page.children[1] || null);
+      h("div", { class: "row" }, btn), host), tools.nextSibling);
     cleanups.push(() => { if (quiz) quiz.destroy(); });
   }
 
@@ -147,11 +178,48 @@ export async function render(main, { params }) {
       });
       page.insertBefore(h("section", { class: "card" }, h("h2", null, "Practise this raga"),
         h("p", { class: "small muted" }, "The drone's first string is " + { pa: "Pa", ma: "Ma (this raga leaves out Pa)", ni: "Ni" }[info.first] + ". Play-back phrases use only the raga's notes; its phrases and movement still need the lesson and a teacher's ear."),
-        h("div", { class: "row" }, echoBtn, droneBtn), echoHost), page.children[1] || null);
+        h("div", { class: "row" }, echoBtn, droneBtn), echoHost), tools.nextSibling);
       cleanups.push(() => { if (mine) tanpura.stop(); if (echo) echo.destroy(); });
     }
   }
   makePlayable(node);
+
+  // Contents: the page's sections (h2, and h3 when there are few h2).
+  const h2s = [...node.querySelectorAll("h2")].filter(x => x.id);
+  const heads = h2s.length >= 4 ? h2s : [...node.querySelectorAll("h2, h3")].filter(x => x.id);
+  if (heads.length >= 2) {
+    const contents = h("button", { type: "button", class: "btn small ghost rd-contents" }, icon("read"), "Contents");
+    contents.addEventListener("click", () => openContents(heads, id => {
+      if (showFull) showFull();
+      const t = document.getElementById(id);
+      if (t) { t.scrollIntoView({ block: "start" }); t.setAttribute("tabindex", "-1"); t.focus({ preventScroll: true }); }
+    }));
+    tools.append(contents);
+  }
+  // Hear this: the whole page in the app's natural voice (Kokoro, never the device's voice). A
+  // lesson with its Hindi recording plays that in Hindi.
+  const hear = h("span", { class: "rd-hear" }, readButton(() => pageText(node), "Hear this"));
+  tools.append(hear);
+  if (hiLesson) textOf(["lesson", path]).then(t => { if (t) hear.replaceChildren(sayButton([["lesson", path]], "Hear this")); }).catch(() => {});
+  cleanups.push(() => stopSpeaking());
+  // A A: the reader's text size, remembered in the settings.
+  const smaller = h("button", { type: "button", class: "btn small ghost rd-size rd-smaller", "aria-label": "Smaller text" }, "A");
+  const larger = h("button", { type: "button", class: "btn small ghost rd-size rd-larger", "aria-label": "Larger text" }, "A");
+  const applySize = v => {
+    page.style.setProperty("--reader-scale", String(v));
+    smaller.disabled = v <= READER_SIZES[0]; larger.disabled = v >= READER_SIZES[READER_SIZES.length - 1];
+  };
+  const stepSize = d => {
+    const cur = getSettings().readerSize;
+    const at = READER_SIZES.reduce((best, v, i) => Math.abs(v - cur) < Math.abs(READER_SIZES[best] - cur) ? i : best, 0);
+    const v = READER_SIZES[Math.max(0, Math.min(READER_SIZES.length - 1, at + d))];
+    setSettings({ readerSize: v }); applySize(v);
+  };
+  smaller.addEventListener("click", () => stepSize(-1));
+  larger.addEventListener("click", () => stepSize(1));
+  applySize(getSettings().readerSize);
+  tools.append(h("span", { class: "rd-sizes", role: "group", "aria-label": "Text size" }, smaller, larger));
+
   // Glossary terms become tap-to-define, in the full text and in each card (not in the glossary itself).
   if (path !== "06-GLOSSARY.md") {
     loadGlossary().then(entries => {

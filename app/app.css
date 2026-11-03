@@ -1807,3 +1807,64 @@ button.backlink { background: none; border: 0; padding: 0; font: inherit; font-w
 .composebpm .input { width: 6em; }
 .composerow { grid-template-columns: 1fr auto; }
 .composerow.current b { color: var(--accent); }
+/* Redesign 2: milestones and reader */
+/* W35: the cover's sub-line, how to take it, and the rows that open more (rubric, attempts). */
+.ms-sub { gap: 6px 10px; flex: 1 1 100%; }
+.ms-how { padding-left: 1.2em; margin: 0; gap: 8px; }
+.ms-own { margin-top: 4px; font-size: 0.95rem; }
+.ms-own > * + * { margin-top: 8px; }
+.ms-rowlink { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 10px 0 0; border: 0; border-top: 1px solid var(--line); background: none; font: inherit; color: var(--ink); text-decoration: none; text-align: left; cursor: pointer; }
+.ms-rowlink .chev { color: var(--muted); font-weight: 700; }
+.ms-rowlink:hover > span:first-child { color: var(--accent); }
+.ms-attempts > summary { list-style: none; border-top: 0; padding-top: 0; }
+.ms-attempts > summary::-webkit-details-marker { display: none; }
+.ms-attempts[open] > summary { margin-bottom: 10px; }
+.ms-attempts[open] > summary .chev { transform: rotate(90deg); }
+/* W36: a check in the player: "M8: check 3 of 7" in place of the chapter strip. */
+.ms-run .lesson-chaps { display: none; }
+.ms-run .lesson-count { text-align: left; font-weight: 600; color: var(--ink); }
+.ms-check { gap: 12px; }
+.ms-checktitle code { font-size: 1.15em; }
+.ms-checknum { color: var(--muted); }
+.ms-crit { display: grid; gap: 2px; margin: 0; }
+.ms-verdict .lesson-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+.ms-verdict .lesson-chip .icon { width: 16px; height: 16px; vertical-align: -3px; }
+/* W37, W38: the result. */
+.ms-result { display: grid; gap: 14px; }
+.ms-passed { text-align: center; justify-items: center; }
+.ms-badge { position: relative; width: 96px; height: 108px; }
+.ms-badge .emblem { width: 96px; height: 108px; }
+.ms-badge b { position: absolute; left: 0; right: 0; bottom: -6px; text-align: center; font-family: var(--mono); }
+.ms-allchecks { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: center; }
+.ms-ticks { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.ms-ticks i { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--sunken); }
+.ms-ticks i.ok { background: var(--good); color: var(--surface); }
+.ms-ticks i svg { width: 14px; height: 14px; }
+.ms-result .lesson-done li { align-items: flex-start; }
+.ms-result .lesson-done li.later .lesson-tick { background: var(--sunken); color: var(--warn); font-weight: 700; }
+.ms-result .lesson-done li.later { color: var(--ink); }
+.ms-practise { display: inline-flex; gap: 4px; align-items: center; min-height: 32px; }
+.ms-remedy > summary { cursor: pointer; font-weight: 600; }
+.ms-remedy[open] > summary { margin-bottom: 8px; }
+/* W19a: the score of a passed milestone, the days to the next. */
+.msrow { grid-template-columns: 2.6rem minmax(0, 1fr) auto auto auto; }
+.msextra { font-size: 0.85rem; color: var(--muted); white-space: nowrap; }
+.msrow.msnext .msextra { color: var(--ink); font-weight: 600; }
+@media (max-width: 480px) { .msrow { grid-template-columns: 2.4rem minmax(0, 1fr) auto auto; } }
+/* W40: the reader's tools and its text size. */
+.rd-tools { gap: 6px 8px; align-items: center; }
+.rd-tools .readwrap { align-items: flex-start; }
+.rd-tools .readwrap p { text-align: left; }
+.rd-sizes { display: inline-flex; gap: 2px; margin-left: auto; align-items: center; }
+.rd-size { min-width: 44px; min-height: 44px; justify-content: center; font-family: var(--body); font-weight: 700; padding: 0 8px; }
+.rd-sizes .rd-smaller { font-size: 0.85rem; }
+.rd-sizes .rd-larger { font-size: 1.3rem; }
+.readerpage .reader, .readerpage .lbody { font-size: calc(1.02rem * var(--reader-scale, 1)); }
+.readerpage .reader h1 { font-size: 1.9em; }
+.readerpage .reader h2 { font-size: 1.25em; }
+.readerpage .reader h3 { font-size: 1.05em; }
+.readerpage .lcard > h2 { font-size: calc(1.2rem * var(--reader-scale, 1)); }
+.rd-toclist { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.rd-toclist li .linkbtn { display: block; width: 100%; min-height: 44px; padding: 10px 4px; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--line); }
+.rd-toclist li.sub .linkbtn { padding-left: 20px; color: var(--muted); }
+.rd-toclist li .linkbtn:hover { color: var(--accent); }
