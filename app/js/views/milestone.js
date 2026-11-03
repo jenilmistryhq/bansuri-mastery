@@ -1,14 +1,21 @@
 // Milestone test (#/milestone/<id>): checklist parsed from the milestone file, rubric, record, pass/fail.
-// The cover (docs/redesign 05 L7, W35): what is checked first, then how to take it, then Take the
-// test beside Rehearse first. Not yet (W38) leads with what passed; passed (W37) plays the Day 0
-// time capsule next to today's recording.
-import { h, fmtDate, toast, icon, today } from "../util.js";
-import { milestoneInfo, milestoneState, recordAttempt, current } from "../course.js";
-import { fetchDoc, tablesOf, renderInline, renderMarkdown, sectionOf } from "../content.js";
+// The cover (docs/redesign 05 L7, W35): what is checked first, then how to take it (the test day's
+// own steps and the milestone's own conditions), the rubric, then Take the test beside Rehearse
+// first. The test runs in the lesson player, one check per step (W36, F7), then the recording and
+// the score. Not yet (W38) leads with what passed and says where to practise the rest; passed (W37)
+// shows the badge and plays the Day 0 time capsule next to today's recording.
+import { h, fmtDate, toast, icon, today, store, storeSet, ICON_PATHS } from "../util.js";
+import { milestoneInfo, milestoneState, recordAttempt, current, getDay } from "../course.js";
+import { fetchDoc, tablesOf, renderInline, renderMarkdown, sectionOf, routeFor } from "../content.js";
 import { recordWidget, listRecordings } from "../recorder.js";
 import { celebrate } from "../fun.js";
 import { holdMeter, phraseCheck, noteQuiz, echoGame } from "../core/live.js";
 import { parseNotation } from "../core/notation.js";
+import { lessonPlayer, lessonRecord } from "../lesson/player.js";
+import { backHead } from "../backhead.js";
+import { stepMeta, plainText } from "../steps.js";
+import { makePlayable } from "../playable.js";
+import { emblem } from "../ui.js";
 
 const SWARA = { Sa: 0, Re: 2, Ga: 4, Ma: 5, Pa: 7, Dha: 9, Ni: 11 };
 function notesOf(text) {
@@ -125,10 +132,111 @@ function thenAndNow(cleanups) {
   return box;
 }
 
+// "How to take it" from the milestone's own words: the prose around its checklist (the conditions
+// in a heading, an intro, "What success sounds like"), without the tables and the remedies.
+export function ownText(md) {
+  const lines = md.split("\n"), out = [];
+  let pendingHead = null;
+  for (let i = 1; i < lines.length; i++) {
+    const l = lines[i];
+    if (/^##\s+If you did not pass/i.test(l)) break;
+    if (/^\s*\|/.test(l) || /^\[Projects\]/.test(l)) continue;
+    const hd = /^#{2,6}\s+(.*)$/.exec(l);
+    if (hd) {
+      const m = /^(.*?)\s*\((.+)\)\s*$/.exec(hd[1]);
+      // "Test (record everything; drone on C)": the condition is the useful part.
+      if (m) { pendingHead = null; out.push("", "**" + m[1].trim() + ":** " + m[2].trim(), ""); }
+      else pendingHead = hd[1].trim();
+      continue;
+    }
+    if (!l.trim()) { out.push(""); continue; }
+    // A plain heading is kept only when prose follows it.
+    if (pendingHead) { out.push("", "**" + pendingHead + "**", ""); pendingHead = null; }
+    out.push(l);
+  }
+  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+// The item numbers a remedy row covers: "1, 2", "4, 5, 6", "1 (`.P`)", "3 (Expression)".
+export function remedyFor(md, num) {
+  const sec = sectionOf(md, /if you did not pass/i);
+  if (!sec || !num) return null;
+  for (const t of tablesOf(sec)) {
+    const first = t.head[0], last = t.head[t.head.length - 1];
+    for (const r of t.rows) {
+      const nums = (String(r[first] || "").split("(")[0].match(/\d+/g) || []).map(Number);
+      if (nums.includes(Number(num))) return r[last] || "";
+    }
+  }
+  return null;
+}
+
+// Where to practise a failed item (W38): the Skills tool that trains what the microphone checks,
+// else the first lesson (or other course page) its remedy names, else the rehearsal day.
+export function practiseLink(it, md, path, day) {
+  const spec = micSpec(it.label, it.criterion);
+  if (spec && spec.kind === "hold") return { href: "#/skills/tone/longtones", label: "Long tones" };
+  if (spec && spec.kind === "ear") return { href: "#/skills/ear/quiz", label: "Ear quiz" };
+  if (spec && spec.kind === "echo") return { href: "#/skills/ear/playback", label: "Play it back" };
+  const rem = remedyFor(md, it.num);
+  if (rem) {
+    const links = [...rem.matchAll(/\[([^\]]+)\]\(([^)\s]+)\)/g)].map(m => ({ label: m[1], href: routeFor(path, m[2]) })).filter(l => /^#\//.test(l.href));
+    const pick = links.find(l => /#\/read\/lessons\//.test(l.href)) || links[0];
+    if (pick) {
+      const ts = /#\/read\/troubleshooting\/(TS-\d\d)/.exec(pick.href);
+      return ts ? { href: "#/skills/fix/" + ts[1], label: pick.label } : pick;
+    }
+  }
+  return { href: "#/session/" + day, label: "Rehearse first" };
+}
+
+const LESSONS_KEY = "bansuri.lessons";
+const runId = id => "ms-" + id;
+function clearRun(id) { const all = store(LESSONS_KEY, {}); if (all[runId(id)]) { delete all[runId(id)]; storeSet(LESSONS_KEY, all); } }
+
+// One check of the test, as a step of the player (W36): the item large, its pass criterion, the
+// microphone check when the app can judge it, and the learner's own verdict (the mic sets it).
+function checkStep(it, info, unlocked) {
+  return {
+    id: "check" + it.key, kind: "custom",
+    make(s, api) {
+      const items = api.data.items || (api.data.items = {});
+      let widget = null;
+      const yes = h("button", { type: "button", class: "lesson-chip", "aria-pressed": "false" }, icon("check"), " Passed");
+      const no = h("button", { type: "button", class: "lesson-chip", "aria-pressed": "false" }, "Not yet");
+      const setVerdict = v => {
+        items[it.key] = v; api.save();
+        yes.classList.toggle("picked", v === true); yes.setAttribute("aria-pressed", String(v === true));
+        no.classList.toggle("picked", v === false); no.setAttribute("aria-pressed", String(v === false));
+        api.ready(true);
+      };
+      yes.addEventListener("click", () => setVerdict(true));
+      no.addEventListener("click", () => setVerdict(false));
+      const spec = unlocked ? micSpec(it.label, it.criterion) : null;
+      if (spec) {
+        const onPass = () => { setVerdict(true); toast("Item " + (it.num || "") + " passed."); };
+        widget = spec.kind === "hold" ? holdMeter({ targets: spec.targets, seconds: spec.seconds, cents: spec.cents, onPass })
+          : spec.kind === "ear" ? noteQuiz({ notes: spec.notes, count: spec.count, pass: spec.pass, onPass })
+          : spec.kind === "echo" ? echoGame({ level: "bil", test: { rounds: spec.rounds, pass: spec.pass, len: spec.len }, onPass })
+          : phraseCheck({ phrase: spec.phrase, reps: spec.reps, onPass });
+      }
+      const el = h("div", { class: "stack ms-check" },
+        h("h2", { class: "lesson-title ms-checktitle", tabindex: "-1" }, it.num ? h("span", { class: "ms-checknum" }, it.num + ". ") : null, renderInline(it.label, info.path)),
+        h("div", { class: "row" }, h("span", { class: "chip " + (it.required ? "info" : "mutedc") }, it.required ? "Required" : (it.requiredText || "Optional"))),
+        it.criterion ? h("p", { class: "ms-crit" }, h("span", { class: "eyebrow" }, "To pass"), h("span", null, renderInline(it.criterion, info.path))) : null,
+        widget ? h("div", { class: "micpanel" }, widget.el) : h("p", { class: "small muted" }, "Play it and record it; then say how it went."),
+        h("fieldset", { class: "lesson-group ms-verdict" }, h("legend", null, "Did it pass?"), h("div", { class: "lesson-chips" }, yes, no)));
+      makePlayable(el);
+      if (items[it.key] !== undefined) setVerdict(items[it.key]);
+      return { el, destroy() { if (widget) widget.destroy(); } };
+    },
+  };
+}
+
 export async function render(main, { params }) {
   const id = params[0];
   const info = milestoneInfo(id);
-  const page = h("div", { class: "page" });
+  const page = h("div", { class: "page mspage" });
   main.append(page);
   if (!info) { page.append(h("p", null, "Unknown milestone.")); return; }
   const md = await fetchDoc(info.path);
@@ -136,12 +244,12 @@ export async function render(main, { params }) {
   const state = milestoneState(id);
   const unlocked = info.day <= current();
   const cleanups = [];
+  let player = null;
 
+  // The top (W35): back to the course, the milestone's number and title, where it stands.
   const chip = h("span", { class: "chip " + (state.status === "passed" ? "good" : state.status === "failed" ? "warn" : "mutedc") }, state.status === "passed" ? "Passed " + fmtDate(state.passedOn) : state.status === "failed" ? "Not passed yet" : "Not taken");
-  page.append(h("section", { class: "hero" },
-    h("span", { class: "eyebrow" }, "Milestone " + id + " - Day " + info.day),
-    h("h1", null, info.title),
-    h("div", { class: "row" }, chip, h("span", { class: "small muted" }, state.attempts.length + " attempt" + (state.attempts.length === 1 ? "" : "s")), h("a", { href: "#/read/" + info.path }, "Read the full test"))));
+  page.append(backHead("#/course/milestones", "Course", info.title,
+    h("div", { class: "row ms-sub" }, h("span", { class: "eyebrow" }, "Milestone " + id + " - Day " + info.day), chip, h("a", { href: "#/read/" + info.path }, "Read the full test"))));
 
   if (!unlocked) page.append(h("div", { class: "notice info" }, "This milestone is ahead of you (Day " + info.day + "). You can read it now; the test opens when you reach that day."));
   // Two tries without passing: a three-minute check finds which basic skill is holding things back.
@@ -158,113 +266,155 @@ export async function render(main, { params }) {
       h("span", { class: "stack", style: { gap: "2px" } }, h("span", null, it.num ? h("b", null, it.num + ". ") : null, renderInline(it.label, info.path)), it.criterion ? h("span", { class: "small muted" }, renderInline(it.criterion, info.path)) : null),
       h("span", { class: "chip " + (it.required ? "info" : "mutedc") }, it.required ? "Required" : (it.requiredText || "Optional"))))) : h("p", null, "No checklist table was found in this milestone file."),
     required && required < items.length ? h("p", { class: "small muted" }, "Every required check must pass; the others are a bonus.") : null));
-  cover.append(h("section", { class: "card" }, h("h2", null, "How to take it"),
-    h("ol", { class: "stack", style: { paddingLeft: "1.2em", margin: "0" } },
-      h("li", null, "Warm up for at most 10 minutes."),
+
+  // How to take it: the test day's own steps (plan.json, in plain words and in Hindi when chosen),
+  // the milestone file's own conditions, then the rubric it is scored with.
+  const day = getDay(info.day);
+  const steps = day && day.kind === "milestone" ? (day.blocks || []).filter(b => b.text) : [];
+  const how = h("ol", { class: "stack ms-how" });
+  if (steps.length) {
+    for (const b of steps) {
+      const li = h("li", null, h("b", null, stepMeta(b).name, ". "), h("span", null, b.text));
+      how.append(li);
+      plainText(b).then(t => { if (t) li.lastChild.textContent = t; });
+    }
+  } else {
+    how.append(h("li", null, "Warm up for at most 10 minutes."),
       h("li", null, "Record each item in one take (two attempts allowed; the better one counts). No editing."),
       h("li", null, "Wait at least a day, then listen back and score honestly with the rubric."),
-      h("li", null, "Every item marked Required must pass. If not, practise the remedies below and retest only the failed items.")),
+      h("li", null, "Every item marked Required must pass. If not, practise the remedies below and retest only the failed items."));
+  }
+  const own = ownText(md);
+  let ownNode = null;
+  if (own) { ownNode = renderMarkdown(own, info.path).node; ownNode.classList.add("reader", "ms-own"); }
+  cover.append(h("section", { class: "card" }, h("h2", null, "How to take it"), how, ownNode,
+    h("a", { class: "ms-rowlink", href: "#/read/lessons/L08-recording-and-self-assessment.md#5-the-standard-rubric-canonical-for-all-milestones" }, h("span", null, "Rubric (1-4, from L08)"), h("span", { class: "chev", "aria-hidden": "true" }, ">")),
     h("p", { class: "small muted" }, "From ", h("a", { href: "#/read/projects/README.md" }, "how every milestone works"), ". From M3 on, a second listener (ideally a teacher) helps: trust the lower score.")));
 
-  // Take the test (the checks, the recording and the score) or rehearse with the day's session.
-  const test = h("div", { class: "stack ms-test", hidden: true });
-  const takeBtn = h("button", { type: "button", class: "btn primary big" }, state.status === "failed" ? "Retake the test" : state.status === "passed" ? "Take it again" : "Take the test");
-  takeBtn.addEventListener("click", () => {
-    cover.remove(); test.hidden = false;
-    const first = test.querySelector("h2");
-    if (first) { first.setAttribute("tabindex", "-1"); first.focus({ preventScroll: true }); }
-    test.scrollIntoView({ block: "start" });
-  });
+  // Take the test (in the player, one check per step) or rehearse with the day's session.
+  const prior = lessonRecord(runId(id));
+  const midway = unlocked && prior && !prior.done && prior.at > 0;
+  const takeBtn = h("button", { type: "button", class: "btn primary big" }, midway ? "Carry on the test" : state.status === "failed" ? "Retake the test" : state.status === "passed" ? "Take it again" : "Take the test");
+  takeBtn.addEventListener("click", () => { if (!midway) clearRun(id); play(); });
+  const restartBtn = midway ? h("button", { type: "button", class: "btn ghost" }, "Start over") : null;
+  if (restartBtn) restartBtn.addEventListener("click", () => { clearRun(id); play(); });
   cover.append(h("div", { class: "row ms-ways" },
     unlocked ? takeBtn : h("p", { class: "small muted" }, "Opens on Day " + info.day + "."),
+    restartBtn,
     h("a", { class: "btn", href: "#/session/" + info.day }, "Rehearse first")));
-  page.append(cover, test);
 
-  // Recording for the test.
-  const rw = recordWidget({ day: info.day, label: id + " test" });
-  cleanups.push(() => rw.cleanup && rw.cleanup());
-  test.append(h("section", { class: "card" }, h("h2", null, "Record the test"), h("p", { class: "small muted" }, "Recordings are saved in your journal. Listen back before you score."), rw));
-
-  // Checklist.
-  const checks = {};
-  const list = h("div", null, items.map(it => {
-    const cb = h("input", { type: "checkbox", "aria-label": "Passed: " + it.label });
-    checks[it.key] = cb;
-    const spec = unlocked ? micSpec(it.label, it.criterion) : null;
-    let panel = null, widget = null, micBtn = null;
-    if (spec) {
-      panel = h("div", { class: "micpanel", hidden: true });
-      micBtn = h("button", { type: "button", class: "btn small" }, "Check with mic");
-      micBtn.addEventListener("click", e => {
-        e.preventDefault();
-        if (!panel.hidden) { panel.hidden = true; if (widget) { widget.destroy(); widget = null; } micBtn.textContent = "Check with mic"; return; }
-        const onPass = () => { cb.checked = true; micBtn.textContent = "Passed by mic"; micBtn.classList.add("passed"); toast("Item " + (it.num || "") + " passed."); };
-        widget = spec.kind === "hold" ? holdMeter({ targets: spec.targets, seconds: spec.seconds, cents: spec.cents, onPass })
-          : spec.kind === "ear" ? noteQuiz({ notes: spec.notes, count: spec.count, pass: spec.pass, onPass })
-          : spec.kind === "echo" ? echoGame({ level: "bil", test: { rounds: spec.rounds, pass: spec.pass, len: spec.len }, onPass })
-          : phraseCheck({ phrase: spec.phrase, reps: spec.reps, onPass });
-        panel.replaceChildren(widget.el); panel.hidden = false; micBtn.textContent = "Close the check";
-        cleanups.push(() => widget && widget.destroy());
-      });
-    }
-    return h("div", { class: "mrow" }, h("label", { class: "mitem" }, cb,
-      h("div", { class: "stack", style: { gap: "2px" } }, h("span", null, it.num ? h("b", null, it.num + ". ") : null, renderInline(it.label, info.path)), it.criterion ? h("span", { class: "small muted" }, renderInline(it.criterion, info.path)) : null, micBtn ? h("div", null, micBtn) : null),
-      h("span", { class: "chip " + (it.required ? "info" : "mutedc") }, it.required ? "Required" : (it.requiredText || "Optional"))), panel);
-  }));
-  // Rubric.
-  const rubric = {};
-  const rub = h("div", { class: "rubric" }, RUBRIC.map(([k, label]) => {
-    const seg = h("div", { class: "seg", role: "group", "aria-label": label });
-    for (let v = 1; v <= 4; v++) {
-      const b = h("button", { type: "button", "aria-pressed": "false" }, String(v));
-      b.addEventListener("click", () => { rubric[k] = v; seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); });
-      seg.append(b);
-    }
-    return h("div", { class: "rrow" }, h("span", null, label), seg);
-  }));
-  const notes = h("textarea", { class: "input", id: "ms-notes", placeholder: "What you noticed when listening back. Second listener's comments." });
-  const submit = h("button", { type: "button", class: "btn primary big" }, "Save this attempt");
-  submit.disabled = !unlocked;
-  const result = h("div", { class: "stack" });
-
-  submit.addEventListener("click", async () => {
-    const passedItems = {};
-    let allRequired = true;
-    for (const it of items) { passedItems[it.key] = checks[it.key].checked; if (it.required && !checks[it.key].checked) allRequired = false; }
-    const passed = items.length > 0 && allRequired;
-    const res = recordAttempt(id, { items: passedItems, rubric: Object.assign({}, rubric), notes: notes.value.trim() }, passed);
-    result.replaceChildren();
-    if (passed) {
-      result.append(h("div", { class: "notice good" }, h("b", null, "Passed. "), "Well earned. " + (res.advanced ? "The next day is unlocked." : "")), thenAndNow(cleanups), h("a", { class: "btn primary", href: "#/today" }, "Go to today"));
-      celebrate("Milestone " + id + " passed!");
-    } else {
-      // Not yet (W38): what passed first, then what is for next time, gently.
-      const passedNow = items.filter(it => checks[it.key].checked);
-      const failed = items.filter(it => it.required && !checks[it.key].checked);
-      const remedy = sectionOf(md, /if you did not pass/i);
-      const row = (it, ok) => h("li", { class: ok ? "ok" : "later" }, h("span", { class: "lesson-tick", "aria-hidden": "true" }, ok ? icon("check") : ""), h("span", null, it.num ? it.num + ". " : "", renderInline(it.label, info.path)));
-      result.append(h("div", { class: "notice ms-notyet" }, h("b", null, "Not yet. "), "Failing is information, not a judgement."),
-        passedNow.length ? h("div", { class: "stack tight lesson-well" }, h("span", { class: "eyebrow" }, "Passed " + passedNow.length + " of " + items.length), h("ul", { class: "lesson-done" }, passedNow.map(it => row(it, true)))) : null,
-        h("div", { class: "stack tight lesson-later" }, h("span", { class: "eyebrow" }, "For next time"), h("ul", { class: "lesson-done" }, failed.map(it => row(it, false))),
-          h("p", { class: "small" }, "Practise the remedies below for 5-10 practice days, then retest only those items.")));
-      if (remedy) { const r = renderMarkdown(remedy, info.path); r.node.classList.add("reader"); result.append(h("div", { class: "card" }, r.node)); }
-    }
-    result.scrollIntoView({ behavior: "smooth" });
-  });
-
-  test.append(h("section", { class: "card" }, h("h2", null, "Checklist"), items.length ? list : h("p", null, "No checklist table was found in this milestone file."),
-    h("h3", null, "Rubric (1-4, from L08)"), rub,
-    h("label", { class: "field", for: "ms-notes" }, "Notes", notes),
-    h("div", { class: "row" }, submit, unlocked ? null : h("span", { class: "small muted" }, "Opens on Day " + info.day + ".")),
-    result));
-
-  // History.
+  // Previous attempts: one row, opening the list (date, rubric, result).
+  let history = null;
   if (state.attempts.length) {
-    page.append(h("section", { class: "card" }, h("h2", null, "Previous attempts"),
+    history = h("details", { class: "card ms-attempts" },
+      h("summary", { class: "ms-rowlink" }, h("span", null, "Previous attempts: " + state.attempts.length), h("span", { class: "chev", "aria-hidden": "true" }, ">")),
       h("div", { class: "stack" }, state.attempts.slice().reverse().map(a => h("div", { class: "row between" },
         h("span", null, fmtDate(a.date)),
         h("span", { class: "small mono" }, RUBRIC.map(([k]) => k + (a.rubric && a.rubric[k] ? a.rubric[k] : "-")).join(" ")),
-        h("span", { class: "chip " + (a.passed ? "good" : "warn") }, a.passed ? "Passed" : "Not yet"))))));
+        h("span", { class: "chip " + (a.passed ? "good" : "warn") }, a.passed ? "Passed" : "Not yet")))));
+    cover.append(history);
   }
-  return () => cleanups.forEach(f => f());
+  page.append(cover);
+  const coverParts = [...page.children];
+
+  // The test (W36): the checks one per step in the full-focus player, then the recording, then the
+  // score. The attempt is saved in the same form as always ({ items, rubric, notes }).
+  function testLesson() {
+    const n = items.length;
+    const recordStep = {
+      id: "record", kind: "custom", always: true, title: "Record the test",
+      make() {
+        const rw = recordWidget({ day: info.day, label: id + " test" });
+        return { el: h("div", { class: "stack" }, h("p", { class: "small muted" }, "Recordings are saved in your journal. Listen back before you score."), rw), destroy() { if (rw.cleanup) rw.cleanup(); } };
+      },
+    };
+    const scoreStep = {
+      id: "score", kind: "custom", always: true, title: "Score it", next: "Save this attempt",
+      make(s, api) {
+        const rubric = api.data.rubric || (api.data.rubric = {});
+        const rub = h("div", { class: "rubric" }, RUBRIC.map(([k, label]) => {
+          const seg = h("div", { class: "seg", role: "group", "aria-label": label });
+          for (let v = 1; v <= 4; v++) {
+            const b = h("button", { type: "button", "aria-pressed": String(rubric[k] === v) }, String(v));
+            b.addEventListener("click", () => { rubric[k] = v; api.save(); seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); });
+            seg.append(b);
+          }
+          return h("div", { class: "rrow" }, h("span", null, label), seg);
+        }));
+        const notes = h("textarea", { class: "input", id: "ms-notes", placeholder: "What you noticed when listening back. Second listener's comments." });
+        notes.value = api.data.notes || "";
+        notes.addEventListener("input", () => { api.data.notes = notes.value; api.save(); });
+        return { el: h("div", { class: "stack" }, h("h3", null, "Rubric (1-4, from L08)"), rub, h("label", { class: "field", for: "ms-notes" }, "Your notes", notes)) };
+      },
+    };
+    return {
+      id: runId(id), title: id + " " + info.title,
+      chapters: [{ title: "Checks", steps: items.map(it => checkStep(it, info, unlocked)) }, { title: "Record the test", steps: [recordStep] }, { title: "Score it", steps: [scoreStep] }],
+      countText: at => at < n ? id + ": check " + (at + 1) + " of " + n : id + ": " + (at === n ? "recording" : "your score"),
+      finish(data) {
+        const got = data.items || {}, passedItems = {};
+        let allRequired = true;
+        for (const it of items) { passedItems[it.key] = got[it.key] === true; if (it.required && !passedItems[it.key]) allRequired = false; }
+        const passed = items.length > 0 && allRequired;
+        const res = recordAttempt(id, { items: passedItems, rubric: Object.assign({}, data.rubric || {}), notes: String(data.notes || "").trim() }, passed);
+        return { passed, passedItems, advanced: res.advanced };
+      },
+    };
+  }
+
+  function showCover() {
+    if (player) { player.destroy(); player = null; }
+    page.replaceChildren(...coverParts);
+    window.scrollTo(0, 0);
+  }
+  function play() {
+    if (player) player.destroy();
+    player = lessonPlayer(testLesson(), { onExit: showCover, onFinished: res => showResult(res) });
+    player.el.classList.add("ms-run");
+    page.replaceChildren(player.el);
+  }
+
+  // The result: passed (W37) or not yet (W38), as the end of the run.
+  function showResult(res) {
+    if (player) { player.destroy(); player = null; }
+    const ok = res.passedItems || {};
+    const box = h("section", { class: "card ms-result" });
+    if (res.passed) {
+      const next = getDay(info.day + 1), here = getDay(info.day);
+      const newPhase = next && here && next.phase !== here.phase;
+      box.classList.add("ms-passed");
+      box.append(h("div", { class: "ms-badge" }, emblem(ICON_PATHS.star, true), h("b", null, id)),
+        h("h1", null, "Milestone " + id + " passed"),
+        h("div", { class: "ms-allchecks" }, h("span", null, "All " + items.length + " checks"), h("span", { class: "ms-ticks", "aria-hidden": "true" }, items.map(it => h("i", { class: ok[it.key] ? "ok" : "" }, ok[it.key] ? icon("check") : "")))),
+        h("p", { class: "muted" }, "Well earned. " + (res.advanced ? "The next day is unlocked." : "")),
+        thenAndNow(cleanups),
+        h("a", { class: "btn primary big", href: "#/today" }, newPhase ? "On to Phase " + next.phase : "Go to today"));
+      celebrate("Milestone " + id + " passed!");
+    } else {
+      // Not yet (W38): what passed first, then what is for next time, each with where to practise it.
+      const passedNow = items.filter(it => ok[it.key]);
+      const failed = items.filter(it => it.required && !ok[it.key]);
+      const remedy = sectionOf(md, /if you did not pass/i);
+      const row = (it, good) => {
+        const link = good ? null : practiseLink(it, md, info.path, info.day);
+        return h("li", { class: good ? "ok" : "later" }, h("span", { class: "lesson-tick", "aria-hidden": "true" }, good ? icon("check") : "!"),
+          h("span", { class: "stack tight" }, h("span", null, it.num ? it.num + ". " : "", renderInline(it.label, info.path)),
+            link ? h("a", { class: "ms-practise", href: link.href }, h("span", { class: "chev", "aria-hidden": "true" }, ">"), " Practise this", h("span", { class: "small muted" }, " (", link.label, ")")) : null));
+      };
+      const stuckHost = h("div");
+      const stuckBtn = h("button", { type: "button", class: "ms-rowlink linkrow" }, h("span", null, "Stuck on this milestone?"), h("span", { class: "chev", "aria-hidden": "true" }, ">"));
+      stuckBtn.addEventListener("click", () => { stuckBtn.hidden = true; stuckHost.append(stuckCheck(cleanups)); });
+      box.append(h("h1", null, "Milestone " + id + ": not yet"),
+        h("div", { class: "notice ms-notyet" }, "Failing is information, not a judgement."),
+        passedNow.length ? h("div", { class: "stack tight lesson-well" }, h("span", { class: "eyebrow" }, "Passed " + passedNow.length + " of " + items.length), h("ul", { class: "lesson-done" }, passedNow.map(it => row(it, true)))) : null,
+        h("div", { class: "stack tight lesson-later" }, h("span", { class: "eyebrow" }, "For next time"), h("ul", { class: "lesson-done" }, failed.map(it => row(it, false))),
+          h("p", { class: "small" }, "Practise the remedies below for 5-10 practice days, then retest only those items.")));
+      if (remedy) { const r = renderMarkdown(remedy, info.path); r.node.classList.add("reader"); const rh = r.node.querySelector("h2"); if (rh) rh.remove(); box.append(h("details", { class: "ms-remedy" }, h("summary", null, "If you did not pass"), r.node)); }
+      box.append(stuckBtn, stuckHost, h("a", { class: "btn primary big", href: "#/course" }, "Back to the course"));
+    }
+    page.replaceChildren(box);
+    window.scrollTo(0, 0);
+  }
+
+  return () => { if (player) player.destroy(); cleanups.forEach(f => f()); };
 }

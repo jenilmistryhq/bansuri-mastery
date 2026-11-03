@@ -3,7 +3,7 @@
 // (api.ready()), which lights up Continue. Where the learner is, and what they chose, is kept in
 // this browser (bansuri.lessons), so a lesson resumes where it was left.
 //
-// lesson: { id, title, chapters: [{ title, steps: [step] }], finish(data) }
+// lesson: { id, title, chapters: [{ title, steps: [step] }], finish(data), countText?(at, steps) }
 // step:   { id, kind, title, ... } - kinds in ./steps.js; kind "custom" takes make(step, api).
 import { h, store, storeSet, today, icon } from "../util.js";
 import { STEP_KINDS } from "./steps.js";
@@ -103,7 +103,8 @@ export function lessonPlayer(lesson, opts) {
       b.classList.toggle("done", i < s.chapter); b.classList.toggle("now", i === s.chapter);
       if (i === s.chapter) { b.setAttribute("aria-current", "step"); if (bar.scrollWidth > bar.clientWidth) bar.scrollLeft = Math.max(0, b.offsetLeft - bar.offsetLeft - bar.clientWidth / 2); } else b.removeAttribute("aria-current");
     });
-    count.textContent = (at + 1) + " / " + steps.length;
+    // A lesson may word its count itself (a milestone test: "M8: check 3 of 7").
+    count.textContent = lesson.countText ? lesson.countText(at, steps) : (at + 1) + " / " + steps.length;
     // The drone switch shows on the steps that play, as it was left; elsewhere a drone it started stops.
     const plays = PLAYS.has(s.kind);
     tools.hidden = !plays;

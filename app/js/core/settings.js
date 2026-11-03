@@ -7,10 +7,10 @@ const SETTINGS_KEY = "bansuri.settings";
 // textSize (1 = normal), easyFont, contrast, beatFlash, vibrate, gameSpeed (slow | normal | fast),
 // noTimer (games without a clock), bigTargets, cues (game sounds and spoken notes for blind players),
 // hints (a guide tone after an off note), countdown (seconds to get the flute ready before the app
-// starts listening or recording; 0 = none).
+// starts listening or recording; 0 = none), readerSize (the course reader's A A text size).
 export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, volume: 0.75, deva: false,
   lang: "en", talk: false, notesAs: "letters", simple: false, textSize: 1, easyFont: false, contrast: false,
-  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal", pilot: false });
+  beatFlash: false, vibrate: false, gameSpeed: "normal", noTimer: false, bigTargets: false, cues: false, hints: true, countdown: 5, showCodes: false, maStyle: "app", focus: false, intonation: "equal", pilot: false, readerSize: 1 });
 const settingsListeners = new Set();
 let settingsCache = null;
 
@@ -46,7 +46,9 @@ function cleanSettings(s) {
     // the tanpura: whole-number ratios from Sa, as many teachers tune by ear).
     intonation: s.intonation === "just" ? "just" : "equal",
     // Pilot study: note anonymous results on this device (pilot.js); off unless chosen.
-    pilot: s.pilot === true
+    pilot: s.pilot === true,
+    // The reader's own text size (its A A buttons), on top of textSize.
+    readerSize: n(s.readerSize, 0.85, 1.6, 1)
   };
 }
 

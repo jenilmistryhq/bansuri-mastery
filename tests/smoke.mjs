@@ -74,6 +74,19 @@ const clickTextOn = async (pg, selector, label) => {
   if (!ok) throw new Error("No " + selector + " starting with \"" + label + "\"");
 };
 
+// A milestone test runs in the player (W36): one check per step, then the recording and the score.
+// verdict(i) says whether check i passed; the run ends on "Save this attempt" and its result.
+const takeMilestone = async (pg, verdict) => {
+  await pg.evaluate(() => document.querySelector("#main .ms-ways .btn.primary").click());
+  await pg.waitForSelector("#main .ms-run", { timeout: 5000 });
+  for (let i = 0, k = 0; i < 60; i++) {
+    const kind = await pg.evaluate(() => document.querySelector("#main .ms-result") ? "done" : document.querySelector("#main .ms-check") ? "check" : "other");
+    if (kind === "done") return;
+    if (kind === "check") { await pg.evaluate(v => document.querySelectorAll("#main .ms-verdict .lesson-chip")[v ? 0 : 1].click(), !!verdict(k)); k++; }
+    await pg.evaluate(() => document.querySelector("#main .lesson-next").click());
+    await sleep(120);
+  }
+};
 const shot = async name => { if (shots) { fs.mkdirSync(shots, { recursive: true }); await page.screenshot({ path: path.join(shots, name + ".png"), fullPage: false }); } };
 const progress = () => page.evaluate(() => JSON.parse(localStorage.getItem("bansuri.progress") || "null"));
 
@@ -219,8 +232,8 @@ try {
   await section("Milestone checklists", async () => {
     for (let i = 0; i <= 10; i++) {
       await go("/milestone/M" + i);
-      const total = await page.$$eval("#main .mitem", x => x.length);
-      const required = await page.$$eval("#main .mitem .chip.info", x => x.length);
+      const total = await page.$$eval("#main .ms-checked > li", x => x.length);
+      const required = await page.$$eval("#main .ms-checked > li .chip.info", x => x.length);
       check(total >= 3 && required >= 1, "M" + i + " checklist: " + total + " items, " + required + " required");
     }
 
@@ -242,11 +255,9 @@ try {
     await new Promise(r => setTimeout(r, 600));
     check((await progress()).current === 0, "Day 0 does not advance before M0 is passed");
     await go("/milestone/M0");
-    await clickText("#main button", "Take the test");
-    const req = await page.$$("#main .mitem input[type=checkbox]");
-    for (const b of req) await b.click();
-    check(req.length >= 6, "M0 checklist parsed (" + req.length + " items)");
-    await page.click("#main button.btn.primary.big");
+    const req = await page.$$eval("#main .ms-checked > li", x => x.length);
+    check(req >= 6, "M0 checklist parsed (" + req + " items)");
+    await takeMilestone(page, () => true);
     await new Promise(r => setTimeout(r, 500));
     check((await progress()).current === 1, "passing M0 unlocks Day 1");
     await shot("02-m0-passed");
@@ -559,22 +570,25 @@ try {
       await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 14 })));
       await lp.goto(BASE + "#/milestone/M1", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
-      await lp.waitForSelector("#main .mrow");
+      await lp.waitForSelector("#main .ms-cover");
       await clickTextOn(lp, "#main button", "Take the test");
-      await lp.evaluate(() => [...document.querySelectorAll("#main .mrow button")].find(b => /Check with mic/.test(b.textContent)).click());
-      await lp.click("#main .micpanel .lv-primary");
+      // The test runs one check per step (W36): "Not yet" and Continue up to the check the mic can judge.
+      const msTo = async re => { for (let i = 0; i < 8 && !(await lp.evaluate(r => new RegExp(r).test((document.querySelector("#main .ms-checktitle") || {}).textContent || ""), re)); i++) { await lp.evaluate(() => { document.querySelectorAll("#main .ms-verdict .lesson-chip")[1].click(); document.querySelector("#main .lesson-next").click(); }); await sleep(150); } };
+      await msTo("Long tone Sa");
+      await lp.evaluate(() => document.querySelector("#main .micpanel .lv-primary").click());
       await sleep(300); await tone(-0.05);
-      await lp.waitForFunction(() => [...document.querySelectorAll("#main .mrow")].some(r => r.querySelector(".micpanel") && r.querySelector("input[type=checkbox]").checked), { timeout: 12000 })
-        .then(() => check(true, "milestone M1: holding Sa 8 s with the mic ticks item 3"), () => check(false, "milestone M1: holding Sa 8 s with the mic ticks item 3"));
+      await lp.waitForFunction(() => { const y = document.querySelector("#main .ms-verdict .lesson-chip"); return y && y.getAttribute("aria-pressed") === "true"; }, { timeout: 12000 })
+        .then(() => check(true, "milestone M1: holding Sa 8 s with the mic passes check 3"), () => check(false, "milestone M1: holding Sa 8 s with the mic passes check 3"));
       await tone(null);
-      await lp.evaluate(() => [...document.querySelectorAll("#main .mrow")].find(r => /S R G R S/.test(r.innerText)).querySelector("button").click());
-      await lp.evaluate(() => [...document.querySelectorAll("#main .micpanel .lv-primary")].pop().click());
-      await sleep(300);
+      await lp.evaluate(() => document.querySelector("#main .lesson-next").click()); await sleep(150);
+      await msTo("S R G R S");
+      await lp.evaluate(() => document.querySelector("#main .micpanel .lv-primary").click());
+      await sleep(1200);
       for (const n of [0, 2, 4, 2, 0, 2, 4]) { await tone(n); await sleep(420); await tone(null); await sleep(160); }
       await sleep(400);
-      check(await lp.evaluate(() => { const rows = [...document.querySelectorAll("#main .mrow")].filter(r => r.querySelector(".micpanel")); const r = rows[rows.length - 1]; return !r.querySelector("input[type=checkbox]").checked && /1 of 3 clean/.test(r.innerText); }),
+      check(await lp.evaluate(() => document.querySelector("#main .ms-verdict .lesson-chip").getAttribute("aria-pressed") !== "true" && /1 of 3 clean/.test(document.querySelector("#main .ms-check .lv-count").textContent)),
         "milestone phrase: one clean pass counts once (1 of 3), not more");
-      await lp.evaluate(() => [...document.querySelectorAll("#main .micpanel .lv-primary")].pop().click());
+      await lp.evaluate(() => document.querySelector("#main .micpanel .lv-primary").click());
 
       // Placement: pass the first item (hold Sa), then stop: the test recommends Phase 1.
       await lp.goto(BASE + "#/me/settings/practice", { waitUntil: "networkidle0" });
@@ -592,9 +606,9 @@ try {
       await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 130, startedAt: "2026-05-01" })));
       await lp.goto(BASE + "#/milestone/M4", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
-      await lp.waitForSelector("#main .mrow");
+      await lp.waitForSelector("#main .ms-cover");
       await clickTextOn(lp, "#main button", "Take the test");
-      await lp.evaluate(() => [...document.querySelectorAll("#main .mrow button")].find(b => /Check with mic/.test(b.textContent)).click());
+      for (let i = 0; i < 8 && !(await lp.$("#main .micpanel .lv-quiz")); i++) { await lp.evaluate(() => { document.querySelectorAll("#main .ms-verdict .lesson-chip")[1].click(); document.querySelector("#main .lesson-next").click(); }); await sleep(150); }
       check(await lp.$("#main .micpanel .lv-quiz") !== null, "milestone M4: identifying notes opens a note-naming test");
 
       // Tone check, a section of the Coach: a held Sa 35 cents flat is diagnosed as flat, and
@@ -1723,10 +1737,8 @@ try {
     await learner(434);
     await lgo("/milestone/M8"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(500);
     check(await lp.evaluate(() => { const h = [...document.querySelectorAll("#main .ms-cover h2")].map(e => e.textContent); return h[0] === "What is checked" && h[1] === "How to take it"; }) && /Take the test/.test(await lp.$eval("#main .ms-ways", e => e.textContent)) && /Rehearse first/.test(await lp.$eval("#main .ms-ways", e => e.textContent)), "milestone: what is checked, then how to take it, then Take the test beside Rehearse first");
-    await clickTextOn(lp, "#main button", "Take the test"); await sleep(200);
-    await lp.evaluate(() => document.querySelector("#main .mitem input[type=checkbox]").click());
-    await clickTextOn(lp, "#main button", "Save this attempt"); await sleep(400);
-    check(/Passed 1 of 7/.test(await lp.$eval("#main .ms-test", e => e.textContent)) && !!(await lp.$("#main .ms-notyet")), "milestone: Not yet shows what passed, then what is for next time");
+    await takeMilestone(lp, i => i === 0); await sleep(400);
+    check(/Passed 1 of 7/.test(await lp.$eval("#main .ms-result", e => e.textContent)) && !!(await lp.$("#main .ms-notyet")), "milestone: Not yet shows what passed, then what is for next time");
     // The course book (L8).
     await lgo("/course/book");
     const book = await lp.evaluate(() => ({ parts: [...document.querySelectorAll("#main .bookpart")].map(e => e.textContent).join("|"), ragas: !!document.querySelector('#main a[href="#/music/ragas"]'), fix: !!document.querySelector('#main a[href="#/skills/fix"]'), copies: [...document.querySelectorAll("#main h3")].some(e => /^(Ragas|Troubleshooting)$/.test(e.textContent)) }));
@@ -1990,6 +2002,104 @@ try {
     check(!(await tp.$(".msgtoast")), "news: shown once, remembered");
     await tp.goto(BASE + "#/today/quick", { waitUntil: "networkidle0" });
     check(await tp.waitForSelector("#main .lv-hold", { timeout: 5000 }).then(() => true, () => false), "#/today/quick opens the 5-minute practice (#/quick still works)");
+    await ctx.close();
+  });
+  await section("Milestones and the reader (W19a, W35-W38, W40)", async () => {
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const mp = await ctx.newPage();
+    mp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    await mp.setViewport({ width: 390, height: 844 });
+    const mgo = async hash => { await mp.goto(BASE + "#" + hash, { waitUntil: "networkidle0" }); await mp.waitForFunction(() => { const m = document.querySelector("#main"); return m && m.children.length && !m.querySelector(":scope > .boot"); }, { timeout: 10000 }).catch(() => {}); await sleep(300); };
+    const setProgress = (cur, ms) => mp.evaluate((cur, ms) => {
+      localStorage.clear();
+      localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 }));
+      localStorage.setItem("bansuri.progress", JSON.stringify({ current: cur, startedAt: "2026-01-01", prefs: { howChosen: true }, milestones: ms }));
+    }, cur, ms);
+    const passed = { status: "passed", passedOn: "2026-02-01", attempts: [{ date: "2026-02-01", passed: true, items: {}, rubric: { T: 3, P: 3, R: 3, Tr: 3, E: 4 }, notes: "" }] };
+    await mgo("/today"); await setProgress(30, { M0: { status: "passed", attempts: [] }, M1: passed });
+    // W19a: a passed row shows its rubric score; the next milestone how many days away it is.
+    await mgo("/course/milestones"); await mp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    const rows = await mp.evaluate(() => Object.fromEntries([...document.querySelectorAll("#main .msrow")].map(r => [r.querySelector(".msid").textContent, (r.querySelector(".msextra") || {}).textContent || ""])));
+    check(rows.M1 === "3/4" && rows.M2 === "12 days away" && rows.M3 === "", "milestones: M1 shows its score 3/4, M2 is 12 days away [" + rows.M1 + ", " + rows.M2 + "]");
+    // W35: the cover: back to the course, how to take it from the test day's own steps, the rubric row, previous attempts.
+    await mgo("/milestone/M1");
+    const cov = await mp.evaluate(() => ({ back: (document.querySelector("#main .backhead .backlink") || {}).getAttribute?.("href"), how: document.querySelector("#main .ms-how").textContent,
+      own: (document.querySelector("#main .ms-own") || {}).textContent || "", rubric: [...document.querySelectorAll("#main .ms-cover a.ms-rowlink")].map(a => a.getAttribute("href")).join(" "),
+      prev: (document.querySelector("#main .ms-attempts summary") || {}).textContent || "" }));
+    check(cov.back === "#/course/milestones" && /Warm-up/.test(cov.how) && /drone on C/.test(cov.own), "milestone cover: < Course, then how to take it from the test day and the milestone's own conditions");
+    check(/L08-recording-and-self-assessment\.md#5-the-standard-rubric/.test(cov.rubric) && /Previous attempts: 1/.test(cov.prev), "milestone cover: a Rubric (1-4) row and Previous attempts as a row");
+    // W36: the checks one per step in the full-focus player.
+    await clickTextOn(mp, "#main button", "Take it again"); await sleep(300);
+    const run = await mp.evaluate(() => ({ ff: document.documentElement.classList.contains("fullfocus"), count: document.querySelector("#main .lesson-count").textContent,
+      strip: getComputedStyle(document.querySelector("#main .lesson-chaps")).display, checks: document.querySelectorAll("#main .ms-check").length, title: document.querySelector("#main .ms-checktitle").textContent }));
+    check(run.ff && run.count === "M1: check 1 of 6" && run.strip === "none" && run.checks === 1 && /Posture/.test(run.title), "milestone test: full focus, one check per step, M1: check 1 of 6 [" + run.count + "]");
+    check(await mp.evaluate(() => document.querySelector("#main .lesson-next").disabled), "milestone test: Continue waits for the check's verdict");
+    await mp.evaluate(() => document.querySelector("#main .lesson-close").click()); await sleep(200);
+    check(!!(await mp.$("#main .ms-cover")) && !(await mp.evaluate(() => document.documentElement.classList.contains("fullfocus"))), "milestone test: (x) goes back to the cover");
+    // W38: Not yet: what passed, then each failed check with where to practise it; stuck help; back to the course.
+    await takeMilestone(mp, i => i === 0 || i === 1); await sleep(300);
+    const ny = await mp.evaluate(() => ({ h: document.querySelector("#main .ms-result h1").textContent, links: [...document.querySelectorAll("#main .ms-result .ms-practise")].map(a => a.getAttribute("href")),
+      back: [...document.querySelectorAll("#main .ms-result a.btn.primary")].map(a => a.textContent + " " + a.getAttribute("href")).join("|"), ff: document.documentElement.classList.contains("fullfocus") }));
+    check(ny.h === "Milestone M1: not yet" && ny.links.length === 4 && ny.links.includes("#/skills/tone/longtones") && ny.links.some(l => /#\/read\/lessons\/L09/.test(l)) && ny.back === "Back to the course #/course" && !ny.ff,
+      "milestone not yet: Practise this for each failed check (Long tones, the L09 lesson), Back to the course [" + ny.links.join(", ") + "]");
+    await clickTextOn(mp, "#main .ms-result button", "Stuck on this milestone?"); await sleep(200);
+    check(!!(await mp.$("#main .ms-result .stuckcard .btn.primary")), "milestone not yet: Stuck on this milestone? opens the three-minute check");
+    const att = await mp.evaluate(() => { const a = JSON.parse(localStorage.getItem("bansuri.progress")).milestones.M1.attempts; return a[a.length - 1]; });
+    check(att && att.passed === false && Object.values(att.items).length === 6 && Object.values(att.items).filter(Boolean).length === 2 && typeof att.rubric === "object" && typeof att.notes === "string", "milestone test: the attempt is saved as before ({ items, rubric, notes })");
+    // W37: passed: the badge, All N checks, On to Phase 2 at the end of a phase.
+    await setProgress(42, { M0: { status: "passed", attempts: [] }, M1: passed });
+    await mgo("/milestone/M2"); await mp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    await takeMilestone(mp, () => true); await sleep(300);
+    const ps = await mp.evaluate(() => ({ badge: !!document.querySelector("#main .ms-badge .emblem"), h: document.querySelector("#main .ms-result h1").textContent, all: document.querySelector("#main .ms-allchecks").textContent,
+      ticks: document.querySelectorAll("#main .ms-ticks i.ok").length, n: document.querySelectorAll("#main .ms-ticks i").length, btn: document.querySelector("#main .ms-result a.btn.primary").textContent }));
+    check(ps.badge && ps.h === "Milestone M2 passed" && ps.all === "All " + ps.n + " checks" && ps.ticks === ps.n && ps.btn === "On to Phase 2", "milestone passed: the badge, All " + ps.n + " checks ticked, On to Phase 2 [" + ps.btn + "]");
+    // W40: the reader's tools: Contents, Hear this (the natural voice, never the device's), A A remembered.
+    await mgo("/read/lessons/L08-recording-and-self-assessment.md");
+    const tl = await mp.evaluate(() => [...document.querySelectorAll("#main .rd-tools button")].map(b => b.getAttribute("aria-label") || b.textContent).join("|"));
+    check(/Contents/.test(tl) && /Hear this/.test(tl) && /Smaller text/.test(tl) && /Larger text/.test(tl), "reader: Contents, Hear this and A A [" + tl + "]");
+    const fs0 = await mp.evaluate(() => parseFloat(getComputedStyle(document.querySelector("#main .reader")).fontSize));
+    await mp.click("#main .rd-larger"); await sleep(100);
+    const fs1 = await mp.evaluate(() => parseFloat(getComputedStyle(document.querySelector("#main .reader")).fontSize));
+    const saved = await mp.evaluate(() => JSON.parse(localStorage.getItem("bansuri.settings")).readerSize);
+    await mp.reload({ waitUntil: "networkidle0" }); await sleep(400);
+    const fs2 = await mp.evaluate(() => parseFloat(getComputedStyle(document.querySelector("#main .reader")).fontSize));
+    check(fs1 > fs0 && saved === 1.15 && Math.abs(fs2 - fs1) < 0.5, "reader: A A makes the text larger and is remembered (" + fs0 + " -> " + fs1 + " px, after reload " + fs2 + ")");
+    await mp.click("#main .rd-smaller"); await sleep(100);
+    await mp.click("#main .rd-contents"); await sleep(200);
+    const toc = await mp.evaluate(() => [...document.querySelectorAll("dialog.rd-toc[open] .rd-toclist button")].map(b => b.textContent));
+    check(toc.length >= 4 && toc.some(t => /standard rubric/i.test(t)), "reader: Contents lists the page's sections (" + toc.length + ")");
+    await mp.evaluate(() => [...document.querySelectorAll("dialog.rd-toc .rd-toclist button")].find(b => /standard rubric/i.test(b.textContent)).click()); await sleep(400);
+    const at = await mp.evaluate(() => { const t = document.getElementById("5-the-standard-rubric-canonical-for-all-milestones"); const r = t && t.getBoundingClientRect(); return { open: !!document.querySelector("dialog.rd-toc"), vis: !!r && r.height > 0 && r.top >= -2 && r.top < innerHeight / 2 }; });
+    check(!at.open && at.vis, "reader: choosing a section closes Contents and goes to it");
+    await mp.evaluate(() => { window.__robot = 0; if (window.speechSynthesis) window.speechSynthesis.speak = () => { window.__robot++; }; });
+    await mp.evaluate(() => [...document.querySelectorAll("#main .rd-tools button")].find(b => /Hear this/.test(b.textContent)).click()); await sleep(200);
+    check(/natural reading voice/.test(await mp.$eval("#main .rd-tools", e => e.textContent)) && await mp.evaluate(() => window.__robot) === 0, "reader: Hear this uses the natural voice (asks before its download), never the device's voice");
+    if (shots) {
+      const dir = path.join(shots, "r2-ms"); fs.mkdirSync(dir, { recursive: true });
+      for (const lang of ["en", "hi"]) {
+        await mp.evaluate(l => localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0, lang: l })), lang);
+        await setProgress(30, { M0: { status: "passed", attempts: [] }, M1: passed });
+        await mp.evaluate(l => localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0, lang: l })), lang);
+        for (const [route, name] of [["/course/milestones", "w19a"], ["/milestone/M1", "w35"], ["/read/lessons/L08-recording-and-self-assessment.md", "w40"]]) {
+          await mgo(route); await mp.reload({ waitUntil: "networkidle0" }); await sleep(600);
+          await mp.screenshot({ path: path.join(dir, name + "-" + lang + ".png"), fullPage: true });
+        }
+        await mgo("/milestone/M1"); await mp.reload({ waitUntil: "networkidle0" }); await sleep(500);
+        await mp.evaluate(() => document.querySelector("#main .ms-ways .btn.primary").click());
+        await sleep(300);
+        for (let i = 0; i < 2; i++) { await mp.evaluate(() => { document.querySelectorAll("#main .ms-verdict .lesson-chip")[0].click(); document.querySelector("#main .lesson-next").click(); }); await sleep(200); }
+        await mp.screenshot({ path: path.join(dir, "w36-" + lang + ".png"), fullPage: true });
+        for (let i = 0; i < 12 && !(await mp.$("#main .ms-result")); i++) { await mp.evaluate(() => { const c = document.querySelectorAll("#main .ms-verdict .lesson-chip"); if (c.length) c[1].click(); document.querySelector("#main .lesson-next").click(); }); await sleep(200); }
+        await sleep(300);
+        await mp.screenshot({ path: path.join(dir, "w38-" + lang + ".png"), fullPage: true });
+        await setProgress(42, { M0: { status: "passed", attempts: [] }, M1: passed });
+        await mgo("/milestone/M2"); await mp.reload({ waitUntil: "networkidle0" }); await sleep(500);
+        await mp.evaluate(() => document.querySelector("#main .ms-ways .btn.primary").click()); await sleep(300);
+        for (let i = 0; i < 14 && !(await mp.$("#main .ms-result")); i++) { await mp.evaluate(() => { const c = document.querySelectorAll("#main .ms-verdict .lesson-chip"); if (c.length) c[0].click(); document.querySelector("#main .lesson-next").click(); }); await sleep(200); }
+        await sleep(600);
+        await mp.screenshot({ path: path.join(dir, "w37-" + lang + ".png"), fullPage: true });
+      }
+    }
     await ctx.close();
   });
   await section("Every day's lesson, walked through", async () => {
