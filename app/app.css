@@ -1592,3 +1592,73 @@ a.symcard { text-decoration: none; }
 .toolpage .toolafter { margin-top: 6px; }
 .toolsub { font-size: 0.6em; }
 .ornhear { align-items: end; }
+/* Redesign 2: lesson and mic */
+/* W31: a blocked microphone, with Try again and Go on without it. */
+.lv-blocked { margin-top: 4px; }
+/* W30: a microphone step without a microphone: the notes large, judged by ear. */
+.lesson-nomiclink { justify-self: start; }
+.lesson-nomic { border: 1.5px dashed var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.lesson-nomic[hidden], .lesson-nomiclink[hidden] { display: none; }
+.lesson-nomic-notes { margin: 0; font-size: clamp(1.6rem, 7vw, 2.2rem); letter-spacing: 0.08em; }
+/* F9: the way back from a fix opened by "Having trouble?". */
+.stepreturn { display: flex; width: fit-content; }
+/* W26: the timer step, ticks shown from the start, Pause while it runs. */
+.lesson-timer.paused .lesson-timer-n { opacity: 0.55; }
+.lesson-timerticks { width: min(100%, 420px); text-align: left; gap: 6px; }
+.lesson-timerticks > p { margin: 0; }
+.lesson-timerctl { justify-content: center; gap: 12px 18px; }
+/* W28: the record step, one large round button and the time. */
+.lesson-recbtn { width: 128px; height: 128px; border-radius: 50%; flex-direction: column; justify-content: center; gap: 6px; padding: 0; }
+.lesson-recbtn .icon { width: 30px; height: 30px; }
+.lesson-recbtn.recording { background: var(--warn); border-color: var(--warn); color: #fff; }
+.lesson-recbtn[hidden] { display: none; }
+.lesson-rectime { margin: 0; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.lesson-recafter { justify-content: center; }
+.lesson-recafter[hidden] { display: none; }
+/* W29: suggestions under a reflect field. */
+.lesson-suggest { gap: 6px 8px; align-items: center; }
+.lesson-suggest .lesson-chip { min-height: 36px; padding: 6px 12px; font-size: 0.92rem; }
+/* W34: a review day's reward: the quiz's marks, the pieces, what you wrote. */
+.lesson-rhead { gap: 10px; align-items: baseline; margin: 0; }
+.lesson-qmarks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.lesson-qmarks li { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.lesson-qmarks li.later { color: var(--muted); }
+.lesson-qtext { max-width: 13em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lesson-tick.warn, .lesson-done li.later .lesson-tick.warn { background: color-mix(in srgb, var(--warn) 22%, var(--surface)); color: var(--warn); font-weight: 800; }
+.lesson-rnext { margin-left: auto; text-align: right; }
+.lesson-rpieces .lesson-done li { flex-wrap: wrap; }
+.lesson-wrote { margin: 0; }
+.lesson-wrote q { font-style: italic; }
+/* W20: the cover's chapters, numbered, with their ticks. */
+.lesson-chapters { list-style: none; padding-left: 0; }
+.lesson-chapters li { display: flex; align-items: center; gap: 10px; min-height: 32px; }
+.lesson-chapno { width: 1.4em; color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+.lesson-chapters li > .small { margin-left: auto; }
+.lesson-chaptick { width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 50%; }
+.lesson-chapters li > span:nth-child(2) { flex: 1 1 auto; min-width: 0; }
+.lesson-chapters li.done .lesson-chaptick { background: var(--good); color: var(--surface); }
+.lesson-chaptick .icon { width: 13px; height: 13px; stroke-width: 3; }
+/* W21: the step list: two ways to see the day, and each block's tick. */
+.segtoggle { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
+.segbtn { font: inherit; font-size: 0.92rem; min-height: 40px; padding: 6px 14px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
+.segbtn[aria-pressed="true"] { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+.blocktick { display: none; width: 24px; height: 24px; flex: none; place-items: center; border-radius: 50%; background: var(--good); color: var(--surface); margin-left: auto; }
+.blocktick .icon { width: 14px; height: 14px; stroke-width: 3; }
+.block.done .blocktick { display: grid; }
+/* W22: 5 minutes, a full-focus screen. */
+.quicktop { display: flex; align-items: center; gap: 12px; }
+.quicktop h1 { margin: 0; font-size: 1.3rem; }
+.quickstrip { display: grid; gap: 10px; }
+.quickchips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.quickchips .lesson-chip { min-height: 40px; padding: 6px 14px; font-size: 0.95rem; }
+.quickchips li.now .lesson-chip { border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.quickchips li.done .lesson-chip { color: var(--muted); }
+.quickno { font-variant-numeric: tabular-nums; font-weight: 700; }
+.quickprog { display: flex; align-items: center; gap: 10px; }
+.quickprog .progressbar { flex: 1 1 auto; }
+.quickcount { white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* W13: Today part way through. */
+.todayprog { align-items: center; gap: 10px; flex-wrap: nowrap; }
+.todayprog .progressbar { flex: 1 1 auto; max-width: 360px; }
+.todayprog > span { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.lesson-nomic .lesson-q:focus, .quickbody h2:focus { outline: none; }

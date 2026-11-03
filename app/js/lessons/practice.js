@@ -5,7 +5,7 @@
 // with the day, so no two neighbouring days are the same: technique from the current lesson,
 // music from recent ones, and one ear game from any lesson so far (spaced review).
 import { LESSONS } from "./index.js";
-import { dayReward, reviewGrowth } from "./common.js";
+import { dayReward, reviewGrowth, reviewSummary } from "./common.js";
 import { getDay, current, dayState, finishSession, dueReviews, markReview } from "../course.js";
 import { parseNotation } from "../core/notation.js";
 import { holdSpec } from "../views/session.js";
@@ -114,7 +114,7 @@ export function buildPractice(n, day, next, lessons = LESSONS, done = {}, due = 
       c.forEach(x => st.push(copy(x, "E")));
       st.push(keepGoing(b, Math.max(60, secs - 120 * c.length)));
     } else if (role === "record" && review) {
-      st.push({ id: "R-reflect", kind: "plan", title: "This week", intro: "Look back over the week's practice and recordings.", fields: [{ key: "changed", label: "What changed this week?", hint: "e.g. Sa steadier; Ga still flat" }, { key: "next", label: "One thing for next week" }], required: ["changed"] });
+      st.push({ id: "R-reflect", kind: "plan", title: "This week", intro: "Look back over the week's practice and recordings.", fields: [{ key: "changed", label: "What changed this week?", hint: "e.g. Sa steadier; Ga still flat", suggest: ["Sa steadier", "longer breaths", "cleaner tonguing", "Ga still flat"] }, { key: "next", label: "One thing for next week", suggest: ["slower tempo", "longer tones", "play it from memory"] }], required: ["changed"] });
       st.push({ id: "R-rec", kind: "record", title: b.record || "Today's recording", intro: "Play something from this week, once, as if for a listener. Then listen back.", seconds: 30, day: n, label: "Day " + n + ": " + (b.record || "review") });
     } else {
       st.push(...blockSteps(b, n, latest.day));
@@ -138,10 +138,19 @@ export function buildPractice(n, day, next, lessons = LESSONS, done = {}, due = 
     chapters.unshift({ title: "Review quiz", steps: [{ id: "quiz", kind: "quiz", title: "What do you remember?", intro: "Questions from the lessons so far, mostly the last few weeks.", questions }].concat(ear) });
   }
   const teaser = next ? { when: "Tomorrow", title: "Day " + next.n + ": " + next.title, text: next.kind === "milestone" ? "A milestone: show what you can do." : next.kind === "review" ? "A review day." : "Another step on the way.", notes: [0, 2, 4, 2, 0] } : { when: "Tomorrow", title: "Keep going", text: "", notes: [0, 2, 4, 2, 0] };
+  // A review day's reward (W34): the quiz's marks, each piece's next review, what you wrote; the
+  // quiz has its own section, so its row is left out of the lists once it is done.
+  const pieces = parts.flatMap(p => p.steps.filter(s => s.item).map(s => ({ step: s.id, item: s.item, label: s.title })));
   chapters.push({ title: "Done", steps: [{ id: "done", kind: "custom", title: review ? "Day " + n + " reviewed" : "Day " + n + " practised", next: "Finish Day " + n,
-    make: dayReward(d => (review ? [[d.quiz ? "Quiz: " + d.quiz.firstTry + " of " + d.quiz.of + " right first time" : "Review quiz", !!d.quiz]] : []).concat(parts.map(p => [p.b.label || p.b.id, p.done || p.steps.some(s => d[s.id])])), teaser, review ? reviewGrowth : null) }] });
+    make: dayReward(d => (review && !d.quiz ? [["Review quiz", false]] : []).concat(parts.map(p => [p.b.label || p.b.id, p.done || p.steps.some(s => d[s.id])])), teaser,
+      review ? d => { const g = reviewGrowth(); return { lead: reviewSummary(d, pieces), els: g.els, destroy: g.destroy }; } : null) }] });
+  // The cover (W20) lists every block of the day in order, a block done in the step list with its
+  // tick (it is left out of the player); chapter: the player's chapter for the row.
+  let ci = review ? 1 : 0;
+  const outline = (review ? [{ title: "Review quiz", chapter: 0 }] : [])
+    .concat(parts.map(p => (p.done ? { title: p.b.label || p.b.id, block: p.b, done: true } : { title: p.b.label || p.b.id, block: p.b, chapter: ci++ })));
   return {
-    id: "p" + n, day: n, practice: true, review, title: day.title, minutes: day.minutes || 45, chapters,
+    id: "p" + n, day: n, practice: true, review, title: day.title, minutes: day.minutes || 45, chapters, outline,
     finish(d) {
       const was = current(), blocks = {};
       for (const p of parts) blocks[p.b.id] = p.done || p.steps.some(s => d[s.id]);

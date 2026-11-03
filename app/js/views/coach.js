@@ -165,7 +165,7 @@ async function fixScreen(main, ts, fromSkill) {
     back = h("a", { class: "btn ghost fixback", href: hubHref }, "Back to " + hub.title);
     if (prev === hubHref) back.addEventListener("click", e => { e.preventDefault(); history.back(); });
   } else if (prev && prev !== location.hash && !/^#\/skills\/fix\/TS-/.test(prev)) {
-    const label = /^#\/(skills\/fix|coach|tone)$/.test(prev) ? "Back to Fix a problem" : /^#\/(lesson|session|day)\//.test(prev) ? "Back to the lesson" : other ? "Back to " + other.title : "Back";
+    const label = /^#\/(skills\/fix|coach|tone)$/.test(prev) ? "Back to Fix a problem" : /^#\/(lesson|session|day)\//.test(prev) ? "Back to the step" : other ? "Back to " + other.title : "Back";
     back = h("button", { type: "button", class: "btn ghost fixback", onclick: () => history.back() }, label);
   } else if (hub) back = h("a", { class: "btn ghost fixback", href: hubHref }, "Back to " + hub.title);
   else back = h("a", { class: "btn ghost fixback", href: "#/skills/fix" }, "Back to Fix a problem");

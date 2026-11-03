@@ -1,5 +1,6 @@
 // Guided session (#/session/<n>): the day's blocks with timers, tools, recordings and a closing log.
 import { h, icon, fmtClock, toast } from "../util.js";
+import { backHead } from "../backhead.js";
 import { getState, update } from "../state.js";
 
 // Ear-quiz answers from any embedded bench count toward the ear badges.
@@ -77,7 +78,10 @@ export async function render(main, { params }) {
   // One step at a time (default) or the whole list; the choice is remembered.
   let focus = (getState().prefs.sessionView || "focus") === "focus";
   const stepStrip = h("div", { class: "stepstrip", role: "list", "aria-label": "Steps" });
-  const viewBtn = h("button", { type: "button", class: "btn ghost small" });
+  // Two ways to see the same day (W21): one card at a time, or the whole page.
+  const viewCards = h("button", { type: "button", class: "segbtn", "data-view": "focus" }, "Cards");
+  const viewPage = h("button", { type: "button", class: "segbtn", "data-view": "list" }, "Whole page");
+  const viewSeg = h("div", { class: "segtoggle", role: "group", "aria-label": "How to see the day" }, viewCards, viewPage);
   const meters = {};
   // Hands-free: the app says each step, starts its timer or meter, and moves on when the learner
   // plays Sa (after the time is up or the goal is met). No reading or tapping needed.
@@ -121,7 +125,7 @@ export async function render(main, { params }) {
   hfBtn.addEventListener("click", () => {
     handsFree = !handsFree;
     update(st => { st.prefs.handsFree = handsFree; });
-    if (handsFree) { setSettings({ talk: true }); if (!focus) viewBtn.click(); try { ac(); } catch (e) { /* audio unlocks on this tap */ } }
+    if (handsFree) { setSettings({ talk: true }); if (!focus) setView(true); try { ac(); } catch (e) { /* audio unlocks on this tap */ } }
     applyHandsFree();
     if (handsFree && activeId) hfEnter(activeId);
   });
@@ -133,15 +137,17 @@ export async function render(main, { params }) {
     progressEl.setAttribute("aria-valuenow", String(done));
     // Finishing is the main action only once the blocks are done; before that it stays available but quiet.
     finishBtn.classList.toggle("primary", done === day.blocks.length);
-    finishBtn.textContent = done === day.blocks.length ? "Finish the session" : "End the session here";
+    finishBtn.textContent = done === day.blocks.length ? "Finish Day " + n : "End the session here";
     stepStrip.querySelectorAll("button").forEach(btn => { btn.classList.toggle("done", !!doneMap[btn.dataset.id]); btn.classList.toggle("now", btn.dataset.id === activeId); });
   }
 
+  // Back to the day's cover (W21): the step list is the same day, seen another way.
+  page.append(backHead("#/day/" + n, "Day " + n, "Step list"));
   page.append(h("div", { class: "session-head" },
     h("div", { class: "row between" },
       h("div", { class: "stack", style: { gap: "0" } }, h("span", { class: "eyebrow" }, "Day " + n + (n < cur ? " - practising again" : "")), h("h2", null, day.title || "Session")),
       h("div", { class: "stack sessclock", style: { gap: "0" } }, totalClock, blocksEl)),
-    stepStrip, progressEl, h("div", { class: "row between" }, hfBtn, viewBtn)));
+    stepStrip, progressEl, h("div", { class: "row between" }, viewSeg, hfBtn)));
 
   if (day.milestone) {
     const ms = milestoneState(day.milestone);
@@ -197,14 +203,17 @@ export async function render(main, { params }) {
   }
   function applyView() {
     page.classList.toggle("session-focus", focus);
-    viewBtn.textContent = focus ? "Show all steps" : "One step at a time";
+    viewCards.setAttribute("aria-pressed", String(focus)); viewPage.setAttribute("aria-pressed", String(!focus));
     if (focus && activeId) { const id = activeId; activeId = null; setActive(id); }
   }
-  viewBtn.addEventListener("click", () => {
-    focus = !focus;
+  function setView(f) {
+    if (focus === f) return;
+    focus = f;
     update(st => { st.prefs.sessionView = focus ? "focus" : "list"; });
     applyView();
-  });
+  }
+  viewCards.addEventListener("click", () => setView(true));
+  viewPage.addEventListener("click", () => setView(false));
   // Timers measure wall-clock time, so they stay right when the phone sleeps or the tab is in the background.
   function elapsedOf(id) { const t = timers[id]; return t.acc + (t.running ? (Date.now() - t.since) / 1000 : 0); }
   function totalElapsed() { return Object.keys(timers).reduce((a, id) => a + elapsedOf(id), 0); }
@@ -293,7 +302,8 @@ export async function render(main, { params }) {
       h("header", { class: "blockhead", onclick: e => { if (!e.target.closest(".blockctl") && activeId !== b.id) { setActive(b.id); card.scrollIntoView({ behavior: "smooth", block: "start" }); } } },
         h("span", { class: "stepicon " + b.id, "aria-hidden": "true" }, icon(stepMeta(b).icon), h("span", { class: "stepdone" }, icon("check"))),
         h("h3", null, h("button", { type: "button", class: "blockopen", "aria-expanded": "false" }, h("span", { class: "stepno small muted" }, "Step " + (day.blocks.indexOf(b) + 1) + " "), b.label, b.minutes ? h("span", { class: "muted small" }, " " + b.minutes + " min") : null)),
-        total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null),
+        total ? h("div", { class: "blockctl" }, clock, tbtn, resetBtn) : null,
+        h("span", { class: "blocktick", "aria-hidden": "true" }, icon("check"))),
       b.text ? h("p", { class: "steptext", translate: "no" }, renderInline(b.text, "phases/README.md")) : null,
       b.read && b.read.length ? h("div", { class: "linklist" }, b.read.map(r => h("a", { href: "#/read/" + r.path + (r.anchor ? "#" + r.anchor : ""), target: "_blank", rel: "noopener" }, plainCodes(r.label)))) : null,
     ];

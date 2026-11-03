@@ -74,13 +74,25 @@ export async function render(main, { params, anchor }) {
     // A chapter made from one block, done as written, shows that block's minutes.
     const mins = c => (c.block ? c.block.minutes || 0 : 0);
     const isDay = lesson.day !== undefined;
+    // The chapters (on a practice day, every block of the day: lessons/practice.js outline), each
+    // with its tick (W20): done in the step list, or every step of it behind the step the lesson
+    // stopped on; all of them once the lesson is finished.
+    const firstOf = [];
+    lesson.chapters.reduce((k, c, i) => { firstOf[i] = k; return k + c.steps.length; }, 0);
+    const chDone = i => !!rec && (rec.done && !(rec.at > 0) ? true : (rec.at || 0) >= firstOf[i] + lesson.chapters[i].steps.length);
+    const rows = (lesson.outline || lesson.chapters.map((c, i) => ({ title: c.title, block: c.block, chapter: i })))
+      .map(r => Object.assign({}, r, { ticked: !future && (!!r.done || (r.chapter !== undefined && chDone(r.chapter))) }));
     return h("section", { class: "card lesson-cover" },
       h("a", { class: "backlink", href: "#/course" }, "Course"),
       h("span", { class: "eyebrow" }, lesson.review ? "Day " + lesson.day + " review" : lesson.practice ? "Day " + lesson.day + " practice" : isDay ? "Day " + lesson.day + " lesson" : "Lesson"),
       h("h1", null, lesson.title),
       h("p", { class: "muted" }, "About " + lesson.minutes + " minutes. Have your flute with you, and headphones or a speaker."),
       day.pass ? h("div", { class: "lesson-goal" }, h("span", { class: "eyebrow" }, "Today's goal"), h("p", null, day.pass)) : null,
-      h("ol", { class: "lesson-chapters" }, lesson.chapters.map(c => h("li", null, h("span", null, c.title), mins(c) ? h("span", { class: "small muted" }, mins(c) + " min") : null))),
+      h("ol", { class: "lesson-chapters" }, rows.map((c, i) => h("li", { class: c.ticked ? "done" : null },
+        h("span", { class: "lesson-chapno", "aria-hidden": "true" }, String(i + 1)), h("span", null, c.title),
+        mins(c) ? h("span", { class: "small muted" }, mins(c) + " min") : null,
+        h("span", { class: "lesson-chaptick", "aria-hidden": "true" }, c.ticked ? icon("check") : null),
+        c.ticked ? h("span", { class: "sr-only" }, "Done") : null))),
       future ? h("p", { class: "lesson-opens" }, "Opens after Day " + (lesson.day - 1)) : null,
       !future && inProgress ? h("p", { class: "small muted" }, "You stopped at step " + (rec.at + 1) + " of " + steps.length + ".") : null,
       future ? null : h("div", { class: "row" },
@@ -100,7 +112,7 @@ export async function render(main, { params, anchor }) {
 
   // Opening the day of a part-done lesson goes straight to its step; the cover is one tap away (x).
   const rec0 = lessonRecord(lesson.id);
-  if (!future && anchor === "resume" && rec0 && !rec0.done && rec0.at > 0) play(false);
+  if (!future && anchor === "resume" && rec0 && rec0.at > 0) play(false);
   else page.append(cover());
   return () => { if (player) player.destroy(); document.querySelectorAll("dialog.sheet").forEach(d => { if (d.open) d.close(); d.remove(); }); };
 }

@@ -1,5 +1,5 @@
 {
- "version": "3928a5c6fce4",
+ "version": "364151bf046e",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -69,6 +69,7 @@
   "app/js/lesson/learn.js",
   "app/js/lesson/player.js",
   "app/js/lesson/sound.js",
+  "app/js/lesson/stepreturn.js",
   "app/js/lesson/steps.js",
   "app/js/lessoncards.js",
   "app/js/lessons/common.js",
