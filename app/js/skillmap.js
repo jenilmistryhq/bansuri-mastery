@@ -84,6 +84,15 @@ export function gameBest(key) {
   return best;
 }
 
+// Which game moves which quest on: Skills' "play now" card and Today's "Quest game" pick the same one.
+export const FOR_QUEST = { phrase: "phrase", laya: "laya", tihai: "tihai", ornament: "meendbridge", swell: "swell", boat: "boat", bullseye: "bullseye", wrong: "wrong", sam: "sam", road: "road", hold: "boat", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
+// The game for the first of today's quests still open that a game moves on (questState().list), or
+// Balloon when none is left: { key, quest }.
+export function questGame(list) {
+  const q = (list || []).find(x => !x.done && FOR_QUEST[x.id]);
+  return q ? { key: FOR_QUEST[q.id], quest: q } : { key: "balloon", quest: null };
+}
+
 // The games that need no microphone (the Games tab's "No microphone" filter).
 export const NO_MIC = ["wrong", "bingo", "higherlower", "sam", "nameorn"];
 

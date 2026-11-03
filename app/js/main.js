@@ -58,8 +58,8 @@ const ROUTES = [
   [/^\/skills$/, "skills"], [/^\/skills\/(tone|notes|rhythm|ornaments|ear)$/, "skills"], [/^\/skills\/games$/, "play"], [/^\/skills\/fix$/, "coach"], [/^\/skills\/fix\/(TS-\d\d)$/, "coach"],
   [/^\/music(?:\/songs)?$/, "songs"], [/^\/music\/ragas$/, "ragas"], [/^\/music\/mine$/, "mine"], [/^\/music\/listen$/, "listen"], [/^\/music\/transcribe$/, "transcribe"], [/^\/music\/compose$/, "compose"],
   [/^\/me$/, "progress"], [/^\/me\/journal$/, "journal"], [/^\/me\/teacher$/, "review"], [/^\/me\/flute$/, "flute"], [/^\/me\/settings$/, "settings"],
-  // Me: level and badges, the Journal's and the Teacher's views (level 3), the settings groups, privacy.
-  [/^\/me\/(level)$/, "progress"], [/^\/me\/journal\/(days|recordings|capsule)$/, "journal"], [/^\/me\/teacher\/(feedback|students|share)$/, "review"], [/^\/(students)$/, "review"],
+  // Me: level and badges, more charts, the Journal's and the Teacher's views (level 3), the settings groups, privacy.
+  [/^\/me\/(level|charts)$/, "progress"], [/^\/me\/journal\/(days|recordings|capsule)$/, "journal"], [/^\/me\/teacher\/(feedback|students|share)$/, "review"], [/^\/(students)$/, "review"],
   [/^\/me\/settings\/(voice|display|practice|data|help)$/, "settings"], [/^\/me\/privacy$/, "privacy"],
   [/^\/bench\/([a-z]+)$/, "bench"],
   [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/today\/quick$/, "quick"],[/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],

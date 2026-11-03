@@ -1396,6 +1396,10 @@ html.bigtargets .segnav a { min-height: 56px; }
 .toolbody > .page { max-width: none; margin: 0; }
 .toolpage .bb-panel > .bb-card > h2, .toolpage .bb-panel > .bb-grid2 > .bb-card > h2:first-child { display: none; }
 .toolbody .ornpage > .hero > .eyebrow, .toolbody .ornpage > .hero > h1 { display: none; }
+/* Long tones' note chips (W46), in place of the Bench's note list. */
+.tonepick { display: grid; gap: 6px; margin: 4px 0 12px; }
+.tonepick .chipbtn { min-height: 40px; min-width: 44px; }
+.tonechip { font-family: var(--mono, ui-monospace, monospace); font-weight: 600; }
 /* Playing mode on a tool: the meters grow (.playmode, shared with the lesson player) and the rest steps back. */
 .toolplaying .backhead, .toolplaying .toolswitch, .toolplaying .toolbest { opacity: 0.3; transition: opacity 200ms; }
 .toolplaying .bb-card > p.bb-muted, .toolplaying .tonepage > .card > p.muted { display: none; }
