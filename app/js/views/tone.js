@@ -45,9 +45,26 @@ const CHECKLIST = [
   "Listening to the drone while holding the note",
 ];
 
-// The Tone check's cards for a host page (the Coach). onFix(ts): open the guide for a finding in
-// place (without it, a finding links to #/coach/TS-nn). Returns { top, more, cleanup }: the hold and
-// result cards, then the checklist, history and explanation cards.
+// A result as three chips (redesign W47): Steady (pitch and loudness), In tune, Air. Each says
+// whether it is fine, which measures it stands for, and the fix to open when it is not.
+const CHIPS = [
+  { key: "steady", label: "Steady", measures: ["pitchSD", "levelCV", "attack"], ts: "TS-07", fix: "A wavering note: what to try" },
+  { key: "tune", label: "In tune", measures: ["overshoot"], ts: "TS-05", fix: "Out of tune: what to try" },
+  { key: "air", label: "Air", measures: ["air"], ts: "TS-01", fix: "Airy tone: what to try" },
+];
+export function toneChips(p) {
+  return CHIPS.map(c => {
+    const bands = c.measures.map(k => bandOf(MEASURES.find(m => m.key === k), p[k]));
+    // In tune also needs the note itself near its place (as the diagnosis judges it: 20 cents).
+    const ok = Math.max(...bands) < 2 && (c.key !== "tune" || Math.abs(p.cents) <= 20);
+    return { ...c, ok };
+  });
+}
+
+// The Tone check's cards for a host page (the Fix tab, the Tone check tool). onFix(ts): open the
+// fix for a finding (without it, a finding links to its fix, #/skills/fix/TS-nn). Returns
+// { top, more, cleanup }: the hold card (with the last result) and result card, then the checklist,
+// history and explanation cards.
 export function toneCheck({ onFix } = {}) {
   const page = h("div", { class: "stack tonepage" });
   let note = 0, recorder = null, stream = null, lastUrl = null, lastBlob = null, unsub = null, findings = null;
@@ -56,7 +73,8 @@ export function toneCheck({ onFix } = {}) {
   const noteSel = h("select", { class: "input", "aria-label": "Note to hold" }, NOTES.map(([s, l]) => h("option", { value: String(s) }, l)));
   noteSel.addEventListener("change", () => { note = Number(noteSel.value); });
   const hearBtn = h("button", { type: "button", class: "btn", onclick: () => { const c = ac(), v = makeVoice(hzOf(note), c.currentTime + 0.05); v.stop(c.currentTime + 2.5); } }, icon("play"), " Hear the note");
-  const startBtn = h("button", { type: "button", class: "btn primary", onclick: () => record() }, icon("mic"), " Hold the note for 6 seconds");
+  const startBtn = h("button", { type: "button", class: "btn primary big toolstart", onclick: () => record() }, icon("mic"), " Hold a note now");
+  const lastBox = h("div", { class: "stack tonelast", "aria-live": "polite" });
   const status = h("p", { class: "small", role: "status", "aria-live": "polite" });
   const result = h("div", { class: "stack" });
   const histBox = h("div", { class: "stack small" });
@@ -74,7 +92,7 @@ export function toneCheck({ onFix } = {}) {
     try { unsub = await listenMic(r => { reads.push(r); if (started === null && r.semi !== null) started = r.t; }); } catch (e) { unsub = null; }
     recorder.start();
     status.textContent = "Listening: hold " + codeOf(note) + " steadily...";
-    setTimeout(() => { if (recorder.state !== "inactive") recorder.stop(); }, 7000);
+    setTimeout(() => { if (recorder.state !== "inactive") recorder.stop(); }, 6000);
     await done;
     if (unsub) { unsub(); unsub = null; }
     findings = reads.length ? diagnose(started === null ? reads : reads.filter(r => r.t >= started - 0.2), note) : null;
@@ -100,7 +118,7 @@ export function toneCheck({ onFix } = {}) {
     return [h("div", { class: "stack tone-found" }, h("h3", null, "What the app heard, most important first"),
       findings.map(f => {
         const first = !seen.has(f.ts); seen.add(f.ts);
-        return h("div", { class: "notice info row between" }, h("span", null, f.text), !first ? null : onFix ? h("button", { type: "button", class: "btn small", onclick: () => onFix(f.ts) }, "Show the fix") : h("a", { class: "btn small", href: "#/coach/" + f.ts }, "Show the fix"));
+        return h("div", { class: "notice info row between" }, h("span", null, f.text), !first ? null : onFix ? h("button", { type: "button", class: "btn small", onclick: () => onFix(f.ts) }, "Show the fix") : h("a", { class: "btn small", href: "#/skills/fix/" + f.ts }, "Show the fix"));
       }))];
   }
 
@@ -120,9 +138,9 @@ export function toneCheck({ onFix } = {}) {
       h("h2", null, "Your " + codeOf(note) + ": " + score + " out of 10"),
       h("p", { class: "small muted" }, "Held " + p.seconds + " s, " + (p.cents > 0 ? "+" : "") + p.cents + " cents from the note" + (Math.abs(p.cents) > 25 ? ": check your flute's key in Settings, or the angle of the air." : ".")),
       ...(fresh ? heard() : []),
-      h("div", { class: "tablewrap" }, h("table", { class: "table" },
+      h("details", { class: "tonemore" }, h("summary", null, "All the measures"), h("div", { class: "tablewrap" }, h("table", { class: "table" },
         h("thead", null, h("tr", null, h("th", null, "Measure"), h("th", null, "You"), h("th", null, ""), h("th", null, ref ? "Reference player (" + ref.label + ")" : "Reference player"), h("th", null, "Your best"))),
-        h("tbody", null, rows))),
+        h("tbody", null, rows)))),
       weak.length ? h("div", { class: "stack" }, h("h3", null, "What to work on"), weak.map(({ m }) => h("p", null, h("b", null, m.name + ": "), m.tip))) : h("p", null, icon("check"), " Every measure is good. Now record yourself and compare with a master's recording by ear: that is where the last part of tone lives."),
       lastUrl ? h("div", { class: "row tight" }, h("button", { type: "button", class: "btn small", onclick: () => new Audio(lastUrl).play().catch(() => {}) }, icon("play"), " Hear your note"),
         h("button", { type: "button", class: "btn small", onclick: () => new Audio("app/audio/" + (note < -6 ? "bansuri-sa-lower-octave-sankalp.mp3" : "bansuri-sa-middle-octave-sankalp.mp3")).play().catch(() => {}) }, icon("play"), " Hear the reference player"),
@@ -131,7 +149,39 @@ export function toneCheck({ onFix } = {}) {
           handOff({ title: "held " + codeOf(note), file: lastBlob ? new File([lastBlob], "tone-check-" + today() + "." + ext, { type: lastBlob.type }) : null, measures: { ...p, noteName: codeOf(note) } });
           location.hash = "#/review";
         } }, "Ask my teacher")) : null);
-    if (fresh) { hist.unshift({ date: today(), note, p, score }); storeSet(HISTORY, hist.slice(0, 60)); drawHistory(); }
+    if (fresh) { hist.unshift({ date: today(), note, p, score }); storeSet(HISTORY, hist.slice(0, 60)); drawHistory(); drawLast(); }
+  }
+
+  // The last result (W47), there when the screen opens: three chips, each opening what it stands
+  // for (the measures and what to do), and the fix for the first one that needs work.
+  function drawLast() {
+    const last = store(HISTORY, [])[0];
+    if (!last || !last.p) { lastBox.replaceChildren(); return; }
+    const chips = toneChips(last.p), detail = h("div", { class: "tonedetail", hidden: true });
+    const buttons = chips.map(c => {
+      const b = h("button", { type: "button", class: "chip chiplink tonechip " + (c.ok ? "good" : "warn"), "aria-expanded": "false", dataset: { k: c.key } },
+        c.ok ? icon("check") : h("b", { "aria-hidden": "true" }, "!"), h("span", null, c.label), h("span", { class: "sr-only" }, c.ok ? "fine" : "needs work"));
+      b.addEventListener("click", () => {
+        const open = b.getAttribute("aria-expanded") !== "true";
+        buttons.forEach(x => x.setAttribute("aria-expanded", "false"));
+        detail.hidden = !open;
+        if (!open) return;
+        b.setAttribute("aria-expanded", "true");
+        if (fixLink) fixLink.hidden = open;
+        detail.replaceChildren(...[...c.measures.map(k => {
+          const m = MEASURES.find(x => x.key === k), band = bandOf(m, last.p[k]);
+          return h("div", { class: "stack" }, h("p", { class: "row between" }, h("b", null, m.name), h("span", null, h("span", { class: "mono" }, last.p[k] + " " + m.unit), " ", h("span", { class: "chip " + BAND_CLS[band] }, BAND[band]))),
+            h("p", { class: "small muted" }, m.what), band >= 2 ? h("p", { class: "small" }, m.tip) : null);
+        }), c.key === "tune" ? h("p", { class: "small muted" }, (last.p.cents > 0 ? "+" : "") + last.p.cents + " cents from the note.") : null,
+        h("a", { class: "hubrow", href: "#/skills/fix/" + c.ts }, h("b", null, c.fix), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">"))].filter(Boolean));
+      });
+      return b;
+    });
+    const firstBad = chips.find(c => !c.ok);
+    const fixLink = firstBad ? h("a", { class: "hubrow tonefix", href: "#/skills/fix/" + firstBad.ts }, h("b", null, firstBad.fix), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">")) : null;
+    lastBox.replaceChildren(...[h("h3", { class: "grouphead" }, "Last result"),
+      h("p", { class: "small muted" }, codeOf(last.note) + " - " + last.date + " - " + last.score + "/10"),
+      h("div", { class: "chips tonechips3", role: "group", "aria-label": "Last result" }, buttons), detail, fixLink].filter(Boolean));
   }
 
   function drawHistory() {
@@ -151,10 +201,11 @@ export function toneCheck({ onFix } = {}) {
 
   page.append(
     h("section", { class: "card", id: "tone" }, h("h2", null, "Tone check: let the app listen"),
-      h("p", { class: "muted" }, "Hold one note for six seconds. The app measures what a microphone can hear: steadiness, breath noise and the start of the note, against a reference player and your own best. It also names the likely problem and shows its fix."),
+      h("p", null, "Hold one note for 5 seconds. The app listens for steadiness, pitch and air."),
       h("div", { class: "row" }, h("label", { class: "field" }, "Note", noteSel), hearBtn),
-      h("div", { class: "row" }, startBtn), status,
-      h("p", { class: "small muted" }, "Play in a quiet room, about 30 cm from the microphone, with the drone off. Use a headset microphone if you can.")),
+      startBtn, status,
+      h("p", { class: "small muted" }, "Play in a quiet room, about 30 cm from the microphone, with the drone off. Use a headset microphone if you can."),
+      lastBox),
     h("section", { class: "card", hidden: true }, result));
   // The result card shows once there is a result.
   new MutationObserver(() => { result.parentElement.hidden = !result.childNodes.length; }).observe(result, { childList: true });
@@ -166,5 +217,6 @@ export function toneCheck({ onFix } = {}) {
       h("p", { class: "small" }, "Steady pitch: the spread of the pitch while held (the reference player: 2 cents on middle Sa). Steady sound: the spread of the loudness. Clear tone: breath noise in the sound, from how periodic the sound is (calibrated on tones with known noise). Clean start: from the first sound to the steady note. Starts on pitch: how far the pitch strays at the start."),
       h("p", { class: "small muted" }, "The reference is a competent player's recording (Freesound, sankalp), not a master's. The microphone, the room and the flute change the numbers: compare yourself with yourself first."))];
   drawHistory();
+  drawLast();
   return { top: page, more, cleanup: () => cleanups.forEach(f => f()) };
 }

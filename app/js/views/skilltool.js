@@ -52,11 +52,20 @@ const MAKE = {
     const { tapGame } = await import("../core/live.js");
     const game = tapGame({ bpm: 72 });
     host.append(h("section", { class: "card" }, h("p", { class: "small muted" }, "Tap with the click to see whether you rush or drag. \"Then two silent bars\" tests the pulse you keep in your head (L06, L15)."), game.el));
+    // Setup above, one Start (S3): the speed and mode, then Start on its own line; Calibrate after.
+    const row = game.el.querySelector(".lv-row"), btns = row ? [...row.querySelectorAll(":scope > button")] : [];
+    if (btns.length) { btns[0].classList.add("toolstart"); row.after(h("div", { class: "toolstartrow" }, btns[0])); game.el.append(h("div", { class: "row toolafter" }, ...btns.slice(1))); }
     return () => game.destroy();
   },
-  async trainer(host) {
+  async trainer(host, { orn, head }) {
     const { render } = await import("./ornaments.js");
-    const ret = await render(host);
+    const h1 = head.querySelector("h1");
+    const ret = await render(host, { tool: true, orn, onTitle: (name, ex, key) => {
+      h1.replaceChildren(h("span", null, name), " ", h("span", { class: "muted toolsub" }, ex));
+      // The address follows the ornament, so Back and a reload come back to it.
+      const want = "#/skills/ornaments/trainer/" + key;
+      if (location.hash !== want && /^#\/skills\/ornaments\/trainer/.test(location.hash)) { try { history.replaceState(history.state, "", want); } catch (e) { /* the address stays */ } }
+    } });
     return typeof ret === "function" ? ret : null;
   },
   async quiz(host) {
@@ -64,6 +73,10 @@ const MAKE = {
     const box = h("div");
     host.append(box);
     const bench = mountBench(box, { compact: true, heading: false, flute: false, tabs: ["ear"], tab: "ear", onEar: recordEar });
+    // Setup above (the level, the tanpura), one Start (New question) under it, then the answers and
+    // Hear again (S3).
+    const next = box.querySelector("[data-ref=earNext]"), again = box.querySelector("[data-ref=earAgain]"), opts = box.querySelector("[data-ref=earOpts]");
+    if (next && opts) { next.classList.add("toolstart"); next.closest(".bb-row").after(next); opts.after(h("div", { class: "row toolafter" }, again)); }
     return () => bench.destroy();
   },
   async playback(host) {
@@ -71,6 +84,9 @@ const MAKE = {
     const box = h("div");
     host.append(box);
     const bench = mountBench(box, { compact: true, heading: false, flute: false, tabs: ["echo"], tab: "echo" });
+    // Setup above, then one Start (Play me a phrase), then the phrase and Hear it again (S3).
+    const echo = box.querySelector(".lv-echo"), go = echo && echo.querySelector(".lv-primary");
+    if (go) { const after = go.parentElement; go.classList.add("toolstart"); echo.querySelector(".lv-row").after(go); after.classList.add("toolafter"); }
     return () => bench.destroy();
   },
 };
@@ -79,14 +95,14 @@ export async function render(main, { params }) {
   const skill = skillById(params[0]), tools = TOOLS[params[0]] || [];
   const tool = tools.find(t => t[0] === params[1]);
   if (!skill || !tool) { location.replace("#/skills/" + (skill ? skill.id : "")); return; }
-  const body = h("div", { class: "toolbody" });
+  const body = h("div", { class: "toolbody" }), head = backHead("#/skills/" + skill.id, skill.title, tool[1]);
   const page = h("div", { class: "page toolpage", dataset: { noswipe: "1", tool: tool[0] } },
-    backHead("#/skills/" + skill.id, skill.title, tool[1]),
+    head,
     tools.length > 1 ? h("nav", { class: "seg toolswitch", "aria-label": "Tools" }, tools.map(([id, label]) => h("a", { href: "#/skills/" + skill.id + "/" + id, "aria-current": id === tool[0] ? "page" : null }, label))) : null,
     body);
   main.append(page);
   const cleanups = [followMic(page, "toolplaying")];
-  const done = await MAKE[tool[0]](body);
+  const done = await MAKE[tool[0]](body, { orn: params[2], head });
   if (done) cleanups.push(done);
   return () => cleanups.forEach(f => { try { f(); } catch (e) { /* already gone */ } });
 }

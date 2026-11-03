@@ -1529,3 +1529,66 @@ button.hubrow:first-child { border-top: 0; }
 .simpleleave { justify-content: center; }
 /* W17 Back after a gap: the main card. */
 .welcomeback .resume-body p { margin: 0; }
+/* Redesign 2: skills */
+/* A fix on its own screen (W50); the symptoms on the Fix tab link to it. */
+a.symcard { text-decoration: none; }
+.fixlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.fixstep { display: grid; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.fixstep:first-child { border-top: 0; padding-top: 0; }
+.fixrow { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+.fixnum { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--ink); font-weight: 700; }
+.fixmore > summary { cursor: pointer; min-height: 28px; padding-top: 3px; }
+.fixmore .reader { margin-top: 8px; }
+.fixtry { min-height: 40px; min-width: 64px; justify-content: center; }
+.fixpart > summary { cursor: pointer; min-height: 32px; }
+.fixpart .reader > :first-child { margin-top: 0; }
+.fixseek > summary { cursor: pointer; }
+.fixteacher .stack { gap: 0; }
+/* The game shell (W52-W54): How to play, Playing, Result. */
+.gshell .gs-intro { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.gshell .gs-play, .gshell .gs-again, .challenge .gs-take { flex: 1 1 220px; justify-content: center; }
+.gshell .gs-result { display: grid; gap: 8px; justify-items: start; }
+.gshell .gs-resend { justify-items: stretch; }
+.gshell .gs-resend > .btn { justify-content: center; }
+.gs-score { margin: 0; font-size: 1.15rem; }
+.gs-score b { font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 9vw, 3rem); }
+.gs-best, .gs-vs { margin: 0; }
+.gs-quest { font-size: 0.9rem; }
+.gshell[data-phase="intro"] .gs-later, .gshell[data-phase="intro"] .gs-start, .gshell[data-phase="intro"] .gs-result { display: none; }
+.gshell[data-phase="play"] .gs-intro, .gshell[data-phase="play"] .gs-result { display: none; }
+.gshell[data-phase="result"] .gs-intro, .gshell[data-phase="result"] .game > :not([aria-live]) { display: none; }
+.gshell[data-phase="result"] .game > [aria-live]:empty { display: none; }
+.gshell .gs-howto { margin: 0; }
+.gshell:not([data-phase="intro"]) .gs-howto { display: none; }
+.challenge.stack { padding-left: 14px; }
+.challenge .gs-chal { font-size: 1.2rem; margin: 0; }
+.challenge .gs-take { width: 100%; }
+.challenge-share .input { flex: 1 1 200px; min-width: 0; }
+/* The Ornaments hub: four tiles, one per ornament (W44). */
+.orntiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 700px) { .orntiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.orntile { display: grid; gap: 6px; justify-items: start; padding: 14px 16px; min-height: 96px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg); color: var(--ink); text-decoration: none; }
+.orntile:hover { border-color: var(--accent); }
+.orntile b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
+.orntile-glyph { color: var(--accent); line-height: 0; }
+.hubchips .chip .icon { width: 14px; height: 14px; }
+/* Tone check (W47): the last result as three chips, each opening its details. */
+.tonelast { padding-top: 12px; border-top: 1px solid var(--line); gap: 8px; }
+.tonelast:empty { display: none; }
+.tonelast .grouphead, .tonelast p { margin: 0; }
+.tonelast .grouphead, .fixpart .grouphead { font-size: 1.1rem; margin: 0; }
+.tonechips3 { display: flex; flex-wrap: wrap; gap: 8px; }
+.tonechip { min-height: 40px; padding: 4px 14px; font-size: 0.95rem; }
+.tonechip .icon { width: 16px; height: 16px; }
+.tonechip[aria-expanded="true"] { background: var(--accent-soft); }
+.tonedetail { display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+.tonedetail[hidden] { display: none; }
+.tonedetail p { margin: 0; }
+.tonemore > summary { cursor: pointer; min-height: 32px; }
+/* A training tool: setup above, one Start (S3). */
+.toolstart { width: 100%; justify-content: center; min-height: 48px; font-size: 1.05rem; }
+.toolpage .toolstartrow { margin: 6px 0; }
+.toolpage .lv-echo > .toolstart, .toolpage .bb-panel .toolstart { margin: 8px 0; }
+.toolpage .toolafter { margin-top: 6px; }
+.toolsub { font-size: 0.6em; }
+.ornhear { align-items: end; }

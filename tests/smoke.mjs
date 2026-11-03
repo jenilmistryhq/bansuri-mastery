@@ -360,13 +360,15 @@ try {
   });
   await section("Coach (offline)", async () => {
     await go("/coach");
-    await clickText("#main button", "Low notes");
-    await page.waitForFunction(() => /Fixes and drills|How to verify/i.test(document.querySelector("#main").innerText), { timeout: 8000 });
-    check(true, "coach shows the troubleshooting guide for a symptom");
+    // A symptom opens its fix on its own screen (redesign W50).
+    await clickText("#main .symcard", "Low notes");
+    await page.waitForFunction(() => /Try this first/i.test(document.querySelector("#main").innerText) && /^#\/skills\/fix\/TS-03$/.test(location.hash), { timeout: 8000 });
+    check(true, "coach: a symptom opens its fix on its own screen (#/skills/fix/TS-03)");
     check(await page.$$eval("#main .checkli input", x => x.length) > 0, "the quick checks are a checklist");
-    await clickText("#main button", "Try the drill now");
+    await page.click("#main .fixtry");
     check(await page.$("#main .drillcard .lv-hold") !== null, "the coach opens a live drill (hold low Pa)");
     await clickText("#main button", "Yes, it helped");
+    await go("/coach");
     check(/What you worked on/.test(await page.$eval("#main", e => e.innerText)), "the coach remembers what helped");
 
   });
@@ -602,25 +604,29 @@ try {
       check(await lp.$("#main .micpanel .lv-quiz") !== null, "milestone M4: identifying notes opens a note-naming test");
 
       // Tone check, a section of the Coach: a held Sa 35 cents flat is diagnosed as flat, and
-      // Show the fix opens the matching guide on the same page.
+      // Show the fix opens the matching fix on its own screen (W50); back on the Tone check, the last
+      // result shows as three chips (W47).
       await lp.goto(BASE + "#/tone", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#main #symptoms", { timeout: 8000 }).catch(() => {});
       check(await lp.evaluate(() => /What is going wrong/.test((document.querySelector("#main h1") || {}).textContent || "") && !!document.querySelector("#main #tone") && !!document.querySelector("#main #symptoms")), "#/tone opens the Coach, with the Tone check and the symptoms on one page");
-      await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Hold the note/.test(b.textContent)), { timeout: 5000 });
-      await clickTextOn(lp, "#main button", "Hold the note");
+      await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Hold a note now/.test(b.textContent)), { timeout: 5000 });
+      await clickTextOn(lp, "#main button", "Hold a note now");
       await sleep(300); await tone(-0.35);
       await lp.waitForFunction(() => /cents flat/.test(document.querySelector("#main .tone-found") ? document.querySelector("#main .tone-found").innerText : ""), { timeout: 20000 })
         .then(() => check(true, "tone check hears that a held Sa is flat (the coach's diagnosis)"), async () => check(false, "tone check: " + (await lp.$eval("#main", e => e.innerText)).slice(0, 400)));
       await tone(null);
-      const fix = await lp.evaluateHandle(() => [...document.querySelectorAll("#main .tone-found .notice")].find(n => /cents flat/.test(n.textContent))?.querySelector("button") || null);
-      check(await fix.evaluate(b => !!b), "tone check: the flat finding has a Show the fix button");
+      check(await lp.evaluate(() => { const c = [...document.querySelectorAll("#main .tonelast .tonechip")]; return c.length === 3 && c.find(x => x.dataset.k === "tune").classList.contains("warn"); }), "tone check: the result shows as three chips, In tune marked to work on");
+      const fix = await lp.evaluateHandle(() => [...document.querySelectorAll("#main .tone-found .notice")].find(n => /cents flat/.test(n.textContent))?.querySelector("a, button") || null);
+      check(await fix.evaluate(b => !!b), "tone check: the flat finding has a Show the fix link");
       if (await fix.evaluate(b => !!b)) {
         await fix.evaluate(b => b.click());
-        await lp.waitForFunction(() => document.querySelector("#main .symcard.on") && /out of 10/.test(document.querySelector("#main").textContent), { timeout: 8000 })
-          .then(() => check(true, "Show the fix opens the guide on the same page, and the tone result stays"), () => check(false, "Show the fix opens the guide on the same page, and the tone result stays"));
+        await lp.waitForSelector("#main .fixpage[data-ts=TS-05]", { timeout: 8000 })
+          .then(() => check(true, "Show the fix opens that fix on its own screen"), () => check(false, "Show the fix opens that fix on its own screen"));
+        await lp.goBack(); await lp.waitForSelector("#main .tonelast .tonechip", { timeout: 8000 }).catch(() => {});
+        check(await lp.$$eval("#main .tonelast .tonechip", x => x.length) === 3, "tone check: back from the fix, the last result is there");
       }
       await lp.goto(BASE + "#/coach/TS-05", { waitUntil: "networkidle0" });
-      await lp.waitForSelector("#main .symcard.on", { timeout: 8000 }).then(() => check(true, "#/coach/TS-05 opens that guide"), () => check(false, "#/coach/TS-05 opens that guide"));
+      await lp.waitForSelector("#main .fixpage[data-ts=TS-05]", { timeout: 8000 }).then(() => check(true, "#/coach/TS-05 opens that fix"), () => check(false, "#/coach/TS-05 opens that fix"));
 
       // A session step with a listening goal ticks itself when the goal is met.
       await lp.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 2, startedAt: "2026-10-01" })));
@@ -681,8 +687,9 @@ try {
         // The suggested game is in the "play now" card; the others are in the grid.
         const inGrid = await lp.evaluate(l => [...document.querySelectorAll("#main .gamecard")].some(e => e.textContent.trim().startsWith(l)), label);
         if (inGrid) await clickTextOn(lp, "#main .gamecard", label); else await lp.evaluate(() => document.querySelector("#main .playnow .btn.primary").click());
-        await lp.waitForSelector("#main .game-card .game .btn.primary");
-        await lp.click("#main .game-card .game .btn.primary");
+        // The game shell's How to play: Play presses the game's own Start (W52).
+        await lp.waitForSelector("#main .game-card .gs-play");
+        await lp.click("#main .game-card .gs-play");
         await sleep(150);
         if (await lp.$("#main .game-card .lv-intro")) await lp.click("#main .game-card .lv-intro .lv-primary");
         await sleep(300);
@@ -734,7 +741,10 @@ try {
       if (link) {
         await lp.goto(link, { waitUntil: "networkidle0" });
         await lp.waitForSelector("#main .challenge");
-        check(/scored \d+/.test(await lp.$eval("#main .challenge", e => e.innerText)) && await lp.$("#main .game-card:not([hidden]) .game") !== null, "a challenge link opens the same game with the score to beat");
+        // W55: who scored what, then Take it on opens the game's How to play.
+        const said = await lp.$eval("#main .challenge", e => e.innerText);
+        await lp.click("#main .gs-take"); await lp.waitForSelector("#main .game-card:not([hidden]) .game .game-canvas", { timeout: 5000 }).catch(() => {});
+        check(/scored \d+ in Balloon/.test(said) && await lp.$("#main .game-card:not([hidden]) .gs-play") !== null, "a challenge link says the score to beat, and Take it on opens the same game");
       }
 
       // Make a melody: tapping cells writes notation.
@@ -905,7 +915,8 @@ try {
       await lp.goto(BASE + "#/play/bingo", { waitUntil: "networkidle0" }); await lp.waitForSelector("#main .bingo", { timeout: 5000 }).catch(() => {});
       check(!!(await lp.$("#main .game-card:not([hidden]) .bingo")), "games: a game's address opens it directly");
       await lp.setViewport({ width: 1900, height: 950 });
-      await lp.goto(BASE + "#/play/balloon", { waitUntil: "networkidle0" }); await lp.waitForSelector("#main .game-canvas"); await sleep(200);
+      // The canvas shows once Play is pressed (How to play shows the instructions and options only).
+      await lp.goto(BASE + "#/play/balloon", { waitUntil: "networkidle0" }); await lp.waitForSelector("#main .gs-play"); await lp.click("#main .gs-play"); await lp.waitForSelector("#main .game-canvas", { visible: true }); await sleep(200);
       const geo = await lp.evaluate(() => { const c = document.querySelector("#main .game-canvas").getBoundingClientRect(); return { l: c.left, r: innerWidth - c.right, w: c.width, h: c.height }; });
       check(Math.abs(geo.l - geo.r) < 30 && geo.w >= 1000 && geo.h <= 950 * 0.62, "games: on a wide screen the game is centred and fills the column (" + JSON.stringify(geo) + ")");
       await lp.setViewport({ width: 800, height: 600 });
@@ -2158,6 +2169,94 @@ try {
     check(await mp.evaluate(() => !JSON.parse(localStorage.getItem("bansuri.settings")).simple && !document.querySelector("#main .simpletiles")), "simple mode: Leave Simple mode goes back to the usual Today");
     await ctx.close();
   });
+  await section("Skills (redesign 2): a fix's own screen, the game shell, challenges, ornaments, tone check", async () => {
+    await go("/today");
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem("bansuri.progress", JSON.stringify({ v: 1, current: 20, startedAt: "2026-10-01", prefs: { howChosen: true } })); });
+    // W50: a fix on its own screen, opened from its hub; Back returns to the hub.
+    await go("/skills/tone");
+    await page.evaluate(() => document.querySelector("#main a.hubrow[href='#/skills/fix/TS-02/tone']").click());
+    await page.waitForSelector("#main .fixpage[data-ts=TS-02] .fixstep", { timeout: 8000 }).catch(() => {});
+    const fx = await page.evaluate(() => ({ back: document.querySelector("#main .backhead .backlink")?.getAttribute("href"), title: document.querySelector("#main .backhead h1")?.textContent,
+      heads: [...document.querySelectorAll("#main .fixpart .grouphead")].map(x => x.textContent).join("|"), steps: document.querySelectorAll("#main .fixstep").length, tries: document.querySelectorAll("#main .fixtry").length,
+      hear: !!document.querySelector("#main .fixhear"), guide: !!document.querySelector("#main a[href='#/read/troubleshooting/TS-02-squeaks-and-wrong-octave.md']"), teacher: !!document.querySelector("#main a.fixteacher[href='#/me/teacher']"),
+      tabs: !!document.querySelector("#main .sectiontabs"), fixback: document.querySelector("#main .fixback")?.textContent }));
+    check(fx.back === "#/skills/fix" && /Squeaks/.test(fx.title) && fx.heads === "What it sounds like|Try this first" && fx.steps >= 3 && fx.tries === fx.steps && fx.hear && fx.guide && fx.teacher && !fx.tabs && fx.fixback === "Back to Tone and breath",
+      "fix (W50): its own screen: back to Fix a problem, what it sounds like, numbered fixes each with Try, a good example, the full guide, ask your teacher, back to the hub " + JSON.stringify(fx));
+    await page.click("#main .fixtry");
+    check(await page.$("#main .fixstep .drillcard:not([hidden]) .lv-hold") !== null, "fix: Try opens the topic's drill under the fix");
+    await page.click("#main .fixback"); await page.waitForFunction(() => location.hash === "#/skills/tone", { timeout: 5000 }).catch(() => {});
+    check(await page.evaluate(() => location.hash) === "#/skills/tone", "fix: Back to Tone and breath returns to the hub (history Back)");
+    // Opened from a lesson: Back returns to the lesson; a fix with no drill and no example shows neither.
+    await go("/session/2");
+    await page.evaluate(() => { location.hash = "#/skills/fix/TS-01"; });
+    await page.waitForSelector("#main .fixpage[data-ts=TS-01] .fixback", { timeout: 8000 }).catch(() => {});
+    const lessonBack = await page.$eval("#main .fixback", e => e.textContent).catch(() => "");
+    await page.click("#main .fixback"); await page.waitForFunction(() => location.hash === "#/session/2", { timeout: 5000 }).catch(() => {});
+    check(lessonBack === "Back to the lesson" && await page.evaluate(() => location.hash) === "#/session/2", "fix: opened from a lesson, Back returns to it (" + lessonBack + ")");
+    await go("/skills/fix/TS-11");
+    await page.waitForSelector("#main .fixpage .fixstep", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => document.querySelectorAll("#main .fixstep").length >= 3 && !document.querySelector("#main .fixtry") && !document.querySelector("#main .fixhear") && !!document.querySelector("#main .fixback")), "fix: only the drills and examples a topic has (TS-11: none)");
+    // W44: the Ornaments hub's four tiles open the trainer on their ornament; what the microphone can judge.
+    await go("/skills/ornaments");
+    const orn = await page.evaluate(() => ({ tiles: [...document.querySelectorAll("#main .orntile")].map(a => a.getAttribute("href")).join(), chips: document.querySelectorAll("#main .hublatest .chip").length,
+      judge: !!document.querySelector("#main a.hubrow[href='#/skills/ornaments/trainer#judge']") }));
+    check(orn.tiles === "#/skills/ornaments/trainer/meend,#/skills/ornaments/trainer/kan,#/skills/ornaments/trainer/murki,#/skills/ornaments/trainer/andolan" && orn.chips === 4 && orn.judge, "ornaments hub (W44): four tiles, the four chips from the start, what the microphone can judge " + JSON.stringify(orn));
+    await page.evaluate(() => document.querySelector("#main .orntile[data-orn=murki]").click());
+    await page.waitForSelector("#main .ornTabs", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => document.querySelector("#main .ornTabs [aria-selected=true]")?.textContent === "Murki" && /^Murki/.test(document.querySelector("#main .backhead h1").textContent) && !!document.querySelector("#main .toolstart")), "ornament trainer: opens on the ornament of its tile, named in the title, with one Try it");
+    await go("/skills/ornaments/trainer#judge");
+    check(!!(await page.$("#main #judge")), "ornament trainer: What the microphone can judge has its own anchor");
+    // S3: the ear quiz, play it back and tap the beat: setup above, one Start.
+    for (const [route, what] of [["/skills/ear/quiz", "ear quiz"], ["/skills/ear/playback", "play it back"], ["/skills/rhythm/tap", "tap the beat"], ["/skills/tone/check", "tone check"]]) {
+      await go(route);
+      check(await page.$$eval("#main .toolstart", x => x.length) === 1, what + ": one full-width Start under its setup (S3)");
+    }
+    // W47: the tone check opens on the last result, as three chips with details behind them.
+    await page.evaluate(() => localStorage.setItem("bansuri.tone.history", JSON.stringify([{ date: "2026-11-01", note: 0, p: { pitchSD: 4, levelCV: 9, air: 6, attack: 100, overshoot: 20, cents: -5, seconds: 5 }, score: 7.3 }])));
+    await go("/skills/tone");
+    await go("/skills/tone/check");
+    await page.waitForSelector("#main .tonelast .tonechip", { timeout: 8000 }).catch(() => {});
+    const tc =await page.evaluate(() => ({ chips: [...document.querySelectorAll("#main .tonelast .tonechip")].map(c => c.dataset.k + ":" + (c.classList.contains("good") ? "ok" : "warn")).join(), fix: document.querySelector("#main .tonelast .tonefix")?.getAttribute("href"),
+      btn: [...document.querySelectorAll("#main button")].some(b => /Hold a note now/.test(b.textContent)) }));
+    await page.click("#main .tonechip[data-k=air]");
+    const detail = await page.$eval("#main .tonedetail", e => !e.hidden && /Clear tone/.test(e.innerText) && !!e.querySelector("a[href='#/skills/fix/TS-01']")).catch(() => false);
+    check(tc.chips === "steady:ok,tune:ok,air:warn" && tc.fix === "#/skills/fix/TS-01" && tc.btn && detail, "tone check (W47): last result as Steady, In tune and Air chips, the details behind a chip, Airy tone: what to try " + JSON.stringify(tc));
+    // W52-W54: the game shell: How to play (the game's instructions and options, Play, Drone),
+    // Playing, Result (score, best, Again, Another game, Challenge a friend).
+    await go("/skills/games");
+    await page.evaluate(() => [...document.querySelectorAll("#main .gamecard")].find(b => b.dataset.game === "bullseye").click());
+    await page.waitForSelector("#main .gshell .gs-play", { timeout: 8000 }).catch(() => {});
+    const intro = await page.evaluate(() => { const s = document.querySelector("#main .gshell"), vis = el => !!el && el.offsetParent !== null; return { phase: s.dataset.phase, play: vis(s.querySelector(".gs-play")), drone: vis(s.querySelector(".gs-drone")), start: vis(s.querySelector(".gs-start")), canvas: vis(s.querySelector(".game-canvas")), howto: /Hold the note shown/.test(s.innerText), notes: vis(s.querySelector(".game select")) }; });
+    check(intro.phase === "intro" && intro.play && intro.drone && !intro.start && !intro.canvas && intro.howto && intro.notes, "game shell: How to play shows the instructions, the options, Play and Drone " + JSON.stringify(intro));
+    await page.click("#main .gs-play"); await sleep(200);
+    const playing = await page.evaluate(() => document.querySelector("#main .gshell").dataset.phase);
+    await page.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:live", { detail: { type: "game", game: "bullseye", score: 42, best: true } })));
+    await sleep(200);
+    const res = await page.evaluate(() => { const s = document.querySelector("#main .gshell"); return { phase: s.dataset.phase, score: s.querySelector(".gs-score")?.innerText, best: s.querySelector(".gs-best")?.innerText, again: !!s.querySelector(".gs-again"), other: !!s.querySelector(".gs-other"), share: s.querySelector(".challenge-share input")?.value || "" }; });
+    check(playing === "play" && res.phase === "result" && /42/.test(res.score) && /new best/i.test(res.best) && res.again && res.other && /#\/challenge\//.test(res.share), "game shell: Play, then the result: score, best, Play again, Another game, a challenge link for Bullseye " + JSON.stringify(res));
+    await page.click("#main .gs-other"); await page.waitForFunction(() => location.hash === "#/skills/games" && !document.querySelector("#main .game-card:not([hidden])"), { timeout: 5000 }).catch(() => {});
+    check(await page.evaluate(() => location.hash === "#/skills/games" && !document.querySelector("#main .game-card:not([hidden])")), "game shell: Another game returns to the games");
+    // W55: a challenge in a game other than Steer, Balloon and Phrase; Take it on, then Send your score back.
+    const payload = Buffer.from(JSON.stringify({ g: "bullseye", n: 34, by: "Asha" })).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    await go("/challenge/" + payload);
+    const chal = await page.$eval("#main .challenge", e => e.innerText).catch(() => "");
+    await page.click("#main .gs-take"); await page.waitForSelector("#main .gshell .gs-play", { timeout: 5000 }).catch(() => {});
+    await page.click("#main .gs-play"); await sleep(200);
+    await page.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:live", { detail: { type: "game", game: "bullseye", score: 40, best: false } })));
+    await sleep(200);
+    const back = await page.evaluate(() => ({ vs: document.querySelector("#main .gs-vs")?.innerText || "", send: [...document.querySelectorAll("#main .challenge-share button")].some(b => /Send your score back/.test(b.textContent)), link: document.querySelector("#main .challenge-share input")?.value || "" }));
+    check(/Asha scored 34 in Bullseye/.test(chal) && /beat Asha/.test(back.vs) && back.send && /#\/challenge\//.test(back.link), "challenge (W55): who scored what, Take it on, and the result offers Send your score back " + JSON.stringify(back));
+    // Hindi: the fix screen and the game shell.
+    await page.evaluate(() => localStorage.setItem("bansuri.settings", JSON.stringify({ lang: "hi" })));
+    await page.goto(BASE + "#/skills/fix/TS-02/tone", { waitUntil: "networkidle0" }); await page.reload({ waitUntil: "networkidle0" });
+    await page.waitForSelector("#main .fixstep", { timeout: 8000 }).catch(() => {}); await sleep(300);
+    const hiFix = await page.evaluate(() => [...document.querySelectorAll("#main .fixpart .grouphead, #main button, #main .fixback, #main .fixteacher b")].filter(b => /[A-Za-z]{3}/.test(b.textContent) && !/[ऀ-ॿ]/.test(b.textContent)).map(b => b.textContent));
+    await page.goto(BASE + "#/skills/game/bullseye", { waitUntil: "networkidle0" }); await page.waitForSelector("#main .gs-play", { timeout: 8000 }).catch(() => {}); await sleep(300);
+    const hiGame = await page.evaluate(() => [...document.querySelectorAll("#main .gshell button, #main .gshell label, #main .gs-howto")].filter(b => b.offsetParent !== null && /[A-Za-z]{3}/.test(b.textContent) && !/[ऀ-ॿ]/.test(b.textContent)).map(b => b.textContent));
+    check(!hiFix.length && !hiGame.length, "hindi: the fix screen and the game shell are in Hindi " + JSON.stringify(hiFix.concat(hiGame)));
+    await page.evaluate(() => localStorage.removeItem("bansuri.settings"));
+    await page.reload({ waitUntil: "networkidle0" });
+  });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete
     // each kind of step (the player marks the step's kind on the stage). A fresh learner on the
@@ -2304,7 +2403,7 @@ try {
   await section("Tone check", async () => {
     await go("/tone");
     check(/tone check: let the app listen/.test(await text()), "tone: the Tone check opens in the Coach");
-    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Hold the note/.test(b.textContent)).click());
+    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Hold a note now/.test(b.textContent)).click());
     await page.waitForFunction(() => /out of 10|No steady note|could not be read/.test(document.querySelector("#main").textContent), { timeout: 30000 }).catch(() => {});
     check(/out of 10|No steady note/.test(await page.$eval("#main", e => e.textContent)), "tone: a check with the (fake) microphone ends in a result or a clear message");
   });
