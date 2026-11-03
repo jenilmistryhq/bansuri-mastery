@@ -11,7 +11,7 @@ export function scoreRows(f) {
     h("td", { class: "small" }, r.levels[f.scores[r.key] - 1] + (f.notes[r.key] ? ". " + f.notes[r.key] : ""))));
 }
 export function reviewCard(f, title) {
-  const card = h("section", { class: "card" }, h("h2", null, title || "Review: " + f.what),
+  const card = h("section", { class: "card" }, h("h2", null, title || "Review of " + f.what),
     h("p", { class: "small muted" }, (f.teacher ? f.teacher + ", " : "") + f.date),
     h("table", { class: "rvtable" }, h("tbody", null, scoreRows(f))),
     f.comment ? h("p", null, f.comment) : null,

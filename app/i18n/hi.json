@@ -3150,7 +3150,7 @@
 "ornaments (meend, kan, andolan)": "अलंकरण (मींड, कण, आंदोलन)",
 "phrasing and raga feel": "वाक्यांश और राग का भाव",
 "posture and technique (from video)": "पॉस्चर और तकनीक (वीडियो से)",
-"Review: {x}": "समीक्षा: {x}",
+"Review: {x}": "दोहराव: {x}",
 "Next review by {x}": "अगली समीक्षा {x} तक",
 "Ask your teacher to send it again.": "अपने गुरु से इसे दोबारा भेजने को कहिए।",
 "No doubtful notes left. Play the phrases once more to be sure.": "कोई संदिग्ध स्वर नहीं बचा। पक्का करने के लिए वाक्यांश एक बार और सुनिए।",
@@ -4815,7 +4815,7 @@
 "Practised the upper octave": "तार सप्तक का अभ्यास किया",
 "Held a soft S'": "एक नरम S' रोका",
 "Tried a soft S'": "एक नरम S' आज़माया",
-"Keys and transposition": "सुर (की) और स्थानांतरण",
+"Keys and transposition": "स्केल और ट्रांसपोज़िशन",
 "On Day 177: why your flute has one Sa, how to play songs in other keys, and the limits.": "दिन 177 पर: आपकी बाँसुरी का एक ही सा क्यों है, दूसरे सुरों में गाने कैसे बजाएँ, और सीमाएँ।",
 "In G: {x}": "G में: {x}",
 "Write it in your flute's own sargam.": "इसे अपनी बाँसुरी की अपनी सरगम में लिखिए।",
@@ -6317,7 +6317,7 @@
 "Song by ear: continue the current song": "कान से गीत: अभी वाला गीत जारी रखिए",
 "Composition and improvisation: EX-IMP Level 4": "रचना और उपज: EX-IMP लेवल 4",
 "Western notation and theory": "पश्चिमी स्वरलिपि और सिद्धांत",
-"Keys and transposition (L26)": "की (सा का सुर) और ट्रांसपोज़िशन (L26)",
+"Keys and transposition (L26)": "स्केल और ट्रांसपोज़िशन (L26)",
 "Speed and articulation": "गति और आर्टिकुलेशन",
 "Speed and articulation: double tonguing for fast": "गति और आर्टिकुलेशन: तेज़ हिस्सों के लिए डबल टंगिंग",
 "Alap (L31): Yaman first, then Bhupali": "आलाप (L31): पहले यमन, फिर भूपाली",
@@ -6647,5 +6647,6 @@
 "Download and read": "डाउनलोड करके सुनिए",
 "Getting the reading voice ready... {n}%": "पढ़ने वाली आवाज़ तैयार हो रही है... {n}%",
 "A natural reading voice is downloaded once (about 115 MB: the voice from Hugging Face and its player from this site), then works on this device.": "पढ़ने वाली एक स्वाभाविक आवाज़ एक बार डाउनलोड होती है (लगभग 115 MB: आवाज़ Hugging Face से और उसका प्लेयर इसी साइट से), फिर इस डिवाइस पर चलती है।",
-"The reading voice could not load. Check the connection and try again.": "पढ़ने वाली आवाज़ लोड नहीं हो सकी। इंटरनेट देखिए और फिर कोशिश कीजिए।"
+"The reading voice could not load. Check the connection and try again.": "पढ़ने वाली आवाज़ लोड नहीं हो सकी। इंटरनेट देखिए और फिर कोशिश कीजिए।",
+"Review of {x}": "{x} की समीक्षा"
 }
