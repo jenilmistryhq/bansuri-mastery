@@ -105,7 +105,9 @@ export function newId() { return "r" + Date.now().toString(36) + Math.random().t
 
 // A compact Record widget used in sessions, milestones and the journal. With video: true it records
 // a mirrored camera view with sound (for posture, hands and embouchure self-checks).
-export function recordWidget({ day, label, onSaved, video }) {
+// onStart(preview) and onStop() tell the caller when recording begins and ends (the Record screen
+// watches posture on the camera preview while it records).
+export function recordWidget({ day, label, onSaved, video, onStart, onStop }) {
   const status = h("span", { class: "small muted" }, recordingSupported() ? "Ready" : "Recording is not supported in this browser.");
   const clock = h("span", { class: "timer" }, "0:00");
   const bar = h("i");
@@ -122,6 +124,7 @@ export function recordWidget({ day, label, onSaved, video }) {
       const r = rec; rec = null; clearInterval(timer);
       btn.replaceChildren(icon("mic"), recLabel);
       if (preview) preview.hidden = true;
+      if (onStop) onStop();
       status.textContent = "Saving...";
       const { blob, mime, durationS } = await r.stop();
       const item = { id: newId(), created: new Date().toISOString(), date: today(), day: day ?? null, label: currentLabel(), mime, blob, durationS, kind: video ? "video" : "audio" };
@@ -147,6 +150,7 @@ export function recordWidget({ day, label, onSaved, video }) {
       starting = false;
       if (disposed) { started.cancel(); return; }
       rec = started;
+      if (onStart) onStart(preview);
       t0 = performance.now();
       timer = setInterval(() => { clock.textContent = fmtClock((performance.now() - t0) / 1000); }, 250);
       btn.replaceChildren(icon("stop"), "Stop");
@@ -159,7 +163,8 @@ export function recordWidget({ day, label, onSaved, video }) {
     }
   });
   const el = h("div", { class: "stack" }, h("div", { class: "row" }, btn, clock, status), meter, preview, audio);
-  el.cleanup = () => { disposed = true; if (rec) rec.cancel(); rec = null; clearInterval(timer); if (url) URL.revokeObjectURL(url); };
+  el.preview = preview;
+  el.cleanup = () => { disposed = true; if (rec) { rec.cancel(); if (onStop) onStop(); } rec = null; clearInterval(timer); if (url) URL.revokeObjectURL(url); };
   return el;
 }
 

@@ -263,20 +263,31 @@ export function reviewsCard(cleanups) {
     up.length ? h("p", { class: "small muted" }, "Coming up: " + up.map(u => u.label + " (" + fmtDate(u.next) + ")").join(", ")) : null);
 }
 
-// Help when a day keeps not passing, and a gentle restart after a break.
+// Days since the learner last practised (0 when never).
+function daysAway() {
+  const dates = [...new Set(getState().log.map(e => e.date))].sort();
+  const last = dates[dates.length - 1];
+  return last ? daysBetween(last, today()) : 0;
+}
+
+// Back after three or more days (redesign W17): the main card on Today, a welcome with no count of
+// missed days, Continue to the day where the learner left off, or a gentle start with 5 minutes.
+export function welcomeBackCard(cur) {
+  if (!getState().startedAt || cur <= 1 || daysAway() < 3) return null;
+  return h("section", { class: "resume todayhero welcomeback" },
+    h("div", { class: "resume-body" },
+      h("h1", { class: "title" }, "Welcome back"),
+      h("p", null, "You left off at Day " + cur + "."),
+      h("p", { class: "muted" }, "A gentle restart is ready."),
+      h("a", { class: "btn primary big", href: dayHref(cur) || "#/session/" + cur }, "Continue"),
+      h("a", { class: "btn", href: "#/today/quick" }, "Start with 5 minutes")));
+}
+
+// Help when a day keeps not passing (a break is welcomed by welcomeBackCard, as the main card).
 export function adaptiveCard(cur) {
   const s = getState(), log = s.log;
   if (!s.startedAt) return null;
   const tries = log.filter(e => e.day === cur && !e.passed).length;
-  const dates = [...new Set(log.map(e => e.date))].sort();
-  const last = dates[dates.length - 1];
-  const away = last ? daysBetween(last, today()) : 0;
-  // Back after three or more days (redesign F8): a welcome, and two equal ways on, each to the day's lesson.
-  if (away >= 3 && cur > 1) {
-    return h("section", { class: "card notice-card welcomeback" }, h("h2", null, "Welcome back"),
-      h("p", null, "It has been " + away + " days. Fingers and lips forget quickly but return quickly too: start with a short review of the last day you did, then carry on."),
-      h("div", { class: "row" }, h("a", { class: "btn", href: dayHref(cur - 1) }, "Review Day " + (cur - 1) + " first"), h("a", { class: "btn", href: dayHref(cur) }, "Go straight to Day " + cur)));
-  }
   if (tries >= 2) {
     const day = getDay(cur);
     const bench = day && day.blocks.find(b => b.bench && b.bench.bpm);

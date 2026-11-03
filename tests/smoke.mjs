@@ -301,13 +301,14 @@ try {
 
   });
   await section("Recording and pitch (fake microphone)", async () => {
-    await go("/me/journal/recordings");
+    await go("/me/journal/record");
     await clickText("#main .card button", "Record");
     await page.waitForFunction(() => /Recording\./.test(document.querySelector("#main").innerText), { timeout: 8000 });
     await sleep(2500);
     await clickText("#main .card button", "Stop");
     await page.waitForFunction(() => /Saved to your journal/.test(document.querySelector("#main").innerText), { timeout: 8000 });
     check(true, "recording saved to the journal");
+    await go("/me/journal/recordings");
     await page.waitForSelector("#main .rec");
     await clickText("#main .rec button", "Analyse pitch");
     await page.waitForFunction(() => /steady notes|No steady notes/.test(document.querySelector("#main .rec").innerText), { timeout: 20000 });
@@ -370,14 +371,17 @@ try {
 
   });
   await section("Posture and tone levels", async () => {
-    await go("/me/journal/recordings");
+    await go("/me/journal/record");
     check(await page.$$eval("#main .chipbtn", b => b.filter(x => /^[1-4]: /.test(x.textContent)).length) === 4, "the four tone levels can be heard in the Journal");
-    await page.evaluate(() => { const d = [...document.querySelectorAll("details")].find(x => /Video self-check/.test(x.textContent)); d.open = true; });
+    // With video: the live posture check watches the camera preview while it records (W72).
+    await clickText("#main .recswitch button", "With video");
     await sleep(300);
-    await clickText("#main .posture button", "Start the posture check");
-    await page.waitForFunction(() => /No one in view|Shoulders|Head|could not start/.test(document.querySelector("#main .posture").innerText), { timeout: 60000 })
-      .then(async () => check(!/could not start/.test(await page.$eval("#main .posture", e => e.innerText)), "the posture check loads pose detection and watches the camera"), () => check(false, "the posture check loads pose detection and watches the camera"));
-    await clickText("#main .posture button", "Stop");
+    await clickText("#main .card button", "Record video");
+    await page.waitForFunction(() => /No one in view|Shoulders|Head|could not start/.test((document.querySelector("#main .recstage .recposture") || {}).innerText || ""), { timeout: 60000 })
+      .then(async () => check(!/could not start/.test(await page.$eval("#main .recposture", e => e.innerText)) && await page.$eval("#main .recstage video.selfview", v => !v.hidden), "the posture check loads pose detection and watches the camera preview while a video records"), () => check(false, "the posture check loads pose detection and watches the camera preview while a video records"));
+    await clickText("#main .card button", "Stop");
+    await page.waitForFunction(() => /Saved to your journal/.test(document.querySelector("#main").innerText), { timeout: 8000 }).catch(() => {});
+    check(await page.$eval("#main .recposture", e => e.hidden), "the posture check stops when the recording stops");
 
   });
   await section("Journal and progress", async () => {
@@ -1082,8 +1086,8 @@ try {
     await go("/milestone/M1");
     check(await page.$("#main .stuckcard .btn.primary") !== null, "stuck: after two failed tries a milestone offers the three-minute check");
     // Move to another device: make the link, open it, see what it holds.
-    await go("/me/settings/data");
-    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Make a transfer link/.test(b.textContent)).click());
+    await go("/me/settings/move");
+    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Make a move link/.test(b.textContent)).click());
     await page.waitForSelector("#main input[aria-label='Transfer link']", { timeout: 5000 }).catch(() => {});
     const moveUrl = await page.$eval("#main input[aria-label='Transfer link']", e => e.value).catch(() => "");
     check(/#\/move\/[zj]/.test(moveUrl) && await page.$("#main .qrimg") !== null, "move: a transfer link (and a QR code while small) is made");
@@ -1420,7 +1424,9 @@ try {
     await go("/review");
     await page.evaluate(() => { window.__sent = []; navigator.share = undefined; navigator.canShare = undefined; navigator.clipboard.writeText = t => { window.__sent.push(t); return Promise.resolve(); }; });
     await page.type("#main input[aria-label='Title']", "Raga Yaman alap");
-    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Send to my teacher/.test(b.textContent)).click());
+    await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Make the review link/.test(b.textContent)).click());
+    await page.waitForSelector("#main input[aria-label='Review link']", { timeout: 5000 }).catch(() => {});
+    await page.evaluate(() => [...document.querySelectorAll("#main .rvlinkout button")].find(b => /^Copy/.test(b.textContent.trim())).click());
     await page.waitForFunction(() => window.__sent.length, { timeout: 5000 }).catch(() => {});
     const reqLink = (await page.evaluate(() => window.__sent[0] || "")).match(/#\/review\/[A-Za-z0-9_-]+/);
     check(!!reqLink, "review: the student's request becomes a link");
@@ -1786,7 +1792,7 @@ try {
     }
     // Flute: Check my flute first among the checks; the microphone-blocked message links here.
     await go("/me/flute");
-    check(await page.evaluate(() => { const hd = document.querySelector("#g-checks"); const next = hd && hd.nextElementSibling; return !!next && !!next.querySelector("a[href='#/bench/check']"); }), "flute: Check my flute is the first check");
+    check(await page.evaluate(() => { const hd = document.querySelector("#g-checks"); const next = hd && hd.nextElementSibling; const first = next && next.querySelector("a.hubrow"); return !!first && first.getAttribute("href") === "#/me/flute/check"; }), "flute: Check my flute is the first check");
     await go("/bench/tones");
     await page.evaluate(() => { localStorage.setItem("bansuri.live.micIntro", "1"); navigator.mediaDevices.getUserMedia = () => Promise.reject(new DOMException("Permission denied", "NotAllowedError")); });
     await page.evaluate(() => document.querySelector("#main .lv-hold .lv-primary").click());
@@ -1979,10 +1985,13 @@ try {
     await clickTextOn(tp, "#main .game-card button", "Close").catch(() => {});
     await tp.waitForFunction(() => location.hash === "#/today", { timeout: 5000 }).catch(() => {});
     check(qg === qWant && qOpen && await tp.evaluate(() => location.hash) === "#/today", "today after practice: Quest game opens today's quest game itself (" + qg + "), and Close comes back to Today");
-    // Coming back after three days: two equal buttons, each to the day's lesson.
+    // Coming back after three days (W17): the main card, no count of days, Continue to the day's
+    // lesson and a gentle start with 5 minutes.
     await load(base(47, { log: [{ date: ago(3), day: 46, minutes: 30, passed: true }] }), { m0 });
-    const wb = await tp.$$eval("#main .welcomeback a.btn", a => a.map(x => ({ href: x.getAttribute("href"), primary: x.classList.contains("primary") }))).catch(() => []);
-    check(wb.length === 2 && wb.every(x => !x.primary && /^#\/lesson\//.test(x.href)), "welcome back after 3 days: two equal buttons to the days' lessons " + JSON.stringify(wb));
+    const wb = await tp.evaluate(() => { const c = document.querySelector("#main .welcomeback"); return c ? { main: c === document.querySelector("#main .page").firstElementChild || !document.querySelector("#main .todayhero:not(.welcomeback)"), text: c.innerText,
+      btns: [...c.querySelectorAll("a.btn")].map(x => ({ href: x.getAttribute("href"), primary: x.classList.contains("primary"), t: x.textContent })) } : null; });
+    check(!!wb && wb.main && !/has been|days ago/i.test(wb.text) && /Day 47/.test(wb.text) && wb.btns.length === 2 && wb.btns[0].primary && /^Continue/.test(wb.btns[0].t) && /^#\/lesson\//.test(wb.btns[0].href) && wb.btns[1].href === "#/today/quick" && !wb.btns[1].primary,
+      "welcome back after 3 days: the main card, no day count; Continue to the day's lesson, or start with 5 minutes " + JSON.stringify(wb));
     // News: a one-time toast, not a card.
     await load(base(47, { prefs: Object.assign({}, prefs, { newsSeen: null }) }), { m0 });
     check(await tp.$(".msgtoast") !== null && !(await tp.$("#main .newscard")), "news: a toast, not a card on Today");
@@ -1990,6 +1999,111 @@ try {
     check(!(await tp.$(".msgtoast")), "news: shown once, remembered");
     await tp.goto(BASE + "#/today/quick", { waitUntil: "networkidle0" });
     check(await tp.waitForSelector("#main .lv-hold", { timeout: 5000 }).then(() => true, () => false), "#/today/quick opens the 5-minute practice (#/quick still works)");
+    await ctx.close();
+  });
+  await section("Me screens (redesign 2): journal days, record, capsule, teacher, flute, your data, simple mode", async () => {
+    // Its own browser context, so its storage and recordings do not touch the other sections.
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const mp = await ctx.newPage();
+    await collectI18n(mp);
+    mp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    mp.on("console", m => { if (m.type() === "error") errors.push("console: " + m.text()); });
+    await mp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    const T = await mp.evaluate(() => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); });
+    const to = async hash => {
+      await mp.goto(BASE + "#" + hash, { waitUntil: "networkidle0" });
+      await mp.waitForFunction(() => { const m = document.querySelector("#main"); return m && m.children.length && !m.querySelector(":scope > .boot"); }, { timeout: 10000 }).catch(() => {});
+      await sleep(250);
+    };
+    const mText = () => mp.$eval("#main", e => e.innerText);
+    await mp.evaluate(p => { localStorage.clear(); localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 })); localStorage.setItem("bansuri.progress", JSON.stringify(p)); },
+      { current: 20, startedAt: "2026-09-20", prefs: { langChosen: true, howChosen: true, playAsked: true, newsSeen: "2026-11-progress" }, log: [{ date: T, minutes: 30, day: 19 }] });
+    await mp.reload({ waitUntil: "networkidle0" });
+    // Two real recordings (a steady tone on Sa, as WAV): the Day 0 time capsule and one from today.
+    await mp.evaluate(async t => {
+      const wav = (secs, hz) => {
+        const sr = 22050, n = Math.round(sr * secs), b = new DataView(new ArrayBuffer(44 + n * 2));
+        const w = (o, s) => { for (let i = 0; i < s.length; i++) b.setUint8(o + i, s.charCodeAt(i)); };
+        w(0, "RIFF"); b.setUint32(4, 36 + n * 2, true); w(8, "WAVEfmt "); b.setUint32(16, 16, true); b.setUint16(20, 1, true); b.setUint16(22, 1, true);
+        b.setUint32(24, sr, true); b.setUint32(28, sr * 2, true); b.setUint16(32, 2, true); b.setUint16(34, 16, true); w(36, "data"); b.setUint32(40, n * 2, true);
+        for (let i = 0; i < n; i++) b.setInt16(44 + i * 2, Math.round(Math.sin(2 * Math.PI * hz * i / sr) * 12000 * Math.min(1, i / 2000, (n - i) / 2000)), true);
+        return new Blob([b.buffer], { type: "audio/wav" });
+      };
+      const r = await import(new URL("app/js/recorder.js", location.href).href);
+      await r.saveRecording({ id: "mecap", created: "2026-01-01T10:00:00.000Z", date: "2026-01-01", day: 0, label: "Day 0 time capsule", mime: "audio/wav", blob: wav(2.5, 523.25), durationS: 2.5, kind: "audio" }, { count: false });
+      await r.saveRecording({ id: "menow", created: new Date().toISOString(), date: t, day: 20, label: "Long Sa", mime: "audio/wav", blob: wav(5, 523.25), durationS: 5, kind: "audio" }, { count: false });
+    }, T);
+    // W70 Days: this week's total, and today's recording plays from the day.
+    await to("/me/journal");
+    const days = await mp.evaluate(() => ({ week: (document.querySelector("#main .weektotal") || {}).textContent || "", rec: !!document.querySelector("#main .tday .tdayrec") }));
+    check(/^This week \. 30 min$/.test(days.week.trim()) && days.rec, "journal days: a THIS WEEK total, and the day's recording as a button " + JSON.stringify(days));
+    await mp.evaluate(() => document.querySelector("#main .tday .tdayrec").click());
+    check(await mp.$("#main .tday .tdayrecs audio") !== null, "journal days: tapping the day's recording plays it there");
+    // W71, W72 Record: Record now opens its own screen, back to the Journal, Sound only or With video.
+    await to("/me/journal/recordings");
+    check(await mp.$("#main .recordnow a[href='#/me/journal/record']") !== null && !(await mp.$("#j-label")), "journal recordings: Record now opens the Record screen");
+    await to("/me/journal/record");
+    const rs = await mp.evaluate(() => ({ back: !!document.querySelector("#main .backhead a.backlink[href='#/me/journal/recordings']"), tabs: !!document.querySelector("#main .sectiontabs"),
+      sw: [...document.querySelectorAll("#main .recswitch button")].map(b => b.textContent + (b.getAttribute("aria-pressed") === "true" ? "*" : "")).join() }));
+    check(rs.back && !rs.tabs && rs.sw === "Sound only*,With video", "record: its own screen (< Journal, Record), with a Sound only / With video switch " + JSON.stringify(rs));
+    await clickTextOn(mp, "#main .recswitch button", "With video"); await sleep(200);
+    check(await mp.$("#main .recstage .pose-overlay") !== null && await mp.$("#main .recstage video.selfview") !== null && /Record video/.test(await mText()), "record: With video shows the camera stage with the posture overlay");
+    // W73 Time capsule: how long each recording's steadiest note lasts.
+    await to("/me/journal/capsule");
+    await mp.waitForFunction(() => document.querySelectorAll("#main .capsulesteady b").length === 2, { timeout: 20000 }).catch(() => {});
+    const steady = await mp.$$eval("#main .capsulepair .capsulesteady", x => x.map(e => e.innerText.trim()));
+    check(steady.length === 2 && steady.every(s => /^\d+(\.\d)? s steady$/.test(s)) && parseFloat(steady[1]) > parseFloat(steady[0]), "capsule: an N s steady figure under Day 0 and Today " + JSON.stringify(steady));
+    // W74 Teacher > Ask: What your teacher rates as a row; Make the review link, then Copy and Share.
+    await to("/me/teacher");
+    check(await mp.$("#main a.hubrow[href='#/me/teacher/rates']") !== null && !(await mp.$("#main .rvlinkout:not([hidden])")), "teacher ask: What your teacher rates is a row; the link comes after Make the review link");
+    await mp.evaluate(() => { window.__sent = []; navigator.share = undefined; navigator.clipboard.writeText = t => { window.__sent.push(t); return Promise.resolve(); }; });
+    await mp.evaluate(() => { const f = document.querySelector("#rv-file"), dt = new DataTransfer(); dt.items.add(new File([new Uint8Array(64)], "take.webm", { type: "audio/webm" })); f.files = dt.files; f.dispatchEvent(new Event("change")); });
+    await clickTextOn(mp, "#main button", "Make the review link");
+    await mp.waitForSelector("#main input[aria-label='Review link']", { timeout: 5000 }).catch(() => {});
+    const ask = await mp.evaluate(() => ({ link: (document.querySelector("#main input[aria-label='Review link']") || {}).value || "", btns: [...document.querySelectorAll("#main .rvlinkout button")].map(b => b.textContent.trim()).join() }));
+    check(/#\/review\/[zj][A-Za-z0-9_-]+$/.test(ask.link) && ask.btns === "Copy,Share", "teacher ask: the review link, then Copy and Share " + JSON.stringify(ask.btns));
+    await to("/me/teacher/rates");
+    check(await mp.$("#main .backhead a[href='#/me/teacher']") !== null && await mp.$$eval("#main .rvrates li", x => x.length) === 7, "teacher: What your teacher rates opens on its own, the seven points");
+    // W75 Feedback: Listen, for a review whose request kept its recording.
+    const reqId = await mp.evaluate(() => (JSON.parse(localStorage.getItem("bansuri.review.requests") || "[]")[0] || {}).id || "");
+    await mp.evaluate(id => localStorage.setItem("bansuri.feedback", JSON.stringify([{ id, date: "2026-11-01", teacher: "T", what: "A song", comment: "Ga is flat", task: "", due: null, scores: { tone: 3 }, notes: {} }])), reqId);
+    await to("/me/teacher/feedback");
+    await mp.waitForSelector("#main .rvlisten", { timeout: 5000 }).catch(() => {});
+    check(!!reqId && await mp.$("#main .rvlisten") !== null, "teacher feedback: Listen on a review that has its recording");
+    // W78 Flute: the checks as rows; Check my flute in the player shell, one note per screen.
+    await to("/me/flute");
+    check((await mp.$$eval("#main .flutechecks a.hubrow", a => a.map(x => x.getAttribute("href")))).join() === "#/me/flute/check,#/me/flute/mic,#/me/flute/calibrate", "flute: Check my flute, Microphone check and Calibrate as rows");
+    await to("/me/flute/mic");
+    check(await mp.$("#main .backhead a[href='#/me/flute']") !== null && /15-second microphone check/.test(await mText()), "flute: the microphone check opens on its own screen");
+    await to("/me/flute/check");
+    check(await mp.$$eval("#main a.hubrow[href^='#/me/flute/check/']", a => a.length) === 7, "flute check: a row for each set of notes");
+    await to("/me/flute/check/1");
+    const fc = await mp.evaluate(() => ({ full: document.documentElement.classList.contains("fullfocus"), chaps: document.querySelectorAll("#main .lesson-chaps li").length, note: !!document.querySelector("#main .lesson-stage .fc-note") }));
+    check(fc.full && fc.chaps === 8 && fc.note, "flute check: the player shell, full focus, one screen per note and the results " + JSON.stringify(fc));
+    for (let i = 0; i < 7; i++) { await clickTextOn(mp, "#main .lesson-stage button", "Skip this note"); await sleep(120); }
+    check(/7 notes/.test(await mText()) && await mp.$$eval("#main .fc-table tbody tr", r => r.length) === 7, "flute check: the last screen sums up every note");
+    await clickTextOn(mp, "#main .lesson-foot button", "Finish");
+    await mp.waitForFunction(() => location.hash === "#/me/flute", { timeout: 4000 }).catch(() => {});
+    check(await mp.evaluate(() => location.hash === "#/me/flute" && !document.documentElement.classList.contains("fullfocus")), "flute check: Finish comes back to Me > Flute");
+    // W80 Display: the preview of S R G m follows the settings.
+    await to("/me/settings/display");
+    const pv1 = await mp.$eval("#main .notepreview", e => e.innerText).catch(() => "");
+    await mp.evaluate(() => document.querySelector("#st-deva").click()); await sleep(150);
+    const pv2 = await mp.$eval("#main .notepreview", e => e.innerText).catch(() => "");
+    check(/S\s*R\s*G\s*m/.test(pv1.replace(/\n/g, " ")) && /सा/.test(pv2), "display: the preview shows S R G m as it will look, and follows the settings");
+    // W81, W82 Your data: Move as a row to its own screen; Start over says what it removes.
+    await to("/me/settings/data");
+    check(await mp.$("#main a.hubrow[href='#/me/settings/move']") !== null && /Removes all progress on this phone\./.test(await mText()) && !/Make a/.test(await mText()), "your data: Move to another phone is a row; Start over says it removes all progress on this phone");
+    await to("/me/settings/move");
+    check(await mp.$("#main .backhead a[href='#/me/settings/data']") !== null && /On this phone/i.test(await mText()) && /On the new phone/i.test(await mText()) && /Bring it here/.test(await mText()), "move: its own screen, On this phone and On the new phone");
+    // W11 Simple mode home: the other language, today's quests, and the way out.
+    await mp.evaluate(() => localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0, simple: true })));
+    await mp.goto(BASE + "#/today", { waitUntil: "networkidle0" }); await mp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    const sm = await mp.evaluate(() => ({ lang: (document.querySelector("#main .simplelang") || {}).textContent, quests: (document.querySelector("#main .simplequests .eyebrow") || {}).textContent, day: (document.querySelector("#main .simpletile.primary") || {}).innerText || "", leave: !!document.querySelector("#main .simpleleave button") }));
+    check(sm.lang === "हिन्दी" && sm.quests === "Today's quests" && /Day 20/.test(sm.day) && sm.leave, "simple mode: a Hindi button, TODAY'S QUESTS, Start practice names the day, Leave Simple mode " + JSON.stringify(sm));
+    await clickTextOn(mp, "#main .simpleleave button", "Leave Simple mode");
+    await mp.waitForFunction(() => !JSON.parse(localStorage.getItem("bansuri.settings")).simple && !!document.querySelector("#main .todayhero"), { timeout: 8000 }).catch(() => {});
+    check(await mp.evaluate(() => !JSON.parse(localStorage.getItem("bansuri.settings")).simple && !document.querySelector("#main .simpletiles")), "simple mode: Leave Simple mode goes back to the usual Today");
     await ctx.close();
   });
   await section("Every day's lesson, walked through", async () => {

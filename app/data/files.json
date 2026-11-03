@@ -1,5 +1,5 @@
 {
- "version": "5aa18bf1bc33",
+ "version": "359c16af6a6d",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -141,6 +141,7 @@
   "app/js/views/compose.js",
   "app/js/views/eartools.js",
   "app/js/views/feedback.js",
+  "app/js/views/flutecheck.js",
   "app/js/views/journal.js",
   "app/js/views/lesson.js",
   "app/js/views/library.js",
