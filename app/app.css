@@ -1778,3 +1778,32 @@ button.quickact { border: 1px solid transparent; text-align: center; font-size: 
   main[data-home="me"] .dashgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   main[data-home="me"] .dashgrid > .card:only-child { grid-column: 1 / -1; }
 }
+/* Redesign 2: music */
+/* Turn a recording into sargam (W59-W64): one step a screen, "Step n of 6", a progress bar, Back and Next. */
+.trhead { display: grid; gap: 8px; }
+.trhead .row.between { align-items: center; }
+.trhead h1 { margin: 0; font-size: clamp(1.5rem, 5vw, 2rem); }
+.trhead h1:focus { outline: none; }
+.trhead .eyebrow { margin-top: 4px; }
+.trstepof { color: var(--muted); font-weight: 600; font-size: 0.92rem; }
+.trprog { height: 6px; }
+.trprog > i { transition: width 200ms; }
+button.backlink { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; cursor: pointer; }
+.trhead .backlink::before { content: none; }
+/* Back and Next stay in reach at the bottom, above the tabs (W59-W64). */
+.trnav { position: sticky; bottom: calc(58px + env(safe-area-inset-bottom, 0px)); z-index: 5; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; background: linear-gradient(to top, var(--bg) 70%, transparent); }
+@media (min-width: 1025px) { .trnav { bottom: 0; } }
+.trnav .trnext { margin-left: auto; }
+.trnotebar { flex-wrap: wrap; }
+.trseppref .check { font-weight: 600; }
+.trseppref p { margin: 0; }
+@media (prefers-reduced-motion: reduce) { .trprog > i { transition: none; } }
+/* Make a melody, full screen (W67): (x), the title and Save at the top. */
+.composehead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.composehead h1 { margin: 0; font-size: clamp(1.3rem, 4.5vw, 1.8rem); }
+.composehead .lesson-close { text-decoration: none; }
+.composename:empty { display: none; }
+.composectl { align-items: flex-end; flex-wrap: wrap; }
+.composebpm .input { width: 6em; }
+.composerow { grid-template-columns: 1fr auto; }
+.composerow.current b { color: var(--accent); }

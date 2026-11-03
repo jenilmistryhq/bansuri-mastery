@@ -159,6 +159,10 @@ Object.assign(MODULE, { record: "journal", flutetool: "settings", moveout: "move
 MODULE.fix = "coach"; INNER.add("fix");
 // Also inside a section: a fix (#/skills/fix/TS-nn) and the Path's views of every phase or earlier unit.
 const isInner = (view, params, anchor) => INNER.has(view) || (view === "coach" && params.length > 0) || (view === "plan" && /^(phases|earlier)$/.test(anchor || ""));
+// Music: Transcribe's six steps have their own header (W59-W64); Make a melody is full screen (W67).
+INNER.add("transcribe"); INNER.add("compose");
+// A saved melody opens in the composer (Music > Mine, W67a).
+ROUTES.unshift([/^\/music\/compose\/(\d+)$/, "compose"]);
 // Each place remembers its last section, so coming back lands where you were.
 const LAST = "bansuri.nav.last";
 // Kept in memory for this visit, and saved when storage allows (it can be full or blocked).

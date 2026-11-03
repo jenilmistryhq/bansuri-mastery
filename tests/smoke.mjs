@@ -1178,10 +1178,13 @@ try {
     const sa = await page.$eval("#main select[aria-label='Sa of the recording']", e => e.options[e.selectedIndex].textContent).catch(() => "");
     check(/^C/.test(sa), "transcribe: the recording's Sa is found (C) [" + sa + "]");
     await shot("20-transcribe-result");
+    // One step a screen (W59-W64): a step's buttons are clicked once its screen is shown.
+    const toStep = n => page.evaluate(n => { for (let k = 0; k < 8; k++) { const at = Number((/Step (\d)/.exec((document.querySelector("#main .trstepof") || {}).textContent || "") || [])[1]); if (at === n) return true; const b = at < n ? document.querySelector("#main .trnav .trnext") : document.querySelector("#main .trnav .btn:not(.trnext)"); if (!b || b.disabled) return false; b.click(); } return false; }, n);
     // The notation view, the two layouts, and the players.
     check(/S/.test(await page.$eval("#main .nview", e => e.innerText).catch(() => "")), "transcribe: the notation is shown as phrases");
     await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "Taal and beats").click());
     check(await page.$("#main .nview .nsep") !== null, "transcribe: Bars and beats shows the notes in bars");
+    await toStep(5);
     await page.click("#main button[aria-label='Play: Both together']");
     await sleep(400);
     check(await page.$("#main button[aria-label='Stop: Both together']") !== null, "transcribe: the recording and the notes found play together");
@@ -1197,6 +1200,7 @@ try {
     check(/सा/.test(await page.$eval("#main .nview", e => e.innerText)), "transcribe: the notation can be shown in Devanagari");
     await page.evaluate(() => [...document.querySelectorAll("#main .seg-btn")].find(b => b.textContent === "S R G").click());
     // Each line shows where it starts; its time plays that line (and picks it for practice).
+    await toStep(4);
     await page.click("#main .nview .ntime").catch(() => {});
     await sleep(150);
     check(await page.$("#main .nview .nrow.nplaying") !== null && await page.$$eval("#main select[aria-label='Line to practise'] option", o => o.length).catch(() => 0) >= 1, "transcribe: a line's time plays it, and lines can be practised with the recording");
@@ -1310,6 +1314,7 @@ try {
       const saLabel = await page.$eval("#main select[aria-label='Sa of the recording']", e => e.options[e.selectedIndex].textContent).catch(() => "");
       check(/^X S R G m \| 0 P - m - \|\|/.test(midNot.trim()) && /Melody/.test(trackLabel) && /^D \(the file's key\)/.test(saLabel), "midi: the melody track's exact notes, Sa from the key [" + midNot.trim() + " / " + trackLabel + " / " + saLabel + "]");
       // Check by ear: pick the first note with the keyboard, raise it a semitone, undo; delete one.
+      await toStep(3);
       await page.focus("#main .earplot");
       await page.keyboard.press("ArrowRight");
       await page.keyboard.press("ArrowUp");
@@ -1338,6 +1343,8 @@ try {
       const line2 = await page.$eval("#main .guide p", e => e.innerText).catch(() => "");
       await page.evaluate(() => { const b = [...document.querySelectorAll("#main button")].find(x => x.textContent === "Stop checking"); if (b) b.click(); });
       check(/^Line 1 of \d+/.test(line1) && /^Line 2 of|Every line is checked/.test(line2), "ear: the line-by-line check walks the lines [" + line1.slice(0, 30) + " / " + line2.slice(0, 30) + "]");
+      // (Scrolled into view first: on the step screen the button can sit just at the bottom edge.)
+      await page.$eval("#main button[aria-label='Hear the original around this note (Space)']", b => b.scrollIntoView({ block: "center" }));
       await page.click("#main button[aria-label='Hear the original around this note (Space)']");
       await sleep(400);
       await page.click("#main button[aria-label='Stop']");
@@ -1347,12 +1354,13 @@ try {
       await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => b.textContent === "Done").click());
       const tapped = Number(await page.$eval("#main input[aria-label='Tempo (BPM)']", e => e.value));
       check(Math.abs(tapped - 120) <= 6, "transcribe: tapping the beat sets the tempo [" + tapped + " BPM]");
-      // Save as MIDI, and Add to Songs (then the Songs page lists it).
+      // Save as MIDI, and Save as a song (then the Songs page lists it).
       await page.evaluate(() => { window.__dl = []; HTMLAnchorElement.prototype.click = function () { if (this.download) window.__dl.push(this.download); }; });
-      await page.evaluate(() => { document.querySelector("#main input[aria-label='Name']").value = "Smoke tune"; [...document.querySelectorAll("#main button")].find(b => /Save as MIDI/.test(b.textContent)).click(); [...document.querySelectorAll("#main button")].find(b => /Add to Songs/.test(b.textContent)).click(); });
+      await page.evaluate(() => { document.querySelector("#main input[aria-label='Name']").value = "Smoke tune"; [...document.querySelectorAll("#main button")].find(b => /Save as MIDI/.test(b.textContent)).click(); [...document.querySelectorAll("#main button")].find(b => /Save as a song/.test(b.textContent)).click(); });
       const dl2 = await page.evaluate(() => window.__dl);
       check(dl2.some(n => /\.mid$/.test(n)), "transcribe: the notation saves as a MIDI file [" + dl2.join(", ") + "]");
-      check(await page.$("#main .trsteps") !== null, "transcribe: a bar of links to the steps");
+      // The steps (W59-W64) replaced the bar of links: one step on screen, with its count and bar.
+      check(await page.evaluate(() => [...document.querySelectorAll("#main #tr-sound, #main .trresults > .card")].filter(e => !e.hidden).length === 1 && /^Step 3 of 6$/.test(document.querySelector("#main .trstepof").textContent) && document.querySelector("#main .trprog > i").style.width === "50%"), "transcribe: one step on screen, with Step 3 of 6 and the progress bar");
       // A backup carries My songs and Transcribe's recordings.
       const bk = await page.evaluate(async () => { const m = await import(new URL("app/js/backup.js", document.baseURI).href); const o = await m.backupWith(true); return { songs: /Smoke tune/.test((o.stores || {})["bansuri.mysongs"] || ""), caps: (o.captures || []).length, data: /^data:/.test(((o.captures || [])[0] || {}).data || "") }; }).catch(e => ({ err: String(e) }));
       check(bk.songs && bk.caps >= 1 && bk.data, "backup: My songs and Transcribe's recordings are in the backup [" + JSON.stringify(bk) + "]");
@@ -2634,6 +2642,76 @@ try {
     const hi = await sp.evaluate(() => ({ place: document.querySelector(".topbar .placename").textContent, hole: document.querySelector(".dock .dock-holes li span").textContent, tab: document.querySelector(".dock [data-dock=tuner]").textContent }));
     check(/[ऀ-ॿ]/.test(hi.place) && /[ऀ-ॿ]/.test(hi.hole) && /[ऀ-ॿ]/.test(hi.tab), "Hindi: the place name, the dock's tabs and its holes " + JSON.stringify(hi));
     await ctx.close();
+  });
+  await section("Music: Transcribe's six steps, Make a melody full screen, the Mine tab", async () => {
+    await go("/today");
+    await page.evaluate(() => { localStorage.removeItem("bansuri.mysongs"); localStorage.setItem("bansuri.compose.saved", JSON.stringify([{ name: "Evening tune", cells: [0, "hold", 4, null, 7, 7, 4, 2, 0, null, null, null, 2, 4, 2, 0], notation: "S - G _ | P P G R | S _ _ _ | R G R S ||", bpm: 84 }])); });
+    // W59: Step 1 of 6, back to Songs, Next waits for a sound; no section tabs on this screen.
+    await go("/music/transcribe");
+    const s1 = await page.evaluate(() => ({ of: document.querySelector("#main .trstepof").textContent, title: document.querySelector("#main .trhead h1").textContent, back: document.querySelector("#main .trhead a.backlink").getAttribute("href"),
+      next: document.querySelector("#main .trnav .trnext").disabled, tabs: !!document.querySelector("#main .sectiontabs"), recs: !document.querySelector("#tr-sound").hidden && /Your recordings/.test(document.querySelector("#tr-sound").innerText), sep: !!document.getElementById("tr-sep") }));
+    check(s1.of === "Step 1 of 6" && s1.title === "Get the sound" && s1.back === "#/music" && s1.next && !s1.tabs && s1.recs && s1.sep, "transcribe step 1: Get the sound, Your recordings and Separate the melody; Next waits for a sound " + JSON.stringify(s1));
+    const sr = 22050, notes = [72, 74, 76, 74, 72], len = Math.floor(sr * (0.4 + notes.length * 0.5 + 0.4)), pcm = new Int16Array(len);
+    let ph = 0;
+    notes.forEach((m, k) => { const f = 440 * Math.pow(2, (m - 69) / 12), i0 = Math.floor(sr * (0.4 + k * 0.5)); for (let i = 0; i < sr * 0.5; i++) { ph += 2 * Math.PI * f / sr; const env = Math.min(1, i / 300, (sr * 0.5 - i) / 400); pcm[i0 + i] = Math.round(9000 * env * Math.sin(ph)); } });
+    const wav = Buffer.alloc(44 + pcm.length * 2);
+    wav.write("RIFF", 0); wav.writeUInt32LE(36 + pcm.length * 2, 4); wav.write("WAVEfmt ", 8); wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22);
+    wav.writeUInt32LE(sr, 24); wav.writeUInt32LE(sr * 2, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write("data", 36); wav.writeUInt32LE(pcm.length * 2, 40);
+    Buffer.from(pcm.buffer).copy(wav, 44);
+    const wavPath = path.join(process.env.TEMP || process.env.TMPDIR || "/tmp", "bansuri-steps-test.wav");
+    fs.writeFileSync(wavPath, wav);
+    await (await page.$("#tr-file")).uploadFile(wavPath);
+    await page.waitForFunction(() => /^Step 2 of 6$/.test((document.querySelector("#main .trstepof") || {}).textContent || ""), { timeout: 20000 }).catch(() => {});
+    fs.unlinkSync(wavPath);
+    const head = () => page.evaluate(() => ({ of: document.querySelector("#main .trstepof").textContent, title: document.querySelector("#main .trhead h1").textContent, bar: document.querySelector("#main .trprog > i").style.width,
+      nav: [...document.querySelectorAll("#main .trnav button")].map(b => b.textContent).join("|"), shown: [...document.querySelectorAll("#main #tr-sound, #main .trresults > .card")].filter(e => !e.hidden).map(e => e.id).join() }));
+    const s2 = await head();
+    check(s2.title === "What the app found" && s2.bar === "33%" && s2.nav === "Back|Next: check" && s2.shown === "tr-found" && /Sa C/.test(await page.$eval("#tr-found", e => e.innerText).catch(() => "")), "transcribe step 2: the sound found opens What the app found, alone on screen " + JSON.stringify(s2));
+    const walk = [];
+    for (let k = 0; k < 4; k++) { await page.click("#main .trnav .trnext"); await sleep(150); walk.push(await head()); }
+    check(walk.map(x => x.title).join("|") === "Check by ear|The notation|Listen and compare|Play along" && walk.map(x => x.shown).join("|") === "tr-ear|tr-notation|tr-listen|tr-along" && walk[3].nav === "Back|Done",
+      "transcribe: Next walks the steps, one screen each, and the last offers Done [" + walk.map(x => x.of + ": " + x.title + " (" + x.nav + ")").join(", ") + "]");
+    check(await page.evaluate(() => !!document.querySelector("#tr-listen .practice") && !document.querySelector("#tr-along .practice") && !document.querySelector("#tr-along .toolhost").hidden), "transcribe step 5 has Practise a line with the recording; step 6 opens the player");
+    await page.click("#main .trhead button.backlink"); await sleep(150);
+    const back = await head();
+    check(back.of === "Step 5 of 6" && back.shown === "tr-listen", "transcribe: the Back at the top goes to the step before [" + back.of + "]");
+    await page.click("#main .trnav .btn:not(.trnext)"); await sleep(150);
+    check(await page.evaluate(() => { const bar = document.querySelector("#tr-notation .trnotebar"); return !!bar && [...bar.querySelectorAll("button")].some(b => b.textContent === "Copy") && [...bar.querySelectorAll("button")].some(b => /Save as a song/.test(b.textContent)); }), "transcribe step 4: the notation with Copy and Save as a song");
+    await page.evaluate(() => { document.querySelector("#main input[aria-label='Name']").value = "Steps bhajan"; });
+    while ((await head()).of !== "Step 6 of 6") { await page.click("#main .trnav .trnext"); await sleep(100); }
+    await page.click("#main .trnav .trnext");
+    await page.waitForFunction(() => /^#\/music\/song\/my/.test(location.hash), { timeout: 5000 }).catch(() => {});
+    const made = await page.evaluate(() => JSON.parse(localStorage.getItem("bansuri.mysongs") || "[]"));
+    check(/^#\/music\/song\/my/.test(await page.evaluate(() => location.hash)) && made.length === 1 && made[0].title === "Steps bhajan" && made[0].seconds >= 3, "transcribe: Done saves it as a song and opens the song (W58) [" + JSON.stringify(made.map(m => [m.title, m.seconds])) + "]");
+    // W67a: Mine lists the tune (its length in beats, opening it in the composer) and the song (its length, Mine, opening it).
+    await go("/music/mine");
+    const mine = await page.evaluate(() => ({ tunes: [...document.querySelectorAll("#main .minetunes .hubrow")].map(a => a.getAttribute("href") + " " + a.innerText.replace(/\s+/g, " ")), songs: [...document.querySelectorAll("#main .minesongs .hubrow")].map(a => a.getAttribute("href") + " " + a.innerText.replace(/\s+/g, " ")) }));
+    check(mine.tunes.length === 1 && /^#\/music\/compose\/0 Evening tune 16 beats/.test(mine.tunes[0]), "mine: a tune shows its length and opens in the composer " + JSON.stringify(mine.tunes));
+    check(mine.songs.length === 1 && /^#\/music\/song\/my\w+ Steps bhajan, 0:0[3-9] Mine/.test(mine.songs[0]), "mine: a song from a recording shows its length and Mine, and opens the song " + JSON.stringify(mine.songs));
+    // W67: Make a melody, full screen, opened on the saved tune: (x), Save, Play it, Clear (tap twice) and the tempo.
+    await page.click("#main .minetunes .hubrow");
+    await page.waitForSelector("#main .composehead", { timeout: 8000 }).catch(() => {});
+    const comp = await page.evaluate(() => ({ full: document.documentElement.classList.contains("fullfocus"), tabbar: getComputedStyle(document.querySelector("nav.tabbar")).display, tabs: !!document.querySelector("#main .sectiontabs"),
+      close: (document.querySelector("#main .composehead a[aria-label='Close']") || {}).getAttribute?.("href"), name: document.querySelector("#main .composename").textContent, out: document.querySelector("#main .cout").textContent, bpm: document.querySelector("#main input[aria-label='Tempo (BPM)']").value }));
+    check(comp.full && comp.tabbar === "none" && !comp.tabs && comp.close === "#/music/mine" && comp.name === "Evening tune" && /^S - G _ \| P P G R/.test(comp.out) && comp.bpm === "84", "make a melody: full screen, (x) back to Mine, the saved tune opened with its tempo " + JSON.stringify(comp));
+    await clickText("#main .composectl button", "Play it"); await sleep(200);
+    check(/Stop/.test(await page.$eval("#main .composectl .btn.primary", b => b.textContent)), "make a melody: Play it plays (and turns into Stop)");
+    await clickText("#main .composectl button", "Stop");
+    await page.evaluate(() => { const i = document.querySelector("#main input[aria-label='Tempo (BPM)']"); i.value = "100"; i.dispatchEvent(new Event("change")); });
+    await clickText("#main .composectl button", "Clear");
+    const armed = await page.evaluate(() => ({ label: [...document.querySelectorAll("#main .composectl button")].map(b => b.textContent).join("|"), out: document.querySelector("#main .cout").textContent }));
+    await clickText("#main .composectl button", "Tap again to clear");
+    const cleared = await page.$eval("#main .cout", e => e.textContent);
+    check(/Tap again to clear/.test(armed.label) && /^S - G/.test(armed.out) && /^_ _ _ _ \| _ _ _ _/.test(cleared), "make a melody: Clear asks first (tap again), then clears the grid [" + cleared.slice(0, 20) + "]");
+    await page.evaluate(() => { const row = l => [...document.querySelectorAll("#main .crow")].find(r => r.querySelector(".clabel").textContent === l); row("R").querySelectorAll(".ccell")[0].click(); });
+    await clickText("#main .composehead button", "Save");
+    const savedNow = await page.evaluate(() => JSON.parse(localStorage.getItem("bansuri.compose.saved") || "[]"));
+    check(savedNow.length === 1 && savedNow[0].name === "Evening tune" && savedNow[0].bpm === 100 && /^R _ _ _/.test(savedNow[0].notation), "make a melody: Save updates the opened tune, with its new tempo [" + JSON.stringify(savedNow.map(m => [m.name, m.bpm, m.notation.slice(0, 8)])) + "]");
+    await go("/music/compose");
+    check(await page.$eval("#main .cout", e => e.textContent.startsWith("_ _ _ _")) && await page.$eval("#main input[aria-label='Tempo (BPM)']", e => e.value) === "72", "make a melody: + Make a melody starts a blank grid at 72 BPM");
+    await go("/music/mine");
+    check(!(await page.evaluate(() => document.documentElement.classList.contains("fullfocus"))), "leaving Make a melody brings back the top bar and tabs");
+    await page.evaluate(() => { localStorage.removeItem("bansuri.mysongs"); localStorage.removeItem("bansuri.compose.saved"); });
   });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete

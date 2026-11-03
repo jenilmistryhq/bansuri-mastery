@@ -1,9 +1,10 @@
 // Notation from a recording (#/transcribe): sound from a browser tab (a YouTube video playing in
 // another tab), the microphone or a file; the notes as sargam for any flute, to check by ear, fix,
 // play along with and save. The analysis is in ../transcribe.js; nothing leaves the device.
-// A MIDI file gives exact notes instead (no listening). Steps on the page: 1 get the sound,
-// 2 what was found (and the settings), 3 check by ear (eartools.js), 4 the notation, 5 listen
-// and compare, 6 play along; then Your recordings.
+// A MIDI file gives exact notes instead (no listening). Six steps, one screen each (redesign
+// W59-W64): 1 get the sound (and Your recordings), 2 what was found (and the settings), 3 check by
+// ear (eartools.js), 4 the notation, 5 listen and compare (and practise a line), 6 play along; Done
+// saves it as a song and opens it.
 import { h, toast, store, storeSet, today, icon } from "../util.js";
 import { setSettings, saMidi, getSettings } from "../core/settings.js";
 import { ac, master, makeVoice } from "../core/audio.js";
@@ -20,7 +21,7 @@ import { analyser, separator } from "../analyser.js";
 import { pilotLog } from "../pilot.js";
 import { bestRuns, transcribe, tonicMidi, fluteLabel, FLUTES, HOP, scoreTake, TAALS } from "../transcribe.js";
 
-const SAVED = "bansuri.transcribed";
+const SAVED = "bansuri.transcribed", SEP_PREF = "bansuri.transcribe.separate";
 const MAX_SECONDS = 360;
 // One note in a beat: an optional {kan}, lower-octave dots, the letter, upper-octave marks; or - or _.
 const NOTE_TOKEN = /~?(?:\{[^}]*\})?\.*[SrRgGmMPdDnN]#?'*\^?|[-_]/g;
@@ -168,7 +169,14 @@ export async function render(main) {
     tile("mic", "The microphone", canTab ? "Play it near the computer." : "Play it near the phone, from a speaker or another device.", { onclick: fromMic }),
     tile("file", "A file", "An mp3, m4a, wav or ogg file you have.", { for: "tr-file" }),
     tile("note", "A MIDI file", "Exact notes, no guessing: a song's .mid file (karaoke and backing-track sites have many).", { for: "tr-midi" }));
-  const srcCard = h("section", { class: "card" }, h("h2", null, "1. Get the sound"), sources, fileIn, midiIn, recPanel, status, h("div", { class: "row tight trbusy" }, progress, cancelBtn),
+  // Separate the melody (W59): once the notes are found, the separation model runs on its own
+  // (Step 2 shows its progress and offers it anyway). Remembered for next time.
+  const sepPref = h("input", { type: "checkbox", id: "tr-sep" });
+  sepPref.checked = !!store(SEP_PREF, false);
+  sepPref.addEventListener("change", () => storeSet(SEP_PREF, sepPref.checked));
+  const sepPrefField = h("div", { class: "stack tight trseppref" }, h("label", { class: "check", for: "tr-sep" }, sepPref, "Separate the melody (slower)"),
+    h("p", { class: "small muted" }, "Hears the singer apart from the music. The model downloads once (172 MB) and runs on this device."));
+  const srcCard = h("section", { class: "card" }, sources, sepPrefField, fileIn, midiIn, recPanel, status, h("div", { class: "row tight trbusy" }, progress, cancelBtn),
     canTab ? h("details", { class: "small" }, h("summary", null, "How to share a YouTube tab"),
       h("ol", { class: "steps" }, h("li", null, "Open the video in another tab and pause it at the part you want."),
         h("li", null, "Press \"A browser tab\" here, choose that tab, and turn on \"Share tab audio\"."),
@@ -177,6 +185,8 @@ export async function render(main) {
   // ---- Analysis ----
   async function analyse(blob, keep) {
     stopAll(); results.hidden = true; an.cancel(); loaded = false;
+    // A new sound: back to Step 1, where the progress shows.
+    if (step !== 1) goStep(1, false);
     const mine = ++gen;
     const cancelled = () => { if (gen === mine) return false; setBusy("Cancelled. Choose a sound again when you are ready.", null); return true; };
     manual = keep && keep.manual ? keep.manual : null; undo = []; opt.phase = keep && keep.settings ? keep.settings.phase : undefined; opt.taps = keep && keep.settings && Array.isArray(keep.settings.taps) ? keep.settings.taps : null;
@@ -209,14 +219,16 @@ export async function render(main) {
     bpmIn.value = String(first.bpm);
     fromIn.value = "0"; toIn.value = String(Math.round(track.seconds)); toIn.max = fromIn.max = String(Math.ceil(track.seconds));
     opt.octave = 0;
-    setBusy("Done" + (track.truncated ? " (the first 6 minutes)" : "") + ". Check the notes below by ear: this is a draft.", null);
+    setBusy("Done" + (track.truncated ? " (the first 6 minutes)" : "") + ". This is a draft: check it by ear in Step 3.", null);
     results.hidden = false;
     // A recording opened again comes back as it was saved: its settings, then its notation.
     const st = keep && keep.settings;
     restore(st);
     if (opt.part !== "whole") await choosePart(); else redraw();
     if (keep && keep.notation) { editor.value = showText(keep.notation); drawView(); }
-    results.scrollIntoView({ behavior: "smooth", block: "start" });
+    goStep(2);
+    // Separate the melody, when chosen in Step 1 (its progress shows in Step 2).
+    if (sepPref.checked && !sepDone) runDemucs();
   }
   // The recording in the worker (again after a cancel): mono, and stereo when its channels differ.
   async function ensureLoaded() {
@@ -273,7 +285,7 @@ export async function render(main) {
     opt.part = "whole";
     redraw();
     if (keep && keep.notation) { editor.value = showText(keep.notation); drawView(); }
-    results.scrollIntoView({ behavior: "smooth", block: "start" });
+    goStep(2);
   }
   // The chosen MIDI track, one note at a time, and its pitch line for Check by ear.
   function useMidiTrack() {
@@ -435,7 +447,7 @@ export async function render(main) {
     sepBox.hidden = !!midi || opt.part === "whole" && !sepDone;
     if (sepDone) {
       sepBox.replaceChildren(h("span", null, icon("check"), " Singer and background separated by the model (Demucs)."),
-        vocalsUrl ? h("button", { type: "button", class: "linkbtn", onclick: () => { const a = new Audio(vocalsUrl); a.play().catch(() => {}); setTimeout(() => a.pause(), 15000); } }, "Hear the singer alone (15 s)") : null);
+        vocalsUrl ? h("button", { type: "button", class: "linkbtn", onclick: () => { const a = new Audio(vocalsUrl); a.play().catch(() => {}); setTimeout(() => a.pause(), 15000); } }, "Hear the singer alone (15 s)") : "");
       return;
     }
     sepBox.replaceChildren(
@@ -510,7 +522,7 @@ export async function render(main) {
   const notesField = h("div", { class: "field" }, h("span", null, "Notes"), seg("Notes", [[true, "Main melody"], [false, "Every note"]], () => opt.main, v => { opt.main = v; manual = null; undo = []; }));
   // The easier version: quick runs folded, ornaments dropped, high notes and passing half-holes eased.
   const easyField = h("div", { class: "field" }, h("span", null, "Version"), seg("Version", [[false, "As played"], [true, "Easier"]], () => opt.easy, v => { opt.easy = v; }));
-  const foundCard = h("section", { class: "card" }, h("h2", null, "2. What the app found"), partCard, chips,
+  const foundCard = h("section", { class: "card" }, chips, partCard,
     h("div", { class: "trgroups" },
       group("The recording", midiField, field("Sa", saSel), h("div", { class: "row tight" }, field("From (s)", fromIn), field("To (s)", toIn)), notesField, easyField),
       group("Your flute", field("Flute", fluteSel), h("div", { class: "field" }, h("span", null, "Write it in"), keySeg), h("div", { class: "field" }, h("span", null, "Octave"), octave)),
@@ -542,24 +554,25 @@ export async function render(main) {
   const showText = t => (maStyle() === "common" ? toCommonMa(t) : t);
   const notationText = () => normaliseMa(editor.value, maStyle());
   const notationCard = h("section", { class: "card" },
-    h("div", { class: "row between" }, h("h2", null, "4. The notation"),
-      h("div", { class: "row tight" }, scriptSeg, editBtn,
-        h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(showText(notationText())); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"))),
+    h("div", { class: "row tight trnotebar" }, scriptSeg, editBtn,
+      h("button", { type: "button", class: "btn small", onclick: async () => { try { await navigator.clipboard.writeText(showText(notationText())); toast("Copied."); } catch (e) { toast("Select the text and copy it."); } } }, "Copy"),
+      h("button", { type: "button", class: "btn small", onclick: () => addToSongs() }, icon("note"), " Save as a song")),
     view, editor,
     h("p", { class: "small muted" }, "Sargam from your flute's Sa: a dot before a note is the lower octave, ' after it the upper. - holds the note a beat longer, _ is a rest, | ends a bar or vibhag (X sam, 0 khali, 2 and 3 the other taalis), a pause in a phrase is marked with a gap, a small note in front is a grace note (kan) and several a murki, ~ before a note is a slide into it (meend), ^ after a note is andolan (a slow swing). The time in front of a line plays that line of the recording."),
     h("div", { class: "row" }, nameIn, h("button", { type: "button", class: "btn", onclick: () => save() }, "Save")),
     h("div", { class: "row tight" },
-      h("button", { type: "button", class: "btn small", onclick: () => addToSongs() }, icon("note"), " Add to Songs"),
       h("button", { type: "button", class: "btn small", onclick: () => { if (last) saveBlob(midiBlob(last.notes, Number(bpmIn.value) || 80, nameIn.value || "notation"), fileName("notes").replace(/\.wav$/, ".mid")); } }, icon("share"), " Save as MIDI"),
       h("button", { type: "button", class: "btn small", onclick: () => printNotation() }, "Print")));
   // Songs: the notation joins the Songs page (My songs), for play-along with the course melodies.
   function addToSongs() {
     const title = nameIn.value.trim() || "My song " + today(), list = store("bansuri.mysongs", []);
-    const song = { id: "my" + Date.now().toString(36), title, notation: notationText(), bpm: Number(bpmIn.value) || 80, added: today() };
+    // seconds: the length of the part of the recording it was made from (Music > Mine shows it).
+    const song = { id: "my" + Date.now().toString(36), title, notation: notationText(), bpm: Number(bpmIn.value) || 80, added: today(), seconds: audio ? Math.round(part()[1] - part()[0]) : undefined };
     const i = list.findIndex(x => x.title === title);
     if (i >= 0) list[i] = { ...song, id: list[i].id }; else list.unshift(song);
     storeSet("bansuri.mysongs", list.slice(0, 50));
     toast((i >= 0 ? "Updated in" : "Added to") + " Songs: " + title + ".");
+    return i >= 0 ? list[i].id : song.id;
   }
   // Print: only the notation (with its name), as plain text in columns.
   function printNotation() {
@@ -748,7 +761,7 @@ export async function render(main) {
     const timer = setInterval(pump, 250);
     return { seconds: tn.seconds, stop: () => { clearInterval(timer); voices.forEach(v => v.stop()); } };
   }
-  const listenCard = h("section", { class: "card" }, h("h2", null, "5. Listen and compare"),
+  const listenCard = h("section", { class: "card" },
     h("p", { class: "small muted" }, "Hear the recording, then the notation. Together, every wrong note stands out."),
     player("The recording", "The part chosen above.", () => audio && playOriginal(1), async () => {
       if (!audio) return null;
@@ -789,15 +802,18 @@ export async function render(main) {
       return renderMix(b - a, c => { renderOriginal(c, 0.8); renderFound(c, 0.16); });
     }));
 
-  // ---- 5. Play along ----
-  const benchHost = h("div", { class: "toolhost", hidden: true });
-  const alongBtn = h("button", { type: "button", class: "btn primary", onclick: () => openBench(notationText(), Number(bpmIn.value) || 80) }, icon("play"), " Play along");
-  function openBench(text, bpm) {
+  // ---- 6. Play along ----
+  // The player sits in Step 6; a saved notation played from Your recordings (Step 1) opens there.
+  const benchHost = h("div", { class: "toolhost", hidden: true }), capBenchHost = h("div", { class: "toolhost", hidden: true });
+  const alongBtn = h("button", { type: "button", class: "btn", onclick: () => openBench(notationText(), Number(bpmIn.value) || 80) }, icon("play"), " Start again with the notation");
+  function openBench(text, bpm, host) {
+    const at = host || benchHost;
     if (bench) { bench.destroy(); bench = null; }
+    benchHost.hidden = capBenchHost.hidden = true;
     stopAll();
-    bench = mountBench(benchHost, { compact: true, tabs: ["play"], tab: "play", notation: text, bpm });
-    benchHost.hidden = false;
-    benchHost.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    bench = mountBench(at, { compact: true, tabs: ["play"], tab: "play", notation: text, bpm });
+    at.hidden = false;
+    if (host) at.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
   // Practise a line with the recording: the line loops, slowed down without changing its pitch;
   // the microphone checks each note against the notes found (in the recording's own timing), and
@@ -865,9 +881,11 @@ export async function render(main) {
     h("div", { class: "row tight" }, h("label", { class: "field grow" }, "Line", practiceLine), h("div", { class: "field" }, h("span", null, "Speed"), pSpeedSeg)),
     h("div", { class: "row tight" }, h("label", { class: "check small", for: "tr-phear" }, pHear, "Hear the recording"), h("label", { class: "check small", for: "tr-pauto" }, pAuto, "Speed up when I get it right")),
     h("div", { class: "row tight" }, pBtn), pOut);
-  const alongCard = h("section", { class: "card" }, h("h2", null, "6. Play along"),
-    h("p", { class: "small muted" }, "The notation in the practice player: loop a part, slow it down, and the microphone checks each note you play."),
-    alongBtn, benchHost, practiceBox);
+  // Step 5 (W63): listen and compare, then practise a line with the recording.
+  listenCard.append(practiceBox);
+  const alongCard = h("section", { class: "card" },
+    h("p", { class: "small muted" }, "The notation in the practice player: loop a part, slow it down, and the microphone checks each note you play. Done saves it as a song."),
+    benchHost, alongBtn);
 
   // ---- Redraw from the settings ----
   function redraw() {
@@ -891,14 +909,15 @@ export async function render(main) {
     const saName = WEST[((r.sa % 12) + 12) % 12], fit = r.fit, mine = saMidi();
     const outOf = fit.below + fit.reg3;
     const sc = r.scale, odd = r.notes.filter(n => n.odd).length, tr = r.tempoRange;
-    chips.replaceChildren(
+    // (Chips not shown are left out: replaceChildren would write "null" for them.)
+    chips.replaceChildren(...[
       h("span", { class: "chip info" }, "Sa " + saName + (r.tune ? " (" + (r.tune > 0 ? "+" : "") + r.tune + " cents)" : "")),
       h("span", { class: "chip mutedc" }, tr && tr[1] - tr[0] >= 6 ? "Tempo " + tr[0] + " to " + tr[1] + " BPM" : r.bpm + " BPM"),
       opt.layout === "beats" && r.taal ? h("span", { class: "chip info", title: "Cycles of " + TAALS[r.taal.key].beats + " matras; X is sam, 0 khali" }, TAALS[r.taal.key].name + (opt.taal === "auto" ? " (found)" : "")) : null,
       sc && sc.name ? h("span", { class: "chip info", title: sc.kind === "raga" ? "The same five notes as raga " + sc.name + " (a raga is more than its notes)" : sc.name + " thaat: " + sc.note }, sc.kind === "raga" ? "Notes of raga " + sc.name : sc.name + " thaat") : null,
-      odd ? h("button", { type: "button", class: "chip warn chiplink", title: "Notes outside the scale: often a wrong note. Check them by ear.", onclick: () => { document.getElementById("tr-ear").scrollIntoView({ behavior: "smooth", block: "start" }); ear.nextOdd(); } }, odd + (odd === 1 ? " odd note: check it" : " odd notes: check them")) : null,
+      odd ? h("button", { type: "button", class: "chip warn chiplink", title: "Notes outside the scale: often a wrong note. Check them by ear.", onclick: () => { goStep(3); ear.nextOdd(); } }, odd + (odd === 1 ? " odd note: check it" : " odd notes: check them")) : null,
       h("span", { class: "chip mutedc" }, r.notes.length + " notes, " + codeOf(fit.lo) + " to " + codeOf(fit.hi)),
-      outOf ? h("span", { class: "chip bad" }, outOf + " notes out of the flute's range") : fit.high ? h("span", { class: "chip warn" }, fit.high + " very high notes") : h("span", { class: "chip good" }, icon("check"), " Fits your flute"));
+      outOf ? h("span", { class: "chip bad" }, outOf + " notes out of the flute's range") : fit.high ? h("span", { class: "chip warn" }, fit.high + " very high notes") : h("span", { class: "chip good" }, icon("check"), " Fits your flute")].filter(Boolean));
     const tips = [];
     if (r.flute !== null && opt.sameKey && r.flute !== flute) tips.push(h("p", null, "A flute with Sa " + saName + " plays it with the same notes as the recording: ", h("button", { type: "button", class: "linkbtn", onclick: () => { fluteSel.value = String(r.flute); opt.octave = 0; redraw(); } }, "use " + fluteLabel(r.flute)), "."));
     if (r.flute !== null && !opt.sameKey && r.flute % 12 !== flute % 12) tips.push(h("p", null, "To play along with the recording itself, use a flute with Sa " + saName + ": ", h("button", { type: "button", class: "linkbtn", onclick: () => { fluteSel.value = String(r.flute); opt.octave = 0; redraw(); } }, "use " + fluteLabel(r.flute)), "."));
@@ -915,14 +934,14 @@ export async function render(main) {
   const capList = h("div", { class: "stack" });
   const capUse = h("p", { class: "small muted" });
   const settingsNow = () => ({ sa: Number(saSel.value), flute: Number(fluteSel.value), sameKey: opt.sameKey, layout: opt.layout, octave: opt.octave, main: opt.main, part: opt.part, phase: opt.phase, midiTrack: midi ? Number(midiSel.value) : undefined, bpm: Number(bpmIn.value) || 80, from: Number(fromIn.value) || 0, to: Number(toIn.value) || 0, sub: Number(subSel.value), follow: opt.follow, easy: opt.easy, taps: opt.taps || undefined, taal: opt.taal, samShift: opt.samShift });
-  async function save() {
+  async function save(quiet) {
     const name = nameIn.value.trim() || "Recording of " + today();
     // Pilot study: was the taal found kept, and sam where it was found?
     if (opt.layout === "beats" && !midi) pilotLog("taal", { auto: autoTaal, chosen: opt.taal === "auto" ? autoTaal : opt.taal, samShift: opt.samShift });
     try {
       if (current) await patchCapture(current.id, { name, notation: notationText(), settings: settingsNow(), manual, saved: new Date().toISOString() });
       else { const l = store(SAVED, []); l.unshift({ name, notation: notationText(), bpm: Number(bpmIn.value) || 80, flute: Number(fluteSel.value), date: today() }); storeSet(SAVED, l.slice(0, 30)); }
-      toast("Saved in the app."); drawCaptures();
+      if (!quiet) toast("Saved in the app."); drawCaptures();
     } catch (e) { toast("Could not save: " + (e.message || e)); }
   }
   async function openCapture(id) {
@@ -961,7 +980,7 @@ export async function render(main) {
         h("div", { class: "row tight" },
           h("button", { type: "button", class: "btn small primary", onclick: () => openCapture(c.id) }, "Open"),
           c.notation ? notationToggle(c.notation) : null,
-          c.notation ? h("button", { type: "button", class: "btn small", onclick: () => openBench(c.notation, (c.settings && c.settings.bpm) || 80) }, "Play along") : null,
+          c.notation ? h("button", { type: "button", class: "btn small", onclick: () => openBench(c.notation, (c.settings && c.settings.bpm) || 80, capBenchHost) }, "Play along") : null,
           rename,
           h("button", { type: "button", class: "btn small ghost", "aria-label": "Delete " + c.name, onclick: async e => {
             const b = e.currentTarget;
@@ -973,26 +992,72 @@ export async function render(main) {
     const old = store(SAVED, []).map((m, i) => h("div", { class: "caprow" },
       h("div", { class: "capinfo" }, h("b", null, m.name), h("span", { class: "small muted" }, "Notation only, " + m.bpm + " BPM")),
       h("div", { class: "row tight" }, notationToggle(m.notation),
-        h("button", { type: "button", class: "btn small", onclick: () => openBench(m.notation, m.bpm) }, "Play along"),
+        h("button", { type: "button", class: "btn small", onclick: () => openBench(m.notation, m.bpm, capBenchHost) }, "Play along"),
         h("button", { type: "button", class: "btn small ghost", onclick: () => { const l = store(SAVED, []); l.splice(i, 1); storeSet(SAVED, l); drawCaptures(); } }, "Delete"))));
     capList.replaceChildren(...rows, ...old);
     if (!rows.length && !old.length) capList.append(h("p", { class: "small muted" }, "Recordings you make or open here are kept in the app, so you can open them again without a file."));
   }
 
-  // A bar of links to the steps (the page is long once a recording is open).
+  // ---- Six steps, one screen each (redesign W59-W64) ----
+  // Step 1 gets the sound; steps 2 to 6 need a recording analysed (results not hidden). Each screen
+  // has "Step n of 6", a progress bar, Back and Next; the last one's Done saves it as a song.
   [[foundCard, "found"], [ear.el, "ear"], [notationCard, "notation"], [listenCard, "listen"], [alongCard, "along"]].forEach(([c, id]) => { c.id = "tr-" + id; });
-  const stepBar = h("nav", { class: "trsteps", "aria-label": "Steps" },
-    [["found", "Found"], ["ear", "Check by ear"], ["notation", "Notation"], ["listen", "Listen"], ["along", "Play along"]].map(([id, label]) =>
-      h("button", { type: "button", class: "btn small ghost", onclick: () => document.getElementById("tr-" + id).scrollIntoView({ behavior: "smooth", block: "start" }) }, label)));
-  const results = h("div", { class: "stack trresults", hidden: true }, stepBar, foundCard, ear.el, notationCard, listenCard, alongCard);
+  const srcStep = h("div", { class: "stack trstep", id: "tr-sound" },
+    h("p", { class: "muted" }, "Play a song, and the app writes its melody as sargam for your flute, to check by ear, fix and play along with."),
+    h("details", { class: "small" }, h("summary", null, "What works well"),
+      h("p", null, "Best: one clear melody, such as a solo flute or a voice, with a drone, tabla or soft music behind it. Hard: a melody no louder than the music behind it (a full film orchestra, harmonium chords as loud as the tune). Either way it is a draft: compare it with the recording and fix what is wrong. Slides and fast ornaments are simplified."),
+      h("p", null, "Everything happens on this device: recordings are kept only in this browser (Your recordings, below), never uploaded. Use recordings you are allowed to use.")),
+    srcCard,
+    h("section", { class: "card" }, h("h2", { class: "grouphead" }, "Your recordings"), capUse, capList, capBenchHost));
+  const STEPS = [
+    { title: "Get the sound", next: "Next: find", el: srcStep },
+    { title: "What the app found", next: "Next: check", el: foundCard },
+    { title: "Check by ear", next: "Next: notation", el: ear.el },
+    { title: "The notation", next: "Next: compare", el: notationCard },
+    { title: "Listen and compare", next: "Next: play", el: listenCard },
+    { title: "Play along", next: "Done", el: alongCard },
+  ];
+  const results = h("div", { class: "stack trresults", hidden: true }, foundCard, ear.el, notationCard, listenCard, alongCard);
+  const stepOf = h("span", { class: "trstepof" });
+  const backSlot = h("span", { class: "trbackslot" });
+  const titleEl = h("h1", { tabindex: "-1" });
+  const progFill = h("i");
+  const prog = h("div", { class: "progressbar trprog", role: "progressbar", "aria-label": "Steps done", "aria-valuemin": "1", "aria-valuemax": "6" }, progFill);
+  const navRow = h("div", { class: "row trnav" });
+  let step = 1;
+  function goStep(n, focus = true) {
+    if (n > 1 && results.hidden) return;
+    if (n !== step) stopAll();
+    // Leaving Step 6 closes its player (it opens again there).
+    if (step === 6 && n !== 6 && bench && !benchHost.hidden) { bench.destroy(); bench = null; benchHost.hidden = true; }
+    step = n;
+    const s = STEPS[n - 1];
+    STEPS.forEach((x, i) => { x.el.hidden = i !== n - 1; });
+    backSlot.replaceChildren(n === 1
+      ? h("a", { class: "backlink", href: "#/music", "aria-label": "Back to Songs" }, h("span", { class: "chev", "aria-hidden": "true" }, "<"), h("span", null, "Songs"))
+      : h("button", { type: "button", class: "backlink", "aria-label": "Back to step " + (n - 1), onclick: () => goStep(n - 1) }, h("span", { class: "chev", "aria-hidden": "true" }, "<"), h("span", null, "Back")));
+    stepOf.textContent = "Step " + n + " of 6";
+    titleEl.textContent = s.title;
+    progFill.style.width = Math.round(n / 6 * 100) + "%";
+    prog.setAttribute("aria-valuenow", String(n));
+    const nextBtn = h("button", { type: "button", class: "btn primary trnext", disabled: n === 1 && results.hidden, onclick: () => (n < 6 ? goStep(n + 1) : finish()) }, s.next);
+    navRow.replaceChildren(...(n > 1 ? [h("button", { type: "button", class: "btn", onclick: () => goStep(n - 1) }, "Back")] : []), nextBtn);
+    // A canvas or a player drawn while hidden is drawn again; Step 6 opens the player.
+    if (n === 3) ear.refresh();
+    if (n === 6 && !bench) openBench(notationText(), Number(bpmIn.value) || 80);
+    if (focus) { window.scrollTo(0, 0); titleEl.focus({ preventScroll: true }); }
+  }
+  // Done: the notation is saved with its recording and as a song, and the song opens (W58).
+  function finish() {
+    if (!/[SRGMPDNsrgmpdn]/.test(notationText())) { toast("The notation has no notes."); return; }
+    if (current) save(true);
+    const id = addToSongs();
+    location.hash = "#/music/song/" + id;
+  }
   page.append(
-    h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Notation from a recording"), h("h1", null, "Turn a recording into sargam"),
-      h("p", { class: "muted" }, "Play a song, and the app writes its melody as sargam for your flute, to check by ear, fix and play along with."),
-      h("details", { class: "small" }, h("summary", null, "What works well"),
-        h("p", null, "Best: one clear melody, such as a solo flute or a voice, with a drone, tabla or soft music behind it. Hard: a melody no louder than the music behind it (a full film orchestra, harmonium chords as loud as the tune). Either way it is a draft: compare it with the recording and fix what is wrong. Slides and fast ornaments are simplified."),
-        h("p", null, "Everything happens on this device: recordings are kept only in this browser (Your recordings, below), never uploaded. Use recordings you are allowed to use."))),
-    srcCard, results,
-    h("section", { class: "card" }, h("h2", null, "Your recordings"), capUse, capList));
+    h("header", { class: "trhead" }, h("div", { class: "row between" }, backSlot, stepOf), prog, h("span", { class: "eyebrow" }, "Turn a recording into sargam"), titleEl),
+    srcStep, results, navRow);
+  goStep(1, false);
   drawCaptures();
   return () => cleanups.forEach(f => f());
 }
