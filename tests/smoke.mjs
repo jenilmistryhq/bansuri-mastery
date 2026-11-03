@@ -1992,6 +1992,58 @@ try {
     check(await tp.waitForSelector("#main .lv-hold", { timeout: 5000 }).then(() => true, () => false), "#/today/quick opens the 5-minute practice (#/quick still works)");
     await ctx.close();
   });
+  await section("Hindi: day titles, goal line, week strip, long-tone meter", async () => {
+    // The course's day titles, pass checks and the meter's generated lines reach the screen in Hindi
+    // (app/i18n/hi.json: whole titles, and patterns such as "{x} - wk {n} of {m}" for the generated ones).
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const hp = await ctx.newPage();
+    hp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    hp.on("console", m => { if (m.type() === "error") errors.push("console: " + m.text()); });
+    // Hindi with no English words left: course codes (EX-EAR, BPM, XXO) are upper case, notation too.
+    const hindi = s => /[ऀ-ॿ]/.test(s) && !/[a-z]{3}/.test(s);
+    const hgo = async hash => { await hp.goto(BASE + "#" + hash, { waitUntil: "networkidle0" }); await hp.reload({ waitUntil: "networkidle0" }); await hp.waitForFunction(() => { const m = document.querySelector("#main"); return m && m.children.length && !m.querySelector(":scope > .boot"); }, { timeout: 10000 }).catch(() => {}); await sleep(400); };
+    const learner = cur => hp.evaluate(cur => {
+      localStorage.clear();
+      localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0, lang: "hi" }));
+      const ms = {}; ["M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"].forEach(m => { ms[m] = { status: "passed", passedOn: "2026-06-01", attempts: [] }; });
+      localStorage.setItem("bansuri.progress", JSON.stringify({ current: cur, startedAt: "2025-11-01", prefs: { langChosen: true, howChosen: true, playAsked: true, newsSeen: "2026-11-progress" }, milestones: ms }));
+      localStorage.setItem("bansuri.lessons", JSON.stringify({ m0: { at: 0, done: "2025-11-01", data: { side: "right" } } }));
+    }, cur);
+    await hp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    for (const cur of [5, 120, 330, 480]) {
+      await learner(cur); await hgo("/course");
+      const titles = await hp.$$eval("#main .coursepath .cptitle", e => e.map(x => x.textContent.trim()).filter(Boolean)).catch(() => []);
+      check(titles.length >= 2 && titles.every(hindi), "hindi course path (day " + cur + "): the days' titles are in Hindi " + JSON.stringify(titles.filter(x => !hindi(x)).slice(0, 3)));
+    }
+    for (const d of [5, 47, 200, 330, 640]) {
+      await learner(d); await hgo("/day/" + d);
+      const c = await hp.evaluate(() => ({ h1: (document.querySelector("#main .lesson-cover h1") || {}).textContent || "", goal: (document.querySelector("#main .lesson-cover .lesson-goal p") || {}).textContent || null,
+        reads: [...document.querySelectorAll("#main .lesson-cover .lesson-read span")].map(s => s.textContent) }));
+      check(hindi(c.h1) && (c.goal === null || hindi(c.goal)) && c.reads.every(r => /[ऀ-ॿ]/.test(r)), "hindi lesson cover, day " + d + ": the title, today's goal and the readings [" + c.h1 + (c.goal ? " / " + c.goal : "") + "] " + JSON.stringify(c.reads.filter(r => !/[ऀ-ॿ]/.test(r))));
+    }
+    await learner(5); await hgo("/today");
+    const td = await hp.evaluate(() => ({ h1: (document.querySelector("#main .todayhero h1") || {}).textContent || "", goal: (document.querySelector("#main .todaygoal") || {}).textContent || "",
+      week: [...document.querySelectorAll("#main .weekstrip .wkday span")].map(s => s.textContent) }));
+    check(hindi(td.h1) && hindi(td.goal), "hindi today: the day's title and the Goal line (from its pass check) [" + td.h1 + " / " + td.goal + "]");
+    check(td.week.length === 7 && td.week.every(s => /^[ऀ-ॿ]+$/.test(s)), "hindi today: the week strip's days are Hindi (" + td.week.join(" ") + ")");
+    // The meter's goal line, for every note it can name, and on a real long-tone step.
+    const lines = await hp.evaluate(async () => {
+      const [{ t }, { codeOf, nameOf }] = await Promise.all([import(new URL("app/js/core/i18n.js", location.href).href), import(new URL("app/js/core/theory.js", location.href).href)]);
+      return [-5, -3, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14].map(s => t(`Hold ${codeOf(s)} (${nameOf(s)}) for 8 s, within 20 cents.`));
+    });
+    check(lines.every(hindi), "hindi meter: 'Hold <note> for 8 s, within 20 cents.' for every note " + JSON.stringify(lines.filter(x => !hindi(x))));
+    const i = await hp.evaluate(async () => {
+      const u = q => import(new URL("app/js/" + q, location.href).href);
+      const [PR, OD, C, P] = await Promise.all([u("lessons/practice.js"), u("lessons/oneday.js"), u("course.js"), u("lesson/player.js")]);
+      return P.flatSteps(OD.oneDay(PR.practiceLesson("p47"), C.getDay(47))).findIndex(s => s.kind === "hold");
+    });
+    await learner(47);
+    await hp.evaluate(i => localStorage.setItem("bansuri.lessons", JSON.stringify({ m0: { at: 0, done: "2025-11-01", data: {} }, p47: { at: i, data: {}, done: null } })), i);
+    await hgo("/day/47");
+    const goal = await hp.waitForSelector(".lesson-stage .lv-goal", { timeout: 8000 }).then(() => hp.$eval(".lesson-stage .lv-goal", e => e.textContent), () => "");
+    check(hindi(goal), "hindi long-tone step: the meter's goal line [" + goal + "]");
+    await ctx.close();
+  });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete
     // each kind of step (the player marks the step's kind on the stage). A fresh learner on the

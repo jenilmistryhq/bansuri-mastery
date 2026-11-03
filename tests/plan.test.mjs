@@ -84,6 +84,20 @@ const c = plan.cycle;
 ok(c && c.from > 0 && c.from < c.to && c.to < plan.days.length, "cycle bounds");
 ok(plan.days.slice(c.from, c.to + 1).every((d) => d.phase === 5), "cycle stays inside Phase 5");
 
+// Hindi: every day title and pass check reads in Hindi through the interface dictionary
+// (app/i18n/hi.json, whole strings and {x} patterns, applied as app/js/core/i18n.js does). Course
+// codes (EX-EAR, BPM) and notation are upper case, so a run of lower-case letters is English left.
+{
+  const { setDict, t } = await import(new URL("../app/js/core/i18n.js", import.meta.url).href);
+  setDict(JSON.parse(readFileSync(join(root, "app", "i18n", "hi.json"), "utf8")));
+  for (const [field, name] of [["title", "titles"], ["pass", "pass checks"]]) {
+    const all = [...new Set(plan.days.map((d) => d[field]).filter(Boolean))];
+    const left = all.filter((s) => /[a-z]{3}/.test(t(s)));
+    console.log(`plan.test: day ${name} with Hindi: ${all.length - left.length} of ${all.length}`);
+    ok(!left.length, `day ${name} without Hindi: ${left.slice(0, 5).join(" | ")}`);
+  }
+}
+
 if (failures) {
   console.error(`${failures} failure(s)`);
   process.exit(1);
