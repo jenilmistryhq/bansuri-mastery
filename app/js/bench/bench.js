@@ -201,8 +201,8 @@ function benchTemplate(uid, o) {
       </div>
       <div class="bb-card">
         <h2>Live: which note, how many cents</h2>
-        <p class="bb-muted bb-small">The live tuner is part of Long tones now: choose "Any steady note" and play. It shows the note, how many cents flat or sharp, its Western name and Hz, and how clear the tone is.</p>
-        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button></div>
+        <p class="bb-muted bb-small">The live tuner shows the note, how many cents flat or sharp, and its Hz: in the app it is the Flute tools' Tuner tab, over any screen. Long tones, with "Any steady note", also shows how clear the tone is.</p>
+        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button><button type="button" class="bb-btn bb-primary" data-ref="toTuner" hidden>Open the tuner</button></div>
       </div>
     </div>
     <div class="bb-card" data-ref="resultCard" hidden>
@@ -435,7 +435,7 @@ export function mountBench(container, opts) {
   // ---------- Chart ----------
   function miniHtml(f) {
     if (!f) return "";
-    return '<span class="bb-mini" aria-label="' + f + '">' + f.split("").map((c, i) => (i === 3 ? '<span class="bb-gap"></span>' : "") + `<i class="${c === "X" ? "x" : c === "H" ? "h" : ""}"></i>`).join("") + "</span>";
+    return '<span class="bb-mini" role="img" aria-label="' + f + '">' + f.split("").map((c, i) => (i === 3 ? '<span class="bb-gap"></span>' : "") + `<i class="${c === "X" ? "x" : c === "H" ? "h" : ""}"></i>`).join("") + "</span>";
   }
   function buildChart() {
     const tb = q("chartBody"); if (!tb) { render(); return; }
@@ -823,7 +823,10 @@ export function mountBench(container, opts) {
     // Reset the input after reading, so choosing the same file again analyses it again.
     listen(q("fileIn"), "change", e => { const f = e.target.files[0]; e.target.value = ""; analyzeFile(f); });
     listen(sel, "change", () => { if (lastResult) showResults(lastResult, CHECK_PLANS[Number(sel.value)][1]); });
-    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").parentElement.hidden = true; }
+    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").hidden = true; }
+    // In the app the tuner is the Flute dock's Tuner tab (main.js opens it on "bansuri:dock").
+    if (opts.dockTuner) { q("toTuner").hidden = false; listen(q("toTuner"), "click", () => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "tuner" } }))); }
+    else if (!has("tones")) q("toTones").parentElement.hidden = true;
   }
 
   // ---------- Ear quiz ----------

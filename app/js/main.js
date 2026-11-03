@@ -57,6 +57,8 @@ const ROUTES = [
   // Skills (redesign 2): a fix on its own screen (W50); the ornament trainer opened on one ornament (W44).
   [/^\/skills\/fix\/(TS-\d\d)(?:\/(tone|notes|rhythm|ornaments|ear))?$/, "fix"], [/^\/skills\/(ornaments)\/(trainer)\/(meend|kan|murki|andolan)$/, "skilltool"],
   // Screens inside Skills and Music: a training tool, a game, a fix opened from a skill, a song, a raga.
+  // A friend's challenge link (was #/challenge/<payload>), before the game address it would match.
+  [/^\/skills\/game\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"],
   [/^\/skills\/(tone|rhythm|ornaments|ear)\/([a-z]+)$/, "skilltool"], [/^\/skills\/game\/([a-z]+)(?:\/([A-Za-z0-9._-]+))?$/, "play"], [/^\/skills\/fix\/(TS-\d\d)\/(tone|notes|rhythm|ornaments|ear)$/, "coach"],
   [/^\/music\/song\/([A-Za-z0-9._-]+)$/, "song"], [/^\/music\/raga\/([a-z-]+)$/, "raga"],
   [/^\/course(?:\/path)?$/, "plan"], [/^\/course\/milestones$/, "milestones"], [/^\/course\/book$/, "library"],
@@ -76,11 +78,27 @@ const ROUTES = [
   [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
   [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/coach\/(TS-\d\d)$/, "coach"], [/^\/songs$/, "songs"],
   [/^\/play$/, "play"], [/^\/play\/([a-z]+)$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/transcribe$/, "transcribe"], [/^\/tone$/, "coach"], [/^\/lesson\/([a-z0-9]+)$/, "lesson"], [/^\/ornaments$/, "ornaments"], [/^\/review$/, "review"], [/^\/review\/([A-Za-z0-9_-]+)$/, "review"], [/^\/feedback\/([A-Za-z0-9_-]+)$/, "feedback"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
+  // Check my flute from a recording (the Bench's upload check), linked from Me > Flute > Check my flute.
+  [/^\/me\/flute\/recording$/, "benchcheck"],
 ];
 // Old addresses and where they live now (the view is the same; only the address changes).
 const MOVED = { "/plan": "/course", "/library": "/course/book", "/journal": "/me/journal", "/progress": "/me", "/settings": "/me/settings",
   "/coach": "/skills/fix", "/songs": "/music", "/play": "/skills/games", "/compose": "/music/compose", "/listen": "/music/listen",
   "/transcribe": "/music/transcribe", "/review": "/me/teacher" };
+// Old addresses whose screen moved to another one (redesign 03, "Old links keep working"): the
+// address is replaced, and a Bench tab that became a Flute dock tab opens the dock there.
+const BENCH_TO = { "": ["/skills/notes", "fingers"], chart: ["/skills/notes", "fingers"], tones: ["/skills/tone/longtones"], echo: ["/skills/ear/playback"], ear: ["/skills/ear/quiz"],
+  rhythm: ["/skills/rhythm", "taal"], play: ["/music"], check: ["/me/flute/check"], about: ["/me/settings/help"] };
+function forwardOf(path) {
+  let m;
+  if (path === "/quick") return ["/today/quick"];
+  if (path === "/ornaments") return ["/skills/ornaments"];
+  if (path === "/tone") return ["/skills/tone"];
+  if ((m = /^\/play\/([a-z]+)$/.exec(path))) return ["/skills/game/" + m[1]];
+  if ((m = /^\/challenge\/([A-Za-z0-9_-]+)$/.exec(path))) return ["/skills/game/challenge/" + m[1]];
+  if ((m = /^\/bench(?:\/([a-z]+))?$/.exec(path))) return BENCH_TO[m[1] || ""] || BENCH_TO[""];
+  return null;
+}
 // Two levels of navigation. Five places at the bottom (each kind of thing has one home); inside a
 // place, its sections as tabs at the top, swiped or tapped. Today has one job, so no sections.
 const NAV = [["today", "#/today", "Today"], ["course", "#/course", "Course"], ["skills", "#/skills", "Skills"], ["music", "#/music", "Music"], ["me", "#/me", "Me"]];
@@ -117,7 +135,7 @@ function placeOf(view, params, path) {
     case "progress": return ["me", "progress"];
     case "journal": return ["me", "journal"];
     case "review": case "feedback": case "students": case "share": return ["me", "teacher"];
-    case "flute": return ["me", "flute"];
+    case "flute": case "benchcheck": return ["me", "flute"];
     case "settings": case "move": case "privacy": return ["me", "settings"];
     case "record": return ["me", "journal"];
     case "flutecheck": case "flutetool": return ["me", "flute"];
@@ -131,14 +149,16 @@ const sectionsOf = place => (SECTIONS[place] || []).filter(([k]) => !(getSetting
 // Simple mode: three big choices, no reading needed.
 const NAV_SIMPLE = [["today", "#/today", "Practice"], ["play", "#/play", "Play"], ["listen", "#/listen", "Listen"]];
 // The view module that draws a screen, when it is not named after the screen.
-const MODULE = { challenge: "play", flute: "settings" };
+const MODULE = { challenge: "play", flute: "settings", benchcheck: "bench" };
 Object.assign(MODULE, { song: "songs", raga: "ragas" });
 // Screens inside a section (a tool, a song, a raga) have a back link instead of the section tabs.
-const INNER = new Set(["skilltool", "song", "raga"]);
+const INNER = new Set(["skilltool", "song", "raga", "milestone", "reader", "benchcheck"]);
 Object.assign(MODULE, { record: "journal", flutetool: "settings", moveout: "move", rates: "review" });
 ["record", "flutecheck", "flutetool", "moveout", "rates"].forEach(v => INNER.add(v));
 // A fix on its own screen (redesign W50) is drawn by the Fix tab's module, with a back link instead of the tabs.
 MODULE.fix = "coach"; INNER.add("fix");
+// Also inside a section: a fix (#/skills/fix/TS-nn) and the Path's views of every phase or earlier unit.
+const isInner = (view, params, anchor) => INNER.has(view) || (view === "coach" && params.length > 0) || (view === "plan" && /^(phases|earlier)$/.test(anchor || ""));
 // Each place remembers its last section, so coming back lands where you were.
 const LAST = "bansuri.nav.last";
 // Kept in memory for this visit, and saved when storage allows (it can be full or blocked).
@@ -147,7 +167,7 @@ const lastSection = place => lastSeen[place] || null;
 const rememberSection = (place, href) => { lastSeen[place] = href; try { localStorage.setItem(LAST, JSON.stringify(lastSeen)); } catch (e) { /* remembered for this visit only */ } };
 let here = ["today", null];
 
-let mainEl, navEl, dayPill, cleanup = null, routeToken = 0, updateReady = false;
+let mainEl, navEl, dayPill, placeName, cleanup = null, routeToken = 0, updateReady = false;
 
 // Clears the saved copies of the app and reloads from the network: the way out when an update left
 // mismatched files (an ES module importing something an older module does not have).
@@ -207,9 +227,30 @@ onBeat(kind => {
 });
 
 let dock = null;
-// While the microphone listens anywhere, the top bar says so (redesign W legend "(o)").
-const micPill = h("span", { class: "micpill", role: "status", hidden: true }, icon("mic"), h("span", null, "Listening"));
-document.addEventListener("bansuri:mic", e => { micPill.hidden = !(e.detail && e.detail.on); });
+// The microphone's state in the top bar (redesign 09, mic pill): asking, listening, no sound heard,
+// and blocked (a tap says how to allow it). Hidden while the microphone is off.
+const micText = h("span", null, "Listening");
+const micPill = h("button", { type: "button", class: "micpill", hidden: true, "aria-live": "polite" }, icon("mic"), micText);
+const MIC_WORDS = { asking: "Asking for the microphone", listening: "Listening", quiet: "No sound heard", blocked: "Microphone blocked", unavailable: "No microphone here" };
+let micTimer = 0;
+function micShow(state) {
+  clearTimeout(micTimer);
+  micPill.hidden = !MIC_WORDS[state];
+  micPill.dataset.state = MIC_WORDS[state] ? state : "off";
+  if (micPill.hidden) return;
+  micText.textContent = MIC_WORDS[state];
+  micPill.title = state === "blocked" || state === "unavailable" ? "How to allow the microphone" : state === "quiet" ? "The microphone hears nothing" : "";
+  // A refusal stays up for a while, then goes (the screen that asked says so too).
+  if (state === "blocked" || state === "unavailable") micTimer = setTimeout(() => { micShow("off"); }, 20000);
+}
+document.addEventListener("bansuri:mic", e => { if (e.detail && e.detail.on) micShow("listening"); else if (!/blocked|unavailable/.test(micPill.dataset.state || "")) micShow("off"); });
+document.addEventListener("bansuri:micstate", e => { const d = e.detail || {}; micShow(d.state === "blocked" && d.why === "unavailable" ? "unavailable" : d.state); });
+micPill.addEventListener("click", () => {
+  const st = micPill.dataset.state;
+  if (st === "blocked") toast("To allow the microphone: tap the lock or site icon next to the address, choose Microphone, then Allow. Then start again. More help: Me > Flute.", 9000);
+  else if (st === "unavailable") toast("This browser cannot use a microphone here. Open the app in Chrome, Edge or Safari, over https.", 7000);
+  else if (st === "quiet") toast("Nothing is heard. Check that the right microphone is chosen and not muted, and play a little closer.", 6000);
+});
 
 function shell() {
   const app = document.getElementById("app");
@@ -217,8 +258,10 @@ function shell() {
   // Any screen can open the Flute dock on a tab (the Skills hubs' tuner, fingering and taal rows).
   document.addEventListener("bansuri:dock", e => dock.open(e.detail && e.detail.tab));
   dayPill = h("a", { class: "daypill", href: "#/today" }, "");
+  // The place you are in, named at the top left (redesign W1).
+  placeName = h("b", { class: "placename" }, "Today");
   const top = h("header", { class: "topbar" },
-    h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", null, "Bansuri Mastery")),
+    h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", { class: "brandname" }, "Bansuri Mastery")), placeName,
     h("span", { class: "spacer" }),
     h("span", { class: "statuspills" }, dayPill, dock.pill, micPill),
     h("button", { type: "button", class: "iconbtn", title: "Search (press /)", onclick: openPalette }, icon("search", "Search")),
@@ -249,7 +292,7 @@ function shell() {
   const offline = h("div", { class: "offlinebar", role: "status", hidden: navigator.onLine !== false }, "Offline. What you have opened before still works.");
   window.addEventListener("offline", () => { offline.hidden = false; });
   window.addEventListener("online", () => { if (!offline.hidden) toast("Back online."); offline.hidden = true; });
-  clear(app).append(top, offline, h("div", { class: "layout" }, navEl, mainEl), dock.backdrop, dock.sheet);
+  clear(app).append(top, offline, h("div", { class: "layout" }, navEl, mainEl), dock.backdrop, dock.sheet, dock.fab);
 }
 
 // Teacher feedback the learner has not opened yet puts one dot on Me (redesign 03: one dot at most).
@@ -284,6 +327,8 @@ function updateChrome() {
   const meTab = navEl.querySelector('a[data-k="me"]');
   if (meTab) meTab.classList.toggle("dotted", unseenFeedback());
   railSections();
+  const nav = NAV.find(x => x[0] === here[0]);
+  if (placeName && nav) placeName.textContent = nav[2];
   for (const a of navEl.querySelectorAll("a[data-k]")) {
     // Simple mode's three tiles keep their own names (today, play, listen).
     const on = getSettings().simple ? a.dataset.k === (here[0] === "today" ? "today" : here[1] === "games" ? "play" : here[1] === "listen" ? "listen" : "") : a.dataset.k === here[0];
@@ -315,11 +360,29 @@ function swipeSections(el) {
 function sectionTabs() {
   const list = getSettings().simple ? [] : sectionsOf(here[0]);
   if (!list.length) return null;
-  const nav = h("nav", { class: "subnav sectiontabs", "aria-label": "Sections" }, list.map(([k, href, label]) => h("a", { href, "aria-current": k === here[1] ? "page" : null }, label)));
+  // A real tab list (03 item 9): the selected tab is the one reached with Tab; arrow keys move along.
+  const on = list.some(([k]) => k === here[1]) ? here[1] : list[0][0];
+  const nav = h("nav", { class: "subnav sectiontabs", role: "tablist", "aria-label": "Sections" }, list.map(([k, href, label]) =>
+    h("a", { href, role: "tab", "aria-selected": String(k === here[1]), "aria-current": k === here[1] ? "page" : null, tabindex: k === on ? "0" : "-1" }, label)));
   arrowKeys(nav, "a");
   const cur = nav.querySelector("[aria-current]");
   if (cur) requestAnimationFrame(() => { const l = cur.offsetLeft - nav.offsetLeft; if (l + cur.offsetWidth > nav.clientWidth) nav.scrollLeft = l - 24; });
   return nav;
+}
+
+// A screen inside a section (a milestone, a course page, a fix) with no back link of its own gets
+// "< Section" at its top, in place of the section tabs (redesign W1).
+function backHeader(view, params) {
+  if (mainEl.querySelector(".backhead, .page > .backlink, .page > :first-child > .backlink, .lesson-top")) return null;
+  const list = sectionsOf(here[0]);
+  const from = view === "coach" && params[1] ? list.find(s => s[0] === params[1]) : null;
+  const sec = from || list.find(s => s[0] === here[1]);
+  if (!sec) return null;
+  // The back link names where it leads (W35, W40, W50); beside it, the screen's short name.
+  const label = view === "milestone" ? "Course" : view === "reader" ? "Course book" : view === "coach" && !from ? "Fix a problem" : sec[2];
+  const title = view === "milestone" || view === "coach" ? params[0] : view === "reader" ? document.title.replace(/\s+-\s+Bansuri Mastery$/, "") : "";
+  return h("nav", { class: "framehead", "aria-label": "Back" }, h("a", { class: "backlink", href: sec[1] }, h("span", { class: "sr-only" }, "Back to"), " ", label),
+    title && !/Bansuri Mastery/.test(title) ? h("span", { class: "frametitle" }, view === "milestone" ? [h("span", null, "Milestone"), " "] : null, h("span", { translate: view === "reader" ? null : "no" }, title)) : null);
 }
 
 // Arrow keys move between the links of a tab row (and Home and End to its ends); Enter opens one.
@@ -354,6 +417,12 @@ async function route() {
   let path = parsed.path;
   const moved = MOVED[path] || (/^\/coach\/(TS-\d\d)$/.test(path) ? "/skills/fix/" + path.slice(7) : null);
   if (moved) { path = moved; try { history.replaceState(history.state, "", "#" + moved + (anchor ? "#" + anchor : "")); } catch (e) { /* the old address stays shown */ } }
+  const fwd = forwardOf(path);
+  if (fwd) {
+    path = fwd[0];
+    try { history.replaceState(history.state, "", "#" + path + (anchor ? "#" + anchor : "")); } catch (e) { /* the old address stays shown */ }
+    if (fwd[1] && dock) { const tab = fwd[1]; setTimeout(() => dock.open(tab), 0); }
+  }
   let view = "today", params = [];
   for (const [re, name] of ROUTES) { const m = re.exec(path); if (m) { view = name; params = m.slice(1).filter(x => x !== undefined); break; } }
   if (cleanup) { try { cleanup(); } catch (e) { /* view cleanup errors are not fatal */ } cleanup = null; }
@@ -362,6 +431,9 @@ async function route() {
   const sec = sectionsOf(here[0]).find(s => s[0] === here[1]);
   if (sec && "#" + path === sec[1]) rememberSection(here[0], sec[1]);
   updateChrome();
+  // A place's home (its first section): on a tablet the homes use two columns (redesign W90, 10).
+  const first = sectionsOf(here[0])[0];
+  mainEl.dataset.home = view === "today" && !params.length ? "today" : first && first[0] === here[1] && "#" + path === first[1] && !isInner(view, params, anchor) ? here[0] : "";
   clear(mainEl).append(h("div", { class: "boot" }, "Loading..."));
   try {
     const mod = await import("./views/" + (MODULE[view] || view) + ".js");
@@ -371,8 +443,10 @@ async function route() {
     if (token !== routeToken) { if (typeof ret === "function") ret(); return; }
     cleanup = typeof ret === "function" ? ret : null;
     // The place's sections, as tabs at the top.
-    const tabs = INNER.has(view) ? null : sectionTabs();
+    const inner = isInner(view, params, anchor);
+    const tabs = inner ? null : sectionTabs();
     if (tabs) mainEl.prepend(tabs);
+    else if (inner) { const head = backHeader(view, params); if (head) mainEl.prepend(head); }
     // A fix opened from a lesson step ("Having trouble?") leads back to that step.
     const stepBack = stepReturnBar(path);
     if (stepBack) mainEl.prepend(stepBack);

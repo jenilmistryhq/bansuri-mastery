@@ -42,14 +42,15 @@ try {
   await page.reload(); await page.waitForLoadState("networkidle"); await sleep(500);
   check(await page.locator("#main .resume").count() === 1 && await page.locator("#main .progresscard").count() === 1, "today: the Resume card and the progress card render");
   for (const [route, sel] of [["/session/12", "#main .block"], ["/plan", "#main .coursepath"], ["/library", "#main .catcard"], ["/read/lessons/L09-fingering-sa-re-ga.md", "#main .lcard"],
-    ["/bench", ".bb-flute"], ["/play", "#main .gamecard"], ["/listen", "#main .listentile"], ["/songs", "#main .songfilter"], ["/coach", "#main"], ["/journal", "#main .card"], ["/progress", "#main .headline"], ["/settings", "#main .hublist"], ["/compose", "#main .ccell"], ["/quick", "#main .lv-hold"]]) {
+    ["/me/flute/recording", "#main .bb-bench"], ["/play", "#main .gamecard"], ["/listen", "#main .listentile"], ["/songs", "#main .songfilter"], ["/coach", "#main"], ["/journal", "#main .card"], ["/progress", "#main .headline"], ["/settings", "#main .hublist"], ["/compose", "#main .ccell"], ["/quick", "#main .lv-hold"]]) {
     await go(route);
     const n = await page.locator(sel).count();
     const broken = await page.locator("#main").innerText().then(t => /Something went wrong/.test(t));
     check(n > 0 && !broken, route + " renders");
   }
   // Interactions that touch Safari-specific code paths: audio start-up, SVG controls, a session step.
-  await go("/bench");
+  // The flute you play by tapping its holes is the standalone Practice Bench's (the app's #/bench forwards).
+  await page.goto(BASE + "bansuri-mastery/tools/practice-bench.html"); await page.waitForLoadState("networkidle"); await sleep(500);
   await page.locator(".bb-flute [data-ref=hole3]").dispatchEvent("click");
   check(await page.locator(".bb-flute [data-ref=hole3]").getAttribute("aria-label") === "Hole 4: closed", "bench: tapping a hole on the flute closes it");
   await page.locator(".bb-blow").dispatchEvent("pointerdown"); await sleep(400); await page.locator(".bb-blow").dispatchEvent("pointerup");

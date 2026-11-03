@@ -832,3 +832,52 @@ export function ragaQuiz(opts) {
   againBtn.addEventListener("click", () => { if (current) play(); });
   return { el, stop: hush, destroy() { hush(); drone.stop(); } };
 }
+
+// The Flute dock's tuner (redesign W4): the note heard, a -50..+50 cents meter, the cents and Hz, and
+// whether it is listening. The same shared microphone and pitch readings as every other exercise;
+// nothing is scored or recorded. start() asks for the microphone (after micIntro the first time).
+export function tunerMeter() {
+  const life = { gen: 0, dead: false, starting: false };
+  let unsub = null, lastSound = 0;
+  const note = lvEl("div", { class: "lv-big tn-note", "aria-live": "off" }, "-");
+  const needle = lvEl("i", { class: "lv-needle" });
+  const cents = lvEl("span", { class: "tn-cents" }, "");
+  const hz = lvEl("span", { class: "tn-hz" }, "");
+  const state = lvEl("p", { class: "tn-state", role: "status" }, lvEl("span", { class: "tn-dot", "aria-hidden": "true" }), lvEl("span", null, "Not listening"));
+  const msg = lvEl("p", { class: "lv-msg tn-msg", "aria-live": "polite" }, "");
+  const btn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start the tuner");
+  const el = lvEl("div", { class: "lv tn" }, note,
+    lvEl("div", { class: "lv-tune tn-meter" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle),
+      lvEl("div", { class: "lv-scale" }, lvEl("span", null, "-50"), lvEl("span", null, "0"), lvEl("span", null, "+50"))),
+    lvEl("p", { class: "tn-read" }, cents, hz), state, msg, lvEl("div", { class: "lv-row" }, btn));
+  const setState = (on, text) => { el.classList.toggle("tn-on", on); state.lastChild.textContent = text; };
+  function quiet() { note.textContent = "-"; needle.className = "lv-needle"; cents.textContent = ""; hz.textContent = ""; }
+  function onReading(r) {
+    if (r.semi !== null && r.semi > -7.5) {
+      lastSound = r.t;
+      note.replaceChildren(...[].concat(lvNote(r.near)));
+      needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
+      needle.className = "lv-needle " + (Math.abs(r.cents) <= 10 ? "lv-good" : Math.abs(r.cents) <= 25 ? "lv-warn" : "lv-bad");
+      cents.textContent = (r.cents > 0 ? "+" : "") + r.cents + " c";
+      hz.textContent = r.f ? westOf(r.near) + " " + Math.round(r.f) + " Hz" : "";
+      msg.textContent = "";
+    } else if (r.t - lastSound > 1) quiet();
+  }
+  async function start() {
+    if (life.starting || unsub || life.dead) return;
+    life.starting = true;
+    const g0 = life.gen;
+    try {
+      if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
+      ac();
+      setState(false, "Waiting for the microphone");
+      const u = await lvListen(life, onReading);
+      if (!u) return;
+      unsub = u; btn.textContent = "Stop"; setState(true, "Listening"); msg.textContent = "Play any note.";
+    } catch (e) { setState(false, "Not listening"); lvShowMicError(msg, e); }
+    finally { life.starting = false; }
+  }
+  function stop() { life.gen++; if (unsub) { unsub(); unsub = null; } btn.textContent = "Start the tuner"; setState(false, "Not listening"); quiet(); }
+  btn.addEventListener("click", () => (unsub ? stop() : start()));
+  return { el, start, stop, listening: () => !!unsub, destroy() { life.dead = true; stop(); } };
+}

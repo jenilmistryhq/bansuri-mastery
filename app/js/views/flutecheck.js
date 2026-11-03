@@ -122,7 +122,7 @@ function resultStep(notes) {
         }
       }
       out.push(h("p", { class: "small muted" }, "Within 10 cents is in tune; within 25 is close (fine for a beginner). More means adjust the angle, the air speed or how much of a half-hole you cover."),
-        h("a", { href: "#/bench/check" }, "Check a recording of your flute instead"));
+        h("a", { href: "#/me/flute/recording" }, "Check a recording of your flute instead"));
       return { el: h("div", { class: "stack" }, table, ...out) };
     },
   };
@@ -139,7 +139,7 @@ export async function render(main, { params }) {
       h("section", { class: "card" }, h("h2", { class: "eyebrow" }, "What to check"),
         h("div", { class: "hublist" }, PLANS.map(([i, label]) => h("a", { class: "hubrow", href: "#/me/flute/check/" + i },
           h("span", { class: "stack" }, h("b", null, label)), h("span", { class: "chev", "aria-hidden": "true" }, ">"))))),
-      h("p", { class: "small muted" }, "Or ", h("a", { href: "#/bench/check" }, "check a recording of your flute"), ": record the notes with any voice recorder and upload the file."));
+      h("p", { class: "small muted" }, "Or ", h("a", { href: "#/me/flute/recording" }, "check a recording of your flute"), ": record the notes with any voice recorder and upload the file."));
     return undefined;
   }
   // A fresh check each time: forget the last run's place and results.

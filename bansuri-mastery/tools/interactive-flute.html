@@ -1470,6 +1470,8 @@ async function openMic() {
   const m = { stream, src, an, buf: new Float32Array(an.fftSize), subs: new Set(), hist: [], timer: 0 };
   // An interval, not animation frames, so listening continues while the page scrolls or redraws.
   m.stats = { frames: 0, voiced: 0, ms: 0, sampleRate: c.sampleRate, peak: 0 };
+  // "No sound heard": the top bar's microphone pill says so after 5 s of near silence (not while muted).
+  m.heard = c.currentTime; m.quiet = false;
   m.timer = setInterval(() => {
     const t = c.currentTime, t0 = performance.now();
     let r = { t, semi: null, near: null, cents: null, f: 0, level: 0 };
@@ -1478,6 +1480,8 @@ async function openMic() {
       let sq = 0; for (let i = 0; i < m.buf.length; i++) sq += m.buf[i] * m.buf[i];
       const level = Math.sqrt(sq / m.buf.length);
       r.level = level;
+      if (level > 0.004) { m.heard = t; if (m.quiet) { m.quiet = false; micState("listening"); } }
+      else if (!m.quiet && t - m.heard > 5) { m.quiet = true; micState("quiet"); }
       const y = yin(m.buf, c.sampleRate);
       if (y && y.clarity > 0.85) {
         m.hist.push(relSemi(y.f)); if (m.hist.length > 5) m.hist.shift();
@@ -1488,7 +1492,7 @@ async function openMic() {
       } else m.hist = [];
       m.stats.frames++; m.stats.peak = Math.max(m.stats.peak, level);
       m.stats.ms += performance.now() - t0;
-    } else m.hist = [];
+    } else { m.hist = []; m.heard = t; }
     m.subs.forEach(fn => { try { fn(r); } catch (e) { /* one listener must not stop the others */ } });
   }, 33);
   return m;
@@ -1508,11 +1512,21 @@ function micStats() {
 const micActive = () => !!micShared;
 function micEvent(on) {
   try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:mic", { detail: { on } })); } catch (e) { /* no DOM */ }
+  micState(on ? "listening" : "off");
+}
+// The microphone's state for the top bar's pill (redesign 09): "asking" (the browser's prompt is up),
+// "listening", "quiet" (open, but no sound heard for a while), "blocked" (refused; detail.why is
+// "unavailable" when the browser has no microphone here) and "off". Sent as "bansuri:micstate".
+function micState(state, why) {
+  try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:micstate", { detail: { state, why: why || null } })); } catch (e) { /* no DOM */ }
 }
 
 async function listenMic(fn) {
   if (!micShared) {
-    if (!micPending) micPending = openMic().then(m => { micShared = m; micPending = null; micEvent(true); return m; }, e => { micPending = null; throw e; });
+    if (!micPending) {
+      micState("asking");
+      micPending = openMic().then(m => { micShared = m; micPending = null; micEvent(true); return m; }, e => { micPending = null; micState("blocked", e && e.message === "unavailable" ? "unavailable" : "blocked"); throw e; });
+    }
     await micPending;
   }
   const m = micShared;
@@ -2518,6 +2532,55 @@ function ragaQuiz(opts) {
   return { el, stop: hush, destroy() { hush(); drone.stop(); } };
 }
 
+// The Flute dock's tuner (redesign W4): the note heard, a -50..+50 cents meter, the cents and Hz, and
+// whether it is listening. The same shared microphone and pitch readings as every other exercise;
+// nothing is scored or recorded. start() asks for the microphone (after micIntro the first time).
+function tunerMeter() {
+  const life = { gen: 0, dead: false, starting: false };
+  let unsub = null, lastSound = 0;
+  const note = lvEl("div", { class: "lv-big tn-note", "aria-live": "off" }, "-");
+  const needle = lvEl("i", { class: "lv-needle" });
+  const cents = lvEl("span", { class: "tn-cents" }, "");
+  const hz = lvEl("span", { class: "tn-hz" }, "");
+  const state = lvEl("p", { class: "tn-state", role: "status" }, lvEl("span", { class: "tn-dot", "aria-hidden": "true" }), lvEl("span", null, "Not listening"));
+  const msg = lvEl("p", { class: "lv-msg tn-msg", "aria-live": "polite" }, "");
+  const btn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start the tuner");
+  const el = lvEl("div", { class: "lv tn" }, note,
+    lvEl("div", { class: "lv-tune tn-meter" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle),
+      lvEl("div", { class: "lv-scale" }, lvEl("span", null, "-50"), lvEl("span", null, "0"), lvEl("span", null, "+50"))),
+    lvEl("p", { class: "tn-read" }, cents, hz), state, msg, lvEl("div", { class: "lv-row" }, btn));
+  const setState = (on, text) => { el.classList.toggle("tn-on", on); state.lastChild.textContent = text; };
+  function quiet() { note.textContent = "-"; needle.className = "lv-needle"; cents.textContent = ""; hz.textContent = ""; }
+  function onReading(r) {
+    if (r.semi !== null && r.semi > -7.5) {
+      lastSound = r.t;
+      note.replaceChildren(...[].concat(lvNote(r.near)));
+      needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
+      needle.className = "lv-needle " + (Math.abs(r.cents) <= 10 ? "lv-good" : Math.abs(r.cents) <= 25 ? "lv-warn" : "lv-bad");
+      cents.textContent = (r.cents > 0 ? "+" : "") + r.cents + " c";
+      hz.textContent = r.f ? westOf(r.near) + " " + Math.round(r.f) + " Hz" : "";
+      msg.textContent = "";
+    } else if (r.t - lastSound > 1) quiet();
+  }
+  async function start() {
+    if (life.starting || unsub || life.dead) return;
+    life.starting = true;
+    const g0 = life.gen;
+    try {
+      if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
+      ac();
+      setState(false, "Waiting for the microphone");
+      const u = await lvListen(life, onReading);
+      if (!u) return;
+      unsub = u; btn.textContent = "Stop"; setState(true, "Listening"); msg.textContent = "Play any note.";
+    } catch (e) { setState(false, "Not listening"); lvShowMicError(msg, e); }
+    finally { life.starting = false; }
+  }
+  function stop() { life.gen++; if (unsub) { unsub(); unsub = null; } btn.textContent = "Start the tuner"; setState(false, "Not listening"); quiet(); }
+  btn.addEventListener("click", () => (unsub ? stop() : start()));
+  return { el, start, stop, listening: () => !!unsub, destroy() { life.dead = true; stop(); } };
+}
+
 // ---- bench/bench.js ----
 // Practice Bench UI. mountBench(container, opts) -> { destroy, setTab, loadNotation, stopAll }
 
@@ -2715,8 +2778,8 @@ function benchTemplate(uid, o) {
       </div>
       <div class="bb-card">
         <h2>Live: which note, how many cents</h2>
-        <p class="bb-muted bb-small">The live tuner is part of Long tones now: choose "Any steady note" and play. It shows the note, how many cents flat or sharp, its Western name and Hz, and how clear the tone is.</p>
-        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button></div>
+        <p class="bb-muted bb-small">The live tuner shows the note, how many cents flat or sharp, and its Hz: in the app it is the Flute tools' Tuner tab, over any screen. Long tones, with "Any steady note", also shows how clear the tone is.</p>
+        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button><button type="button" class="bb-btn bb-primary" data-ref="toTuner" hidden>Open the tuner</button></div>
       </div>
     </div>
     <div class="bb-card" data-ref="resultCard" hidden>
@@ -2949,7 +3012,7 @@ function mountBench(container, opts) {
   // ---------- Chart ----------
   function miniHtml(f) {
     if (!f) return "";
-    return '<span class="bb-mini" aria-label="' + f + '">' + f.split("").map((c, i) => (i === 3 ? '<span class="bb-gap"></span>' : "") + `<i class="${c === "X" ? "x" : c === "H" ? "h" : ""}"></i>`).join("") + "</span>";
+    return '<span class="bb-mini" role="img" aria-label="' + f + '">' + f.split("").map((c, i) => (i === 3 ? '<span class="bb-gap"></span>' : "") + `<i class="${c === "X" ? "x" : c === "H" ? "h" : ""}"></i>`).join("") + "</span>";
   }
   function buildChart() {
     const tb = q("chartBody"); if (!tb) { render(); return; }
@@ -3337,7 +3400,10 @@ function mountBench(container, opts) {
     // Reset the input after reading, so choosing the same file again analyses it again.
     listen(q("fileIn"), "change", e => { const f = e.target.files[0]; e.target.value = ""; analyzeFile(f); });
     listen(sel, "change", () => { if (lastResult) showResults(lastResult, CHECK_PLANS[Number(sel.value)][1]); });
-    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").parentElement.hidden = true; }
+    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").hidden = true; }
+    // In the app the tuner is the Flute dock's Tuner tab (main.js opens it on "bansuri:dock").
+    if (opts.dockTuner) { q("toTuner").hidden = false; listen(q("toTuner"), "click", () => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "tuner" } }))); }
+    else if (!has("tones")) q("toTones").parentElement.hidden = true;
   }
 
   // ---------- Ear quiz ----------
