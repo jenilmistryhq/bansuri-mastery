@@ -4,7 +4,7 @@ import { h, toast, today, fmtDate } from "../util.js";
 import { errorList, clearErrors, problemReport } from "../errors.js";
 import { getState, update, restoreFrom, resetAll } from "../state.js";
 import { getPlan, current } from "../course.js";
-import { getSettings, setSettings, saHz } from "../core/settings.js";
+import { getSettings, setSettings, saHz, onSettings } from "../core/settings.js";
 import { playNote } from "../core/audio.js";
 import { WEST, codeOf } from "../core/theory.js";
 import { fluteFinder, micIntro, countdown } from "../core/live.js";
@@ -14,11 +14,11 @@ import { ac } from "../core/audio.js";
 import { saveRecording, clearRecordings } from "../recorder.js";
 import { clearCaptures } from "../captures.js";
 import { sayButton, saveVoiceOffline, modelReady, voiceSizeMB, removeSavedVoice } from "../voice.js";
-import { fingSvg } from "../core/fingers.js";
+import { noteLabel } from "../core/fingers.js";
+import { backHead } from "../backhead.js";
 import { enableReminder, disableReminder, remindersSupported } from "../reminder.js";
 import { saveBackup, backupWith, restoreCaptures } from "../backup.js";
 import { calibrationWidget } from "../calibrate.js";
-import { encodeMove, moveLink, QR_LIMIT } from "../move.js";
 
 function b64ToBlob(dataUrl) {
   const m = /^data:([^;,]*)(;base64)?,(.*)$/s.exec(dataUrl || "");
@@ -108,7 +108,6 @@ function accessSection() {
     offline.textContent = n ? "Voice saved for offline use" : "Could not save the voice now"; offline.disabled = false;
   });
   const model = h("p", { class: "small muted" }, modelReady() ? "The reading voice for lessons is on this device." : "Lessons can also be read aloud by a natural voice. It downloads once (about 90 MB) the first time you tap a speaker on a lesson card.");
-  const preview = h("span", { class: "row", "aria-hidden": "true" }, [0, 2, 4, 7].map(n => fingSvg(n, { size: 20 })));
   return [h("section", { class: "card", id: "voice" }, h("h2", null, "Voice and language"),
     h("label", { class: "field", for: "st-lang" }, h("span", { translate: "no" }, "Language / भाषा"), langSel),
     h("p", { class: "small muted" }, "The app's buttons, messages and voice change language. The course pages stay in English, and the voice can read them aloud."),
@@ -118,7 +117,7 @@ function accessSection() {
     check("hints", "After an off note, play a soft slide from my note to the right one")),
   h("section", { class: "card", id: "access" }, h("h2", null, "Easier to use"),
     check("simple", "Simple mode: three big buttons (Practice, Play, Listen), and the app talks you through each session"),
-    select("notesAs", "Show notes as", [["letters", "Letters (S R G)"], ["pictures", "Pictures of the fingering"]]), preview,
+    select("notesAs", "Show notes as", [["letters", "Letters (S R G)"], ["pictures", "Pictures of the fingering"]]),
     h("label", { class: "field", for: "st-size" }, "Text size", h("span", { class: "row" }, size, sizeTxt)),
     check("easyFont", "Easy-to-read font"),
     check("contrast", "High contrast"),
@@ -146,7 +145,7 @@ const PACE_SHORT = { short: "25-35 min a day", standard: "45-60 min a day", long
 const SETTINGS_GROUPS = [
   { slug: "voice", id: "g-voice", label: "Language and voice", titles: ["Voice and language"],
     summary: () => { const s = getSettings(); return [s.lang === "hi" ? "हिन्दी" : "English", s.talk ? "Talk to me: on" : "Talk to me: off"]; } },
-  { slug: "display", id: "g-access", label: "Display and ease of use", titles: ["Easier to use", "Display and sound"],
+  { slug: "display", id: "g-access", label: "Display and ease of use", titles: ["Easier to use", "Display and sound", "Preview"],
     summary: () => {
       const s = getSettings(), size = Math.round(s.textSize * 100);
       return [size === 100 ? "Text size normal" : "Text size {n}%".replace("{n}", size), s.simple ? "Simple mode" : null, s.focus ? "Focus mode" : null, s.contrast ? "High contrast" : null, s.bigTargets ? "Bigger buttons" : null];
@@ -158,8 +157,12 @@ const SETTINGS_GROUPS = [
   { slug: "help", id: "g-help", label: "Help and about", titles: ["Problem report", "Pilot study (optional)", "Privacy", "About"],
     summary: () => [getSettings().pilot ? "Pilot study: on" : null] },
 ];
-// Me > Flute: the flute's setup, then its checks, Check my flute first.
-const FLUTE_GROUPS = [{ id: "g-flute", label: "Sa and tuning", titles: ["Your flute"] }, { id: "g-checks", label: "Checks", titles: ["Check my flute", "Microphone check", "Calibrate with your flute"] }];
+// Me > Flute (W78): the flute's setup, then its checks as rows, Check my flute first. The microphone
+// check and calibration open on their own screens (#/me/flute/mic, #/me/flute/calibrate).
+const FLUTE_CHECKS = [["#/me/flute/check", "Check my flute", "Play each note and see how in tune it is", "check"],
+  ["#/me/flute/mic", "Microphone check", "How well the app hears your flute on this phone", "mic"],
+  ["#/me/flute/calibrate", "Calibrate with your flute", "Help tune the app to real flutes", "calibrate"]];
+const FLUTE_TOOLS = { mic: "Microphone check", calibrate: "Calibrate with your flute" };
 
 export async function render(main, ctx = {}) {
   // Me > Flute (#/me/flute) shows the flute's setup and checks; Me > Settings shows the preferences.
@@ -316,23 +319,6 @@ export async function render(main, ctx = {}) {
     update(st => { st.lastBackup = today(); });
     toast("Backup downloaded.");
   });
-  // Move to another device: a link (and a QR code when small enough) carrying the progress.
-  const moveOut = h("div", { class: "stack", hidden: true });
-  const moveBtn = h("button", { type: "button", class: "btn" }, "Make a transfer link");
-  moveBtn.addEventListener("click", async () => {
-    const data = await encodeMove(), link = moveLink(data);
-    const input = h("input", { class: "input", readonly: true, value: link, "aria-label": "Transfer link", onfocus: e => e.target.select() });
-    const send = h("button", { type: "button", class: "btn primary", onclick: async () => { try { if (navigator.share) await navigator.share({ title: "My bansuri progress", url: link }); else { await navigator.clipboard.writeText(link); toast("Link copied."); } } catch (e) { /* cancelled */ } } }, "Send the link");
-    let qr = null;
-    if (link.length <= QR_LIMIT) {
-      const { default: qrcode } = await import("../../vendor/qrcode/qrcode.mjs");
-      const q = qrcode(0, "L"); q.addData(link); q.make();
-      qr = h("img", { class: "qrimg", src: q.createDataURL(4, 8), alt: "QR code of the transfer link: scan it with the other device's camera" });
-    }
-    moveOut.replaceChildren(h("div", { class: "row" }, input, send), qr || h("p", { class: "small muted" }, "Your progress is too large for a QR code now; send the link to yourself instead (WhatsApp, email)."),
-      h("p", { class: "small muted" }, "Open the link on the other device; it shows what it holds and asks before replacing anything. Recordings are not included."));
-    moveOut.hidden = false;
-  });
   // One tap to the phone's share sheet: save the backup to Files, Drive or mail.
   const shareBtn = h("button", { type: "button", class: "btn" }, "Save to Files or Drive");
   shareBtn.addEventListener("click", async () => { const how = await saveBackup({ withRecordings: withRec.checked }); if (how !== "cancelled") toast(how === "shared" ? "Backup saved." : "Backup downloaded."); });
@@ -385,8 +371,9 @@ export async function render(main, ctx = {}) {
     h("p", { class: "small muted" }, "Progress and recordings live only in this browser. Back up regularly, and to move to another device, download a backup here and restore it there."),
     h("label", { class: "check", for: "st-withrec" }, withRec, "Include recordings (larger file): the Journal's and Transcribe's"),
     h("div", { class: "row" }, exportBtn, shareBtn, csvBtn),
-    h("h3", null, "Move to another device"), h("p", { class: "small muted" }, "No account needed: a link carries your progress to your other phone or computer."), h("div", { class: "row" }, moveBtn), moveOut,
-    h("label", { class: "field", for: "st-import" }, "Restore from a backup file (replaces current progress)", fileIn)));
+    h("label", { class: "field", for: "st-import" }, "Restore from a backup file (replaces current progress)", fileIn),
+    // Move to another phone has its own screen (W81, W82).
+    h("div", { class: "hublist" }, settingsRow("#/me/settings/move", "Move to another phone", ["No account needed: a link carries your progress"], "move"))));
 
   // Storage + reset.
   const usage = h("span", { class: "small muted" });
@@ -400,7 +387,7 @@ export async function render(main, ctx = {}) {
     toast("Progress reset.");
     location.hash = "#/today";
   });
-  page.append(h("section", { class: "card" }, h("h2", null, "Start over"), usage, h("div", { class: "row" }, reset)));
+  page.append(h("section", { class: "card startover" }, h("h2", null, "Start over"), h("p", { class: "small" }, "Removes all progress on this phone."), usage, h("div", { class: "row" }, reset)));
 
   // Microphone check: for testing the listening exercises on a real phone and flute.
   const micOut = h("pre", { class: "small", hidden: true, style: { whiteSpace: "pre-wrap", margin: "0" } });
@@ -479,28 +466,38 @@ export async function render(main, ctx = {}) {
   calibBtn.addEventListener("click", () => { if (calib) return; calib = calibrationWidget(); calibHost.append(calib.el); calibBtn.hidden = true; });
   page.append(h("section", { class: "card" }, h("h2", null, "Calibrate with your flute"),
     h("p", { class: "small muted" }, "Four 10-second tasks with your flute. The app saves what its pitch detector measured (no sound) as a file you can send to the course author, so the in-tune, airy and steady thresholds can be set from real players."), calibBtn, calibHost));
-  // Check my flute: the first of the flute's checks.
-  page.append(h("section", { class: "card row between" }, h("h2", { class: "sr-only" }, "Check my flute"), h("span", null, "Check my flute: play each note and see how in tune it is."), h("a", { class: "btn", href: "#/bench/check" }, "Check my flute")));
   // Privacy: its own page, under Help and about.
   page.append(h("section", { class: "card" }, h("h2", null, "Privacy"), h("div", { class: "hublist" }, settingsRow("#/me/privacy", "What stays on your device", null, "privacy"))));
+  // Display: S R G m as they will look, kept up to date as the settings change (W80).
+  const previewNotes = h("div", { class: "notepreview", "aria-live": "polite" });
+  const drawPreview = () => previewNotes.replaceChildren(...[0, 2, 4, 5].map(n => h("span", { class: "notepreview-note" }, noteLabel(n))));
+  drawPreview();
+  const offPreview = onSettings(drawPreview);
+  page.append(h("section", { class: "card" }, h("h2", null, "Preview"), h("p", { class: "small muted" }, "S R G m as it will look"), previewNotes));
   const cards = [...page.querySelectorAll(":scope > section.card")].concat(access);
   const byTitle = new Map(cards.map(c => [(c.querySelector("h2") || {}).textContent, c]));
   const hero = page.querySelector(":scope > .hero");
-  const groups = fluteView ? FLUTE_GROUPS : SETTINGS_GROUPS;
+  const groups = SETTINGS_GROUPS;
+  const toolView = ctx.view === "flutetool" ? FLUTE_TOOLS[(ctx.params || [])[0]] : null;
   // Which group to open: the address (#/me/settings/data), or an old link's anchor (#/settings#countdown,
   // #/settings#g-data) that names a group or a card inside one.
-  let open = fluteView ? null : groups.find(g => g.slug === (ctx.params || [])[0]) || null;
+  let open = fluteView || toolView ? null : groups.find(g => g.slug === (ctx.params || [])[0]) || null;
   const anchor = ctx.anchor || "";
-  if (!fluteView && !open && anchor) open = groups.find(g => g.id === anchor || g.titles.some(t => byTitle.has(t) && byTitle.get(t).id === anchor)) || null;
+  if (!fluteView && !toolView && !open && anchor) open = groups.find(g => g.id === anchor || g.titles.some(t => byTitle.has(t) && byTitle.get(t).id === anchor)) || null;
   if (fluteView) {
-    // Me > Flute: Sa and tuning, then the checks, on one page.
+    // Me > Flute (W78): Sa and tuning, then the checks as rows, each opening its own screen.
     hero.replaceChildren(h("span", { class: "eyebrow" }, "Me"), h("h1", null, "Your flute"),
       h("p", { class: "muted" }, "Every pitch and check in the app follows your flute's Sa. Set it here, and check the flute and the microphone."));
-    page.replaceChildren(hero);
-    for (const g of groups) {
-      page.append(h("h2", { class: "grouphead", id: g.id }, g.label));
-      for (const t of g.titles) if (byTitle.has(t)) page.append(byTitle.get(t));
-    }
+    page.replaceChildren(hero, h("h2", { class: "grouphead", id: "g-flute" }, "Sa and tuning"));
+    if (byTitle.has("Your flute")) page.append(byTitle.get("Your flute"));
+    page.append(h("h2", { class: "grouphead", id: "g-checks" }, "Checks"),
+      h("section", { class: "card" }, h("div", { class: "hublist flutechecks" }, FLUTE_CHECKS.map(([href, title, sub, key]) => settingsRow(href, title, [sub], key)))));
+  } else if (toolView) {
+    // A flute check on its own screen: back to Flute, its name, the check.
+    const card = byTitle.get(toolView);
+    const head = card && card.querySelector("h2");
+    if (head) head.classList.add("sr-only");
+    page.replaceChildren(...[backHead("#/me/flute", "Flute", toolView), card].filter(Boolean));
   } else if (open) {
     // One group of preferences (redesign W80): back to Settings, the group's name, its cards.
     page.replaceChildren(h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/me/settings" }, "Settings"), " / ", h("span", null, open.label)),
@@ -512,5 +509,5 @@ export async function render(main, ctx = {}) {
       groups.map(g => settingsRow("#/me/settings/" + g.slug, g.label, g.summary(), g.slug)))));
   }
   main.append(page);
-  return () => { if (calib) calib.destroy(); if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
+  return () => { offPreview(); if (calib) calib.destroy(); if (finder) finder.destroy(); if (micCheck) micCheck.stop(); if (placer) placer.destroy(); };
 }

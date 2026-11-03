@@ -11,6 +11,9 @@ import { segNav } from "../segnav.js";
 import { reviewCard } from "./feedback.js";
 import { studentsBody } from "./students.js";
 import { encodePayload, sharePayload } from "./progress.js";
+import { saveRecording, newId } from "../recorder.js";
+import { getState } from "../state.js";
+import { backHead } from "../backhead.js";
 
 const WHAT = ["Tone check (a held note)", "A song", "A raga (alap, phrases or a composition)", "An exercise or alankar", "Something else"];
 
@@ -72,9 +75,10 @@ function shareView(page) {
   return undefined;
 }
 
-export async function render(main, { params }) {
+export async function render(main, { params, view: screen }) {
   const page = h("div", { class: "page reviewpage" });
   main.append(page);
+  if (screen === "rates") return ratesView(page);
   const p = params && params[0];
   // #/review/<data>: a teacher opening a student's request.
   if (p && !VIEWS.some(v => v[0] === p)) return teacherSide(page, p);
@@ -95,13 +99,30 @@ export async function render(main, { params }) {
   const fileIn = h("input", { type: "file", accept: "audio/*,video/*", class: "sr-only", id: "rv-file", "aria-label": "Recording" });
   const fileLabel = h("span", { class: "small muted" }, file ? "Recording: " + file.name : "No recording chosen yet.");
   fileIn.addEventListener("change", () => { if (fileIn.files[0]) { file = fileIn.files[0]; fileLabel.textContent = "Recording: " + file.name; } });
-  const send = h("button", { type: "button", class: "btn primary", onclick: async () => {
+  // Make the review link (W74), then Copy it or Share it (with the recording, through the share sheet).
+  let made = null;
+  const out = h("div", { class: "stack rvlinkout", hidden: true });
+  const make = h("button", { type: "button", class: "btn primary big", onclick: async () => {
     const req = { v: 1, kind: "review", id: "rq" + Date.now().toString(36), date: today(), name: nameIn.value.trim().slice(0, 40), what: whatSel.value + (titleIn.value.trim() ? ": " + titleIn.value.trim() : ""), question: qIn.value.trim().slice(0, 600), measures: hand && hand.measures ? hand.measures : null };
     const link = linkTo("review", await encodeLink(req));
-    addRequest({ id: req.id, date: req.date, what: req.what, measures: req.measures });
-    const how = await shareOrCopy("Please review my bansuri: " + req.what + (file ? " (recording attached)" : ""), link, file);
-    toast(how === "shared" ? "Sent. Your teacher opens the link, listens and fills in the review." : how === "copied" ? "The link is copied" + (file ? " and the recording downloaded: send both to your teacher." : ": send it to your teacher with the recording.") : "Not sent.");
-  } }, icon("share"), " Send to my teacher");
+    // The recording is kept in the Journal, so the review can be heard next to it when it comes back.
+    const rec = file ? await keepForReview(file, req) : null;
+    addRequest(Object.assign({ id: req.id, date: req.date, what: req.what, measures: req.measures }, rec ? { rec } : {}));
+    made = { text: "Please review my bansuri: " + req.what + (file ? " (recording attached)" : ""), link };
+    const box = h("input", { class: "input", readonly: true, value: link, "aria-label": "Review link", onfocus: e => e.target.select() });
+    const copy = h("button", { type: "button", class: "btn" }, "Copy");
+    copy.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(made.text + "\n" + made.link); toast(file ? "The link is copied: send it to your teacher with the recording." : "The link is copied: send it to your teacher."); }
+      catch (e) { box.select(); toast("Select the link and copy it."); }
+    });
+    const share = h("button", { type: "button", class: "btn" }, icon("share"), " ", h("span", null, "Share"));
+    share.addEventListener("click", async () => {
+      const how = await shareOrCopy(made.text, made.link, file);
+      toast(how === "shared" ? "Sent. Your teacher opens the link, listens and fills in the review." : how === "copied" ? "The link is copied" + (file ? " and the recording downloaded: send both to your teacher." : ": send it to your teacher with the recording.") : "Not sent.");
+    });
+    out.replaceChildren(box, h("div", { class: "row" }, copy, share));
+    out.hidden = false;
+  } }, "Make the review link");
   page.append(
     h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Teacher review"), h("h1", null, "Ask your teacher to review"),
       h("p", { class: "muted" }, "Send a recording and a question. Your teacher opens the link on any phone or computer, listens, and rates you on the same seven points every time; the reply link brings the review and a practice task back into the app. Nothing goes through a server.")),
@@ -110,9 +131,34 @@ export async function render(main, { params }) {
       h("div", { class: "row" }, h("label", { class: "btn", for: "rv-file" }, icon("mic"), " Choose the recording"), fileIn, fileLabel),
       hand && hand.measures ? h("p", { class: "small muted" }, "The Tone check's measurements go with the request.") : null,
       h("p", { class: "small muted" }, "Record yourself in the Journal (video shows posture too), or use a recording from Tone check."),
-      send),
-    h("section", { class: "card" }, h("h2", null, "What your teacher rates"),
-      h("ul", null, RUBRIC.map(r => h("li", null, h("b", null, r.name), ": from \"" + r.levels[0] + "\" (1) to \"" + r.levels[4] + "\" (5)")))));
+      h("div", { class: "hublist" }, h("a", { class: "hubrow", href: "#/me/teacher/rates" }, h("span", { class: "stack" }, h("b", null, "What your teacher rates"),
+        h("span", { class: "small muted" }, "The same seven points every time")), h("span", { class: "chev", "aria-hidden": "true" }, ">"))),
+      make, out));
+  return undefined;
+}
+
+// The recording sent for review, kept in the Journal and marked with the request (W75: Listen).
+async function keepForReview(file, req) {
+  try {
+    const url = URL.createObjectURL(file);
+    const durationS = await new Promise(resolve => {
+      const m = document.createElement(/^video/.test(file.type) ? "video" : "audio");
+      const done = v => { clearTimeout(t); URL.revokeObjectURL(url); resolve(Number.isFinite(v) ? v : 0); };
+      const t = setTimeout(() => done(0), 3000);
+      m.preload = "metadata"; m.onloadedmetadata = () => done(m.duration); m.onerror = () => done(0); m.src = url;
+    });
+    const rec = { id: newId(), created: new Date().toISOString(), date: today(), day: getState().current, label: "For review: " + req.what, mime: file.type || "audio/webm",
+      blob: file, durationS, kind: /^video/.test(file.type) ? "video" : "audio", review: req.id };
+    await saveRecording(rec, { count: false });
+    return rec.id;
+  } catch (e) { return null; }
+}
+
+// What your teacher rates (W74): the seven points, each from 1 to 5.
+function ratesView(page) {
+  page.append(backHead("#/me/teacher", "Teacher", "What your teacher rates"),
+    h("p", { class: "muted" }, "The same seven points every time, each from 1 to 5, so one review can be compared with the next."),
+    h("section", { class: "card" }, h("ul", { class: "rvrates" }, RUBRIC.map(r => h("li", null, h("b", null, r.name), ": from \"" + r.levels[0] + "\" (1) to \"" + r.levels[4] + "\" (5)")))));
   return undefined;
 }
 

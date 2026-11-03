@@ -61,6 +61,10 @@ const ROUTES = [
   // Me: level and badges, more charts, the Journal's and the Teacher's views (level 3), the settings groups, privacy.
   [/^\/me\/(level|charts)$/, "progress"], [/^\/me\/journal\/(days|recordings|capsule)$/, "journal"], [/^\/me\/teacher\/(feedback|students|share)$/, "review"], [/^\/(students)$/, "review"],
   [/^\/me\/settings\/(voice|display|practice|data|help)$/, "settings"], [/^\/me\/privacy$/, "privacy"],
+  // Me, screens of their own: Record, Check my flute (one note per screen), the microphone check and
+  // calibration, Move to another phone, what your teacher rates.
+  [/^\/me\/journal\/record$/, "record"], [/^\/me\/flute\/check(?:\/(\d+))?$/, "flutecheck"], [/^\/me\/flute\/(mic|calibrate)$/, "flutetool"],
+  [/^\/me\/settings\/move$/, "moveout"], [/^\/me\/teacher\/rates$/, "rates"],
   [/^\/bench\/([a-z]+)$/, "bench"],
   [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/today\/quick$/, "quick"],[/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
   [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
@@ -109,6 +113,10 @@ function placeOf(view, params, path) {
     case "review": case "feedback": case "students": case "share": return ["me", "teacher"];
     case "flute": return ["me", "flute"];
     case "settings": case "move": case "privacy": return ["me", "settings"];
+    case "record": return ["me", "journal"];
+    case "flutecheck": case "flutetool": return ["me", "flute"];
+    case "moveout": return ["me", "settings"];
+    case "rates": return ["me", "teacher"];
     default: return ["today", null];
   }
 }
@@ -121,6 +129,8 @@ const MODULE = { challenge: "play", flute: "settings" };
 Object.assign(MODULE, { song: "songs", raga: "ragas" });
 // Screens inside a section (a tool, a song, a raga) have a back link instead of the section tabs.
 const INNER = new Set(["skilltool", "song", "raga"]);
+Object.assign(MODULE, { record: "journal", flutetool: "settings", moveout: "move", rates: "review" });
+["record", "flutecheck", "flutetool", "moveout", "rates"].forEach(v => INNER.add(v));
 // Each place remembers its last section, so coming back lands where you were.
 const LAST = "bansuri.nav.last";
 // Kept in memory for this visit, and saved when storage allows (it can be full or blocked).

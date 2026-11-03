@@ -50,17 +50,12 @@ async function landmarker() {
   return loading;
 }
 
-// The widget: camera preview (mirrored), the detected shoulders and arms drawn on top, and a live
-// checklist. Returns { el, destroy }.
-export function postureCheck() {
-  let stream = null, raf = 0, stopped = false, history = [];
-  const video = h("video", { class: "selfview mirror", playsinline: true, muted: true, autoplay: true });
-  const canvas = h("canvas", { class: "pose-overlay mirror", "aria-hidden": "true" });
-  const list = h("ul", { class: "pose-list", "aria-live": "polite" });
-  const msg = h("p", { class: "small muted" }, "Sit or stand facing the camera, about two metres away, so your head, shoulders and arms are in view. Hold the flute as if playing.");
-  const btn = h("button", { type: "button", class: "btn primary" }, "Start the posture check");
-  const el = h("div", { class: "stack posture" }, msg, h("div", { class: "pose-stage" }, video, canvas), list, h("div", { class: "row" }, btn));
-
+// Watches a playing <video> (the posture check's own preview, or the Record screen's camera
+// preview) and keeps a live checklist in list, with the shoulders and arms drawn on canvas.
+// Returns { ready: a promise that rejects when pose detection cannot load, stop() }.
+export function postureWatch(video, canvas, list) {
+  let raf = 0, stopped = false;
+  const history = [];
   function draw(lm) {
     const W = canvas.width = video.videoWidth || 640, H = canvas.height = video.videoHeight || 480;
     const g = canvas.getContext("2d");
@@ -84,38 +79,63 @@ export function postureCheck() {
       return h("li", { class: ok ? "pose-ok" : "pose-warn" }, last.text);
     }));
   }
+  const ready = landmarker().then(pose => {
+    if (stopped) return;
+    let last = 0;
+    const loop = now => {
+      if (stopped) return;
+      if (now - last > 90 && video.readyState >= 2) {
+        last = now;
+        try {
+          const res = pose.detectForVideo(video, now);
+          const lm = res.landmarks && res.landmarks[0];
+          draw(lm); show(lm ? postureChecks(lm) : []);
+        } catch (e) { /* skip a frame */ }
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+  });
+  return {
+    ready,
+    stop() {
+      stopped = true; cancelAnimationFrame(raf);
+      try { canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height); } catch (e) { /* nothing drawn */ }
+    },
+  };
+}
+
+// The widget: camera preview (mirrored), the detected shoulders and arms drawn on top, and a live
+// checklist. Returns { el, destroy }.
+export function postureCheck() {
+  let stream = null, stopped = false, watch = null;
+  const video = h("video", { class: "selfview mirror", playsinline: true, muted: true, autoplay: true });
+  const canvas = h("canvas", { class: "pose-overlay mirror", "aria-hidden": "true" });
+  const list = h("ul", { class: "pose-list", "aria-live": "polite" });
+  const msg = h("p", { class: "small muted" }, "Sit or stand facing the camera, about two metres away, so your head, shoulders and arms are in view. Hold the flute as if playing.");
+  const btn = h("button", { type: "button", class: "btn primary" }, "Start the posture check");
+  const el = h("div", { class: "stack posture" }, msg, h("div", { class: "pose-stage" }, video, canvas), list, h("div", { class: "row" }, btn));
+  const failed = e => {
+    btn.disabled = false;
+    msg.textContent = /Permission|NotAllowed/i.test(String(e && e.name) + String(e && e.message)) ? "The camera is blocked. Allow it in the browser's site settings, then try again." : "Pose detection could not start on this device (" + (e && e.message ? e.message : "unknown error") + "). The video self-check still works.";
+  };
   async function start() {
     btn.disabled = true; msg.textContent = "Loading pose detection (about 19 MB the first time)...";
     try {
-      const [pose, s] = await Promise.all([landmarker(), navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 640, height: 480 }, audio: false })]);
+      const [, s] = await Promise.all([landmarker(), navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 640, height: 480 }, audio: false })]);
       if (stopped) { s.getTracks().forEach(t => t.stop()); return; }
       stream = s; video.srcObject = s; await video.play().catch(() => {});
       // Time to pick up the flute and get into position, watching the preview.
       msg.textContent = "Get into position: hold the flute as if playing.";
-      if (!(await countdown(el, { label: "Get ready: hold your flute as if playing" })) || stopped) { stop(); return; }
+      if (!(await countdown(el, { label: "Get ready: hold your flute as if playing" })) || stopped || !stream) { stop(); return; }
       msg.textContent = "Checking. Hold the flute as if playing. This sees posture and arms only; check the embouchure with a recording and a mirror.";
       btn.textContent = "Stop"; btn.disabled = false;
-      let last = 0;
-      const loop = now => {
-        if (stopped || !stream) return;
-        if (now - last > 90 && video.readyState >= 2) {
-          last = now;
-          try {
-            const res = pose.detectForVideo(video, now);
-            const lm = res.landmarks && res.landmarks[0];
-            draw(lm); show(lm ? postureChecks(lm) : []);
-          } catch (e) { /* skip a frame */ }
-        }
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    } catch (e) {
-      btn.disabled = false;
-      msg.textContent = /Permission|NotAllowed/i.test(String(e && e.name) + String(e && e.message)) ? "The camera is blocked. Allow it in the browser's site settings, then try again." : "Pose detection could not start on this device (" + (e && e.message ? e.message : "unknown error") + "). The video self-check still works.";
-    }
+      watch = postureWatch(video, canvas, list);
+      watch.ready.catch(failed);
+    } catch (e) { failed(e); }
   }
   function stop() {
-    cancelAnimationFrame(raf);
+    if (watch) { watch.stop(); watch = null; }
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
     video.srcObject = null; btn.textContent = "Start the posture check"; btn.disabled = false;
   }

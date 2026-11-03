@@ -23,7 +23,7 @@ import { oneDay } from "../lessons/oneday.js";
 import { practiceLesson, plainBlock } from "../lessons/practice.js";
 import { dayHref } from "../lessons/days.js";
 import { lessonRecord, flatSteps } from "../lesson/player.js";
-import { adaptiveCard, fixToday, messageToast, mondayCard, progressCard, realBansuriCard, reviewsCard, teacherTaskCard, unitStrip } from "./today-cards.js";
+import { adaptiveCard, fixToday, messageToast, mondayCard, progressCard, realBansuriCard, reviewsCard, teacherTaskCard, unitStrip, welcomeBackCard } from "./today-cards.js";
 
 // How the learner likes to learn, in pictures, so it works without reading English. Each choice can
 // be changed later in Settings. then(): after a choice that does not reload the app.
@@ -94,19 +94,25 @@ function lessonDue(n) {
   return r && r.done ? null : l;
 }
 
-// Simple mode: three big choices and today's quests, no reading needed.
+// Simple mode (W11): the other language one tap away, big choices (Start practice names the day),
+// today's quests, and the way out of Simple mode. No reading needed.
 function simpleToday(page, cur, day) {
-  const big = (href, ic, label, ref, cls) => h("a", { class: "simpletile " + (cls || ""), href, onclick: () => speak(ref) }, icon(ic), h("b", null, label));
+  const big = (href, ic, label, ref, cls, sub) => h("a", { class: "simpletile " + (cls || ""), href, onclick: () => speak(ref) }, icon(ic), h("span", { class: "stack" }, h("b", null, label), sub ? h("span", { class: "small" }, sub) : null));
+  // The language button is written in the language it switches to, so it can be found without reading.
+  const hi = getSettings().lang === "hi";
+  const langBtn = h("button", { type: "button", class: "btn simplelang", translate: "no", lang: hi ? "en" : "hi", onclick: () => setSettings(hi ? { lang: "en" } : { lang: "hi", deva: true }) }, hi ? "English" : "हिन्दी");
   page.append(
-    h("section", { class: "hero simplehero" }, h("span", { class: "eyebrow" }, "Day " + cur), h("h1", null, day && day.title ? day.title : "Today"), sayButton(["welcome"], "Listen")),
+    h("div", { class: "row between simpletop" }, sayButton(["welcome"], "Listen"), langBtn),
     h("div", { class: "simpletiles" },
-      big(lessonDue(cur) ? "#/lesson/" + lessonDue(cur).id : day && day.kind === "milestone" ? "#/milestone/" + day.milestone : practiceLesson("p" + cur) ? "#/lesson/p" + cur : "#/session/" + cur, "play", "Start practice", "session_start", "primary"),
+      big(lessonDue(cur) ? "#/lesson/" + lessonDue(cur).id : day && day.kind === "milestone" ? "#/milestone/" + day.milestone : practiceLesson("p" + cur) ? "#/lesson/p" + cur : "#/session/" + cur, "play", "Start practice", "session_start", "primary", "Day " + cur),
       big("#/play", "star", "Play a game", "steer_intro"),
       big("#/listen", "listen", "Listen", "listen_intro"),
       big("#/quick", "today", "5 minutes", "quick_intro")));
-  page.append(h("a", { class: "card levelcard", href: "#/progress#level" }, levelBar()));
   const qs = questState();
-  page.append(h("section", { class: "card" }, h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "✓" : ""), h("span", null, q.text))))));
+  page.append(h("section", { class: "card simplequests" }, h("h2", { class: "eyebrow" }, "Today's quests"),
+    h("ul", { class: "questlist" }, qs.list.map(q => h("li", { class: q.done ? "done" : "" }, h("span", { class: "qmark", "aria-hidden": "true" }, q.done ? "✓" : ""), h("span", null, q.text))))));
+  page.append(h("a", { class: "card levelcard", href: "#/progress#level" }, levelBar()));
+  page.append(h("div", { class: "row simpleleave" }, h("button", { type: "button", class: "btn", onclick: () => setSettings({ simple: false }) }, "Leave Simple mode")));
 }
 
 const KIND_LABEL = { setup: "Setup day", review: "Review day", milestone: "Milestone", practice: "Practice day" };
@@ -255,6 +261,9 @@ function questGameLink() {
 function todayHome(page, { n, day, ds, action, cleanups }) {
   const d = doneDay(n);
   page.append(d === null ? beforeCard(n, day, ds, action) : doneCard(d, n, cleanups));
+  // Back after a gap (W17): the welcome is the main card, in place of the day's card.
+  const back = d === null ? welcomeBackCard(n) : null;
+  if (back) page.lastElementChild.replaceWith(back);
   const mainCol = h("div", { class: "todaymain" }), side = h("aside", { class: "todayside", "aria-label": "Your progress and extras" });
   page.append(h("div", { class: "todaygrid" }, mainCol, side));
   const unit = unitStrip(n);
@@ -266,7 +275,7 @@ function todayHome(page, { n, day, ds, action, cleanups }) {
   const cards = [];
   for (const make of picks) { if (cards.length >= 2) break; const c = make(); if (c) cards.push(c); }
   cards.forEach(c => { if (/notice/.test(c.className)) c.classList.add("notice-one"); mainCol.append(c); });
-  if (d === null) mainCol.append(h("p", { class: "row between quickline" }, h("span", { class: "muted" }, "Short on time?"), h("a", { class: "btn", href: "#/today/quick" }, "5 minutes")));
+  if (d === null && !back) mainCol.append(h("p", { class: "row between quickline" }, h("span", { class: "muted" }, "Short on time?"), h("a", { class: "btn", href: "#/today/quick" }, "5 minutes")));
   side.append(progressCard());
   if (n <= 7) side.append(realBansuriCard());
   messageToast(cleanups);

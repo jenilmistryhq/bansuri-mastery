@@ -1481,3 +1481,51 @@ button.hubrow:first-child { border-top: 0; }
 .firstchoice > .btn { justify-content: center; }
 .firstchoice[hidden] { display: none; }
 .firstplay { border-left: 4px solid var(--accent); }
+
+/* Redesign 2: me and today */
+/* W70 Journal Days: this week's total, and each day's recordings playable from the day. */
+.weektotal { margin: 0 0 4px; }
+.tlist .tdayrecs { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin-left: -1.2em; }
+.tdayrec .icon { width: 16px; height: 16px; }
+.tdayrecs audio { width: 100%; max-width: 360px; }
+/* W71, W72 Record: its own screen, a two-way switch, the posture check over the camera preview. */
+.recordnow { margin: 4px 0 8px; }
+.recswitch { margin: 4px 0 2px; }
+.recstage { min-height: 120px; border-radius: 10px; background: var(--sunken); overflow: hidden; }
+.recstage > .selfview { max-width: none; border-radius: 0; }
+.recstage-wait { margin: 0; padding: 40px 16px; text-align: center; color: var(--muted); }
+.recstage-wait[hidden] { display: none; }
+.recposture { position: absolute; left: 8px; bottom: 8px; max-width: calc(100% - 16px); padding: 8px; border-radius: 8px; background: rgba(13, 17, 15, 0.72); color: #f6f3ea; display: grid; gap: 6px; }
+.recposture[hidden] { display: none; }
+.recposture .pose-list li { background: rgba(255, 255, 255, 0.1); color: inherit; padding: 4px 8px; font-size: 0.9rem; }
+/* W73 Time capsule: the longest steady note under each recording. */
+.capsulesteady { margin: 0; font-size: 1.05rem; }
+.capsulesteady .mono { font-size: 1.3rem; }
+/* W74, W75 Teacher: the link, then Copy and Share; Listen to the recording on a review. */
+.rvlinkout[hidden] { display: none; }
+.rvlisten { margin-top: 8px; justify-self: start; }
+.rvrates { display: grid; gap: 8px; margin: 0; padding-left: 1.2em; }
+/* W78 Check my flute: one note per screen, in the player. */
+.fc-step { justify-items: center; text-align: center; }
+.fc-note { font-family: var(--mono); font-size: clamp(3rem, 16vw, 4.5rem); font-weight: 700; line-height: 1.1; }
+.fc-tune { width: min(100%, 320px); }
+.fc-secs { font-size: 1.2rem; }
+.fc-msg { margin: 0; min-height: 1.5em; }
+.fc-result { display: grid; gap: 4px; justify-items: center; }
+.fc-result[hidden] { display: none; }
+.fc-table td, .fc-table th { padding: 6px 8px; text-align: left; }
+/* W80 Display preview: S R G m as it will look. */
+.notepreview { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; font-family: var(--mono); font-size: 1.4rem; font-weight: 700; }
+.notepreview-note { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
+/* W81, W82 Your data, Move to another phone. */
+.startover { border-top: 1px dashed var(--line); }
+.movepreview { display: grid; gap: 8px; justify-items: start; padding: 12px; border: 1px dashed var(--line); border-radius: var(--radius); background: var(--sunken); }
+.movepreview .btn { pointer-events: none; }
+/* W11 Simple mode home: the language button, today's quests, the way out. */
+.simpletop { align-items: center; }
+.simplelang { font-size: 1.05rem; }
+.simpletile .stack { justify-items: center; gap: 2px; }
+.simplequests .eyebrow { margin: 0 0 6px; }
+.simpleleave { justify-content: center; }
+/* W17 Back after a gap: the main card. */
+.welcomeback .resume-body p { margin: 0; }
