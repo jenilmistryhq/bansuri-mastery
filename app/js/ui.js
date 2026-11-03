@@ -1,6 +1,7 @@
 // Small pieces of the app's visual language: a progress ring, this week's practice strip and a
 // badge emblem. Plain SVG and DOM, sized by CSS.
 import { h, today, addDays, parseDate } from "./util.js";
+import { hasDict } from "./core/i18n.js";
 
 const NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs) { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, String(v)); return e; }
@@ -22,7 +23,8 @@ export function ring(pct, label, opts) {
 // Monday to Sunday of this week: a dot per day, filled when practised, today outlined.
 export function weekStrip(practised) {
   const t = today(), d0 = parseDate(t), monday = addDays(t, -((d0.getDay() + 6) % 7));
-  const names = ["M", "T", "W", "T", "F", "S", "S"];
+  // In Hindi the days' short Hindi names (सो मं बु ...): one Latin letter is no dictionary key.
+  const names = hasDict() ? [0, 1, 2, 3, 4, 5, 6].map(i => new Intl.DateTimeFormat("hi", { weekday: "narrow" }).format(parseDate(addDays(monday, i)))) : ["M", "T", "W", "T", "F", "S", "S"];
   return h("div", { class: "weekstrip", role: "list", "aria-label": "This week" }, names.map((n, i) => {
     const d = addDays(monday, i), on = practised.has(d);
     return h("span", { role: "listitem", class: "wkday" + (on ? " on" : "") + (d === t ? " today" : "") + (d > t ? " future" : ""), title: d + (on ? ": practised" : "") }, h("i", { "aria-hidden": "true" }), h("span", null, n));
