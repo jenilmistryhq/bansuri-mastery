@@ -33,6 +33,10 @@ const go = async route => { await page.goto(BASE + "#" + route); await page.wait
 try {
   console.log("WebKit (Safari engine), iPhone 13");
   await go("/today");
+  // First run asks the language first, one choice per screen; then (answers remembered) Day 0.
+  check(await page.locator("#main .firstchoice button").count() === 2, "first run: the language choice renders");
+  await page.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 0, prefs: { langChosen: true, howChosen: true, playAsked: true } })));
+  await page.reload(); await page.waitForLoadState("networkidle"); await sleep(500);
   check(await page.locator("#main .firstrun .btn.primary").count() === 1, "first run: the welcome and Start Day 0 render");
   await page.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 12, startedAt: "2026-10-01", prefs: { howChosen: true } })));
   await page.reload(); await page.waitForLoadState("networkidle"); await sleep(500);

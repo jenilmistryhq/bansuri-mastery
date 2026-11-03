@@ -1,7 +1,7 @@
 // Today's cards: the dashboard (profile strip, Resume, quick actions), weak spots, last week, the
 // install offer, and the side cards (reviews, help, song of the week, last time, backup, a real bansuri).
-import { h, fmtDate, fmtMinutes } from "../util.js";
-import { getState, update } from "../state.js";
+import { h, fmtDate, fmtMinutes, store, storeSet } from "../util.js";
+import { getState } from "../state.js";
 import { daysBetween, addDays } from "../util.js";
 import { listRecordings } from "../recorder.js";
 import { getDay, current, milestoneState, dueReviews, upcomingReviews, markReview, streaks, totals, practiceDates, lastIndex, getPlan } from "../course.js";
@@ -14,10 +14,12 @@ import { currentTask, markTaskDone } from "../review.js";
 import { codeOf } from "../core/theory.js";
 import { getSettings } from "../core/settings.js";
 import { icon } from "../util.js";
-import { stepMeta } from "../steps.js";
-import { ring, weekStrip } from "../ui.js";
+import { weekStrip } from "../ui.js";
 import { saveBackup } from "../backup.js";
 import { levelOf, xpState } from "../xp.js";
+import { NEWS } from "../news.js";
+import { lessonForDay } from "../lessons/index.js";
+import { practiceLesson } from "../lessons/practice.js";
 
 // Who you are in the course at a glance: level and XP, the streak, and this week's practice days.
 export function profileStrip() {
@@ -95,44 +97,102 @@ export function weekSummary() {
     best ? h("p", { class: "small muted" }, "Longest steady " + (best.k === "any" ? "note" : codeOf(Number(best.k))) + ": " + best.s.toFixed(1) + " s") : null);
 }
 
-// After a few days: install the app (a home-screen icon, full screen, reminders). On iPhone the
-// browser has no install button, so the steps are shown instead.
-// On iPhone, Safari deletes a website's saved data after about 7 days without a visit, unless the
-// app is on the home screen. So there the offer comes from Day 1, says why, and comes back weekly.
-export const iosBrowser = () => typeof navigator !== "undefined" && /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) && !navigator.standalone;
-
-export function installCard() {
-  const s = getState();
-  if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return null;
-  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent), evt = window.__installEvent;
-  if (current() < (ios ? 1 : 3) || (s.prefs.installDismissed && !(ios && daysBetween(s.prefs.installDismissed === true ? today() : s.prefs.installDismissed, today()) >= 7))) return null;
-  if (!ios && !evt) return null;
-  const card = h("section", { class: "card installcard" },
-    h("div", { class: "row between" }, h("h2", null, "Put the app on your home screen"),
-      h("button", { type: "button", class: "btn ghost small", "aria-label": "Not now", onclick: () => { update(st => { st.prefs.installDismissed = today(); }); card.remove(); } }, "Not now")),
-    ios ? h("p", { class: "small" }, h("b", null, "Keeps your progress safe: "), "on iPhone, Safari deletes a website's saved data when it is not opened for about a week. On the home screen, the app keeps it.")
-      : h("p", { class: "small muted" }, "One tap to practise, full screen, works offline, and daily reminders can reach you."),
-    ios ? h("p", { class: "small" }, "In Safari, tap the Share button, then \"Add to Home Screen\".")
-      : h("button", { type: "button", class: "btn primary", onclick: async () => { evt.prompt(); const r = await evt.userChoice.catch(() => null); if (r && r.outcome === "accepted") card.remove(); } }, "Install the app"));
-  return card;
+// Last week's summary is one of Today's cards on Mondays (redesign 05 L1).
+export function mondayCard() {
+  return (parseDateLocal(today()).getDay() === 1) ? weekSummary() : null;
 }
+
+// On iPhone, Safari deletes a website's saved data after about 7 days without a visit, unless the
+// app is on the home screen (the backup reminder comes more often there).
+export const iosBrowser = () => typeof navigator !== "undefined" && /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) && !navigator.standalone;
 const parseDateLocal = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
 
-// "Resume": the day, how far into it you are, the next step, and one button that goes straight there.
-export function resumeCard(n, day, ds, phase, action) {
-  const done = Object.values(ds.blocks || {}).filter(Boolean).length, total = day.blocks.length;
-  const next = day.blocks.find(b => !(ds.blocks || {})[b.id]);
-  const pct = total ? done / total * 100 : 0;
-  const st = streaks();
-  return h("section", { class: "resume" },
-    ring(pct, done + "/" + total, { size: 76, stroke: 8, cls: "resume-ring" }),
-    h("div", { class: "resume-body" },
-      h("span", { class: "row resume-top" }, h("span", { class: "small muted" }, "Today"),
-        h("a", { class: "streakchip" + (st.current ? " lit" : ""), href: "#/progress", title: "Practice streak" }, icon("flame"), h("b", null, String(st.current)), h("span", { class: "small" }, st.current === 1 ? " day" : " days"))),
-      h("h1", { class: "title" }, "Day " + n + ": " + (day.title || "")),
-      h("span", { class: "small muted" }, (done ? "Next: " : "First: ") + (next ? (next.label || stepMeta(next).name) + (next.minutes ? ", " + next.minutes + " min" : "") : "all steps done") + " - about " + (day.minutes || 0) + " min in all"),
-      action),
-    journey(n, phase));
+// Where day n is played: its interactive lesson, its open milestone test, its practice or review
+// day as a lesson, or else its session page.
+export function dayHref(n) {
+  const l = lessonForDay(n), day = getDay(n);
+  if (l) return "#/lesson/" + l.id;
+  if (day && day.kind === "milestone" && day.milestone && milestoneState(day.milestone).status !== "passed") return "#/milestone/" + day.milestone;
+  return practiceLesson("p" + n) ? "#/lesson/p" + n : "#/session/" + n;
+}
+
+// The current unit (redesign 05 L1): the days from the last milestone to the next one still open,
+// as a short strip around today (the days just done, today, the next few) ending at the milestone.
+export function unitStrip(n) {
+  const plan = getPlan(), ms = plan.milestones.find(m => m.day >= n && milestoneState(m.id).status !== "passed");
+  if (!ms) return null;
+  const prev = plan.milestones.filter(m => m.day < Math.min(n, ms.day)).pop();
+  const first = prev ? prev.day + 1 : 0, from = Math.max(first, n - 4), to = Math.min(ms.day - 1, n + 3), left = ms.day - n;
+  const dots = [];
+  if (from > first) dots.push(h("i", { class: "unit-more" }));
+  for (let d = from; d <= to; d++) dots.push(h("i", { class: d < n ? "done" : d === n ? "now" : "" }));
+  if (to < ms.day - 1) dots.push(h("i", { class: "unit-more" }));
+  dots.push(h("b", { class: "unit-ms" + (left === 0 ? " now" : "") }, ms.id));
+  return h("section", { class: "card unitstrip" },
+    h("div", { class: "stack tight" }, h("span", { class: "eyebrow" }, "This unit"), h("b", null, ms.title)),
+    h("div", { class: "unit-dots", role: "img", "aria-label": "Day " + (n - first + 1) + " of " + (ms.day - first + 1) + " in this unit" }, dots),
+    h("a", { class: "unit-link", href: "#/milestone/" + ms.id }, h("span", null, left === 0 ? "The milestone is today" : left + (left === 1 ? " day" : " days") + " to the milestone"), h("span", { class: "chev", "aria-hidden": "true" }, ">")));
+}
+
+// Messages that are not about today's practice (news, the backup reminder, the install offer) are
+// toasts, each shown once and remembered (redesign 05 L1); one at most per visit to Today.
+function toastCard(title, body, actions, closeLabel, cleanups) {
+  const host = h("div", { class: "toasts msgtoasts", role: "status" });
+  const close = () => { el.classList.add("leaving"); setTimeout(() => host.remove(), 180); };
+  const el = h("div", { class: "msgtoast" }, h("b", null, title), body, h("div", { class: "row" }, ...actions(close), h("button", { type: "button", class: "btn ghost small", onclick: close }, closeLabel)));
+  host.append(el);
+  document.body.append(host);
+  cleanups.push(() => host.remove());
+  return host;
+}
+
+// Install the app (a home-screen icon, full screen, reminders): offered once, after Day 0's reward.
+// On iPhone the browser has no install button, so the steps are shown instead.
+// What was shown is remembered in a key of its own, so showing a toast never rewrites the progress
+// (older answers in prefs still count).
+const SEEN = "bansuri.toasts";
+const seen = () => Object.assign({}, getState().prefs, store(SEEN, {}));
+const remember = (k, v) => storeSet(SEEN, Object.assign(store(SEEN, {}), { [k]: v }));
+
+function installToast(cleanups) {
+  const s = getState(), ios = /iPhone|iPad|iPod/.test(navigator.userAgent), evt = window.__installEvent;
+  if ((window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone) return null;
+  if (seen().installOffered || s.prefs.installDismissed || !(s.days[0] && s.days[0].done) || (!ios && !evt)) return null;
+  remember("installOffered", today());
+  return toastCard("Put the app on your home screen",
+    ios ? h("p", { class: "small" }, h("b", null, "Keeps your progress safe: "), "on iPhone, Safari deletes a website's saved data when it is not opened for about a week. On the home screen, the app keeps it.", " ", "In Safari, tap the Share button, then \"Add to Home Screen\".")
+      : h("p", { class: "small" }, "One tap to practise, full screen, works offline, and daily reminders can reach you."),
+    close => (ios ? [] : [h("button", { type: "button", class: "btn primary small", onclick: async () => { evt.prompt(); await evt.userChoice.catch(() => null); close(); } }, "Install the app")]),
+    "Not now", cleanups);
+}
+
+// What's new after an update: once. New learners do not hear about changes they never knew.
+function newsToast(cleanups) {
+  const s = getState();
+  if (seen().newsSeen === NEWS.id) return null;
+  remember("newsSeen", NEWS.id);
+  if (!s.startedAt) return null;
+  return toastCard(NEWS.title, h("ul", { class: "small" }, NEWS.items.map(t => h("li", null, t))),
+    close => [h("a", { class: "btn small", href: "#/me", onclick: close }, "See your progress")], "Got it", cleanups);
+}
+
+// Everything lives in this browser, so a backup reminder about once a week (every 3 days in Safari
+// on iPhone, where progress is at more risk): shown once, then not again for a week.
+function backupToast(cleanups) {
+  const s = getState(), t = today();
+  if (!s.startedAt || daysBetween(s.lastBackup || s.startedAt, t) < (iosBrowser() ? 3 : 7)) return null;
+  const snooze = [s.prefs.backupSnooze, store(SEEN, {}).backupSnooze].filter(Boolean).sort().pop();
+  if (snooze && snooze > t) return null;
+  remember("backupSnooze", addDays(t, 7));
+  return toastCard("Back up your progress.",
+    h("p", { class: "small" }, s.lastBackup ? "Your last backup was " + daysBetween(s.lastBackup, t) + " days ago." : "You have not made a backup yet. Your progress lives only in this browser."),
+    close => [h("button", { type: "button", class: "btn primary small", onclick: async () => { const how = await saveBackup(); if (how !== "cancelled") close(); } }, "Back up now")],
+    "Not now", cleanups);
+}
+
+// The one toast for this visit, if any: the install offer first (it comes once, after Day 0), then news, then the backup.
+export function messageToast(cleanups) {
+  return installToast(cleanups) || newsToast(cleanups) || backupToast(cleanups);
 }
 
 // Your progress in one card: level and how far to the next (in days, not XP), this week, quests.
@@ -211,10 +271,11 @@ export function adaptiveCard(cur) {
   const dates = [...new Set(log.map(e => e.date))].sort();
   const last = dates[dates.length - 1];
   const away = last ? daysBetween(last, today()) : 0;
-  if (away >= 4 && cur > 1) {
-    return h("section", { class: "card notice-card" }, h("h2", null, "Welcome back"),
+  // Back after three or more days (redesign F8): a welcome, and two equal ways on, each to the day's lesson.
+  if (away >= 3 && cur > 1) {
+    return h("section", { class: "card notice-card welcomeback" }, h("h2", null, "Welcome back"),
       h("p", null, "It has been " + away + " days. Fingers and lips forget quickly but return quickly too: start with a short review of the last day you did, then carry on."),
-      h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/session/" + (cur - 1) }, "Review Day " + (cur - 1) + " first"), h("a", { class: "btn", href: "#/session/" + cur }, "Go straight to Day " + cur)));
+      h("div", { class: "row" }, h("a", { class: "btn", href: dayHref(cur - 1) }, "Review Day " + (cur - 1) + " first"), h("a", { class: "btn", href: dayHref(cur) }, "Go straight to Day " + cur)));
   }
   if (tries >= 2) {
     const day = getDay(cur);
@@ -257,22 +318,6 @@ export function lastSessionCard() {
   if (!bits.length) return null;
   return h("section", { class: "card lastcard" }, h("div", { class: "row between" }, h("h2", null, "Last time"), h("span", { class: "small muted" }, fmtDate(day))),
     h("ul", { class: "stack", style: { margin: "0", paddingLeft: "1.2em" } }, bits), h("p", { class: "small muted" }, "Try to beat one of these today."));
-}
-
-// Everything lives in this browser, so remind the learner to export a backup about once a week.
-export function backupNudge() {
-  const s = getState();
-  if (!s.startedAt) return null;
-  const t = today();
-  const since = s.lastBackup || s.startedAt;
-  // In Safari on iPhone (not installed) progress is at more risk: remind every 3 days there.
-  if (daysBetween(since, t) < (iosBrowser() ? 3 : 7)) return null;
-  if (s.prefs.backupSnooze && s.prefs.backupSnooze > t) return null;
-  const box = h("div", { class: "notice row between" },
-    h("span", null, h("b", null, "Back up your progress. "), s.lastBackup ? "Your last backup was " + daysBetween(s.lastBackup, t) + " days ago." : "You have not made a backup yet. Your progress lives only in this browser."),
-    h("span", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: async () => { const how = await saveBackup(); if (how !== "cancelled") box.remove(); } }, "Back up now"),
-      h("button", { type: "button", class: "btn ghost", onclick: () => { update(st => { st.prefs.backupSnooze = addDays(t, 7); }); box.remove(); } }, "Remind me in a week")));
-  return box;
 }
 
 // The learner's own reference recordings for review items (set in the Journal), if any.

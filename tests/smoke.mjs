@@ -93,6 +93,10 @@ try {
     await page.goto(BASE, { waitUntil: "networkidle0" });
     await page.evaluate(() => localStorage.clear());
     await go("/today");
+    // First run asks one thing per screen (language, how you like to learn, already play?), then Day 0.
+    await clickText("#main .firstchoice button", "English"); await sleep(150);
+    await clickText("#main .howtile", "I like to read"); await sleep(150);
+    await clickText("#main .firstchoice button", "No, I am new"); await sleep(150);
     t = await text();
     check(t.includes("learn the bansuri, one day at a time") && await page.$("#main .firstrun .btn.primary.big") !== null, "first run: a short welcome with one big Start Day 0 button");
     check(t.includes("start day 0"), "Day 0 call to action");
@@ -200,6 +204,7 @@ try {
   });
   await section("Robustness", async () => {
     await page.evaluate(() => localStorage.setItem("bansuri.progress", JSON.stringify({ current: 14, log: [null, { date: 5 }], days: { "3": null }, milestones: { M1: { status: "failed" } }, reviews: { x: null }, badges: [] })));
+    await page.reload({ waitUntil: "networkidle0" });
     await go("/today");
     t = await text();
     check(t.includes("milestone"), "damaged saved progress still renders Today (Day 14)");
@@ -208,6 +213,7 @@ try {
     await new Promise(r => setTimeout(r, 400));
     check((await page.$eval("#main", el => el.innerText)).length > 0, "malformed percent-encoding in the address does not blank the app");
     await page.evaluate(() => localStorage.clear());
+    await page.reload({ waitUntil: "networkidle0" });
 
   });
   await section("Milestone checklists", async () => {
@@ -883,7 +889,7 @@ try {
       await openGame("Balloon");
       const inGame = await lp.evaluate(() => location.hash);
       await lp.goBack(); await lp.waitForSelector("#main .gamecard", { timeout: 5000 }).catch(() => {});
-      check(inGame === "#/play/balloon" && await lp.evaluate(() => /^#\/(play|skills\/games)$/.test(location.hash) && !!document.querySelector("#main .gamecard") && !document.querySelector("#main .game-card:not([hidden])")), "games: each game has its own address, and Back from a game returns to the game list (" + inGame + ")");
+      check(/^#\/(play|skills\/game)\/balloon$/.test(inGame) && await lp.evaluate(() => /^#\/(play|skills\/games)$/.test(location.hash) && !!document.querySelector("#main .gamecard") && !document.querySelector("#main .game-card:not([hidden])")), "games: each game has its own address, and Back from a game returns to the game list (" + inGame + ")");
       await openGame("Bullseye"); await gameBtn("Close"); await lp.waitForSelector("#main .gamecard", { timeout: 5000 }).catch(() => {});
       check(await lp.evaluate(() => /^#\/(play|skills\/games)$/.test(location.hash) && !document.querySelector("#main .game-card:not([hidden])")), "games: Close returns to the game list");
       await lp.goto(BASE + "#/play/bingo", { waitUntil: "networkidle0" }); await lp.waitForSelector("#main .bingo", { timeout: 5000 }).catch(() => {});
@@ -1461,7 +1467,7 @@ try {
       }
     };
     await lp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
-    await lp.evaluate(() => { localStorage.clear(); localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 })); });
+    await lp.evaluate(() => { localStorage.clear(); localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 })); localStorage.setItem("bansuri.progress", JSON.stringify({ current: 0, prefs: { langChosen: true, howChosen: true, playAsked: true } })); });
     await lp.reload({ waitUntil: "networkidle0" });
     await lp.waitForSelector("#main .firstrun a.btn");
     check(await lp.$eval("#main .firstrun a.btn", a => a.getAttribute("href")) === "#/lesson/m0", "Day 0: Start Day 0 opens the lesson");
@@ -1890,6 +1896,68 @@ try {
     const lis = await page.evaluate(() => ({ lib: !!document.querySelector("#main a[href='#/read/08-LISTENING-LIBRARY.md']"), scales: [...document.querySelectorAll("#main h2")].some(x => /Raga scales/.test(x.textContent)) }));
     check(lis.lib && !lis.scales, "listen: the listening library is a row, and raga scales moved onto each raga");
     await page.evaluate(() => { for (const k of ["bansuri.mysongs", "bansuri.coach.history", "bansuri.game.balloon.best.srg", "bansuri.songs.last"]) localStorage.removeItem(k); });
+  });
+  await section("Today: first run, before and after practice, cards and toasts", async () => {
+    // Its own browser context: a fresh learner each time, without touching the other sections.
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const tp = await ctx.newPage();
+    await collectI18n(tp);
+    tp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    tp.on("console", m => { if (m.type() === "error") errors.push("console: " + m.text()); });
+    await tp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    const T = await tp.evaluate(() => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); });
+    const ago = n => { const d = new Date(T + "T12:00:00"); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
+    const load = async (prog, lessons) => {
+      await tp.evaluate((p, l) => { localStorage.clear(); localStorage.setItem("bansuri.settings", JSON.stringify({ countdown: 0 })); if (p) localStorage.setItem("bansuri.progress", JSON.stringify(p)); if (l) localStorage.setItem("bansuri.lessons", JSON.stringify(l)); }, prog, lessons);
+      await tp.goto(BASE + "#/today", { waitUntil: "networkidle0" }); await tp.reload({ waitUntil: "networkidle0" }); await sleep(400);
+    };
+    const tText = () => tp.$eval("#main", e => e.innerText);
+    // First run (F1): one choice per screen, remembered across a reload.
+    await load(null);
+    check(await tp.$$eval("#main .firstchoice button", b => b.length) === 2 && !(await tp.$("#main .firstrun a.btn")), "first run: the language comes first, on a screen of its own");
+    await clickTextOn(tp, "#main .firstchoice button", "English"); await sleep(150);
+    check(await tp.$("#main .howcard") !== null && !(await tp.$("#main .firstchoice")), "first run: then how you like to learn");
+    await clickTextOn(tp, "#main .howtile", "I like to read"); await sleep(150);
+    await tp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    check(/Already play\?/.test(await tText()) && await tp.$("#main .firstplay") !== null, "first run: then Already play?, as a step of its own (remembered across a reload)");
+    await clickTextOn(tp, "#main .firstchoice button", "Yes: take the playing test"); await sleep(200);
+    check(await tp.$("#main .firstplay .placement") !== null, "first run: Yes opens the playing test in place");
+    await tp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    await clickTextOn(tp, "#main .firstchoice button", "No, I am new"); await sleep(150);
+    check(await tp.$eval("#main .firstrun a.btn.primary.big", a => a.getAttribute("href")).catch(() => "") === "#/lesson/m0" && await tp.$$eval("#main .btn.primary", b => b.length) === 1, "first run: then Day 0, with Start Day 0 as the one primary action");
+    // Before practice (L1): a lesson part way says which step; the step list is a link; the unit strip
+    // replaces the phase bar; the session list, readings and pager are on the day's cover now.
+    const days = n => { const o = {}; for (let i = 0; i < n; i++) o[i] = { done: true, date: ago(40) }; return o; };
+    const m0 = { at: 0, done: ago(40), data: { side: "right", time: "evening", minutes: "30", place: "living" } };
+    const prefs = { langChosen: true, howChosen: true, playAsked: true, newsSeen: "2026-11-progress" };
+    const base = (cur, extra) => Object.assign({ current: cur, startedAt: ago(40), lastBackup: T, days: days(cur), milestones: { M0: { status: "passed", attempts: [] }, M1: { status: "passed", attempts: [] }, M2: { status: "passed", attempts: [] } }, log: [{ date: ago(1), day: cur - 1, minutes: 30, passed: true }], prefs }, extra || {});
+    await load(base(47), { m0, p47: { at: 6, data: {}, done: null, started: T } });
+    const btn = await tp.$eval("#main .todayhero .btn.primary", a => ({ href: a.getAttribute("href"), text: a.textContent })).catch(() => ({}));
+    check(btn.href === "#/lesson/p47" && /^Continue: step 7 of \d+$/.test(btn.text), "today: a lesson in progress says Continue: step 7 of N [" + btn.text + "]");
+    let tt = await tText();
+    check(/min left/.test(tt) && !/min in all/.test(tt) && await tp.$('#main .todayhero a[href="#/session/47"]') !== null, "today: minutes left, and a Step list link");
+    check(/Practice day/i.test(tt) && /Goal:/.test(tt) && /Your time: Evening, 30 min, The living room/.test(tt), "today: the kind of day, the goal line and the practice time chosen on Day 0");
+    check(await tp.$("#main .unitstrip .unit-dots i.now") !== null && /days to the milestone/.test(tt) && !(await tp.$("#main .journey")), "today: the current unit's strip in place of the phase bar");
+    check(!(await tp.$("#main .blocklist")) && !(await tp.$("#main .pager")) && !/Read for this day/.test(tt), "today: the session list, readings and day pager are off Today");
+    check(await tp.$('#main a[href="#/today/quick"]') !== null, "today: Short on time? goes to #/today/quick");
+    // After practice (L1b): done, the longest steady note today, the next day offered quietly.
+    const done = base(48); done.days[47] = { done: true, date: T }; done.live = { holds: { "0": [{ d: ago(30), s: 6.2 }, { d: T, s: 14.1 }] }, echo: {}, taps: [], plays: [] };
+    await load(done, { m0 });
+    tt = await tText();
+    check(await tp.$("#main .todaydone") !== null && /Day 47 practised/.test(tt) && /14\.1 s today/.test(tt) && /Day 48 is open/.test(tt), "today after practice: Day 47 practised, the longest steady note, Day 48 is open");
+    check(!(await tp.$("#main .todaydone .btn.primary")) && await tp.$('#main .todaydone a[href="#/today/quick"]') !== null && /Quest game/.test(tt), "today after practice: going on is offered, not pushed; or 5 minutes, or the quest game");
+    // Coming back after three days: two equal buttons, each to the day's lesson.
+    await load(base(47, { log: [{ date: ago(3), day: 46, minutes: 30, passed: true }] }), { m0 });
+    const wb = await tp.$$eval("#main .welcomeback a.btn", a => a.map(x => ({ href: x.getAttribute("href"), primary: x.classList.contains("primary") }))).catch(() => []);
+    check(wb.length === 2 && wb.every(x => !x.primary && /^#\/lesson\//.test(x.href)), "welcome back after 3 days: two equal buttons to the days' lessons " + JSON.stringify(wb));
+    // News: a one-time toast, not a card.
+    await load(base(47, { prefs: Object.assign({}, prefs, { newsSeen: null }) }), { m0 });
+    check(await tp.$(".msgtoast") !== null && !(await tp.$("#main .newscard")), "news: a toast, not a card on Today");
+    await tp.reload({ waitUntil: "networkidle0" }); await sleep(400);
+    check(!(await tp.$(".msgtoast")), "news: shown once, remembered");
+    await tp.goto(BASE + "#/today/quick", { waitUntil: "networkidle0" });
+    check(await tp.waitForSelector("#main .lv-hold", { timeout: 5000 }).then(() => true, () => false), "#/today/quick opens the 5-minute practice (#/quick still works)");
+    await ctx.close();
   });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete
