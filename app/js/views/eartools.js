@@ -64,7 +64,8 @@ export function earTools(o) {
   let lines = null; // { list: [[a, b]], at }
   const guideBox = h("div", { class: "guide", hidden: true, "aria-live": "polite" });
   let guide = null; // { queue: [ids], at, from }
-  const el = h("section", { class: "card" }, h("h2", null, "3. Check by ear"),
+  // The step's title is in the page's header (Transcribe shows one step a screen).
+  const el = h("section", { class: "card" },
     h("p", { class: "small muted" }, "Click a note (or use the arrow keys), hear the original there, slowed down without changing its pitch, and correct the note until it matches. The notation follows every change."),
     h("div", { class: "row eartop" },
       h("div", { class: "field" }, h("span", null, "Speed"), h("div", { class: "seg", role: "group", "aria-label": "Speed" }, speedBtns)),
@@ -448,6 +449,8 @@ export function earTools(o) {
     },
     stop,
     nextOdd,
+    // Draws again, once its step is on screen (a hidden canvas has no size).
+    refresh() { requestAnimationFrame(draw); },
     // Shows the song from about time t (a line of the notation was picked).
     seek(t) { viewT0 = Math.max(0, Math.min(Math.max(0, st.duration - span), t - span / 8)); pos.value = String(viewT0); draw(); },
     destroy() { stop(); window.removeEventListener("resize", onResize); player.removeAttribute("src"); },

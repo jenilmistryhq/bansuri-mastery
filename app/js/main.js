@@ -121,6 +121,10 @@ const MODULE = { challenge: "play", flute: "settings" };
 Object.assign(MODULE, { song: "songs", raga: "ragas" });
 // Screens inside a section (a tool, a song, a raga) have a back link instead of the section tabs.
 const INNER = new Set(["skilltool", "song", "raga"]);
+// Music: Transcribe's six steps have their own header (W59-W64); Make a melody is full screen (W67).
+INNER.add("transcribe"); INNER.add("compose");
+// A saved melody opens in the composer (Music > Mine, W67a).
+ROUTES.unshift([/^\/music\/compose\/(\d+)$/, "compose"]);
 // Each place remembers its last section, so coming back lands where you were.
 const LAST = "bansuri.nav.last";
 // Kept in memory for this visit, and saved when storage allows (it can be full or blocked).
