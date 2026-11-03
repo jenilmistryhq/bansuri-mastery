@@ -342,7 +342,9 @@ export function realBansuriCard() {
     h("audio", { controls: true, preload: "none" }, h("source", { src: src.replace(/\.ogg$/, ".m4a"), type: "audio/mp4" }), h("source", { src, type: "audio/ogg" })));
   return h("details", { class: "card" },
     h("summary", null, h("b", null, "Hear a real bansuri"), h("span", { class: "small muted" }, " - what a bamboo flute actually sounds like")),
-    h("p", { class: "small muted" }, "The flute sound in the Practice Bench is synthesised: it gets the pitches right, not the breathy bamboo tone. These short, openly licensed recordings are by amateur players (credits in app/audio/CREDITS.txt); some are in other keys than your C flute. For professional tone, listen to the short \"start here\" tracks in the ",
+    // Two sentences, two strings: the second names the library's "Start here" tag, which Hindi glosses.
+    h("p", { class: "small muted" }, "The flute sound in the Practice Bench is synthesised: it gets the pitches right, not the breathy bamboo tone. These short, openly licensed recordings are by amateur players (credits in app/audio/CREDITS.txt); some are in other keys than your C flute.",
+      " ", "For professional tone, listen to the short tracks marked \"Start here\" in the ",
       h("a", { href: "#/read/08-LISTENING-LIBRARY.md" }, "listening library"), "."),
     h("div", { class: "stack", style: { gap: "2px" } }, h("span", { class: "small" }, "A held Sa, then Sa up to upper Sa and back (sankalp, CC BY 4.0; roguentropy, CC0; Freesound)"),
       h("audio", { controls: true, preload: "none", src: "app/audio/bansuri-sa-middle-octave-sankalp.mp3" }),

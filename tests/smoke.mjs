@@ -393,6 +393,12 @@ try {
     const minutesChart = await page.$$eval("#main .wkchart", c => c.map(x => x.querySelectorAll(".wk-bar").length).join() + ":" + c.reduce((a, x) => a + x.querySelectorAll("path").length, 0));
     await go("/me/level");
     check(/^12:/.test(minutesChart) && !/:0$/.test(minutesChart) && await page.$$eval("#main .wkchart", c => c.map(x => x.querySelectorAll(".wk-bar").length).join()) === "12", "progress charts 12 weeks of practice minutes, and Level and badges 12 weeks of XP [" + minutesChart + "]");
+    // More charts (W69): a row on Progress opens the other charts, one per card.
+    await go("/progress");
+    const moreRow = await page.$("#main a.hubrow[href='#/me/charts']") !== null;
+    await go("/me/charts");
+    const charts = await page.evaluate(() => ({ heads: [...document.querySelectorAll("#main .card h3")].map(x => x.textContent), bars: [...document.querySelectorAll("#main .wkchart")].map(x => x.querySelectorAll(".wk-bar").length).join(), back: !!document.querySelector("#main .crumbs a[href='#/me']") }));
+    check(moreRow && charts.heads.join() === "Minutes per week,By ear,Play back,Play-along: notes right,Tap the beat,XP per week" && charts.bars === "12,12" && charts.back, "progress: More charts opens minutes, by ear, play back, play along, tap the beat and XP, one per card " + JSON.stringify(charts));
     await go("/progress");
     check(await page.$$eval("#main .mspath li", x => x.length) === 11, "progress shows the M0-M10 milestone path");
 
@@ -992,6 +998,12 @@ try {
         await sleep(300);
         check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector("#main h1").textContent) && [...document.querySelectorAll("#main button")].every(b => !/[A-Za-z]{3}/.test(b.textContent) || /[\u0900-\u097F]/.test(b.textContent))), "hindi: the " + what + " page's heading and buttons are in Hindi");
       }
+      // A textarea's placeholder is translated; what the learner types is not.
+      await lp.goto(BASE + "#/me/teacher", { waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main textarea", { timeout: 8000 }).catch(() => {});
+      await lp.type("#main textarea", "Your name").catch(() => {});
+      await sleep(200);
+      check(await lp.evaluate(() => { const t = document.querySelector("#main textarea"); return !!t && /[\u0900-\u097F]/.test(t.placeholder) && t.value === "Your name"; }), "hindi: a textarea's placeholder is in Hindi (Teacher > Ask), the text typed into it stays as typed");
       await setSet({ lang: "en" });
 
       await lp.evaluate(() => localStorage.clear());
@@ -1832,6 +1844,19 @@ try {
     const playing = await page.evaluate(() => document.querySelector("#main .toolpage").classList.contains("playmode"));
     await page.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:mic", { detail: { on: false } })));
     check(playing && !(await page.evaluate(() => document.querySelector("#main .toolpage").classList.contains("playmode"))), "long tones: playing mode (the shared class) while the microphone listens");
+    // The note as chips (W46): they drive the Bench's hidden list, which remembers the note, so the
+    // note Progress's "Work on these" sets before opening shows picked. The Bench keeps its list.
+    const pickedChip = () => page.evaluate(() => ({ n: document.querySelectorAll("#main .tonechips button").length, hidden: !!document.querySelector("#main [data-ref=toneNote]")?.closest(".bb-field").hidden, sel: document.querySelector("#main [data-ref=toneNote]")?.value, picked: [...document.querySelectorAll("#main .tonechips [aria-pressed=true]")].map(b => b.dataset.v).join() }));
+    await clickText("#main .tonechips button", "R");
+    const chipA = await pickedChip(), stored = await page.evaluate(() => localStorage.getItem("bansuri.bench.live.toneNote"));
+    await go("/skills/tone");
+    await page.evaluate(() => localStorage.setItem("bansuri.bench.live.toneNote", JSON.stringify("4")));
+    await go("/skills/tone/longtones");
+    const chipB = await pickedChip();
+    await go("/bench");
+    const benchList = await page.evaluate(() => !document.querySelector("#main .tonechips") && !!document.querySelector("#main [data-ref=toneNote]") && !document.querySelector("#main [data-ref=toneNote]").closest(".bb-field").hidden);
+    await page.evaluate(() => localStorage.removeItem("bansuri.bench.live.toneNote"));
+    check(chipA.n === 12 && chipA.hidden && chipA.sel === "2" && chipA.picked === "2" && stored === "\"2\"" && chipB.picked === "4" && chipB.sel === "4" && benchList, "long tones: note chips in place of the list, remembered, a preset note shows picked; the Bench keeps its list " + JSON.stringify([chipA, chipB, benchList]));
     for (const [route, sel, what] of [["/skills/tone/check", "#tone", "tone check"], ["/skills/rhythm/tap", ".lv-pad", "tap the beat"], ["/skills/ornaments/trainer", ".ornTabs", "ornament trainer"], ["/skills/ear/quiz", ".bb-bench [data-ref=earNext]", "ear quiz"], ["/skills/ear/playback", ".lv-echo", "play it back"]]) {
       await go(route);
       check(!!(await page.$("#main " + sel)) && !!(await page.$("#main .backhead")), what + ": opens on its own screen (" + route + ")");
@@ -1946,6 +1971,14 @@ try {
     tt = await tText();
     check(await tp.$("#main .todaydone") !== null && /Day 47 practised/.test(tt) && /14\.1 s today/.test(tt) && /Day 48 is open/.test(tt), "today after practice: Day 47 practised, the longest steady note, Day 48 is open");
     check(!(await tp.$("#main .todaydone .btn.primary")) && await tp.$('#main .todaydone a[href="#/today/quick"]') !== null && /Quest game/.test(tt), "today after practice: going on is offered, not pushed; or 5 minutes, or the quest game");
+    // Quest game opens the game for today's first open quest (the one Skills offers), and Close comes back.
+    const qg = await tp.$eval("#main .todaydone a.questgame", a => a.getAttribute("href")).catch(() => "");
+    const qWant = await tp.evaluate(async () => { const [{ questGame }, { questState }] = await Promise.all([import("/app/js/skillmap.js"), import("/app/js/fun.js")]); return "#/skills/game/" + questGame(questState().list).key; });
+    await tp.click("#main .todaydone a.questgame").catch(() => {});
+    const qOpen = await tp.waitForSelector("#main .game-card:not([hidden]) button", { timeout: 8000 }).then(() => true, () => false);
+    await clickTextOn(tp, "#main .game-card button", "Close").catch(() => {});
+    await tp.waitForFunction(() => location.hash === "#/today", { timeout: 5000 }).catch(() => {});
+    check(qg === qWant && qOpen && await tp.evaluate(() => location.hash) === "#/today", "today after practice: Quest game opens today's quest game itself (" + qg + "), and Close comes back to Today");
     // Coming back after three days: two equal buttons, each to the day's lesson.
     await load(base(47, { log: [{ date: ago(3), day: 46, minutes: 30, passed: true }] }), { m0 });
     const wb = await tp.$$eval("#main .welcomeback a.btn", a => a.map(x => ({ href: x.getAttribute("href"), primary: x.classList.contains("primary") }))).catch(() => []);

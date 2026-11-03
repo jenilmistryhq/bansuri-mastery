@@ -6,6 +6,29 @@ import { h } from "../util.js";
 import { skillById, TOOLS } from "../skillmap.js";
 import { backHead, followMic } from "../backhead.js";
 import { bestHold } from "../livestats.js";
+import { codeOf } from "../core/theory.js";
+
+// Long tones' note as chips (W46), from mandra Pa to taar Sa, in place of the Bench's note list. The
+// chips drive that list (hidden here, unchanged on the Bench), so the note it remembers, and the one
+// Me > Progress's "Work on these" sets before opening, is the chip shown picked.
+const CHIP_NOTES = [-5, -3, -1, 0, 2, 4, 5, 7, 9, 11, 12];
+function noteChips(box) {
+  const sel = box.querySelector("[data-ref=toneNote]");
+  if (!sel) return;
+  const field = sel.closest(".bb-field");
+  field.hidden = true;
+  const notes = CHIP_NOTES.map(String);
+  if (sel.value !== "any" && !notes.includes(sel.value)) notes.push(sel.value);
+  notes.sort((a, b) => Number(a) - Number(b));
+  const label = v => (([...sel.options].find(o => o.value === v) || {}).textContent || "").replace(/\s+/g, " ").trim();
+  const chips = h("div", { class: "chips tonechips", role: "group", "aria-label": "Note" });
+  const draw = () => chips.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === sel.value)));
+  const pick = v => { sel.value = v; sel.dispatchEvent(new Event("change")); draw(); };
+  chips.append(h("button", { type: "button", class: "chipbtn", dataset: { v: "any" }, onclick: () => pick("any") }, "Any note"),
+    ...notes.map(v => h("button", { type: "button", class: "chipbtn tonechip", translate: "no", dataset: { v }, title: label(v), onclick: () => pick(v) }, codeOf(Number(v)))));
+  field.closest(".bb-row").before(h("div", { class: "tonepick" }, h("span", { class: "small muted" }, "Notes"), chips));
+  draw();
+}
 
 // Each tool: (host) -> cleanup. Imports are loaded only for the tool that opens.
 const MAKE = {
@@ -16,6 +39,7 @@ const MAKE = {
     const box = h("div");
     host.append(box);
     const bench = mountBench(box, { compact: true, heading: false, flute: false, tabs: ["tones"], tab: "tones", ghost: bestHold });
+    noteChips(box);
     return () => bench.destroy();
   },
   async check(host) {

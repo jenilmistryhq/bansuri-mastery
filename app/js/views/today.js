@@ -9,6 +9,8 @@ import { t } from "../core/i18n.js";
 import { placementTest, startAtPhase } from "../placement.js";
 import { renderInline } from "../content.js";
 import { questState } from "../fun.js";
+import { questGame } from "../skillmap.js";
+import { GAME_FROM } from "./skills.js";
 import { levelBar } from "../levelui.js";
 import { makePlayable } from "../playable.js";
 import { icon } from "../util.js";
@@ -237,7 +239,15 @@ function doneCard(d, cur, cleanups) {
       rec,
       h("div", { class: "row todaynext" }, h("span", null, "Day " + cur + " is open"), h("a", { class: "btn", href: dayHref(cur) }, "Go on")),
       h("div", { class: "row todayor" }, h("span", { class: "muted" }, "Or:"), h("a", { class: "btn", href: "#/today/quick" }, "5 minutes"),
-        getSettings().focus ? null : h("a", { class: "btn", href: "#/skills" }, "Quest game"))));
+        getSettings().focus ? null : questGameLink())));
+}
+
+// "Quest game": straight into the game for today's first open quest (the one Skills offers too);
+// its Close comes back here.
+function questGameLink() {
+  const a = h("a", { class: "btn questgame", href: "#/skills/game/" + questGame(questState().list).key }, "Quest game");
+  a.addEventListener("click", () => { try { sessionStorage.setItem(GAME_FROM, location.hash); } catch (e) { /* Close then goes to the games */ } });
+  return a;
 }
 
 // Today: the day (before or after practice), the current unit, at most two message cards, the 5

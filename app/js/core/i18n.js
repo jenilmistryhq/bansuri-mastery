@@ -58,6 +58,9 @@ export function tf(template, vals) {
 }
 
 const skip = el => !!(el && el.closest && el.closest('[translate="no"], code, pre, script, style, textarea, .mono'));
+// Labels on a field (placeholder, aria-label, title) are interface text even on a textarea; what the
+// learner typed (its value, its text) never goes through t().
+const skipAttrs = el => !!(el && el.closest && el.closest('[translate="no"], code, pre, script, style, .mono'));
 // Collect mode (tests/smoke.mjs with I18N_COLLECT): every interface string seen is reported, to list
 // what the dictionary needs.
 const seenSet = typeof window !== "undefined" && window.__i18nCollect ? new Set() : null;
@@ -77,7 +80,7 @@ function doText(node) {
   if (nv !== v) node.nodeValue = nv;
 }
 function doAttrs(el) {
-  if (skip(el)) return;
+  if (skipAttrs(el)) return;
   for (const a of ATTRS) {
     const v = el.getAttribute(a);
     if (!v) continue;

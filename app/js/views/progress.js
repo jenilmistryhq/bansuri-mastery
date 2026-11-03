@@ -138,27 +138,64 @@ function trendChart(points, o) {
   return h("div", null, svg, table);
 }
 
-// Improvement from the microphone: the longest steady note each day, and play-along accuracy each day.
-function improving(s) {
-  const L = s.live || {}, byDay = {}, playDay = {};
-  for (const list of Object.values(L.holds || {})) for (const x of list) byDay[x.d] = Math.max(byDay[x.d] || 0, x.s);
-  for (const p of L.plays || []) if (p.n) { const q = playDay[p.d] || (playDay[p.d] = { ok: 0, n: 0 }); q.ok += p.ok; q.n += p.n; }
-  const holdPts = Object.entries(byDay).map(([d, v]) => ({ d, v })), playPts = Object.entries(playDay).map(([d, q]) => ({ d, v: Math.round(q.ok / q.n * 100) }));
-  const echoBest = Math.max(0, ...Object.values(L.echo || {}).map(e => e.best || 0));
-  const ear = Object.values(s.ear || {}).reduce((a, e) => ({ right: a.right + e.right, total: a.total + e.total }), { right: 0, total: 0 });
-  const change = pts => { if (pts.length < 2) return null; const sorted = pts.slice().sort((a, b) => a.d < b.d ? -1 : 1), first = sorted[0].v, last = sorted[sorted.length - 1].v; return last - first; };
-  const holdUp = change(holdPts), playUp = change(playPts);
-  const card = (title, sub, pts, opts, delta, unit) => h("section", { class: "card trendcard" },
+// A trend card: its title, what it measures, the chart (after 3 days) and the change since the first day.
+function trendCard(title, sub, pts, opts, unit) {
+  let delta = null;
+  if (pts.length >= 2) { const sorted = pts.slice().sort((a, b) => a.d < b.d ? -1 : 1); delta = sorted[sorted.length - 1].v - sorted[0].v; }
+  return h("section", { class: "card trendcard" },
     h("div", { class: "row between" }, h("h3", null, title), delta === null ? null : h("span", { class: "chip " + (delta > 0 ? "good" : delta < 0 ? "warn" : "mutedc") }, (delta > 0 ? "up " : delta < 0 ? "down " : "steady ") + (delta ? Math.abs(Math.round(delta * 10) / 10) + unit : ""))),
     h("p", { class: "small muted" }, sub),
     pts.length >= 3 ? trendChart(pts, opts) : h("p", { class: "emptystate" }, "Your chart appears after 3 days of practice with the microphone (" + pts.length + " so far)."));
+}
+// Play-along accuracy each day.
+function playAlongCard(s) {
+  const playDay = {};
+  for (const p of (s.live || {}).plays || []) if (p.n) { const q = playDay[p.d] || (playDay[p.d] = { ok: 0, n: 0 }); q.ok += p.ok; q.n += p.n; }
+  const pts = Object.entries(playDay).map(([d, q]) => ({ d, v: Math.round(q.ok / q.n * 100) }));
+  return trendCard("Play-along: notes right", "Share of notes played right when the microphone checked a melody.", pts, { what: "Play-along notes right per day", floor: 100, tick: v => Math.round(v) + "%", fmt: v => Math.round(v) + "%" }, " points");
+}
+// By ear: the longest phrase played back, and the ear quiz.
+function byEarCard(s) {
+  const echoBest = Math.max(0, ...Object.values((s.live || {}).echo || {}).map(e => e.best || 0));
+  const ear = Object.values(s.ear || {}).reduce((a, e) => ({ right: a.right + e.right, total: a.total + e.total }), { right: 0, total: 0 });
+  return h("section", { class: "card headline" }, h("h3", null, "By ear"),
+    h("div", { class: "bigstats" },
+      h("div", { class: "stat" }, h("b", null, echoBest ? String(echoBest) : "-"), h("span", null, "notes in your longest phrase played back")),
+      ear.total ? h("div", { class: "stat" }, h("b", null, Math.round(ear.right / ear.total * 100) + "%"), h("span", null, "ear quiz right (" + ear.total + " answers)")) : null));
+}
+
+// More charts (#/me/charts, redesign W69): the charts Progress leaves out, one per card: minutes per
+// week, by ear, play back, play along, tap the beat and XP per week (not in focus mode, like the level).
+function chartsView(main) {
+  const s = getState(), L = s.live || {};
+  const page = h("div", { class: "page chartspage" });
+  const echo = Object.values(L.echo || {});
+  const tapDay = {};
+  for (const x of L.taps || []) tapDay[x.d] = Math.max(tapDay[x.d] || 0, Math.round(x.within * 100));
+  const tapPts = Object.entries(tapDay).map(([d, v]) => ({ d, v }));
+  const xp = xpState();
+  page.append(h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/me" }, "Progress"), " / ", h("span", null, "More charts")),
+    h("section", { class: "hero" }, h("h1", null, "More charts")),
+    h("div", { class: "dashgrid" },
+      h("section", { class: "card", id: "minutes" }, h("h3", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12))),
+      byEarCard(s),
+      h("section", { class: "card", id: "playback" }, h("h3", null, "Play back"),
+        echo.length ? h("div", { class: "stack" }, echo.map(e => h("div", { class: "row between" }, h("span", null, e.label), h("span", { class: "small mono" }, "longest phrase " + e.best + " - " + e.right + "/" + e.total + " right"))))
+          : h("p", { class: "emptystate" }, "Your results appear after a round of Play it back.")),
+      playAlongCard(s),
+      trendCard("Tap the beat", "Your best round each day: the share of taps within 50 ms of the click.", tapPts, { what: "Taps within 50 ms per day", floor: 100, tick: v => Math.round(v) + "%", fmt: v => Math.round(v) + "%" }, " points"),
+      getSettings().focus ? null : h("section", { class: "card", id: "xp" }, h("h3", null, "XP per week"), weeksChart(weeklyMinutes(new Map(Object.entries(xp.days || {})), today(), 12), { what: "XP earned", fmt: v => Math.round(v) + " XP", floor: 200 }))));
+  main.append(page);
+}
+
+// Improvement from the microphone: the longest steady note each day, and play-along accuracy each day.
+function improving(s) {
+  const byDay = {};
+  for (const list of Object.values((s.live || {}).holds || {})) for (const x of list) byDay[x.d] = Math.max(byDay[x.d] || 0, x.s);
+  const holdPts = Object.entries(byDay).map(([d, v]) => ({ d, v }));
   return h("div", { class: "dashgrid" },
-    card("Longest steady note", "Your best hold each day, from long tones in sessions, the bench and the coach.", holdPts, { what: "Longest steady note per day", floor: 8, tick: v => v + " s", fmt: v => v.toFixed(1) + " s" }, holdUp, " s"),
-    card("Play-along: notes right", "Share of notes played right when the microphone checked a melody.", playPts, { what: "Play-along notes right per day", floor: 100, tick: v => Math.round(v) + "%", fmt: v => Math.round(v) + "%" }, playUp, " points"),
-    h("section", { class: "card headline" }, h("h3", null, "By ear"),
-      h("div", { class: "bigstats" },
-        h("div", { class: "stat" }, h("b", null, echoBest ? String(echoBest) : "-"), h("span", null, "notes in your longest phrase played back")),
-        ear.total ? h("div", { class: "stat" }, h("b", null, Math.round(ear.right / ear.total * 100) + "%"), h("span", null, "ear quiz right (" + ear.total + " answers)")) : null)));
+    trendCard("Longest steady note", "Your best hold each day, from long tones in sessions, the bench and the coach.", holdPts, { what: "Longest steady note per day", floor: 8, tick: v => v + " s", fmt: v => v.toFixed(1) + " s" }, " s"),
+    playAlongCard(s), byEarCard(s));
 }
 
 // A small line of one note's daily best holds, with the latest value labelled.
@@ -206,6 +243,7 @@ function milestonePath() {
 export async function render(main, { params, anchor } = {}) {
   // Level and badges open on their own (#/me/level); old links to #/progress#level and #badges too.
   if ((params && params[0] === "level") || anchor === "level" || anchor === "badges") { levelView(main); return; }
+  if (params && params[0] === "charts") { chartsView(main); return; }
   // Teacher reviews moved to Me > Teacher > Feedback.
   if (anchor === "reviews") { location.replace("#/me/teacher/feedback"); return; }
   const s = getState(), tt = totals(), st = streaks();
@@ -229,7 +267,10 @@ export async function render(main, { params, anchor } = {}) {
         stat(fmtMinutes(tt.minutes), "total practice")),
       h("p", { class: "small muted" }, "Best streak " + st.best + " days. One missed day a week does not break a streak."),
       heatmap(), h("p", { class: "small muted" }, "Darker = longer practice (under 20, under 45, 45+ minutes).")),
-    h("section", { class: "card" }, h("h3", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12)))));
+    h("section", { class: "card" }, h("h3", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12)))),
+    // The other charts (by ear, play back, play along, tap the beat, XP) open from one row (W69).
+    h("section", { class: "card" }, h("div", { class: "hublist" },
+      meRow("#/me/charts", "More charts", ["By ear", "Play back", "Play along", "Tap the beat", getSettings().focus ? null : "XP"]))));
 
   // 3. Where am I in the course?
   const plan = getPlan(), d = getDay(current()), ph = d ? plan.phases.find(p => p.id === d.phase) : null;

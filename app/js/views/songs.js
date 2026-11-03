@@ -171,7 +171,7 @@ async function song(main, id, anchor) {
     backHead("#/music", "Songs", s.mine ? s.title : s.id + " " + s.title, status),
     s.meta ? h("p", { class: "small muted" }, s.meta) : null,
     h("section", { class: "card stack" }, notation,
-      h("div", { class: "row songcontrols" }, hearBtn, h("label", { class: "field songbpm" }, "BPM", bpmIn),
+      h("div", { class: "row songcontrols" }, hearBtn, h("label", { class: "field songbpm" }, "Tempo (BPM)", bpmIn),
         h("label", { class: "check", for: "song-drone" }, drone, "Drone"), h("label", { class: "check", for: "song-taal" }, taal, "Taal"))),
     h("section", { class: "card stack" }, playBtn, host, game,
       h("label", { class: "check", for: "song-learned" }, done, "I can play it")),

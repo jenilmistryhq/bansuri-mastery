@@ -4,10 +4,7 @@
 import { h } from "../util.js";
 import { getSettings } from "../core/settings.js";
 import { questState } from "../fun.js";
-import { SKILLS, GAME_INFO, FIX_INFO, MUSIC_GAMES, skillById, gameBest } from "../skillmap.js";
-
-// Which game moves which quest on (the same choice the games list makes).
-const FOR_QUEST = { phrase: "phrase", laya: "laya", tihai: "tihai", ornament: "meendbridge", swell: "swell", boat: "boat", bullseye: "bullseye", wrong: "wrong", sam: "sam", road: "road", hold: "boat", steer: "steer", balloon: "balloon", falling: "falling", jam: "jam", song: "falling", echo: "steer", tap: "jam" };
+import { SKILLS, GAME_INFO, FIX_INFO, MUSIC_GAMES, skillById, gameBest, questGame } from "../skillmap.js";
 
 // A game opened from here: Close in the game goes back to this screen (views/play.js reads it).
 export const GAME_FROM = "bansuri.game.from";
@@ -28,12 +25,11 @@ function forYou(focus) {
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Skills"), h("h1", null, "Get better at one thing"),
     h("p", { class: "muted" }, "Pick a skill: its tools, its games and the fixes for when it is not working, together.")));
   if (!focus) {
-    const qs = questState(), left = qs.list.filter(q => !q.done && FOR_QUEST[q.id]);
-    const key = left.length ? FOR_QUEST[left[0].id] : "balloon";
+    const { key, quest } = questGame(questState().list);
     const play = h("a", { class: "btn primary big", href: gameHref(key) }, "Play " + GAME_INFO[key][0]);
     play.addEventListener("click", markFrom);
     page.append(h("section", { class: "card playnow" },
-      h("span", { class: "small muted" }, left.length ? "For today's quest: " + left[0].text : "A good one to play now"),
+      h("span", { class: "small muted" }, quest ? "For today's quest: " + quest.text : "A good one to play now"),
       h("h2", null, GAME_INFO[key][0]), h("p", { class: "small muted" }, GAME_INFO[key][1]), play));
   }
   page.append(h("section", { class: "card row between fixcta" }, h("span", null, "Something wrong with the sound?"), h("a", { class: "btn", href: "#/skills/fix" }, "Fix a problem")));
