@@ -105,7 +105,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.95rem; }
 .bb-facts b { font-family: var(--mono); font-weight: 600; }
 .bb-chip { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; border: 1px solid currentColor; }
-.bb-chip.bb-good { color: var(--good); } .bb-chip.bb-warn { color: var(--warn); } .bb-chip.bb-bad { color: var(--bad); } .bb-chip.bb-info { color: var(--accent); }
+.bb-chip.bb-good { color: var(--good); } .bb-chip.bb-warn { color: var(--warn); } .bb-chip.bb-bad { color: var(--warn); } .bb-chip.bb-info { color: var(--accent); }
 .bb-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
 .bb-blow { min-width: 9.5rem; padding: 14px 18px; font-size: 1.05rem; user-select: none; -webkit-user-select: none; touch-action: none; }
 .bb-blow.bb-active { filter: brightness(1.12); box-shadow: 0 0 0 4px var(--accent-soft); }
@@ -158,7 +158,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-quiz { display: flex; flex-wrap: wrap; gap: 8px; }
 .bb-quiz .bb-btn { min-width: 4.2rem; font-family: var(--mono); }
 .bb-quiz .bb-btn.bb-right { background: var(--good); border-color: var(--good); color: var(--accent-ink); }
-.bb-quiz .bb-btn.bb-wrong { background: var(--bad); border-color: var(--bad); color: var(--accent-ink); }
+.bb-quiz .bb-btn.bb-wrong { background: color-mix(in srgb, var(--warn) 22%, transparent); border-color: var(--warn); color: var(--ink); }
 .bb-tidy { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
 .bb-air { opacity: 0; transition: opacity 120ms; }
 .bb-air.bb-on { opacity: 1; }
@@ -219,7 +219,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .lv-bar { position: relative; height: 16px; border-radius: 8px; background: linear-gradient(90deg, var(--sunken), var(--accent-soft) 40%, var(--accent-soft) 60%, var(--sunken)); }
 .lv-mid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: var(--muted); }
 .lv-needle { position: absolute; top: -4px; width: 6px; height: 24px; margin-left: -3px; border-radius: 3px; left: 50%; background: var(--muted); transition: left 90ms linear; }
-.lv-needle.lv-good { background: var(--good); } .lv-needle.lv-warn { background: var(--warn); } .lv-needle.lv-bad { background: var(--bad); }
+.lv-needle.lv-good { background: var(--good); } .lv-needle.lv-warn { background: color-mix(in srgb, var(--warn) 55%, var(--muted)); } .lv-needle.lv-bad { background: var(--warn); }
 .lv-scale { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); }
 .lv-cents { font-family: var(--mono); color: var(--ink); }
 .lv-slots { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -246,7 +246,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .bb-stepper input { width: 4.2rem; text-align: center; }
 .bb-score span[data-tk] { cursor: pointer; }
 .bb-score span.bb-hit { color: var(--good); font-weight: 700; }
-.bb-score span.bb-miss { color: var(--bad); font-weight: 700; text-decoration: underline wavy; }
+.bb-score span.bb-miss { color: var(--warn); font-weight: 700; text-decoration: underline wavy; }
 .bb-score span.bb-early { box-shadow: inset 3px 0 0 var(--warn); }
 .bb-score span.bb-late { box-shadow: inset -3px 0 0 var(--warn); }
 .lv-intro { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--accent); border-radius: 12px; background: var(--accent-soft); }
@@ -263,7 +263,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 .lv-answers { gap: 8px; }
 .lv-ans { min-width: 3.4rem; }
 .lv-ans.lv-right { border-color: var(--good); background: color-mix(in srgb, var(--good) 18%, transparent); }
-.lv-ans.lv-wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 18%, transparent); }
+.lv-ans.lv-wrong { border-color: var(--warn); background: color-mix(in srgb, var(--warn) 18%, transparent); }
 
 .lv-deva { display: block; font-family: var(--body); font-size: 0.7em; font-weight: 500; color: var(--muted); line-height: 1.2; }
 .bb-score .bb-deva { display: block; font-family: var(--body); font-size: 0.72em; color: var(--muted); }
@@ -1399,7 +1399,7 @@ function drawPitchPlot(canvas, result) {
   const g = canvas.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
   const css = getComputedStyle(canvas);
   const col = (k, d) => (css.getPropertyValue(k) || "").trim() || d;
-  const C = { ink: col("--ink", "#1b2420"), line: col("--line", "#cfd6ca"), muted: col("--muted", "#56645d"), accent: col("--accent", "#0d6a6e"), good: col("--good", "#2e7a3a"), warn: col("--warn", "#9a6512"), bad: col("--bad", "#b3261e"), mono: col("--mono", "monospace") };
+  const C = { ink: col("--ink", "#1b2420"), line: col("--line", "#cfd6ca"), muted: col("--muted", "#56645d"), accent: col("--accent", "#0d6a6e"), good: col("--good", "#2e7a3a"), warn: col("--warn", "#9a6512"), bad: col("--warn", "#9a6512"), mono: col("--mono", "monospace") };
   const vals = frames.filter(Boolean).map(f => f.s);
   let lo = -1, hi = 13; vals.forEach(v => { if (v < lo) lo = v; if (v > hi) hi = v; });
   lo = Math.floor(lo) - 1; hi = Math.ceil(hi) + 1;
@@ -1470,6 +1470,8 @@ async function openMic() {
   const m = { stream, src, an, buf: new Float32Array(an.fftSize), subs: new Set(), hist: [], timer: 0 };
   // An interval, not animation frames, so listening continues while the page scrolls or redraws.
   m.stats = { frames: 0, voiced: 0, ms: 0, sampleRate: c.sampleRate, peak: 0 };
+  // "No sound heard": the top bar's microphone pill says so after 5 s of near silence (not while muted).
+  m.heard = c.currentTime; m.quiet = false;
   m.timer = setInterval(() => {
     const t = c.currentTime, t0 = performance.now();
     let r = { t, semi: null, near: null, cents: null, f: 0, level: 0 };
@@ -1478,6 +1480,8 @@ async function openMic() {
       let sq = 0; for (let i = 0; i < m.buf.length; i++) sq += m.buf[i] * m.buf[i];
       const level = Math.sqrt(sq / m.buf.length);
       r.level = level;
+      if (level > 0.004) { m.heard = t; if (m.quiet) { m.quiet = false; micState("listening"); } }
+      else if (!m.quiet && t - m.heard > 5) { m.quiet = true; micState("quiet"); }
       const y = yin(m.buf, c.sampleRate);
       if (y && y.clarity > 0.85) {
         m.hist.push(relSemi(y.f)); if (m.hist.length > 5) m.hist.shift();
@@ -1488,7 +1492,7 @@ async function openMic() {
       } else m.hist = [];
       m.stats.frames++; m.stats.peak = Math.max(m.stats.peak, level);
       m.stats.ms += performance.now() - t0;
-    } else m.hist = [];
+    } else { m.hist = []; m.heard = t; }
     m.subs.forEach(fn => { try { fn(r); } catch (e) { /* one listener must not stop the others */ } });
   }, 33);
   return m;
@@ -1508,11 +1512,21 @@ function micStats() {
 const micActive = () => !!micShared;
 function micEvent(on) {
   try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:mic", { detail: { on } })); } catch (e) { /* no DOM */ }
+  micState(on ? "listening" : "off");
+}
+// The microphone's state for the top bar's pill (redesign 09): "asking" (the browser's prompt is up),
+// "listening", "quiet" (open, but no sound heard for a while), "blocked" (refused; detail.why is
+// "unavailable" when the browser has no microphone here) and "off". Sent as "bansuri:micstate".
+function micState(state, why) {
+  try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:micstate", { detail: { state, why: why || null } })); } catch (e) { /* no DOM */ }
 }
 
 async function listenMic(fn) {
   if (!micShared) {
-    if (!micPending) micPending = openMic().then(m => { micShared = m; micPending = null; micEvent(true); return m; }, e => { micPending = null; throw e; });
+    if (!micPending) {
+      micState("asking");
+      micPending = openMic().then(m => { micShared = m; micPending = null; micEvent(true); return m; }, e => { micPending = null; micState("blocked", e && e.message === "unavailable" ? "unavailable" : "blocked"); throw e; });
+    }
     await micPending;
   }
   const m = micShared;
@@ -1732,6 +1746,11 @@ function lvMicError(e) {
   return e && e.message === "unavailable"
     ? "This browser cannot use the microphone here. Open the app in Chrome, Edge or Safari over https."
     : "The microphone is blocked. Allow it in the browser's site settings, then try again.";
+}
+// The message where a widget shows it; in the app, with a link to Me > Flute (its microphone check).
+function lvShowMicError(msg, e) {
+  msg.textContent = lvMicError(e);
+  if (typeof location !== "undefined" && /^#\//.test(location.hash || "")) msg.append(" ", lvEl("a", { href: "#/me/flute#g-checks" }, "Microphone help in Me > Flute"));
 }
 
 // Before the first microphone prompt, say why the app wants it. Resolves true to go ahead.
@@ -1988,7 +2007,7 @@ function holdMeter(opts) {
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... play a long note."; word.set("");
       talking = true; lvSay(targets[idx] === null ? "hold_intro" : ["note", targets[idx], "hold"], ["secs", o.seconds]).then(() => { talking = false; });
-    } catch (e) { msg.textContent = lvMicError(e); }
+    } catch (e) { lvShowMicError(msg, e); }
     finally { life.starting = false; }
   }
   function report() {
@@ -2086,7 +2105,7 @@ function phraseCheck(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening. Play the phrase."; word.set("");
-    } catch (e) { msg.textContent = lvMicError(e); }
+    } catch (e) { lvShowMicError(msg, e); }
     finally { life.starting = false; }
   }
   function stop() { life.gen++; clearTimeout(quietTimer); if (unsub) { unsub(); unsub = null; } startBtn.textContent = "Start"; }
@@ -2155,7 +2174,7 @@ function echoGame(opts) {
   let opening = null;
   async function ensureMic() {
     if (unsub) return true;
-    if (!opening) opening = lvListen(life, onReading).then(u => { opening = null; if (u) unsub = u; return !!u; }, e => { opening = null; msg.textContent = lvMicError(e); return false; });
+    if (!opening) opening = lvListen(life, onReading).then(u => { opening = null; if (u) unsub = u; return !!u; }, e => { opening = null; lvShowMicError(msg, e); return false; });
     return opening;
   }
   function play() {
@@ -2379,7 +2398,7 @@ function fluteFinder(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... hold your Sa.";
-    } catch (e) { msg.textContent = lvMicError(e); }
+    } catch (e) { lvShowMicError(msg, e); }
     finally { life.starting = false; }
   });
   useBtn.addEventListener("click", () => {
@@ -2491,6 +2510,55 @@ function ragaQuiz(opts) {
   goBtn.addEventListener("click", () => { ac(); ask(); });
   againBtn.addEventListener("click", () => { if (current) play(); });
   return { el, stop: hush, destroy() { hush(); drone.stop(); } };
+}
+
+// The Flute dock's tuner (redesign W4): the note heard, a -50..+50 cents meter, the cents and Hz, and
+// whether it is listening. The same shared microphone and pitch readings as every other exercise;
+// nothing is scored or recorded. start() asks for the microphone (after micIntro the first time).
+function tunerMeter() {
+  const life = { gen: 0, dead: false, starting: false };
+  let unsub = null, lastSound = 0;
+  const note = lvEl("div", { class: "lv-big tn-note", "aria-live": "off" }, "-");
+  const needle = lvEl("i", { class: "lv-needle" });
+  const cents = lvEl("span", { class: "tn-cents" }, "");
+  const hz = lvEl("span", { class: "tn-hz" }, "");
+  const state = lvEl("p", { class: "tn-state", role: "status" }, lvEl("span", { class: "tn-dot", "aria-hidden": "true" }), lvEl("span", null, "Not listening"));
+  const msg = lvEl("p", { class: "lv-msg tn-msg", "aria-live": "polite" }, "");
+  const btn = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Start the tuner");
+  const el = lvEl("div", { class: "lv tn" }, note,
+    lvEl("div", { class: "lv-tune tn-meter" }, lvEl("div", { class: "lv-bar" }, lvEl("i", { class: "lv-mid" }), needle),
+      lvEl("div", { class: "lv-scale" }, lvEl("span", null, "-50"), lvEl("span", null, "0"), lvEl("span", null, "+50"))),
+    lvEl("p", { class: "tn-read" }, cents, hz), state, msg, lvEl("div", { class: "lv-row" }, btn));
+  const setState = (on, text) => { el.classList.toggle("tn-on", on); state.lastChild.textContent = text; };
+  function quiet() { note.textContent = "-"; needle.className = "lv-needle"; cents.textContent = ""; hz.textContent = ""; }
+  function onReading(r) {
+    if (r.semi !== null && r.semi > -7.5) {
+      lastSound = r.t;
+      note.replaceChildren(...[].concat(lvNote(r.near)));
+      needle.style.left = (50 + Math.max(-50, Math.min(50, r.cents))) + "%";
+      needle.className = "lv-needle " + (Math.abs(r.cents) <= 10 ? "lv-good" : Math.abs(r.cents) <= 25 ? "lv-warn" : "lv-bad");
+      cents.textContent = (r.cents > 0 ? "+" : "") + r.cents + " c";
+      hz.textContent = r.f ? westOf(r.near) + " " + Math.round(r.f) + " Hz" : "";
+      msg.textContent = "";
+    } else if (r.t - lastSound > 1) quiet();
+  }
+  async function start() {
+    if (life.starting || unsub || life.dead) return;
+    life.starting = true;
+    const g0 = life.gen;
+    try {
+      if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
+      ac();
+      setState(false, "Waiting for the microphone");
+      const u = await lvListen(life, onReading);
+      if (!u) return;
+      unsub = u; btn.textContent = "Stop"; setState(true, "Listening"); msg.textContent = "Play any note.";
+    } catch (e) { setState(false, "Not listening"); lvShowMicError(msg, e); }
+    finally { life.starting = false; }
+  }
+  function stop() { life.gen++; if (unsub) { unsub(); unsub = null; } btn.textContent = "Start the tuner"; setState(false, "Not listening"); quiet(); }
+  btn.addEventListener("click", () => (unsub ? stop() : start()));
+  return { el, start, stop, listening: () => !!unsub, destroy() { life.dead = true; stop(); } };
 }
 
 // ---- bench/bench.js ----
@@ -2690,8 +2758,8 @@ function benchTemplate(uid, o) {
       </div>
       <div class="bb-card">
         <h2>Live: which note, how many cents</h2>
-        <p class="bb-muted bb-small">The live tuner is part of Long tones now: choose "Any steady note" and play. It shows the note, how many cents flat or sharp, its Western name and Hz, and how clear the tone is.</p>
-        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button></div>
+        <p class="bb-muted bb-small">The live tuner shows the note, how many cents flat or sharp, and its Hz: in the app it is the Flute tools' Tuner tab, over any screen. Long tones, with "Any steady note", also shows how clear the tone is.</p>
+        <div class="bb-row"><button type="button" class="bb-btn bb-primary" data-ref="toTones">Open Long tones</button><button type="button" class="bb-btn bb-primary" data-ref="toTuner" hidden>Open the tuner</button></div>
       </div>
     </div>
     <div class="bb-card" data-ref="resultCard" hidden>
@@ -2924,7 +2992,7 @@ function mountBench(container, opts) {
   // ---------- Chart ----------
   function miniHtml(f) {
     if (!f) return "";
-    return '<span class="bb-mini" aria-label="' + f + '">' + f.split("").map((c, i) => (i === 3 ? '<span class="bb-gap"></span>' : "") + `<i class="${c === "X" ? "x" : c === "H" ? "h" : ""}"></i>`).join("") + "</span>";
+    return '<span class="bb-mini" role="img" aria-label="' + f + '">' + f.split("").map((c, i) => (i === 3 ? '<span class="bb-gap"></span>' : "") + `<i class="${c === "X" ? "x" : c === "H" ? "h" : ""}"></i>`).join("") + "</span>";
   }
   function buildChart() {
     const tb = q("chartBody"); if (!tb) { render(); return; }
@@ -3312,7 +3380,10 @@ function mountBench(container, opts) {
     // Reset the input after reading, so choosing the same file again analyses it again.
     listen(q("fileIn"), "change", e => { const f = e.target.files[0]; e.target.value = ""; analyzeFile(f); });
     listen(sel, "change", () => { if (lastResult) showResults(lastResult, CHECK_PLANS[Number(sel.value)][1]); });
-    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").parentElement.hidden = true; }
+    if (q("toTones")) { if (has("tones")) listen(q("toTones"), "click", () => setTab("tones")); else q("toTones").hidden = true; }
+    // In the app the tuner is the Flute dock's Tuner tab (main.js opens it on "bansuri:dock").
+    if (opts.dockTuner) { q("toTuner").hidden = false; listen(q("toTuner"), "click", () => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "tuner" } }))); }
+    else if (!has("tones")) q("toTones").parentElement.hidden = true;
   }
 
   // ---------- Ear quiz ----------

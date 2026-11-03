@@ -12,6 +12,7 @@ import { segNav } from "../segnav.js";
 import { postureCheck } from "../posture.js";
 import { codeOf, westOf } from "../core/theory.js";
 import { award } from "../xp.js";
+import { emptyState } from "../states.js";
 
 // The four tone levels of the L08 rubric, demonstrated on Sa, so a self-score means the same each time.
 export function toneLevels() {
@@ -197,7 +198,7 @@ export async function render(main, { params } = {}) {
     let recs = [];
     try { recs = await listRecordings(); } catch (e) { clear(recHost).append(h("p", { class: "small" }, String(e.message))); return; }
     clear(recHost);
-    if (!recs.length) { recHost.append(h("p", { class: "emptystate" }, "No recordings yet. Record a long Sa above: in a few weeks you can play it next to a new one and hear how far you have come.")); return; }
+    if (!recs.length) { recHost.append(emptyState("mic", "No recordings yet. Record a long Sa: in a few weeks you can play it next to a new one and hear how far you have come.", "Record your first", () => { const b = host.querySelector(".btn.primary"); if (b) { b.scrollIntoView({ block: "center" }); b.click(); } })); return; }
     // One tap: the newest recording next to the one closest to four weeks earlier.
     const newest = recs[0], target = addDays(newest.date, -28);
     const older = recs.filter(r => r.date <= addDays(newest.date, -14)).sort((a, b) => Math.abs(daysBetween(a.date, target)) - Math.abs(daysBetween(b.date, target)))[0];

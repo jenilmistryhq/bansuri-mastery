@@ -24,6 +24,24 @@ export async function filesList() {
   return filesIndex;
 }
 
+// Full-text search over every course page (the Book's "Search all text", and the top bar's search):
+// [{ d, line }] for each line that contains q, at most limit of them, in the course's page order.
+export async function searchText(q, limit) {
+  const needle = String(q || "").trim().toLowerCase(), max = limit || 80, hits = [];
+  if (needle.length < 2) return hits;
+  const files = await filesList();
+  for (const d of files.docs) {
+    let text;
+    try { text = await fetchDoc(d.path); } catch (e) { continue; }
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length && hits.length < max; i++) {
+      if (lines[i].toLowerCase().includes(needle)) hits.push({ d, line: lines[i].replace(/[#|*`>]/g, " ").replace(/\s+/g, " ").trim() });
+    }
+    if (hits.length >= max) break;
+  }
+  return hits;
+}
+
 // GitHub-style heading slug (matches the curriculum's links and scripts/validate.py).
 export function slug(text) {
   return text.trim().toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, "").replace(/\s/g, "-");

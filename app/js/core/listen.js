@@ -19,6 +19,8 @@ async function openMic() {
   const m = { stream, src, an, buf: new Float32Array(an.fftSize), subs: new Set(), hist: [], timer: 0 };
   // An interval, not animation frames, so listening continues while the page scrolls or redraws.
   m.stats = { frames: 0, voiced: 0, ms: 0, sampleRate: c.sampleRate, peak: 0 };
+  // "No sound heard": the top bar's microphone pill says so after 5 s of near silence (not while muted).
+  m.heard = c.currentTime; m.quiet = false;
   m.timer = setInterval(() => {
     const t = c.currentTime, t0 = performance.now();
     let r = { t, semi: null, near: null, cents: null, f: 0, level: 0 };
@@ -27,6 +29,8 @@ async function openMic() {
       let sq = 0; for (let i = 0; i < m.buf.length; i++) sq += m.buf[i] * m.buf[i];
       const level = Math.sqrt(sq / m.buf.length);
       r.level = level;
+      if (level > 0.004) { m.heard = t; if (m.quiet) { m.quiet = false; micState("listening"); } }
+      else if (!m.quiet && t - m.heard > 5) { m.quiet = true; micState("quiet"); }
       const y = yin(m.buf, c.sampleRate);
       if (y && y.clarity > 0.85) {
         m.hist.push(relSemi(y.f)); if (m.hist.length > 5) m.hist.shift();
@@ -37,7 +41,7 @@ async function openMic() {
       } else m.hist = [];
       m.stats.frames++; m.stats.peak = Math.max(m.stats.peak, level);
       m.stats.ms += performance.now() - t0;
-    } else m.hist = [];
+    } else { m.hist = []; m.heard = t; }
     m.subs.forEach(fn => { try { fn(r); } catch (e) { /* one listener must not stop the others */ } });
   }, 33);
   return m;
@@ -57,11 +61,21 @@ export function micStats() {
 export const micActive = () => !!micShared;
 function micEvent(on) {
   try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:mic", { detail: { on } })); } catch (e) { /* no DOM */ }
+  micState(on ? "listening" : "off");
+}
+// The microphone's state for the top bar's pill (redesign 09): "asking" (the browser's prompt is up),
+// "listening", "quiet" (open, but no sound heard for a while), "blocked" (refused; detail.why is
+// "unavailable" when the browser has no microphone here) and "off". Sent as "bansuri:micstate".
+function micState(state, why) {
+  try { if (typeof document !== "undefined") document.dispatchEvent(new CustomEvent("bansuri:micstate", { detail: { state, why: why || null } })); } catch (e) { /* no DOM */ }
 }
 
 export async function listenMic(fn) {
   if (!micShared) {
-    if (!micPending) micPending = openMic().then(m => { micShared = m; micPending = null; micEvent(true); return m; }, e => { micPending = null; throw e; });
+    if (!micPending) {
+      micState("asking");
+      micPending = openMic().then(m => { micShared = m; micPending = null; micEvent(true); return m; }, e => { micPending = null; micState("blocked", e && e.message === "unavailable" ? "unavailable" : "blocked"); throw e; });
+    }
     await micPending;
   }
   const m = micShared;

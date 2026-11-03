@@ -1,5 +1,5 @@
 {
- "version": "5aa18bf1bc33",
+ "version": "c5c42937dfc9",
  "assets": [
   "app/app.css",
   "app/audio/bansuri-e-bass-sample.m4a",
@@ -130,6 +130,7 @@
   "app/js/separate-worker.js",
   "app/js/skillmap.js",
   "app/js/state.js",
+  "app/js/states.js",
   "app/js/steps.js",
   "app/js/transcribe-worker.js",
   "app/js/transcribe.js",

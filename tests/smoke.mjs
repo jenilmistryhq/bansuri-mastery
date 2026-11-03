@@ -106,7 +106,7 @@ try {
 
   });
   await section("Routes render", async () => {
-    for (const [route, needle] of [["/plan", "All phases"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/bench", "Practice Bench"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/me/flute", "Your flute"], ["/me/settings", "Language and voice"], ["/skills", "Get better at one thing"], ["/skills/tone", "Tone and breath"], ["/skills/ornaments", "Meend bridge"], ["/skills/games", "Notes and tuning"], ["/skills/fix", "Tone check"], ["/course/milestones", "First Stable Tone"], ["/course/book", "The whole course"], ["/music", "Songs"], ["/music/ragas", "Bhupali"], ["/music/mine", "Your tunes"], ["/me", "Your progress"], ["/me/teacher", "What to review"], ["/bench/tones", "Long tones"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Opens after Day 299"]]) {
+    for (const [route, needle] of [["/plan", "All phases"], ["/library", "The whole course"], ["/read/lessons/L04-first-sound.md", "First Sound"], ["/me/flute/check", "Check my flute"], ["/journal", "Practice journal"], ["/progress", "Your progress"], ["/me/flute", "Your flute"], ["/me/settings", "Language and voice"], ["/skills", "Get better at one thing"], ["/skills/tone", "Tone and breath"], ["/skills/ornaments", "Meend bridge"], ["/skills/games", "Notes and tuning"], ["/skills/fix", "Tone check"], ["/course/milestones", "First Stable Tone"], ["/course/book", "The whole course"], ["/music", "Songs"], ["/music/ragas", "Bhupali"], ["/music/mine", "Your tunes"], ["/me", "Your progress"], ["/me/teacher", "What to review"], ["/bench/tones", "Long tones"], ["/milestone/M1", "First Stable Tone"], ["/day/14", "Milestone"], ["/day/300", "Opens after Day 299"]]) {
       await go(route);
       t = await text();
       check(t.includes(needle.toLowerCase()), route + " shows \"" + needle + "\"");
@@ -174,8 +174,13 @@ try {
     await page.select("#st-pace", "standard");
     await go("/me/settings/display");
     await page.click("#st-deva");
-    await go("/bench");
-    await page.evaluate(() => document.querySelector('.bb-tabs button[data-tab="play"]').click());
+    // The notation player is a song's Play along now (the Bench's Play along tab moved to Music).
+    await go("/music");
+    await clickText("#main .songfilter button", "All");
+    await page.click("#main .songrow");
+    await page.waitForSelector("#main .songpage", { timeout: 5000 }).catch(() => {});
+    await clickText("#main .songpage button", "Play along");
+    await page.waitForSelector("#main .bb-bench .bb-score", { timeout: 5000 }).catch(() => {});
     check(await page.$(".bb-bench .bb-score .bb-deva") !== null, "the score shows sargam in Devanagari when chosen");
     await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("bansuri.settings")); s.deva = false; localStorage.setItem("bansuri.settings", JSON.stringify(s)); });
 
@@ -197,9 +202,12 @@ try {
 
   });
   await section("Bench", async () => {
+    // #/bench forwards to Skills > Notes, with the Flute dock open on Fingers (the chart moved there).
     await go("/bench");
-    check(await page.$(".bb-bench") !== null, "bench mounted");
-    check(await page.$$eval(".bb-bench tbody tr", x => x.length) >= 24, "fingering chart has 24 rows");
+    await page.waitForSelector(".dock:not([hidden]) .dock-fingers", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => location.hash) === "#/skills/notes" && await page.$(".dock .dockbody[data-sub=fingers] .bb-bench") !== null, "#/bench forwards to Skills > Notes and opens the dock on Fingers");
+    check(await page.$$eval(".dock .bb-bench tbody tr", x => x.length) >= 24, "fingering chart has 24 rows");
+    await page.keyboard.press("Escape");
 
   });
   await section("Robustness", async () => {
@@ -313,19 +321,17 @@ try {
     await page.waitForFunction(() => /steady notes|No steady notes/.test(document.querySelector("#main .rec").innerText), { timeout: 20000 });
     check(true, "recording analysed (" + (await page.$eval("#main .rec", el => (el.innerText.match(/\d+ steady notes/) || ["no steady notes"])[0])) + ")");
     check((await progress()).recordings === 1, "recording counted once");
-    await go("/bench");
-    await page.evaluate(() => document.querySelector('.bb-bench .bb-tabs button[data-tab="check"]').click());
-    // The live tuner is part of Long tones now: the Check my flute tab points there.
-    check(await page.$(".bb-bench [data-ref=micBtn]") === null && /Check my flute/.test(await page.$eval('.bb-bench .bb-tabs button[data-tab="check"]', e => e.textContent)), "bench: no separate live tuner; the tab is Check my flute");
-    await page.evaluate(() => document.querySelector(".bb-bench [data-ref=toTones]").click());
-    check(await page.$eval('.bb-bench [data-panel="tones"]', e => !e.hidden), "bench: Open Long tones switches to the Long tones tab");
+    // Check my flute is Me > Flute's own screen now: #/bench/check forwards there.
+    await go("/bench/check");
+    check(await page.evaluate(() => location.hash) === "#/me/flute/check" && /check my flute/.test(await text()), "#/bench/check forwards to Me > Flute > Check my flute");
 
   });
   await section("Check my flute with a real bansuri recording", async () => {
     {
       // The bundled small E bansuri sample is tuned about half a semitone sharp of E5 at A4 = 440.
       await page.evaluate(() => localStorage.setItem("bansuri.settings", JSON.stringify({ saNote: 4, saOct: 5, a4: 440, volume: 0.75 })));
-      await page.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+      // The recording check of the Practice Bench (its standalone page; the app's #/bench forwards).
+      await page.goto(BASE + "bansuri-mastery/tools/practice-bench.html", { waitUntil: "networkidle0" });
       await page.reload({ waitUntil: "networkidle0" });
       await page.waitForSelector(".bb-bench [data-ref=fileIn]");
       await page.evaluate(() => [...document.querySelectorAll(".bb-tabs button")].find(b => b.dataset.tab === "check").click());
@@ -348,7 +354,7 @@ try {
 
   });
   await section("Ear quiz", async () => {
-    await go("/bench");
+    await go("/skills/ear/quiz");
     await page.evaluate(() => [...document.querySelectorAll(".bb-tabs button")].find(b => b.dataset.tab === "ear").click());
     await page.click(".bb-bench [data-ref=earReset]");
     await page.click(".bb-bench [data-ref=earNext]");
@@ -404,8 +410,10 @@ try {
 
   });
   await section("Tala with tabla theka", async () => {
-    await go("/bench");
-    await page.evaluate(() => { const b = [...document.querySelectorAll(".bb-bench .bb-tabs button, .bb-bench [role=tab]")].find(x => /tala/i.test(x.textContent)); if (b) b.click(); });
+    // The tala is the Flute dock's Taal tab (#/bench/rhythm forwards to Skills > Rhythm with it open).
+    await go("/bench/rhythm");
+    await page.waitForSelector(".dock:not([hidden]) .dockbody[data-sub=taal] [data-ref=talaSel]", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => location.hash) === "#/skills/rhythm", "#/bench/rhythm forwards to Skills > Rhythm, with the dock open on Taal");
     const talas = await page.$$eval(".bb-bench [data-ref=talaSel] option", os => os.map(o => o.value));
     check(talas.length >= 4, talas.length + " talas offered");
     check(await page.$eval(".bb-bench [data-ref=talaSound]", el => el.value) === "tabla", "tala plays the tabla theka by default");
@@ -417,6 +425,7 @@ try {
       await page.click(".bb-bench [data-ref=talaBtn]");
       check(lit, "tala " + k + " plays and lights its beats");
     }
+    await page.keyboard.press("Escape");
 
   });
   await section("Notation player stops", async () => {
@@ -436,8 +445,10 @@ try {
           return orig.call(this, dest, ...rest);
         };
       });
-      await ap.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+      // The notation player: a song's Play along (the Bench's Play along tab moved to Music), its mic check off.
+      await ap.goto(BASE + "#/music/song/1.1#play", { waitUntil: "networkidle0" });
       await ap.waitForSelector(".bb-bench [data-ref=playBtn]");
+      await ap.evaluate(() => { const m = document.querySelector("[data-ref=checkMe]"); if (m && m.checked) m.click(); });
       await ap.evaluate(() => { [...document.querySelectorAll(".bb-tabs button")].find(b => b.dataset.tab === "play").click(); const c = document.querySelector("[data-ref=clickOn]"); if (c && !c.checked) c.click(); const d = document.querySelector("[data-ref=droneWithPlay]"); if (d && !d.checked) d.click(); });
       const level = () => ap.evaluate(() => window.__out.slice(-6).reduce((p, b) => b.reduce((q, v) => Math.max(q, Math.abs(v)), p), 0));
       await ap.click("[data-ref=playBtn]"); await sleep(1200);
@@ -498,7 +509,7 @@ try {
       const hz = semi => 523.251 * Math.pow(2, semi / 12);
       const tone = semi => lp.evaluate(f => window.__tone && window.__tone(f), semi === null ? 0 : hz(semi));
       const tab = name => lp.evaluate(n => document.querySelector(`.bb-tabs button[data-tab="${n}"]`).click(), name);
-      await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/skills/tone/longtones", { waitUntil: "networkidle0" });
       await lp.evaluate(() => { localStorage.removeItem("bansuri.settings"); localStorage.removeItem("bansuri.live.echo"); });
       await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector(".bb-bench [data-ref=toneNote]");
@@ -599,9 +610,9 @@ try {
 
       // Tone check, a section of the Coach: a held Sa 35 cents flat is diagnosed as flat, and
       // Show the fix opens the matching guide on the same page.
-      await lp.goto(BASE + "#/tone", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/skills/fix", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#main #symptoms", { timeout: 8000 }).catch(() => {});
-      check(await lp.evaluate(() => /What is going wrong/.test((document.querySelector("#main h1") || {}).textContent || "") && !!document.querySelector("#main #tone") && !!document.querySelector("#main #symptoms")), "#/tone opens the Coach, with the Tone check and the symptoms on one page");
+      check(await lp.evaluate(() => /What is going wrong/.test((document.querySelector("#main h1") || {}).textContent || "") && !!document.querySelector("#main #tone") && !!document.querySelector("#main #symptoms")), "Fix a problem (#/skills/fix; #/tone forwards to the Tone hub) has the Tone check and the symptoms on one page");
       await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Hold the note/.test(b.textContent)), { timeout: 5000 });
       await clickTextOn(lp, "#main button", "Hold the note");
       await sleep(300); await tone(-0.35);
@@ -655,7 +666,7 @@ try {
       // Play: games that listen. Earlier rounds above recorded a best hold, which the ring shows as a ghost.
       // (The flute finder above set Sa to E5; back to C5 so the test tones mean what they say.)
       await lp.evaluate(() => localStorage.removeItem("bansuri.settings"));
-      await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/skills/tone/longtones", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector(".bb-bench [data-ref=toneNote]");
       await tab("tones");
@@ -767,7 +778,7 @@ try {
       check(await lp.$$eval("#level .levelrow", x => x.length) === 30 && /Listener/.test(await lp.$eval("#level .levelrow.now", e => e.textContent)), "levels: Progress lists the 30 named levels, the current one marked");
 
       console.log("Get-ready countdown");
-      await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/skills/tone/longtones", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector(".bb-bench [data-ref=toneNote]");
       await tab("tones");
@@ -791,7 +802,7 @@ try {
       const setSet = patch => lp.evaluate(p => { const s = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); localStorage.setItem("bansuri.settings", JSON.stringify(Object.assign(s, p))); }, patch);
       const voiceMod = () => lp.evaluate(async () => { window.__voice = await import(new URL("app/js/voice.js", location.href).href); });
       // The natural voice: a clip plays and its words show as a caption.
-      await lp.goto(BASE + "#/bench", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/skills/tone/longtones", { waitUntil: "networkidle0" });
       await voiceMod();
       check(await lp.evaluate(() => window.__voice.speak("good")) === true && /Good/.test(await lp.$eval(".caption", e => e.textContent)), "voice: a natural-voice clip plays, with a caption");
       check(await lp.evaluate(async () => { const r = await fetch("app/voice/hi/index.json"); if (!r.ok) return false; const j = await r.json(); return Object.keys(j.phrases).length > 50 && Object.keys(j.notes).length > 100; }), "voice: Hindi clips are listed for phrases and every note");
@@ -859,7 +870,7 @@ try {
 
       // Ornament trainer: a played meend from Re to Ga (a glide in small steps) is measured and passes.
       // A fresh page: the hands-free section's spoken prompts can still be muting the microphone.
-      await lp.goto(BASE + "#/ornaments", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/skills/ornaments/trainer", { waitUntil: "networkidle0" });
       await lp.reload({ waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .ornplot");
       // The played line starts only once the page is listening (the microphone can take a moment).
@@ -972,7 +983,7 @@ try {
         wav.writeUInt32LE(sr, 24); wav.writeUInt32LE(sr * 2, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write("data", 36); wav.writeUInt32LE(n * 2, 40);
         for (let i = 0; i < n; i++) wav.writeInt16LE(Math.round(Math.sin(2 * Math.PI * 587.33 * i / sr) * 12000), 44 + i * 2);
         const file = path.join(os.tmpdir(), "bansuri-model-test.wav"); fs.writeFileSync(file, wav);
-        await lp.goto(BASE + "#/ornaments", { waitUntil: "networkidle0" }); await lp.waitForSelector("#orn-modelfile");
+        await lp.goto(BASE + "#/skills/ornaments/trainer", { waitUntil: "networkidle0" }); await lp.waitForSelector("#orn-modelfile");
         check(/Your teacher's model/.test(await lp.$eval("#main", e => e.textContent)), "ornaments: the trainer offers a teacher's model");
         await (await lp.$("#orn-modelfile")).uploadFile(file);
         await lp.waitForFunction(() => /Use it as the target/.test(document.querySelector("#main").textContent), { timeout: 10000 }).catch(() => {});
@@ -993,7 +1004,7 @@ try {
       await lp.goto(BASE + "#/read/ragas/yaman.md", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#main .hiraga", { timeout: 8000 }).catch(() => {});
       check(await lp.evaluate(() => { const d = document.querySelector("#main .hiraga"); return !!d && /([\u0900-\u097F]+\s+){10}/.test(d.textContent) && d.querySelectorAll("h2").length >= 4 && !!document.querySelector("#main article"); }), "hindi: a raga card shows its sections in Hindi, with the English card below");
-      for (const [route, what] of [["/ornaments", "ornament trainer"], ["/coach", "coach (with the tone check)"], ["/review", "teacher review"]]) {
+      for (const [route, what] of [["/skills/ornaments/trainer", "ornament trainer"], ["/coach", "coach (with the tone check)"], ["/review", "teacher review"]]) {
         await lp.goto(BASE + "#" + route, { waitUntil: "networkidle0" });
         await sleep(300);
         check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector("#main h1").textContent) && [...document.querySelectorAll("#main button")].every(b => !/[A-Za-z]{3}/.test(b.textContent) || /[\u0900-\u097F]/.test(b.textContent))), "hindi: the " + what + " page's heading and buttons are in Hindi");
@@ -1033,7 +1044,7 @@ try {
       // ...and offline, the whole app comes from the saved copy (restore the real module first).
       await sp.evaluate(async () => { for (const k of await caches.keys()) { const c = await caches.open(k); await c.put(new Request(new URL("app/js/core/listen.js", location.href)), await fetch("app/js/core/listen.js", { cache: "no-store" })); } });
       await sp.setOfflineMode(true);
-      await sp.goto(BASE + "#/bench", { waitUntil: "load" }).catch(() => {});
+      await sp.goto(BASE + "#/skills/tone/longtones", { waitUntil: "load" }).catch(() => {});
       await sp.waitForSelector(".bb-bench", { timeout: 10000 }).then(() => check(true, "offline, the app and the Practice Bench load from the saved copy"), () => check(false, "offline, the app and the Practice Bench load from the saved copy"));
       // The rest of the course is saved in the background after the first load: a lesson opens offline too.
       await sp.setOfflineMode(false);
@@ -1357,6 +1368,8 @@ try {
       await go(route);
       check(await page.$eval("nav.tabbar [aria-current=page]", e => e.textContent.trim()).catch(() => "") === want, route + " still opens, under " + want);
     }
+    // (#/bench opened the Flute dock on Fingers, where the fingering chart moved: close it.)
+    await page.keyboard.press("Escape");
     // The address bar shows the new address for an old one.
     await go("/songs");
     check(await page.evaluate(() => location.hash) === "#/music", "an old address shows its new one (/songs -> #/music)");
@@ -1853,18 +1866,19 @@ try {
     await page.evaluate(() => localStorage.setItem("bansuri.bench.live.toneNote", JSON.stringify("4")));
     await go("/skills/tone/longtones");
     const chipB = await pickedChip();
-    await go("/bench");
-    const benchList = await page.evaluate(() => !document.querySelector("#main .tonechips") && !!document.querySelector("#main [data-ref=toneNote]") && !document.querySelector("#main [data-ref=toneNote]").closest(".bb-field").hidden);
+    // (The full Bench, with its list, is no longer an app screen: #/bench/tones forwards here.)
+    await go("/bench/tones");
+    const fwd = await page.evaluate(() => location.hash);
     await page.evaluate(() => localStorage.removeItem("bansuri.bench.live.toneNote"));
-    check(chipA.n === 12 && chipA.hidden && chipA.sel === "2" && chipA.picked === "2" && stored === "\"2\"" && chipB.picked === "4" && chipB.sel === "4" && benchList, "long tones: note chips in place of the list, remembered, a preset note shows picked; the Bench keeps its list " + JSON.stringify([chipA, chipB, benchList]));
+    check(chipA.n === 12 && chipA.hidden && chipA.sel === "2" && chipA.picked === "2" && stored === "\"2\"" && chipB.picked === "4" && chipB.sel === "4" && fwd === "#/skills/tone/longtones", "long tones: note chips in place of the list, remembered, a preset note shows picked; #/bench/tones opens it " + JSON.stringify([chipA, chipB, fwd]));
     for (const [route, sel, what] of [["/skills/tone/check", "#tone", "tone check"], ["/skills/rhythm/tap", ".lv-pad", "tap the beat"], ["/skills/ornaments/trainer", ".ornTabs", "ornament trainer"], ["/skills/ear/quiz", ".bb-bench [data-ref=earNext]", "ear quiz"], ["/skills/ear/playback", ".lv-echo", "play it back"]]) {
       await go(route);
       check(!!(await page.$("#main " + sel)) && !!(await page.$("#main .backhead")), what + ": opens on its own screen (" + route + ")");
     }
     await go("/skills/notes");
     await clickText("#main button.hubmain", "Tuner");
-    await page.waitForSelector(".dock:not([hidden]) .bb-bench", { timeout: 8000 }).catch(() => {});
-    check(await page.evaluate(() => !document.querySelector(".dock").hidden && document.querySelector(".dock .bb-tabs [aria-selected=true]")?.dataset.tab === "check"), "notes hub: the tuner opens in the Flute dock");
+    await page.waitForSelector(".dock:not([hidden]) .dockbody[data-sub=tuner] .tn", { timeout: 8000 }).catch(() => {});
+    check(await page.evaluate(() => !document.querySelector(".dock").hidden && document.querySelector(".dock [data-dock=tuner]").getAttribute("aria-selected") === "true" && document.querySelector(".dock .tn").offsetParent !== null), "notes hub: the tuner opens in the Flute dock");
     await page.keyboard.press("Escape");
     await go("/skills/fix");
     const fix = await page.evaluate(() => ({ heads: [...document.querySelectorAll("#main .symhead")].map(x => x.textContent.trim()), last: [...document.querySelectorAll("#main .page > *")].pop().innerText, eyebrow: document.querySelector("#main .hero .eyebrow").textContent }));
@@ -1990,6 +2004,142 @@ try {
     check(!(await tp.$(".msgtoast")), "news: shown once, remembered");
     await tp.goto(BASE + "#/today/quick", { waitUntil: "networkidle0" });
     check(await tp.waitForSelector("#main .lv-hold", { timeout: 5000 }).then(() => true, () => false), "#/today/quick opens the 5-minute practice (#/quick still works)");
+    await ctx.close();
+  });
+  await section("Shell: place name, tab lists, back headers, old addresses, dock, mic pill, search, larger screens", async () => {
+    const ctx = await browser.createBrowserContext();
+    const sp = await ctx.newPage();
+    sp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    sp.on("console", m => { if (m.type() === "error") errors.push("console: " + m.text()); });
+    await sp.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true });
+    await sp.goto(BASE + "#/today", { waitUntil: "networkidle0" });
+    await sp.evaluate(() => { localStorage.setItem("bansuri.progress", JSON.stringify({ current: 12, startedAt: "2026-10-01", prefs: { howChosen: true, newsSeen: "x" } })); localStorage.setItem("bansuri.live.micIntro", "1"); });
+    const at = async (hash, wait) => { await sp.goto(BASE + "#" + hash, { waitUntil: "networkidle0" }); if (wait) await sp.waitForSelector(wait, { timeout: 8000 }).catch(() => {}); await sleep(250); };
+    const hashNow = () => sp.evaluate(() => location.hash);
+    await sp.reload({ waitUntil: "networkidle0" });
+    // W1: the place's name at the top left.
+    await at("/skills/tone");
+    check(await sp.$eval(".topbar .placename", e => e.textContent) === "Skills", "W1: the top bar names the place (Skills)");
+    // 03 item 9: the section tabs are a tab list, one tab selected and reached with Tab, arrow keys move along.
+    const tl = await sp.evaluate(() => { const n = document.querySelector("#main .sectiontabs"), tabs = [...n.querySelectorAll("a")];
+      return { role: n.getAttribute("role"), roles: tabs.every(a => a.getAttribute("role") === "tab"), sel: tabs.filter(a => a.getAttribute("aria-selected") === "true").map(a => a.textContent), focusable: tabs.filter(a => a.tabIndex === 0).map(a => a.textContent) }; });
+    check(tl.role === "tablist" && tl.roles && tl.sel.join() === "Tone" && tl.focusable.join() === "Tone", "section tabs: a tab list, Tone selected and the one Tab reaches " + JSON.stringify(tl));
+    await sp.focus("#main .sectiontabs a[aria-selected=true]"); await sp.keyboard.press("ArrowRight");
+    check(await sp.evaluate(() => document.activeElement && document.activeElement.textContent === "Notes"), "section tabs: the right arrow moves to the next tab");
+    // W1: screens inside a section swap the tabs for "< Back  Title".
+    for (const [hash, back, label, title] of [["/milestone/M1", "#/course/milestones", "Course", "Milestone M1"], ["/skills/fix/TS-02", "#/skills/fix", "Fix a problem", "TS-02"], ["/read/lessons/L04-first-sound.md", "#/course/book", "Course book", "First Sound"]]) {
+      await at(hash, "#main .framehead");
+      const fh = await sp.evaluate(() => { const f = document.querySelector("#main .framehead"); return f && { href: f.querySelector("a").getAttribute("href"), text: f.innerText.replace(/\s+/g, " "), tabs: !!document.querySelector("#main .sectiontabs") }; });
+      check(!!fh && fh.href === back && fh.text.includes(label) && fh.text.includes(title) && !fh.tabs, "W1: " + hash + " has \"< " + label + "  " + title + "\" instead of the section tabs " + JSON.stringify(fh));
+    }
+    await at("/course#phases", "#main .pathhead");
+    check(!(await sp.$("#main .sectiontabs")) && !!(await sp.$("#main .backlink")), "W19: All phases has its back link and no section tabs");
+    // 03: old addresses forward to their new homes.
+    const challenge = await sp.evaluate(async () => (await import(new URL("app/js/views/play.js", location.href).href)).challengeLink({ g: "balloon", l: "srg", s: 3, n: 120, by: "Smoke" }));
+    for (const [from, to] of [["/quick", "#/today/quick"], ["/ornaments", "#/skills/ornaments"], ["/tone", "#/skills/tone"], ["/play/bingo", "#/skills/game/bingo"], ["/bench/ear", "#/skills/ear/quiz"], ["/bench/echo", "#/skills/ear/playback"], ["/bench/tones", "#/skills/tone/longtones"], ["/bench/play", "#/music"], ["/bench/about", "#/me/settings/help"]]) {
+      await at(from);
+      check(await hashNow() === to, "old address " + from + " forwards to " + to);
+    }
+    await sp.goto(challenge, { waitUntil: "networkidle0" }); await sp.waitForSelector("#main .challenge", { timeout: 5000 }).catch(() => {});
+    check(/^#\/skills\/game\/challenge\//.test(await hashNow()) && /Smoke scored 120/.test(await sp.$eval("#main .challenge", e => e.innerText).catch(() => "")), "a #/challenge/ link forwards to the game address and keeps its challenge");
+    await sp.keyboard.press("Escape"); await sleep(200);
+    // W6: Fingers: a note's holes and its breath; W3: Sa [ C5 v ].
+    await at("/today");
+    await sp.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "fingers" } })));
+    await sp.waitForSelector(".dock:not([hidden]) .dock-notes button", { timeout: 8000 }).catch(() => {});
+    const chips = await sp.$$eval(".dock .dock-notes button", b => b.map(x => x.textContent));
+    await sp.evaluate(() => [...document.querySelectorAll(".dock .dock-notes button")].find(b => b.textContent === "G").click());
+    const holes = await sp.$$eval(".dock .dock-holes li", l => l.map(x => x.className).join());
+    check(chips.length === 13 && chips[0] === "S" && chips[12] === "S'" && holes === "closed,open,open,open,open,open" && /Gentle air/.test(await sp.$eval(".dock .dock-breath", e => e.textContent)), "W6: Fingers: tap G, see hole 1 closed and the rest open, gentle air [" + holes + "]");
+    await sp.evaluate(() => document.querySelector(".dock .dock-hear").click());
+    await sp.evaluate(() => document.querySelector(".dock [data-dock=drone]").click());
+    check(await sp.$eval(".dock .dock-sa", e => e.value + ":" + (e.offsetParent !== null)) === "0:5:true", "W3: the Drone tab shows Sa [ C5 ]");
+    await sp.select(".dock .dock-sa", "2:5");
+    check(await sp.evaluate(() => { const s = JSON.parse(localStorage.getItem("bansuri.settings") || "{}"); return s.saNote === 2 && s.saOct === 5; }), "W3: choosing D5 sets the flute's Sa (as Me > Flute does)");
+    await sp.evaluate(() => document.querySelector(".dock [data-ref=tanBtn]").click());
+    await sp.keyboard.press("Escape"); await sleep(200);
+    check(await sp.evaluate(() => { const p = document.querySelector(".dronepill"); return !p.hidden && /Drone\s*D5/.test(p.textContent); }), "W7: the closed dock's pill names the drone's Sa (Drone D5)");
+    await sp.click(".dronepill"); await sp.waitForSelector(".dock:not([hidden]) [data-ref=tanBtn]", { timeout: 8000 }).catch(() => {});
+    await sp.evaluate(() => document.querySelector(".dock [data-ref=tanBtn]").click());
+    await sp.select(".dock .dock-sa", "0:5");
+    // W4: the tuner listens (the fake microphone), shows its state, and stops when its tab is left.
+    await sp.evaluate(() => document.querySelector(".dock [data-dock=tuner]").click());
+    await sp.waitForSelector(".dock .tn.tn-on", { timeout: 8000 }).catch(() => {});
+    const tn = await sp.evaluate(() => ({ on: !!document.querySelector(".dock .tn.tn-on"), state: document.querySelector(".dock .tn-state").textContent, meter: !!document.querySelector(".dock .tn .lv-bar .lv-needle"), scale: document.querySelector(".dock .tn .lv-scale").textContent, pill: document.querySelector(".micpill").hidden ? "" : document.querySelector(".micpill").textContent }));
+    check(tn.on && /Listening/.test(tn.state) && tn.meter && tn.scale === "-500+50" && tn.pill === "Listening", "W4: the dock's tuner listens, with a -50..+50 meter, and the top bar's pill says Listening " + JSON.stringify(tn));
+    await sp.evaluate(() => document.querySelector(".dock [data-dock=taal]").click()); await sleep(300);
+    check(await sp.evaluate(() => !document.querySelector(".dock .tn.tn-on") && document.querySelector(".micpill").hidden), "W4: leaving the Tuner tab closes the microphone");
+    await sp.keyboard.press("Escape");
+    // 09: the microphone pill's states, and a refused microphone says how to allow it.
+    const pillAt = async state => { await sp.evaluate(s => document.dispatchEvent(new CustomEvent("bansuri:micstate", { detail: { state: s } })), state); return sp.evaluate(() => { const p = document.querySelector(".micpill"); return p.hidden ? "" : p.textContent; }); };
+    const words = [await pillAt("asking"), await pillAt("listening"), await pillAt("quiet"), await pillAt("off")];
+    check(words.join("|") === "Asking for the microphone|Listening|No sound heard|", "09: the mic pill: asking, listening, no sound heard, off [" + words.join("|") + "]");
+    await sp.evaluate(() => { navigator.mediaDevices.getUserMedia = () => Promise.reject(new DOMException("Permission denied", "NotAllowedError")); });
+    await sp.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "tuner" } })));
+    await sp.waitForFunction(() => { const p = document.querySelector(".micpill"); return !p.hidden && /blocked/.test(p.textContent); }, { timeout: 8000 }).catch(() => {});
+    check(await sp.evaluate(() => /Microphone blocked/.test(document.querySelector(".micpill").textContent) && !!document.querySelector(".dock .tn-msg a[href='#/me/flute#g-checks']")), "09: a refused microphone: the pill says blocked, the tuner links to the microphone help");
+    await sp.keyboard.press("Escape"); await sleep(200);
+    await sp.click(".micpill"); await sleep(600);
+    const blockedTap = await sp.evaluate(() => ({ pill: document.querySelector(".micpill").hidden ? "" : document.querySelector(".micpill").dataset.state, toast: [...document.querySelectorAll(".toasts *")].some(t => /lock or site icon/.test(t.textContent)) }));
+    check(blockedTap.pill === "blocked" && blockedTap.toast, "09: tapping the blocked pill (it stays after the dock closes) says how to allow the microphone " + JSON.stringify(blockedTap));
+    // W8: search: screens, then the glossary and the course text with the words around the match.
+    await at("/today");
+    await sp.keyboard.press("/"); await sp.waitForSelector(".palette input", { timeout: 3000 }).catch(() => {});
+    await sp.type(".palette input", "pakad");
+    await sp.waitForFunction(() => /In the course/i.test(document.querySelector(".palette .pal-list").innerText) && !/Searching the course/.test(document.querySelector(".palette .pal-list").innerText), { timeout: 20000 }).catch(() => {});
+    const pal = await sp.evaluate(() => ({ groups: [...document.querySelectorAll(".palette .pal-group")].map(g => g.textContent), snip: [...document.querySelectorAll(".palette .pal-sub")].map(s => s.textContent) }));
+    check(pal.groups.includes("Glossary") && pal.groups.includes("In the course") && pal.snip.some(s => /pakad/i.test(s)), "W8: search shows GLOSSARY and IN THE COURSE hits with the words around them " + JSON.stringify(pal.groups));
+    await sp.keyboard.press("Escape");
+    await sp.keyboard.press("/"); await sp.waitForSelector(".palette input", { timeout: 3000 }).catch(() => {});
+    await sp.type(".palette input", "tuner which"); await sleep(200); await sp.keyboard.press("Enter");
+    await sp.waitForSelector(".dock:not([hidden]) .dockbody[data-sub=tuner]", { timeout: 8000 }).catch(() => {});
+    check(await sp.evaluate(() => !document.querySelector(".dock").hidden && location.hash === "#/today"), "search: the Tuner opens the dock over the screen you are on");
+    await sp.keyboard.press("Escape");
+    // The Book's fingering row and Today's quick action open the dock instead of the old Bench.
+    await at("/course/book", "#main .bookelse");
+    await sp.evaluate(() => [...document.querySelectorAll("#main .bookelse .bookrow")].find(b => /fingering chart/.test(b.textContent)).click());
+    await sp.waitForSelector(".dock:not([hidden]) .dock-fingers", { timeout: 8000 }).catch(() => {});
+    check(await sp.evaluate(() => !document.querySelector(".dock").hidden && location.hash === "#/course/book"), "Book: the fingering chart row opens the dock's Fingers");
+    await sp.keyboard.press("Escape");
+    // W85, W86: an empty Journal of recordings, and a review link that cannot be read.
+    await at("/me/journal/recordings", "#main .emptypic");
+    check(await sp.evaluate(() => { const e = document.querySelector("#main .emptypic"); return !!e && !!e.querySelector(".emptyicon svg") && /Record your first/.test(e.querySelector(".btn.primary").textContent); }), "W85: no recordings: a picture, one line and Record your first");
+    for (const hash of ["/review/not-a-link", "/feedback/not-a-link"]) {
+      await at(hash, "#main .errorcard");
+      check(await sp.evaluate(() => { const e = document.querySelector("#main .errorcard"); return !!e && /could not be read/.test(e.innerText) && [...e.querySelectorAll("button")].map(b => b.textContent).join() === "Back,Report it"; }), "W86: " + hash + ": what happened, what to do, Back and Report it");
+    }
+    // W91: in full focus the top bar hides; a handle at the edge opens the dock there.
+    await at("/today");
+    await sp.evaluate(() => document.documentElement.classList.add("fullfocus"));
+    const ff = await sp.evaluate(() => ({ top: getComputedStyle(document.querySelector(".topbar")).display, fab: getComputedStyle(document.querySelector(".dockfab")).display }));
+    await sp.click(".dockfab"); await sp.waitForSelector(".dock:not([hidden])", { timeout: 8000 }).catch(() => {});
+    check(ff.top === "none" && ff.fab !== "none" && await sp.evaluate(() => !document.querySelector(".dock").hidden && document.querySelector(".dock").getBoundingClientRect().bottom > 0), "W91: full focus hides the top bar, and its dock handle opens the dock " + JSON.stringify(ff));
+    await sp.keyboard.press("Escape");
+    await sp.evaluate(() => document.documentElement.classList.remove("fullfocus"));
+    // W90: from 600 px the homes use two columns: Today and This unit side by side.
+    await sp.setViewport({ width: 768, height: 1024 });
+    await at("/today", "#main .unitstrip");
+    const tw = await sp.evaluate(() => { const a = document.querySelector("#main .todayhero").getBoundingClientRect(), b = document.querySelector("#main .unitstrip").getBoundingClientRect(); return { aTop: Math.round(a.top), bTop: Math.round(b.top), aRight: Math.round(a.right), bLeft: Math.round(b.left) }; });
+    check(Math.abs(tw.aTop - tw.bTop) < 4 && tw.bLeft > tw.aRight, "W90: at 768 px, Today and This unit sit side by side " + JSON.stringify(tw));
+    await at("/me", "#main .dashgrid");
+    check(await sp.evaluate(() => getComputedStyle(document.querySelector("#main .dashgrid")).gridTemplateColumns.split(" ").length === 2), "W90: at 768 px, Me's dashboard uses two columns");
+    // W91: on a desktop the dock is a right column beside the page, with nothing over the page.
+    await sp.setViewport({ width: 1280, height: 860 });
+    await at("/skills");
+    await sp.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "drone" } })));
+    await sp.waitForSelector(".dock:not([hidden]) [data-ref=tanBtn]", { timeout: 8000 }).catch(() => {});
+    const dk = await sp.evaluate(() => ({ back: getComputedStyle(document.querySelector(".dockback")).display, margin: parseFloat(getComputedStyle(document.querySelector(".layout")).marginRight), left: Math.round(document.querySelector(".dock").getBoundingClientRect().left) }));
+    await sp.click("#main h1"); await sleep(200);
+    check(dk.back === "none" && dk.margin > 300 && dk.left >= 1280 - dk.margin - 1 && await sp.evaluate(() => !document.querySelector(".dock").hidden), "W91: on a desktop the dock is a right column that stays open while the page is used " + JSON.stringify(dk));
+    await sp.keyboard.press("Escape");
+    // Hindi: the new words of the shell.
+    await sp.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true });
+    await sp.evaluate(() => localStorage.setItem("bansuri.settings", JSON.stringify({ lang: "hi" })));
+    await sp.goto(BASE + "#/skills", { waitUntil: "networkidle0" }); await sp.reload({ waitUntil: "networkidle0" }); await sleep(400);
+    await sp.evaluate(() => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "fingers" } })));
+    await sp.waitForSelector(".dock:not([hidden]) .dock-holes li", { timeout: 8000 }).catch(() => {});
+    const hi = await sp.evaluate(() => ({ place: document.querySelector(".topbar .placename").textContent, hole: document.querySelector(".dock .dock-holes li span").textContent, tab: document.querySelector(".dock [data-dock=tuner]").textContent }));
+    check(/[ऀ-ॿ]/.test(hi.place) && /[ऀ-ॿ]/.test(hi.hole) && /[ऀ-ॿ]/.test(hi.tab), "Hindi: the place name, the dock's tabs and its holes " + JSON.stringify(hi));
     await ctx.close();
   });
   await section("Every day's lesson, walked through", async () => {
@@ -2136,7 +2286,7 @@ try {
     }
   });
   await section("Tone check", async () => {
-    await go("/tone");
+    await go("/skills/fix");
     check(/tone check: let the app listen/.test(await text()), "tone: the Tone check opens in the Coach");
     await page.evaluate(() => [...document.querySelectorAll("#main button")].find(b => /Hold the note/.test(b.textContent)).click());
     await page.waitForFunction(() => /out of 10|No steady note|could not be read/.test(document.querySelector("#main").textContent), { timeout: 30000 }).catch(() => {});

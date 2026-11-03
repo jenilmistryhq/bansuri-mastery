@@ -1,7 +1,7 @@
 // Course > Book (#/course/book, was the Library): every course page, grouped, with a title filter
 // and full-text search.
 import { h, clear } from "../util.js";
-import { filesList, fetchDoc } from "../content.js";
+import { filesList, searchText } from "../content.js";
 import { getPlan, current } from "../course.js";
 import { xpState } from "../xp.js";
 import { store } from "../util.js";
@@ -31,7 +31,7 @@ const GROUPS = [
 // things that have their one home elsewhere (raga cards, listening, fixes, the fingering chart),
 // linked instead of copied here [IA1]. Full-text search still reads every page.
 const PARTS = [["The course", ["start", "phases", "lessons", "exercises", "projects"]], ["Look it up", ["reference", "knowledge-tree"]]];
-const ELSEWHERE = [["In Music: raga cards", "#/music/ragas"], ["In Music: listening", "#/music/listen"], ["In Skills: fix a problem", "#/skills/fix"], ["In Skills: the fingering chart", "#/bench/chart"]];
+const ELSEWHERE = [["In Music: raga cards", "#/music/ragas"], ["In Music: listening", "#/music/listen"], ["In Skills: fix a problem", "#/skills/fix"], ["In the Flute tools: the fingering chart", "dock:fingers"]];
 
 function groupOf(path) {
   if (!path.includes("/")) return /^0[0359]-|^README/.test(path) ? "start" : "reference";
@@ -62,7 +62,9 @@ export async function render(main) {
     }
     if (!listHost.childNodes.length) listHost.append(h("p", { class: "muted" }, "No page titles match. Try Search all text."));
     listHost.append(h("h2", { class: "bookpart" }, "Elsewhere"),
-      h("nav", { class: "card bookelse", "aria-label": "Elsewhere" }, ELSEWHERE.map(([label, href]) => h("a", { class: "bookrow", href }, h("span", null, label), h("span", { class: "chev", "aria-hidden": "true" }, ">")))));
+      h("nav", { class: "card bookelse", "aria-label": "Elsewhere" }, ELSEWHERE.map(([label, href]) => /^dock:/.test(href)
+        ? h("button", { type: "button", class: "bookrow", onclick: () => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: href.slice(5) } })) }, h("span", null, label), h("span", { class: "chev", "aria-hidden": "true" }, ">"))
+        : h("a", { class: "bookrow", href }, h("span", null, label), h("span", { class: "chev", "aria-hidden": "true" }, ">")))));
   }
 
   fullBtn.addEventListener("click", async () => {
@@ -70,16 +72,7 @@ export async function render(main) {
     clear(results);
     if (q.length < 2) { results.append(h("p", { class: "small muted" }, "Type at least 2 characters.")); return; }
     results.append(h("p", { class: "small muted" }, "Searching..."));
-    const needle = q.toLowerCase();
-    const hits = [];
-    for (const d of files.docs) {
-      let text;
-      try { text = await fetchDoc(d.path); } catch (e) { continue; }
-      const lines = text.split("\n");
-      for (let i = 0; i < lines.length && hits.length < 80; i++) {
-        if (lines[i].toLowerCase().includes(needle)) hits.push({ d, line: lines[i].replace(/[#|*`>]/g, " ").replace(/\s+/g, " ").trim() });
-      }
-    }
+    const hits = await searchText(q, 80);
     clear(results);
     results.append(h("section", { class: "card" }, h("h2", null, hits.length + (hits.length >= 80 ? "+" : "") + " matches for \"" + q + "\""),
       h("div", { class: "libgroup" }, hits.map(x => h("a", { href: "#/read/" + x.d.path }, h("b", null, x.d.title), h("br"), h("span", { class: "small muted" }, x.line.slice(0, 160)))))));

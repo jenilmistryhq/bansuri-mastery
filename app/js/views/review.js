@@ -8,6 +8,7 @@ import { h, toast, today, icon, addDays, store, storeSet } from "../util.js";
 import { RUBRIC, encodeLink, decodeLink, linkTo, addRequest, feedback as feedbackList } from "../review.js";
 import { takeHandoff } from "../reviewhandoff.js";
 import { segNav } from "../segnav.js";
+import { errorState } from "../states.js";
 import { reviewCard } from "./feedback.js";
 import { studentsBody } from "./students.js";
 import { encodePayload, sharePayload } from "./progress.js";
@@ -120,7 +121,7 @@ export async function render(main, { params }) {
 async function teacherSide(page, data) {
   let req;
   try { req = await decodeLink(data); } catch (e) { req = null; }
-  if (!req || req.kind !== "review") { page.append(h("section", { class: "card" }, h("h1", null, "This review link could not be read"), h("p", null, "Ask for the link again: it may have been cut short."))); return undefined; }
+  if (!req || req.kind !== "review") { page.append(errorState("This review link could not be read", "It may be cut short. Ask for the link again.", "#/me/teacher")); return undefined; }
   const scores = {}, notes = {};
   const player = h("audio", { controls: true, class: "rvplayer" });
   player.preservesPitch = true;

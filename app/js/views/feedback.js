@@ -2,6 +2,7 @@
 // reviews; its practice task appears on Today until marked done (review.js).
 import { h, icon } from "../util.js";
 import { RUBRIC, decodeLink, addFeedback, feedback } from "../review.js";
+import { errorState } from "../states.js";
 
 export function scoreRows(f) {
   return RUBRIC.filter(r => f.scores[r.key]).map(r => h("tr", null, h("th", { scope: "row" }, r.name),
@@ -21,7 +22,7 @@ export async function render(main, { params }) {
   main.append(page);
   let f = null;
   try { const o = await decodeLink(params[0]); if (o && o.kind === "feedback") f = addFeedback(o); } catch (e) { f = null; }
-  if (!f) { page.append(h("section", { class: "card" }, h("h1", null, "This review link could not be read"), h("p", null, "Ask your teacher to send it again."))); return; }
+  if (!f) { page.append(errorState("This review link could not be read", "It may be cut short. Ask your teacher to send it again.", "#/me/teacher")); return; }
   page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "From your teacher"), h("h1", null, f.what), h("p", { class: "muted" }, "Saved in the app. The practice task is on Today until you mark it done.")),
     reviewCard(f, "This review"),
     h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/today" }, icon("today"), " To Today"), h("a", { class: "btn", href: "#/me/teacher/feedback" }, "All reviews")));

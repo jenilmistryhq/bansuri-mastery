@@ -1481,3 +1481,119 @@ button.hubrow:first-child { border-top: 0; }
 .firstchoice > .btn { justify-content: center; }
 .firstchoice[hidden] { display: none; }
 .firstplay { border-left: 4px solid var(--accent); }
+/* Redesign 2: shell and dock */
+/* W1: the place you are in, named at the top left; the app's name only on a wide screen. */
+.placename { font-family: var(--display); font-weight: 400; font-size: 1.25rem; white-space: nowrap; }
+.brand .brandname { display: none; }
+@media (min-width: 1025px) {
+  .brand .brandname { display: inline; }
+  .brand + .placename { padding-left: 12px; margin-left: 2px; border-left: 1px solid var(--line); color: var(--muted); font-size: 1.05rem; }
+}
+/* W1: a screen inside a section: "< Back   Title" in place of the section tabs. */
+.framehead { display: flex; align-items: center; gap: 4px 14px; max-width: 920px; margin: -8px auto 6px; min-width: 0; }
+.framehead .backlink { flex: none; }
+/* One chevron on a back link (the drawn one); backHead's text "<" stays for screen readers only. */
+.backlink .chev { display: none; }
+.frametitle { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--ink); }
+main > .framehead ~ .page > .crumbs { display: none; }
+main:has(.todaygrid) > .framehead, main:has(.page.wide) > .framehead { max-width: 1120px; }
+/* 03 item 9: the section tabs are a tab list; the selected tab shows focus clearly. */
+.sectiontabs a:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+/* 09: the microphone pill's states. */
+button.micpill { border: 0; font: inherit; font-size: 0.8rem; font-weight: 600; cursor: default; min-height: 32px; }
+.micpill[data-state="asking"] { background: var(--sunken); color: var(--muted); }
+.micpill[data-state="quiet"] { background: color-mix(in srgb, var(--warn) 18%, var(--surface)); }
+.micpill[data-state="blocked"], .micpill[data-state="unavailable"] { background: color-mix(in srgb, var(--warn) 22%, var(--surface)); color: var(--ink); cursor: pointer; text-decoration: underline dotted; }
+.micpill[data-state="quiet"] { cursor: pointer; }
+@media (max-width: 480px) { .micpill > span { max-width: 9.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+/* The Flute dock's parts: each tab shows its own. */
+.dockbody .dock-part { display: none; }
+.dockbody[data-sub="drone"] .dock-dronetop, .dockbody[data-sub="tuner"] .dock-tuner, .dockbody[data-sub="fingers"] .dock-fingbox { display: block; }
+.dockbody[data-sub="tuner"] .dock-bench { display: none; }
+.dockbody .bb-compact { margin-top: 4px; }
+/* W3: Sa [ C5 v ]. */
+.dock-saline { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 4px 4px 10px; }
+.dock-saline .dock-sa { width: auto; min-width: 6.5rem; min-height: 40px; font-weight: 600; }
+/* W4: the tuner. */
+.tn { display: grid; justify-items: center; gap: 10px; padding: 8px 4px 4px; text-align: center; }
+.tn .tn-note { font-size: clamp(3.2rem, 14vw, 4.6rem); min-height: 1.1em; line-height: 1.1; }
+.tn .tn-meter { width: min(100%, 340px); }
+.tn-read { display: flex; gap: 14px; margin: 0; min-height: 1.4em; font-family: var(--mono, ui-monospace, monospace); font-variant-numeric: tabular-nums; }
+.tn-state { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--muted); font-weight: 600; }
+.tn-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--muted); }
+.tn.tn-on .tn-dot { background: var(--accent); border-color: var(--accent); animation: dronepulse 1.6s ease-in-out infinite; }
+.tn.tn-on .tn-state { color: var(--ink); }
+.tn-msg { margin: 0; min-height: 1.2em; }
+@media (prefers-reduced-motion: reduce) { .tn.tn-on .tn-dot { animation: none; } }
+/* W6: Fingers: a note's six holes, top to bottom, and its breath. */
+.dock-fingers { display: grid; gap: 12px; padding: 4px 4px 12px; }
+.dock-notes .chipbtn { min-height: 40px; min-width: 44px; }
+.dock-fing { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; }
+.dock-holes { position: relative; list-style: none; margin: 0; padding: 8px 14px; display: grid; gap: 8px; border-radius: 22px; background: color-mix(in srgb, var(--bamboo, #c99a45) 30%, var(--surface)); border: 1px solid var(--line); }
+.dock-holes li { display: grid; grid-template-columns: 22px auto auto; align-items: center; gap: 8px; font-size: 0.88rem; }
+.dock-holes li i { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--ink); background: transparent; }
+.dock-holes li.closed i { background: var(--ink); }
+.dock-holes li .muted { color: var(--ink); opacity: 1; }
+.dock-holes li.half i { background: linear-gradient(90deg, var(--ink) 50%, transparent 50%); }
+.dock-holes li:nth-child(4) { margin-top: 8px; }
+.dock-fingside { display: grid; gap: 6px; justify-items: start; }
+.dock-notebig { font-size: 3rem; line-height: 1; font-family: var(--mono, ui-monospace, monospace); }
+.dock-breath { margin: 0; font-weight: 600; }
+/* W91: the dock in full focus (the player, a game): a handle at the screen's edge opens it. */
+.dockfab { display: none; }
+html.fullfocus:not(.dockopen) .dockfab { display: grid; place-items: center; position: fixed; z-index: 30; right: 0; top: 50%; width: 40px; height: 56px; margin-top: -28px;
+  border: 1px solid var(--line); border-right: 0; border-radius: 12px 0 0 12px; background: var(--surface); color: var(--ink); box-shadow: -4px 0 16px rgba(0, 0, 0, 0.12); cursor: pointer; }
+html.fullfocus .dock { top: 0; }
+/* The dock on a tablet: a side panel over a dimmed page; on a desktop, a right column beside the
+   page, with nothing in front of the page to catch a click (W91, 10). */
+@media (min-width: 900px) { .dockback { background: rgba(0, 0, 0, 0.2); } }
+@media (min-width: 1025px) {
+  :root { --dockw: 400px; }
+  .dock { width: var(--dockw); box-shadow: none; }
+  .dockback { display: none !important; }
+  html.dockopen .layout { margin-right: var(--dockw); }
+  html.dockopen .topbar { padding-right: calc(var(--dockw) + 16px); }
+  html.fullfocus.dockopen .topbar { padding-right: 16px; }
+  /* The page is narrower beside the dock: Me's dashboard goes back to one column (the calendar fits). */
+  html.dockopen .dashgrid { grid-template-columns: minmax(0, 1fr); }
+}
+/* W8: the search's groups (screens, glossary, in the course) and its close button. */
+.pal-input .pal-close { flex: none; }
+.pal-input input::-webkit-search-cancel-button { display: none; }
+.pal-group { padding: 10px 10px 4px; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.pal-t { display: grid; gap: 2px; min-width: 0; }
+.pal-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* W85, W86: empty and error states. */
+.emptypic { text-align: center; padding: 26px 18px; }
+.emptyicon { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.emptyicon .icon { width: 30px; height: 30px; }
+.emptyline { margin: 0; max-width: 42ch; color: var(--muted); }
+.errorcard { justify-items: start; }
+.errorcard h1 { margin: 0; font-size: clamp(1.4rem, 5vw, 1.8rem); }
+.errorcard p { margin: 0; }
+.erroricon { background: color-mix(in srgb, var(--warn) 18%, var(--surface)); color: var(--warn); }
+/* Rows and tiles that are buttons (they open the dock) look like their links. */
+button.bookrow, button.quickact { width: 100%; background: none; border-left: 0; border-right: 0; border-bottom: 0; font: inherit; text-align: left; cursor: pointer; }
+button.quickact { border: 1px solid transparent; text-align: center; font-size: 0.8rem; }
+/* W90: from 600 px the homes use two columns (Today and This unit side by side; the cards below). */
+@media (min-width: 600px) and (max-width: 1024px) {
+  /* Today: the day and This unit side by side, the other cards under them. */
+  main[data-home="today"] .page:has(> .todaygrid) { max-width: 1180px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-auto-flow: row dense; align-items: start; }
+  main[data-home="today"] .page:has(> .todaygrid) > * { grid-column: 1 / -1; }
+  main[data-home="today"] .page:has(> .todaygrid) > .todayhero { grid-column: 1; }
+  main[data-home="today"] .page > .todaygrid { display: contents; }
+  main[data-home="today"] .todaymain { grid-column: 2; grid-row: span 2; }
+  main[data-home="today"] .todayside { grid-column: 1; }
+  /* Skills: today's game and the fix side by side. */
+  main[data-home="skills"] .page { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  main[data-home="skills"] .page > * { grid-column: 1 / -1; }
+  main[data-home="skills"] .page > .playnow { grid-column: 1; }
+  main[data-home="skills"] .page > .playnow + .fixcta { grid-column: 2; align-self: stretch; }
+  /* Music: what there is (and Carry on) beside the songs. */
+  main[data-home="music"] .page { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); grid-auto-flow: row dense; align-items: start; }
+  main[data-home="music"] .page > * { grid-column: 1; }
+  main[data-home="music"] .page > #songlist { grid-column: 2; grid-row: span 4; }
+  /* Me: the dashboard's cards two by two. */
+  main[data-home="me"] .dashgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  main[data-home="me"] .dashgrid > .card:only-child { grid-column: 1 / -1; }
+}

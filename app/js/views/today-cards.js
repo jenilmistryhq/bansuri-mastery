@@ -209,9 +209,11 @@ export function progressCard() {
 // One tap to the tools used most.
 export function quickActions() {
   const a = (href, ic, label) => h("a", { class: "quickact", href }, h("span", { class: "quickicon", "aria-hidden": "true" }, icon(ic)), h("span", null, label));
+  // The tuner is the Flute dock's Tuner tab: it opens over Today.
+  const tuner = h("button", { type: "button", class: "quickact", onclick: () => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "tuner" } })) }, h("span", { class: "quickicon", "aria-hidden": "true" }, icon("bench")), h("span", null, "Flute and tuner"));
   return h("nav", { class: "quickacts", "aria-label": "Quick actions" },
-    a("#/bench", "bench", "Flute and tuner"), a("#/skills/tone/check", "coach", "Tone check"), getSettings().focus ? a("#/skills/fix", "coach", "Fix a problem") : a("#/play", "star", "Play a game"),
-    a("#/songs", "note", "Songs"), a("#/listen", "listen", "Listen"), a("#/quick", "today", "5 minutes"));
+    tuner, a("#/skills/tone/check", "coach", "Tone check"), getSettings().focus ? a("#/skills/fix", "coach", "Fix a problem") : a("#/skills/games", "star", "Play a game"),
+    a("#/music", "note", "Songs"), a("#/music/listen", "listen", "Listen"), a("#/today/quick", "today", "5 minutes"));
 }
 
 
