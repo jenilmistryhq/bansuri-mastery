@@ -14,6 +14,7 @@ import { award, onXp, levelOf, xpState, markLevelSeen } from "./xp.js";
 import { openPalette, installPaletteKey } from "./palette.js";
 import { notePractice } from "./reminder.js";
 import { createDock } from "./dock.js";
+import { stepReturnBar } from "./lesson/stepreturn.js";
 installPaletteKey();
 // The browser's install offer is kept so Today can show it at a good moment (after a few days).
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window.__installEvent = e; });
@@ -355,6 +356,9 @@ async function route() {
     // The place's sections, as tabs at the top.
     const tabs = INNER.has(view) ? null : sectionTabs();
     if (tabs) mainEl.prepend(tabs);
+    // A fix opened from a lesson step ("Having trouble?") leads back to that step.
+    const stepBack = stepReturnBar(path);
+    if (stepBack) mainEl.prepend(stepBack);
     if (document.activeElement && document.activeElement.closest && document.activeElement.closest(".tabbar, .topbar")) mainEl.focus({ preventScroll: true });
     if (anchor) {
       const target = document.getElementById(anchor);

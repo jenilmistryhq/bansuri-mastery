@@ -2,7 +2,7 @@
 // reward step that ends a day, and finishing the day's session.
 import { h, icon } from "../util.js";
 import { lessonRecord } from "../lesson/player.js";
-import { finishSession, current, getDay } from "../course.js";
+import { finishSession, current, getDay, INTERVALS } from "../course.js";
 import { award } from "../xp.js";
 import { playNote } from "../core/audio.js";
 import { nameOf } from "../core/theory.js";
@@ -87,7 +87,41 @@ export function reviewGrowth() {
   return { els: [month, weeks], destroy() { stops.forEach(f => f()); } };
 }
 
-// Tomorrow's taste: { when, title, text, notes: [semitones] (played as a little tune) | audio: url }
+// A review day's own reward (W34), from what the day kept (d: the lesson's data): the quiz, each
+// question marked (right first time, or for another look); the pieces played, each with its next
+// review; and what you wrote in the look back. pieces: [{ step, item, label }]. Returns elements.
+export function reviewSummary(d, pieces) {
+  const out = [];
+  const mark = ok => h("span", { class: "lesson-tick" + (ok ? "" : " warn"), "aria-hidden": "true" }, ok ? icon("check") : "!");
+  const q = d.quiz;
+  if (q && q.of) {
+    out.push(h("div", { class: "stack tight lesson-rquiz" },
+      h("p", { class: "row lesson-rhead" }, h("span", { class: "eyebrow" }, "Quiz"), h("b", null, q.firstTry + " of " + q.of)),
+      (q.marks || []).length ? h("ul", { class: "lesson-qmarks" }, q.marks.map((ok, i) => h("li", { class: ok ? "ok" : "later", title: (q.qs || [])[i] || "" },
+        mark(ok), h("span", { class: "sr-only" }, ok ? "Right first time: " : "Look again: "), h("span", { class: "lesson-qtext" }, (q.qs || [])[i] || String(i + 1))))) : null));
+  }
+  const reviews = getState().reviews || {};
+  const played = pieces.filter(p => d[p.step]);
+  if (played.length) {
+    out.push(h("div", { class: "stack tight lesson-rpieces" }, h("span", { class: "eyebrow" }, "Your pieces"),
+      h("ul", { class: "lesson-done" }, played.map(p => {
+        const ok = !!d[p.step].passed, r = reviews[p.item];
+        // The schedule the piece moves to when the day is finished (course.js markReview).
+        const days = ok ? INTERVALS[Math.min(((r && r.stage) || 0) + 1, INTERVALS.length - 1)] : 1;
+        return h("li", { class: ok ? "ok" : "later" }, mark(ok), h("span", null, p.label),
+          h("span", { class: "small muted lesson-rnext" }, ok ? (days === 1 ? "next tomorrow" : "next in " + days + " days") : "again tomorrow"));
+      }))));
+  }
+  const w = d["R-reflect"];
+  if (w && (w.changed || "").trim()) {
+    out.push(h("div", { class: "stack tight lesson-rwrote" }, h("span", { class: "eyebrow" }, "You wrote"),
+      h("p", { class: "lesson-wrote" }, h("q", { translate: "no" }, w.changed.trim()), (w.next || "").trim() ? h("span", { class: "muted" }, " . ") : null,
+        (w.next || "").trim() ? h("span", null, h("span", null, "next:"), " ", h("q", { translate: "no" }, w.next.trim())) : null)));
+  }
+  return out;
+}
+
+// Tomorrow's taste:{ when, title, text, notes: [semitones] (played as a little tune) | audio: url }
 function rewardTeaser(teaser) {
   let audio = null;
   const hear = h("button", { type: "button", class: "btn" }, icon("play"), " Hear it");
@@ -100,12 +134,13 @@ function rewardTeaser(teaser) {
 
 // The reward, in the order the end is remembered (redesign L5): the star, what went well, for later,
 // your sound, any extra notes, tomorrow. Points come last, quietly, on the card after Finish.
-export function rewardView(rows, teaser, extra) {
+// lead: parts that come first, under the star (a review day's quiz, pieces and words, W34).
+export function rewardView(rows, teaser, extra, lead) {
   const t = rewardTeaser(teaser), stops = [];
   return {
     el: h("div", { class: "stack lesson-reward" },
       h("div", { class: "lesson-burst", "aria-hidden": "true" }, icon("star")),
-      ...rewardLists(rows), rewardSound(stops), ...(extra || []), t.el),
+      ...(lead || []), ...rewardLists(rows), rewardSound(stops), ...(extra || []), t.el),
     destroy() { t.stop(); stops.forEach(f => f()); },
   };
 }
@@ -115,8 +150,8 @@ export function rewardView(rows, teaser, extra) {
 export function dayReward(rows, teaser, more) {
   return (s, api) => {
     setTimeout(() => api.ready(), 0);
-    const m = more ? more() : null;
-    const v = rewardView(typeof rows === "function" ? rows(api.data) : rows, teaser, m ? m.els : null);
+    const m = more ? more(api.data) : null;
+    const v = rewardView(typeof rows === "function" ? rows(api.data) : rows, teaser, m ? m.els : null, m ? m.lead : null);
     return m ? { el: v.el, destroy() { v.destroy(); m.destroy(); } } : v;
   };
 }

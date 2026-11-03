@@ -46,13 +46,28 @@ function lvEl(tag, attrs, ...kids) {
 function lvMicError(e) {
   return e && e.message === "unavailable"
     ? "This browser cannot use the microphone here. Open the app in Chrome, Edge or Safari over https."
-    : "The microphone is blocked. Allow it in the browser's site settings, then try again.";
+    : "The microphone is blocked. To allow it: tap the lock in the address bar > Microphone > Allow.";
 }
 // The message where a widget shows it; in the app, with a link to Me > Flute (its microphone check).
-function lvShowMicError(msg, e) {
+// Under it (redesign W31): Try again, and, where the screen has a way to go on without listening
+// (opts.noMic), Go on without it. ctl: { retry(), without() | null }.
+function lvShowMicError(msg, e, ctl) {
   msg.textContent = lvMicError(e);
   if (typeof location !== "undefined" && /^#\//.test(location.hash || "")) msg.append(" ", lvEl("a", { href: "#/me/flute#g-checks" }, "Microphone help in Me > Flute"));
+  lvClearMicError(msg.parentElement);
+  if (!ctl || !msg.parentElement) return;
+  const row = lvEl("div", { class: "lv-row lv-blocked" });
+  const again = lvEl("button", { type: "button", class: "lv-btn lv-primary" }, "Try again");
+  again.addEventListener("click", () => { row.remove(); ctl.retry(); });
+  row.append(again);
+  if (ctl.without) {
+    const off = lvEl("button", { type: "button", class: "lv-btn" }, "Go on without it");
+    off.addEventListener("click", () => { row.remove(); ctl.without(); });
+    row.append(off);
+  }
+  msg.after(row);
 }
+function lvClearMicError(el) { if (el) el.querySelectorAll(".lv-blocked").forEach(x => x.remove()); }
 
 // Before the first microphone prompt, say why the app wants it. Resolves true to go ahead.
 export function micIntro(host) {
@@ -158,7 +173,7 @@ function lvWord() {
 // opts: { targets: [semi] (in order) or null for any steady note, seconds, cents, onPass(results),
 //   ghost(target) -> the learner's best hold in seconds for that note (drawn as a faint arc to beat) }
 export function holdMeter(opts) {
-  const o = Object.assign({ targets: null, seconds: 8, cents: 25, onPass: null, ghost: null }, opts || {});
+  const o = Object.assign({ targets: null, seconds: 8, cents: 25, onPass: null, ghost: null, noMic: null }, opts || {});
   const targets = o.targets && o.targets.length ? o.targets : [null];
   let idx = 0, tracker = null, unsub = null, finished = false, lastSound = 0, pauseUntil = 0, shownSec = -1;
   const life = { gen: 0, dead: false, starting: false };
@@ -296,6 +311,7 @@ export function holdMeter(opts) {
     if (life.starting) return;
     if (unsub) { stop(); return; }
     life.starting = true;
+    lvClearMicError(el);
     const g0 = life.gen;
     try {
       if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
@@ -308,7 +324,7 @@ export function holdMeter(opts) {
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... play a long note."; word.set("");
       talking = true; lvSay(targets[idx] === null ? "hold_intro" : ["note", targets[idx], "hold"], ["secs", o.seconds]).then(() => { talking = false; });
-    } catch (e) { lvShowMicError(msg, e); }
+    } catch (e) { lvShowMicError(msg, e, { retry: start, without: o.noMic }); }
     finally { life.starting = false; }
   }
   function report() {
@@ -329,7 +345,7 @@ function lvTurnCue(after) {
 // ---------- Phrase check ----------
 // Play a written phrase; each note is marked as it is heard. opts: { phrase: [semi], reps, onPass, hear(): plays it }
 export function phraseCheck(opts) {
-  const o = Object.assign({ phrase: [], reps: 1, onPass: null, noteS: 0.8 }, opts || {});
+  const o = Object.assign({ phrase: [], reps: 1, onPass: null, noteS: 0.8, noMic: null }, opts || {});
   let matcher = null, seq = null, unsub = null, clean = 0, quietTimer = 0;
   const life = { gen: 0, dead: false, starting: false };
   const exp = o.phrase.slice();
@@ -390,12 +406,15 @@ export function phraseCheck(opts) {
         : `The ${codeOf(exp[at])} (note ${at + 1}) slipped${mark === "octave" ? ", in the wrong octave" : ""}. Hear it, or try half speed, then again from the start.`;
       slowBtn.hidden = false; showing = true; el.classList.add("lv-missed"); word.set("breathe");
       matcher = phraseMatcher(exp);
+      // The attempt ends on a miss (redesign W25): the result stays, and Try again starts the next.
+      stop(); startBtn.textContent = "Try again";
     }
   }
   async function start() {
     if (life.starting) return;
     if (unsub) { stop(); return; }
     life.starting = true;
+    lvClearMicError(el);
     const g0 = life.gen;
     try {
       if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
@@ -406,7 +425,7 @@ export function phraseCheck(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening. Play the phrase."; word.set("");
-    } catch (e) { lvShowMicError(msg, e); }
+    } catch (e) { lvShowMicError(msg, e, { retry: start, without: o.noMic }); }
     finally { life.starting = false; }
   }
   function stop() { life.gen++; clearTimeout(quietTimer); if (unsub) { unsub(); unsub = null; } startBtn.textContent = "Start"; }
@@ -475,7 +494,7 @@ export function echoGame(opts) {
   let opening = null;
   async function ensureMic() {
     if (unsub) return true;
-    if (!opening) opening = lvListen(life, onReading).then(u => { opening = null; if (u) unsub = u; return !!u; }, e => { opening = null; lvShowMicError(msg, e); return false; });
+    if (!opening) opening = lvListen(life, onReading).then(u => { opening = null; if (u) unsub = u; return !!u; }, e => { opening = null; lvShowMicError(msg, e, { retry: () => { ensureMic(); } }); return false; });
     return opening;
   }
   function play() {
@@ -690,6 +709,7 @@ export function fluteFinder(opts) {
     if (life.starting) return;
     if (unsub) { stop(); return; }
     life.starting = true;
+    lvClearMicError(el);
     const g0 = life.gen;
     try {
       if (!(await micIntro(el)) || life.dead || life.gen !== g0) return;
@@ -699,7 +719,7 @@ export function fluteFinder(opts) {
       const u = await lvListen(life, onReading);
       if (!u) return;
       unsub = u; startBtn.textContent = "Stop"; msg.textContent = "Listening... hold your Sa.";
-    } catch (e) { lvShowMicError(msg, e); }
+    } catch (e) { lvShowMicError(msg, e, { retry: () => startBtn.click() }); }
     finally { life.starting = false; }
   });
   useBtn.addEventListener("click", () => {

@@ -9,8 +9,9 @@ import { h, store, storeSet, today, icon } from "../util.js";
 import { STEP_KINDS } from "./steps.js";
 import { stopAll, tanpura } from "../core/audio.js";
 import { micActive } from "../core/listen.js";
-import { whyLayer, openReading } from "./learn.js";
+import { whyLayer } from "./learn.js";
 import { FIX_INFO, FIX_FILE } from "../skillmap.js";
+import { setStepReturn } from "./stepreturn.js";
 
 const KEY = "bansuri.lessons";
 // The steps you play on the flute (they get the drone switch), and the drone's remembered state.
@@ -162,7 +163,14 @@ export function lessonPlayer(lesson, opts) {
   function showTrouble() {
     const s = steps[at], fix = lastFix && FIX_FILE[lastFix] ? lastFix : "TS-01";
     const help = h("button", { type: "button", class: "linkbtn" }, "Having trouble? ", h("span", { class: "muted" }, FIX_INFO[fix]));
-    help.addEventListener("click", () => openReading({ path: "troubleshooting/" + FIX_FILE[fix], label: fix + " - " + FIX_INFO[fix] }));
+    // The matching guide in Skills > Fix (F9); Back comes back to this step (lesson/stepreturn.js).
+    help.addEventListener("click", () => {
+      rec.at = at; save();
+      const back = "#/lesson/" + lesson.id + "#resume";
+      try { history.replaceState(history.state, "", back); } catch (e) { /* the link on the fix screen still leads back */ }
+      setStepReturn(back);
+      location.hash = "#/skills/fix/" + fix;
+    });
     const skip = h("button", { type: "button", class: "linkbtn" }, "Skip for now");
     skip.addEventListener("click", () => { if (!api.data[s.id]) api.data[s.id] = { passed: false, skipped: true }; save(); go(at + 1); });
     trouble.replaceChildren(help, skip);

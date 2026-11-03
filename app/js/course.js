@@ -132,7 +132,7 @@ export function recordAttempt(id, attempt, passed) {
 }
 
 // Spaced review: 1, 3, 7, 14, 30, 60 days after learning an item.
-const INTERVALS = [1, 3, 7, 14, 30, 60];
+export const INTERVALS = [1, 3, 7, 14, 30, 60];
 function addReview(s, item, date) {
   if (!item || !item.id || s.reviews[item.id]) return;
   s.reviews[item.id] = { label: item.label, learned: date, next: addDays(date, INTERVALS[0]), stage: 0, bench: item.bench || null, read: item.read || null, done: 0 };

@@ -271,10 +271,10 @@ try {
     await page.evaluate(() => document.querySelector('#main .block[data-id="K"] > header').click());
     await sleep(200);
     check(await page.$("#main .block.active .lv-hold") !== null, "the first-sound step shows the live long-tone meter");
-    await page.click("#main .session-head .btn.ghost");
+    await page.click('#main .session-head .segbtn[data-view="list"]');
     await sleep(100);
-    check(await page.$$eval("#main .block", b => b.filter(x => getComputedStyle(x).display !== "none").length) > 1, "Show all steps lists every block");
-    await page.click("#main .session-head .btn.ghost");
+    check(await page.$$eval("#main .block", b => b.filter(x => getComputedStyle(x).display !== "none").length) > 1, "Whole page lists every block");
+    await page.click('#main .session-head .segbtn[data-view="focus"]');
     await shot("03-today-day2");
 
   });
@@ -1559,7 +1559,9 @@ try {
     await next();
     // 9. The time capsule is recorded into the Journal.
     await tone(523.251);
-    await clickL(".lesson-stage button", /Record 6 seconds/);
+    // The record step (W28): one Record button, with the length beside it as 0:00 / 0:06.
+    check(await lp.$eval(".lesson-stage .lesson-rectime", e => e.textContent).catch(() => "") === "0:00 / 0:06", "lesson: the time capsule shows its length, 0:00 / 0:06");
+    await clickL(".lesson-stage button", /^Record$/);
     await lp.waitForFunction(() => /Saved in your Journal/.test(document.querySelector(".lesson-stage").textContent), { timeout: 12000 }).catch(() => {});
     await tone(0);
     check(await ready(), "lesson: the Day 0 time capsule is recorded");
@@ -1634,15 +1636,28 @@ try {
     check(at > 0 && await lp.$('.lesson-stage[data-step="sgsg"]') !== null && await lp.$(".lesson-trouble:not([hidden])") === null, "result: the phrase step opens with no help offered yet");
     await lp.evaluate(() => document.querySelector(".lesson-stage .lv-primary").click());
     await sleep(150); await lp.evaluate(() => { const b = document.querySelector(".lesson-stage .lv-intro .lv-primary"); if (b) b.click(); }); await sleep(400);
-    // Two passes with the second note wrong (R for G).
-    for (let rep = 0; rep < 2; rep++) { for (const n of [0, 2, 0, 4, 0]) { await tone(hz(n)); await sleep(650); await tone(0); await sleep(180); } await sleep(900); }
-    const res = await lp.evaluate(() => ({ wrong: document.querySelectorAll(".lesson-stage .lv-slot.lv-wrong").length, color: (() => { const e = document.querySelector(".lesson-stage .lv-slot.lv-wrong"); return e ? getComputedStyle(e).borderTopColor : ""; })(), warn: getComputedStyle(document.documentElement).getPropertyValue("--warn").trim(), msg: document.querySelector(".lesson-stage .lv-msg").textContent, slow: !!document.querySelector(".lesson-stage .lv-btn:not([hidden])") && [...document.querySelectorAll(".lesson-stage .lv-btn")].some(b => b.textContent === "Half speed" && !b.hidden), trouble: document.querySelector(".lesson-trouble") && !document.querySelector(".lesson-trouble").hidden ? document.querySelector(".lesson-trouble").textContent : "" }));
+    // Two passes with the second note wrong (R for G). A miss ends the attempt (W25): Try again starts the next.
+    const twoMisses = async () => {
+      for (let rep = 0; rep < 2; rep++) {
+        if (rep) await lp.evaluate(() => { const b = [...document.querySelectorAll(".lesson-stage .lv-primary")].find(x => x.textContent === "Try again"); if (b) b.click(); });
+        await sleep(300);
+        for (const n of [0, 2, 0, 4, 0]) { await tone(hz(n)); await sleep(650); await tone(0); await sleep(180); }
+        await sleep(900);
+      }
+    };
+    await twoMisses();
+    const res = await lp.evaluate(() => ({ wrong: document.querySelectorAll(".lesson-stage .lv-slot.lv-wrong").length, color: (() => { const e = document.querySelector(".lesson-stage .lv-slot.lv-wrong"); return e ? getComputedStyle(e).borderTopColor : ""; })(), warn: getComputedStyle(document.documentElement).getPropertyValue("--warn").trim(), msg: document.querySelector(".lesson-stage .lv-msg").textContent, again: document.querySelector(".lesson-stage .lv-primary").textContent, slow: !!document.querySelector(".lesson-stage .lv-btn:not([hidden])") && [...document.querySelectorAll(".lesson-stage .lv-btn")].some(b => b.textContent === "Half speed" && !b.hidden), trouble: document.querySelector(".lesson-trouble") && !document.querySelector(".lesson-trouble").hidden ? document.querySelector(".lesson-trouble").textContent : "" }));
     check(res.wrong >= 1 && /slipped/.test(res.msg) && res.slow, "result: the note that broke stays marked, named, with Half speed beside Hear it [" + res.msg + "]");
+    check(res.again === "Try again", "result: a miss ends the attempt, with Try again (W25) [" + res.again + "]");
     check(/Having trouble\?/.test(res.trouble) && /Skip for now/.test(res.trouble), "result: after two misses, Having trouble? and Skip for now [" + res.trouble + "]");
+    // Having trouble? opens the fitting guide in Skills > Fix (F9); Back comes back to the same step.
     await lp.evaluate(() => [...document.querySelectorAll(".lesson-trouble button")].find(b => /Having trouble/.test(b.textContent)).click());
-    await lp.waitForFunction(() => { const d = document.querySelector("dialog.sheet[open]"); return d && /TS-0\d/.test(d.textContent); }, { timeout: 5000 }).then(() => check(true, "result: Having trouble? opens the fitting guide over the lesson"), () => check(false, "result: Having trouble? opens the fitting guide over the lesson"));
-    await lp.evaluate(() => [...document.querySelectorAll("dialog.sheet[open] button")].find(b => /Back to the step/.test(b.textContent)).click());
-    await sleep(200);
+    await lp.waitForFunction(() => /^#\/skills\/fix\/TS-\d\d$/.test(location.hash) && document.querySelector("#main .stepreturn"), { timeout: 8000 }).then(() => check(true, "result: Having trouble? opens the fitting guide in Skills > Fix, with Back to the step"), async () => check(false, "result: Having trouble? opens the fitting guide in Skills > Fix, with Back to the step [" + await lp.evaluate(() => location.hash) + "]"));
+    await lp.goBack();
+    await lp.waitForSelector('.lesson-stage[data-step="sgsg"]', { timeout: 8000 }).then(() => check(true, "result: Back from the fix comes back to the same step"), async () => check(false, "result: Back from the fix comes back to the same step [" + await lp.evaluate(() => location.hash) + "]"));
+    check(!(await lp.$("#main .stepreturn")), "result: back in the lesson, the way back is forgotten");
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lv-primary").click());
+    await twoMisses();
     await lp.evaluate(() => [...document.querySelectorAll(".lesson-trouble button")].find(b => /Skip for now/.test(b.textContent)).click());
     await sleep(300);
     check(await lp.evaluate(() => document.querySelector(".lesson-stage").dataset.step !== "sgsg" && JSON.parse(localStorage.getItem("bansuri.lessons")).m9.data.sgsg.skipped === true), "result: Skip for now goes on, and the step is remembered as skipped");
@@ -1992,6 +2007,215 @@ try {
     check(await tp.waitForSelector("#main .lv-hold", { timeout: 5000 }).then(() => true, () => false), "#/today/quick opens the 5-minute practice (#/quick still works)");
     await ctx.close();
   });
+  await section("Lesson player and microphone: no microphone, blocked, timer, record, reflect, review reward, step list, 5 minutes", async () => {
+    // Redesign 2 (12-wireframes W13, W20-W22, W26, W28-W31, W34): the player's steps and the
+    // microphone's states, each on a fresh learner.
+    const ctx = await (browser.createBrowserContext ? browser.createBrowserContext() : browser.createIncognitoBrowserContext());
+    const lp = await ctx.newPage();
+    await collectI18n(lp);
+    lp.on("pageerror", e => errors.push("pageerror: " + e.message));
+    await lp.setViewport({ width: 390, height: 844 });
+    // The microphone: "ok" (a silent synthetic stream), "blocked" (permission refused) or "none" (no API).
+    await lp.evaluateOnNewDocument(() => {
+      window.__lessonTime = 0.05;
+      const mode = sessionStorage.getItem("__mic") || "ok";
+      if (!navigator.mediaDevices) return;
+      if (mode === "none") { navigator.mediaDevices.getUserMedia = undefined; return; }
+      navigator.mediaDevices.getUserMedia = async () => {
+        if (mode === "blocked") throw new DOMException("Permission denied", "NotAllowedError");
+        const c = new AudioContext(), o = c.createOscillator(), g = c.createGain(), d = c.createMediaStreamDestination();
+        g.gain.value = 0; o.connect(g); g.connect(d); o.start(); return d.stream;
+      };
+    });
+    const lgo = async hash => { await lp.goto(BASE + "#" + hash, { waitUntil: "networkidle0" }); await lp.waitForFunction(() => { const m = document.querySelector("#main"); return m && m.children.length && !m.querySelector(":scope > .boot"); }, { timeout: 10000 }).catch(() => {}); await sleep(300); };
+    const snap = async name => { if (shots) { fs.mkdirSync(shots, { recursive: true }); await lp.screenshot({ path: path.join(shots, name + ".png") }); } };
+    const ready = () => lp.$eval(".lesson-next", b => !b.disabled).catch(() => false);
+    const clickL = (sel, re) => lp.evaluate((sel, src) => { const b = [...document.querySelectorAll(sel)].find(x => new RegExp(src).test(x.textContent) && !x.disabled && x.offsetParent !== null); if (b) b.click(); return !!b; }, sel, re.source);
+    // A learner on day `cur`, with lesson records; mic: the microphone mode; lang: "hi" for Hindi.
+    const learner = async (cur, lessons, mic, lang, extra) => {
+      await lgo("/today");
+      await lp.evaluate((cur, lessons, mic, lang, extra) => {
+        localStorage.clear(); sessionStorage.setItem("__mic", mic || "ok");
+        localStorage.setItem("bansuri.settings", JSON.stringify(Object.assign({ countdown: 0 }, lang ? { lang } : {})));
+        localStorage.setItem("bansuri.live.micIntro", "1");
+        const days = {}; for (let i = 0; i < cur; i++) days[i] = { done: true };
+        localStorage.setItem("bansuri.progress", JSON.stringify(Object.assign({ current: cur, startedAt: "2026-01-01", days, milestones: { M0: { status: "passed", attempts: [] } }, prefs: { howChosen: true, langChosen: true, playAsked: true } }, extra || {})));
+        localStorage.setItem("bansuri.lessons", JSON.stringify(Object.assign({ m0: { at: 0, done: "2026-01-01", data: { side: "right" } } }, lessons)));
+      }, cur, lessons, mic, lang, extra || null);
+    };
+    // The index of a step in a lesson, as the player lays it out (views/lesson.js).
+    // (After a reload, so the app's modules read the learner just stored.)
+    const stepAt = async (id, pred, cur, extra) => (await lp.reload({ waitUntil: "networkidle0" }), lp).evaluate(async (id, src, cur, extra) => { // pred: see below
+      const u = p => import(new URL("app/js/" + p, location.href).href);
+      const [{ LESSONS }, OD, C, P, PR] = await Promise.all([u("lessons/index.js"), u("lessons/oneday.js"), u("course.js"), u("lesson/player.js"), u("lessons/practice.js")]);
+      const days = {}; for (let i = 0; i < cur; i++) days[i] = { done: true };
+      localStorage.setItem("bansuri.progress", JSON.stringify(Object.assign({ current: cur, startedAt: "2026-01-01", days, milestones: { M0: { status: "passed", attempts: [] } }, prefs: { howChosen: true } }, extra || {})));
+      const raw = LESSONS[id] || PR.practiceLesson(id);
+      const steps = P.flatSteps(OD.oneDay(raw, C.getDay(raw.day)));
+      const [k, v] = src.split(":"); // "id:<step id>", "kind:<kind>", "long:<kind>" (2 minutes or more)
+      return steps.findIndex(s => (k === "id" ? s.id === v : s.kind === v && (k !== "long" || s.seconds >= 120)));
+    }, id, pred, cur, extra || null);
+    const openAt = async id => {
+      await lgo("/lesson/" + id); await lp.reload({ waitUntil: "networkidle0" });
+      await lp.waitForSelector("#main .lesson-cover .btn.primary");
+      await lp.evaluate(() => document.querySelector("#main .lesson-cover .btn.primary").click());
+      await lp.waitForSelector(".lesson-stage", { timeout: 5000 }).catch(() => {});
+      await sleep(200);
+    };
+
+    // W30: the phrase step of Day 9, without a microphone: judged by ear, honestly marked.
+    await learner(9, {});
+    let at = await stepAt("m9", "id:sgsg", 9);
+    await learner(9, { m9: { at, data: {}, done: null } });
+    await openAt("m9");
+    check(await lp.$('.lesson-stage[data-step="sgsg"] .lesson-nomic[hidden]') !== null && await lp.$(".lesson-stage .lesson-nomiclink:not([hidden])") !== null, "no microphone: a microphone step offers its no-microphone path, closed at first");
+    await clickL(".lesson-stage .linkbtn", /No microphone/);
+    const nm = await lp.evaluate(() => ({ panel: !document.querySelector(".lesson-nomic").hidden, meter: document.querySelector(".lesson-stage .lv-phrase").closest("[hidden]") !== null || document.querySelector(".lesson-stage .lv-phrase").hidden, text: document.querySelector(".lesson-nomic").innerText }));
+    check(nm.panel && nm.meter && /No microphone\? Play it and judge by ear/.test(nm.text) && /Hear it/.test(nm.text) && /I played it cleanly/.test(nm.text) && /Use the microphone/.test(nm.text), "no microphone (W30): judge by ear, Hear it, I played it cleanly, Use the microphone [" + nm.text.replace(/\s+/g, " ") + "]");
+    await snap("r2-w30-nomic");
+    await clickL(".lesson-stage button", /Use the microphone/);
+    check(await lp.evaluate(() => document.querySelector(".lesson-nomic").hidden && !document.querySelector(".lesson-stage .lv-phrase").hidden), "no microphone: Use the microphone goes back to the listening step");
+    await clickL(".lesson-stage .linkbtn", /No microphone/);
+    await clickL(".lesson-stage button", /I played it cleanly/);
+    await sleep(150);
+    check(await ready() && await lp.evaluate(() => { const d = JSON.parse(localStorage.getItem("bansuri.lessons")).m9.data.sgsg; return d.passed === true && d.byEar === true; }), "no microphone: I played it cleanly lights Continue, and the step is remembered as judged by ear");
+
+    // A browser with no microphone at all opens the step on its no-microphone path.
+    await learner(9, { m9: { at, data: {}, done: null } }, "none");
+    await openAt("m9");
+    check(await lp.$(".lesson-stage .lesson-nomic:not([hidden])") !== null, "no microphone: where the browser has none, the step opens judged by ear");
+
+    // W31: the microphone blocked: how to allow it, Try again, Go on without it (and the help link).
+    await learner(9, { m9: { at, data: {}, done: null } }, "blocked");
+    await openAt("m9");
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lv-primary").click());
+    await lp.waitForSelector(".lesson-stage .lv-blocked", { timeout: 4000 }).catch(() => {});
+    const bl = await lp.evaluate(() => ({ msg: document.querySelector(".lesson-stage .lv-msg").innerText, help: !!document.querySelector(".lesson-stage .lv-msg a[href='#/me/flute#g-checks']"), btns: [...document.querySelectorAll(".lesson-stage .lv-blocked button")].map(b => b.textContent) }));
+    check(/blocked/.test(bl.msg) && /lock in the address bar/.test(bl.msg) && bl.help && bl.btns.join("|") === "Try again|Go on without it", "microphone blocked (W31): how to allow it, the help link, Try again and Go on without it " + JSON.stringify(bl));
+    await snap("r2-w31-blocked");
+    await clickL(".lesson-stage .lv-blocked button", /Try again/);
+    await sleep(300);
+    check(await lp.$$eval(".lesson-stage .lv-blocked", l => l.length) === 1, "microphone blocked: Try again asks again (and, still blocked, says so once)");
+    await clickL(".lesson-stage .lv-blocked button", /Go on without it/);
+    check(await lp.$(".lesson-stage .lesson-nomic:not([hidden])") !== null, "microphone blocked: Go on without it opens the no-microphone path");
+
+    // W26: the timer step of a practice day: ticks from the start, Pause, Done early.
+    await learner(47, {});
+    at = await stepAt("p47", "long:timer", 47);
+    await learner(47, { p47: { at, data: {}, done: null } });
+    await openAt("p47");
+    const t0 = await lp.evaluate(() => ({ ticks: [...document.querySelectorAll(".lesson-stage .lesson-timerticks input[type=checkbox]")].filter(x => x.offsetParent !== null).length, early: !!document.querySelector(".lesson-stage .linkbtn:not([hidden])") }));
+    check(t0.ticks >= 1 && !t0.early, "timer step (W26): the ticks show from the start; Done early waits for the timer");
+    await clickL(".lesson-stage .btn", /^Start/);
+    await sleep(200);
+    check(await lp.evaluate(() => [...document.querySelectorAll(".lesson-stage .lesson-timerctl button")].map(b => b.textContent).join("|")) === "Pause|Done early", "timer step: while it runs, Pause and Done early");
+    await snap("r2-w26-timer");
+    await clickL(".lesson-stage .lesson-timerctl button", /^Pause$/);
+    const frozen = await lp.$eval(".lesson-stage .lesson-timer-n", e => e.textContent);
+    await sleep(1300);
+    check(await lp.$eval(".lesson-stage .lesson-timerctl .btn", e => e.textContent) === "Resume" && await lp.$eval(".lesson-stage .lesson-timer-n", e => e.textContent) === frozen, "timer step: Pause stops the clock; Resume carries on");
+    await lp.evaluate(() => document.querySelectorAll(".lesson-stage .lesson-timerticks input").forEach(c => c.click()));
+    check(await ready(), "timer step: started, and every tick on, lights Continue");
+
+    // W28: the record step: the time as 0:00 / 0:30, then Record again and Keep it.
+    at = await stepAt("p47", "kind:record", 47);
+    await learner(47, { p47: { at, data: {}, done: null } });
+    await openAt("p47");
+    check(/^0:00 \/ 0:30$/.test(await lp.$eval(".lesson-stage .lesson-rectime", e => e.textContent).catch(() => "")) && await lp.$(".lesson-stage .lesson-recbtn") !== null, "record step (W28): a large Record button and 0:00 / 0:30");
+    await snap("r2-w28-record");
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lesson-recbtn").click());
+    await sleep(1400);
+    check(/^0:0[1-2] \/ 0:30$/.test(await lp.$eval(".lesson-stage .lesson-rectime", e => e.textContent)), "record step: the time counts while it records");
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lesson-recbtn").click());
+    await lp.waitForSelector(".lesson-stage .lesson-recafter:not([hidden])", { timeout: 5000 }).catch(() => {});
+    check(await lp.evaluate(() => [...document.querySelectorAll(".lesson-stage .lesson-recafter button")].map(b => b.textContent.trim()).join("|")) === "Record again|Keep it" && !(await lp.$eval(".lesson-stage audio", a => a.hidden)), "record step: after it, a play bar, Record again and Keep it");
+    const stepBefore = await lp.$eval(".lesson-stage", e => e.dataset.step);
+    await clickL(".lesson-stage .lesson-recafter button", /Keep it/);
+    await sleep(300);
+    check(await lp.$eval(".lesson-stage", e => e.dataset.step) !== stepBefore, "record step: Keep it goes on");
+
+    // W29: a review day's look back: suggestion chips fill the words.
+    await learner(7, {});
+    at = await stepAt("p7", "id:R-reflect", 7);
+    await learner(7, { p7: { at, data: {}, done: null } });
+    await openAt("p7");
+    check(await lp.$$eval(".lesson-stage .lesson-suggest .lesson-chip", l => l.length) >= 4, "reflect step (W29): suggestions under the questions");
+    await clickL(".lesson-stage .lesson-suggest .lesson-chip", /^Sa steadier$/);
+    await sleep(100);
+    check(/Sa steadier/.test(await lp.$eval(".lesson-stage textarea", t => t.value)) && await ready(), "reflect step: a suggestion goes into the box, and Continue lights");
+    await snap("r2-w29-reflect");
+
+    // W34: a review day's reward: the quiz's marks, the pieces with their next review, what you wrote.
+    const reviews = { "EX-MEL-1.1": { label: "EX-MEL 1.1 Morning Steps", learned: "2026-01-01", next: "2026-01-02", stage: 0, bench: { notation: "S R G - | G R S - ||" }, done: 0 } };
+    await learner(7, {}, "ok", null, { reviews });
+    at = await stepAt("p7", "id:done", 7, { reviews });
+    const rep = await stepAt("p7", "id:rep-0", 7, { reviews });
+    const data = { quiz: { firstTry: 5, of: 6, marks: [true, true, false, true, true, true], qs: ["Aroh means...", "Q2", "Q3", "Q4", "Q5", "Q6"] }, "rep-0": { passed: true }, "R-reflect": { changed: "Sa steadier", next: "slower tempo" } };
+    await learner(7, { p7: { at, data, done: null } }, "ok", null, { reviews });
+    await openAt("p7");
+    const rw = await lp.evaluate(() => ({ text: document.querySelector(".lesson-stage").innerText, marks: document.querySelectorAll(".lesson-stage .lesson-qmarks li").length, later: document.querySelectorAll(".lesson-stage .lesson-qmarks li.later").length }));
+    check(rep >= 0 && /Quiz\s*5 of 6/i.test(rw.text) && rw.marks === 6 && rw.later === 1, "review reward (W34): the quiz, 5 of 6, each question marked [" + rep + ", " + rw.marks + ", " + rw.later + ", " + rw.text.slice(0, 80).replace(/\s+/g, " ") + "]");
+    check(/Your pieces/i.test(rw.text) && /Morning Steps[\s\S]*next in 3 days/.test(rw.text), "review reward: each piece with its next review (next in 3 days)");
+    check(/You wrote/i.test(rw.text) && /Sa steadier/.test(rw.text) && /slower tempo/.test(rw.text), "review reward: what you wrote in the look back");
+    await snap("r2-w34-review");
+
+    // W20: the cover's chapters, with ticks: a block ticked in the step list, and the chapters behind the step reached.
+    await learner(47, {});
+    at = await stepAt("p47", "long:timer", 47);
+    await learner(47, { p47: { at, data: {}, done: null } }, "ok", null, { days: Object.assign(Object.fromEntries(Array.from({ length: 47 }, (_, i) => [i, { done: true }])), { 47: { blocks: { W: true } } }) });
+    await lgo("/lesson/p47"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    const cv = await lp.$$eval("#main .lesson-chapters li", l => l.map(x => ({ t: x.innerText.replace(/\s+/g, " "), done: x.classList.contains("done") })));
+    check(cv.length >= 5 && cv[0].done && /^1 /.test(cv[0].t) && cv.some(r => !r.done), "day cover (W20): numbered chapters, done ones ticked " + JSON.stringify(cv.map(r => (r.done ? "v " : "  ") + r.t)));
+    await snap("r2-w20-cover");
+
+    // W13: Today part way: the bar and "7 of N".
+    await learner(47, { p47: { at: 6, data: {}, done: null } });
+    await lgo("/today"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    check(/^7 of \d+$/.test(await lp.$eval("#main .todayhero .todayprog > span", e => e.textContent).catch(() => "")) && await lp.$("#main .todayhero .todayprog .progressbar") !== null, "today part way (W13): a bar and 7 of N on the day's card");
+    await snap("r2-w13-today");
+
+    // W21: the step list: back to the day, Cards / Whole page, ticks.
+    await lgo("/session/47"); await sleep(200);
+    const sl = await lp.evaluate(() => ({ back: (document.querySelector("#main .backhead .backlink") || {}).getAttribute ? document.querySelector("#main .backhead .backlink").getAttribute("href") : "", head: document.querySelector("#main .backhead") ? document.querySelector("#main .backhead").innerText.replace(/\s+/g, " ") : "", seg: [...document.querySelectorAll("#main .segtoggle .segbtn")].map(b => b.textContent + ":" + b.getAttribute("aria-pressed")) }));
+    check(sl.back === "#/day/47" && /Day 47/.test(sl.head) && /Step list/.test(sl.head) && sl.seg.join("|") === "Cards:true|Whole page:false", "step list (W21): < Day 47, Step list, and Cards / Whole page " + JSON.stringify(sl));
+    await lp.evaluate(() => document.querySelector('#main .segbtn[data-view="list"]').click());
+    await sleep(150);
+    check(await lp.$$eval("#main .block", b => b.filter(x => getComputedStyle(x).display !== "none").length) > 1 && await lp.$eval('#main .segbtn[data-view="list"]', b => b.getAttribute("aria-pressed")) === "true", "step list: Whole page shows every block");
+    await lp.evaluate(() => { const c = document.querySelector("#main .block label.check input"); c.click(); });
+    await sleep(150);
+    check(await lp.evaluate(() => { const b = document.querySelector("#main .block.done .blocktick"); return !!b && getComputedStyle(b).display !== "none"; }), "step list: a done block shows its tick");
+    await snap("r2-w21-steplist");
+
+    // W22: 5 minutes: full focus, (x), the three chips, 1 of 3.
+    await lgo("/today/quick"); await sleep(200);
+    const q = await lp.evaluate(() => ({ ff: document.documentElement.classList.contains("fullfocus"), x: (document.querySelector("#main .quicktop .lesson-close") || {}).getAttribute ? document.querySelector("#main .quicktop .lesson-close").getAttribute("href") : "", chips: [...document.querySelectorAll("#main .quickchips li")].map(l => l.innerText.replace(/\s+/g, " ").trim()), count: (document.querySelector("#main .quickcount") || {}).textContent }));
+    check(q.ff && q.x === "#/today" && q.chips.join("|") === "1 Hold notes|2 Balloon|3 Listen and play back" && q.count === "1 of 3", "5 minutes (W22): full focus, (x) to Today, the three chips, 1 of 3 " + JSON.stringify(q));
+    await snap("r2-w22-quick");
+    await clickL("#main button", /^Next step$/); await sleep(150);
+    check(await lp.$eval("#main .quickcount", e => e.textContent) === "2 of 3" && await lp.$("#main .quickchips li.now:nth-child(2)") !== null, "5 minutes: Next step moves the chips and the count");
+    await lgo("/today");
+    check(!(await lp.evaluate(() => document.documentElement.classList.contains("fullfocus"))), "5 minutes: leaving it brings the tabs back");
+
+    // Hindi: the new screens speak Hindi.
+    await learner(9, { m9: { at: await stepAt("m9", "id:sgsg", 9), data: {}, done: null } }, "blocked", "hi");
+    await openAt("m9");
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lesson-nomiclink").click());
+    await sleep(200);
+    check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector(".lesson-nomic").innerText) && !/judge by ear|I played it cleanly/.test(document.querySelector(".lesson-nomic").innerText)), "hindi: the no-microphone path is in Hindi");
+    await snap("r2-hi-w30-nomic");
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lesson-nomic .btn.ghost").click());
+    await lp.evaluate(() => document.querySelector(".lesson-stage .lv-primary").click());
+    await lp.waitForSelector(".lesson-stage .lv-blocked", { timeout: 4000 }).catch(() => {});
+    check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector(".lesson-stage .lv-blocked").innerText) && /[\u0900-\u097F]/.test(document.querySelector(".lesson-stage .lv-msg").innerText)), "hindi: microphone blocked, in Hindi");
+    await snap("r2-hi-w31-blocked");
+    await lp.evaluate(() => { const s = JSON.parse(localStorage.getItem("bansuri.settings")); s.lang = "hi"; localStorage.setItem("bansuri.settings", JSON.stringify(s)); });
+    await lgo("/today/quick"); await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
+    check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector("#main .quickchips").innerText)), "hindi: 5 minutes' chips in Hindi");
+    await snap("r2-hi-w22-quick");
+    await lgo("/session/9"); await sleep(200);
+    await snap("r2-hi-w21-steplist");
+    await ctx.close();
+  });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete
     // each kind of step (the player marks the step's kind on the stage). A fresh learner on the
@@ -2048,7 +2272,7 @@ try {
           await lp.reload({ waitUntil: "networkidle0" }); await sleep(300);
           check(/Continue today's practice/.test(await lp.$eval('#main a[href="#/lesson/p47"]', e => e.textContent)), "Today: a practice day started in the step list continues as a lesson");
           await lp.goto(BASE + "#/lesson/p47", { waitUntil: "networkidle0" }); await sleep(300);
-          check(!(await lp.$$eval("#main .lesson-chapters li", l => l.map(x => x.firstChild.textContent))).includes("Warm-up"), "practice lesson: a block done in the step list is left out");
+          check((await lp.$$eval("#main .lesson-chapters li", l => l.filter(x => /Warm-up/.test(x.textContent)).map(x => x.classList.contains("done")))).join() === "true", "practice lesson: a block done in the step list shows ticked on the cover (and the player leaves it out)");
         }
       }
       await lp.goto(BASE + "#/lesson/" + lesson.id, { waitUntil: "networkidle0" });

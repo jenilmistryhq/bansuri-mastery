@@ -194,7 +194,8 @@ export const RAGA_KINDS = {
     return { el: h("div", { class: "stack lesson-center" }, svg, h("div", { class: "stack" }, rows), check, out) };
   } },
 
-  // Write a plan in your own words. { fields: [{ key, label, hint }], required: [key] }
+  // Write a plan in your own words. { fields: [{ key, label, hint, suggest: [text] }], required: [key] }
+  // A field's suggestions (W29) are chips: a tap adds the words to its box, to keep or change.
   plan: { make(s, api) {
     const saved = api.data[s.id] || {};
     const check = () => { if (s.required.every(k => (saved[k] || "").trim())) { api.data[s.id] = Object.assign({}, saved); api.save(); api.ready(); } };
@@ -202,7 +203,19 @@ export const RAGA_KINDS = {
       const t = h("textarea", { class: "input", rows: 2, placeholder: f.hint || "", "aria-label": f.label });
       t.value = saved[f.key] || "";
       t.addEventListener("input", () => { saved[f.key] = t.value; check(); });
-      return h("label", { class: "field" }, f.label, t);
+      const chips = f.suggest && f.suggest.length ? h("div", { class: "row lesson-suggest", role: "group", "aria-label": "Suggestions" },
+        h("span", { class: "small muted" }, "Suggestions:"),
+        f.suggest.map(x => {
+          const b = h("button", { type: "button", class: "lesson-chip" }, x);
+          b.addEventListener("click", () => {
+            const v = t.value.trim();
+            t.value = v ? v.replace(/[;,.]$/, "") + "; " + b.textContent : b.textContent;
+            t.dispatchEvent(new Event("input"));
+            b.disabled = true;
+          });
+          return b;
+        })) : null;
+      return h("div", { class: "stack tight" }, h("label", { class: "field" }, f.label, t), chips);
     });
     check();
     return { el: h("div", { class: "stack" }, fields, s.after ? h("p", { class: "small muted" }, s.after) : null) };

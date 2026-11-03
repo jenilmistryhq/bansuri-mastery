@@ -186,6 +186,18 @@ const streakChip = () => {
 };
 const todayLine = (...bits) => h("span", { class: "row resume-top" }, h("span", { class: "eyebrow todayline" }, bits.filter(Boolean).map(b => h("span", null, b))), streakChip());
 
+// Part way through (W13): how far the day has come, as a bar and "7 of 12" (the lesson's steps, or
+// the blocks ticked in the step list). Null before the day starts.
+function partWay(at, day, ticked) {
+  const blocks = day.blocks.filter(b => ticked[b.id]).length;
+  const [done, of, now] = at ? [at.step - 1, at.of, at.step] : blocks ? [blocks, day.blocks.length, blocks] : [0, 0, 0];
+  if (!of) return null;
+  return h("div", { class: "row todayprog" },
+    h("div", { class: "progressbar", role: "progressbar", "aria-label": at ? "Steps done" : "Blocks done", "aria-valuemin": "0", "aria-valuemax": String(of), "aria-valuenow": String(done) },
+      h("i", { style: { width: Math.round(done / of * 100) + "%" } })),
+    h("span", { class: "small muted" }, now + " of " + of));
+}
+
 // Before practice (L1): the kind of day and its minutes, the day, its goal (the day's own pass check,
 // or its main block), one button, how much is left, the step list, and the practice time.
 function beforeCard(n, day, ds, action) {
@@ -206,6 +218,7 @@ function beforeCard(n, day, ds, action) {
       todayLine("Today", kind, total ? total + " min" : null),
       h("h1", { class: "title" }, "Day " + n + ": " + (day.title || (lesson && lesson.title) || "")),
       goal.textContent ? h("p", { class: "todaygoal" }, h("b", null, "Goal:"), " ", goal) : null,
+      partWay(at, day, ticked),
       action,
       h("p", { class: "small muted row todaysub" }, left ? h("span", null, "About " + left + " min left") : null, h("a", { href: "#/session/" + n }, "Step list")),
       practiceTime()));

@@ -3,7 +3,7 @@
 import { h, icon, fmtClock } from "../util.js";
 import { ac, makeVoice, click, playNote } from "../core/audio.js";
 import { codeOf, nameOf, hzOf, FING } from "../core/theory.js";
-import { startRecording, recordingSupported, saveRecording, newId } from "../recorder.js";
+import { startRecording, recordingSupported, saveRecording, deleteRecording, newId } from "../recorder.js";
 import { today } from "../util.js";
 import { fluteSvg, partName, noteOfPattern } from "./flute.js";
 import { ding } from "./sound.js";
@@ -66,6 +66,7 @@ export const STEP_KINDS = {
   // { questions: [{ q, options: [{ text, right, why }], why }] }
   quiz: { make(s, api) {
     let i = 0, firstTry = 0, missed = false;
+    const marks = []; // right first time, per question (a review day's reward shows them, W34)
     const host = h("div", { class: "stack" });
     const tally = h("p", { class: "small muted" });
     function ask() {
@@ -77,13 +78,14 @@ export const STEP_KINDS = {
         b.addEventListener("click", () => {
           if (op.right) {
             if (!missed) firstTry++;
+            marks[i] = !missed;
             b.classList.add("right"); answerMark(b, true); opts.querySelectorAll("button").forEach(x => { x.disabled = true; });
             ding(true);
             const last = i === s.questions.length - 1;
             const nextQ = last ? null : h("button", { type: "button", class: "btn" }, "Next question");
             if (nextQ) nextQ.addEventListener("click", () => { i++; ask(); });
             out.replaceChildren(...[reveal(true, "Right.", q.why), nextQ].filter(Boolean));
-            if (last) { api.data[s.id] = { firstTry, of: s.questions.length }; api.save(); api.ready(); }
+            if (last) { api.data[s.id] = { firstTry, of: s.questions.length, marks: marks.slice(), qs: s.questions.map(x => x.q) }; api.save(); api.ready(); }
           } else {
             missed = true; b.classList.add("wrong"); answerMark(b, false); b.disabled = true; ding(false);
             out.replaceChildren(reveal(false, "Not this one.", op.why || "Try another answer."));
@@ -160,33 +162,50 @@ export const STEP_KINDS = {
   } },
 
   // Do something for a while, then tick what was true. { seconds, start, checks: [text] }
+  // The timer step (W26): the clock large, the ticks under it from the start, Pause and Done early
+  // while it runs. Done once it has been started and every tick is on.
   timer: { make(s, api) {
     // window.__lessonTime shortens timers in the browser tests (1 = real time).
     const secs = Math.max(1, Math.round(s.seconds * (window.__lessonTime || 1)));
-    let timer = 0, left = secs;
+    let timer = 0, left = secs, ran = false, state = "idle"; // idle, running, paused, done
     // Two minutes or more (a practice day's block) count down as minutes and seconds.
     const long = s.seconds >= 120, show = v => (long ? fmtClock(v) : String(v));
     const num = h("b", { class: "lesson-timer-n" }, show(left));
-    const ringEl = h("div", { class: "lesson-timer" }, num, h("span", { class: "small muted" }, long ? "minutes" : "seconds"));
+    const ringEl = h("div", { class: "lesson-timer", role: "timer", "aria-label": long ? "Minutes left" : "Seconds left" }, num, h("span", { class: "small muted" }, long ? "minutes" : "seconds"));
     const btn = h("button", { type: "button", class: "btn primary" }, s.start || "Start");
-    const checks = h("div", { class: "stack", hidden: true }, h("p", { class: "lesson-q" }, "Tick what was true:"),
-      s.checks.map((c, i) => { const box = h("input", { type: "checkbox", id: s.id + "-c" + i }); box.addEventListener("change", () => { if ([...checks.querySelectorAll("input")].every(x => x.checked)) { api.data[s.id] = true; api.save(); api.ready(); } }); return h("label", { class: "check", for: s.id + "-c" + i }, box, c); }));
+    const boxes = s.checks.map((c, i) => h("input", { type: "checkbox", id: s.id + "-c" + i }));
+    const check = () => { if (ran && boxes.every(x => x.checked)) { api.data[s.id] = true; api.save(); api.ready(); } };
+    boxes.forEach(x => x.addEventListener("change", check));
+    const checks = h("div", { class: "stack lesson-timerticks" }, h("p", { class: "small muted" }, "Tick what you did:"),
+      s.checks.map((c, i) => h("label", { class: "check", for: s.id + "-c" + i }, boxes[i], c)));
     // A long block can end early: the same ticks, without waiting out the clock.
     const early = h("button", { type: "button", class: "linkbtn", hidden: true }, "Done early");
-    const stopRun = () => { clearInterval(timer); btn.disabled = false; btn.textContent = "Again"; ringEl.classList.remove("running"); early.hidden = true; checks.hidden = false; };
-    early.addEventListener("click", stopRun);
-    btn.addEventListener("click", () => {
-      clearInterval(timer); left = secs; num.textContent = show(left); btn.disabled = true; ringEl.classList.add("running"); early.hidden = !long;
+    function setBtn() {
+      btn.textContent = state === "running" ? "Pause" : state === "paused" ? "Resume" : state === "done" ? "Again" : (s.start || "Start");
+      btn.classList.toggle("primary", state !== "running");
+      ringEl.classList.toggle("running", state === "running"); ringEl.classList.toggle("paused", state === "paused");
+      early.hidden = !(long && (state === "running" || state === "paused"));
+    }
+    function run() {
+      clearInterval(timer); state = "running"; setBtn();
       timer = setInterval(() => {
         left--; num.textContent = show(Math.max(0, left));
         ringEl.style.setProperty("--p", String(1 - left / secs));
         if (left > 0) return;
-        ding(true); stopRun();
+        ding(true); end();
       }, 1000);
+    }
+    function end() { clearInterval(timer); state = "done"; setBtn(); check(); }
+    early.addEventListener("click", end);
+    btn.addEventListener("click", () => {
+      if (state === "running") { clearInterval(timer); state = "paused"; setBtn(); return; }
+      if (state === "paused") { run(); return; }
+      left = secs; num.textContent = show(left); ringEl.style.setProperty("--p", "0");
+      ran = true; run(); check();
     });
     // read: the block's readings (a practice day's timer), one tap away in a sheet over the lesson.
     const read = readingList(s.read);
-    return { el: h("div", { class: "stack lesson-center" }, ringEl, h("div", { class: "row" }, btn, early), checks, read), destroy() { clearInterval(timer); } };
+    return { el: h("div", { class: "stack lesson-center" }, ringEl, checks, read, h("div", { class: "row lesson-timerctl" }, btn, early)), destroy() { clearInterval(timer); } };
   } },
 
   // Tap along with a metronome. { bpm, beats }
@@ -284,12 +303,19 @@ export const STEP_KINDS = {
   } },
 
   // Record a few seconds into the Journal. { seconds, label, skip }
+  // The record step (W28): one large round Record button and the time ("0:00 / 0:30"); after it, a
+  // play bar, Record again (the new take replaces this one) and Keep it (goes on).
   record: { make(s, api) {
-    let rec = null, timer = 0, url = null;
-    const btn = h("button", { type: "button", class: "btn primary big" }, icon("mic"), " Record " + s.seconds + " seconds");
+    let rec = null, timer = 0, url = null, savedId = null, left = 0;
+    const total = s.seconds;
+    const btn = h("button", { type: "button", class: "btn primary lesson-recbtn" }, icon("mic"), h("span", null, "Record"));
+    const time = h("p", { class: "lesson-rectime mono" }, fmtClock(0) + " / " + fmtClock(total));
     const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.start || "");
     const player = h("audio", { controls: true, hidden: true });
     const heard = h("div", { class: "stack" });
+    const again = h("button", { type: "button", class: "btn" }, icon("mic"), " Record again");
+    const keep = h("button", { type: "button", class: "btn primary" }, "Keep it");
+    const after = h("div", { class: "row lesson-recafter", hidden: true }, again, keep);
     // analyse: true measures the recording as Tone check does, as a second opinion to listen with.
     async function analyse(blob) {
       try {
@@ -305,26 +331,38 @@ export const STEP_KINDS = {
     const skip = h("button", { type: "button", class: "linkbtn" }, s.skip || "Skip for now");
     skip.addEventListener("click", () => { api.data[s.id] = { skipped: true }; api.save(); msg.textContent = "Skipped. You can record it later in the Journal."; skip.hidden = true; api.ready(); });
     if (!recordingSupported()) { btn.disabled = true; msg.textContent = "Recording is not supported in this browser."; }
-    btn.addEventListener("click", async () => {
+    const showTime = () => { time.textContent = fmtClock(total - left) + " / " + fmtClock(total); };
+    async function finish() {
+      clearInterval(timer);
+      const r = rec; rec = null;
+      if (!r) return;
+      btn.disabled = true;
+      const { blob, mime, durationS } = await r.stop();
+      // Record again: the new take replaces the last one in the Journal.
+      if (savedId) { try { await deleteRecording(savedId); } catch (e) { /* the old take stays */ } }
+      savedId = newId();
+      try { await saveRecording({ id: savedId, created: new Date().toISOString(), date: today(), day: s.day ?? null, label: s.label, mime, blob, durationS, kind: "audio" }); }
+      catch (e) { savedId = null; /* storage full or private window: the lesson still goes on */ }
+      if (url) URL.revokeObjectURL(url);
+      url = URL.createObjectURL(blob); player.src = url; player.hidden = false;
+      msg.textContent = s.saved || "Saved in your Journal.";
+      btn.disabled = false; btn.hidden = true; after.hidden = false; btn.classList.remove("recording");
+      btn.replaceChildren(icon("mic"), h("span", null, "Record"));
+      api.data[s.id] = { saved: true }; api.save(); skip.hidden = true; ding(true); api.ready();
+      if (s.analyse) analyse(blob);
+    }
+    async function begin() {
       if (rec) return;
       try { rec = await startRecording({}); } catch (e) { msg.textContent = "The microphone is not available here."; return; }
-      btn.disabled = true; let left = s.seconds;
-      msg.textContent = "Recording... " + left;
-      timer = setInterval(async () => {
-        left--; if (left > 0) { msg.textContent = "Recording... " + left; return; }
-        clearInterval(timer);
-        const r = rec; rec = null;
-        const { blob, mime, durationS } = await r.stop();
-        try { await saveRecording({ id: newId(), created: new Date().toISOString(), date: today(), day: s.day ?? null, label: s.label, mime, blob, durationS, kind: "audio" }); }
-        catch (e) { /* storage full or private window: the lesson still goes on */ }
-        if (url) URL.revokeObjectURL(url);
-        url = URL.createObjectURL(blob); player.src = url; player.hidden = false;
-        msg.textContent = s.saved || "Saved in your Journal.";
-        btn.disabled = false; btn.replaceChildren(icon("mic"), " Record again");
-        api.data[s.id] = { saved: true }; api.save(); skip.hidden = true; ding(true); api.ready();
-        if (s.analyse) analyse(blob);
-      }, 1000);
-    });
-    return { el: h("div", { class: "stack lesson-center" }, btn, msg, player, heard, skip), destroy() { clearInterval(timer); if (rec) rec.cancel && rec.cancel(); if (url) URL.revokeObjectURL(url); } };
+      left = total; showTime();
+      btn.hidden = false; after.hidden = true; player.hidden = true; heard.replaceChildren();
+      btn.classList.add("recording"); btn.replaceChildren(icon("stop"), h("span", null, "Stop"));
+      msg.textContent = "Recording...";
+      timer = setInterval(() => { left--; showTime(); if (left <= 0) finish(); }, 1000);
+    }
+    btn.addEventListener("click", () => { if (rec) finish(); else begin(); });
+    again.addEventListener("click", begin);
+    keep.addEventListener("click", () => { if (!player.paused) player.pause(); api.next(); });
+    return { el: h("div", { class: "stack lesson-center" }, btn, time, msg, player, after, heard, skip), destroy() { clearInterval(timer); if (rec) rec.cancel && rec.cancel(); if (url) URL.revokeObjectURL(url); } };
   } },
 };

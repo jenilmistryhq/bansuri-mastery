@@ -6,6 +6,7 @@ import { listenMic } from "../core/listen.js";
 import { micIntro, countdown, holdMeter, phraseCheck } from "../core/live.js";
 import { yin, relSemi } from "../core/pitch.js";
 import { ac, click, tanpura, playNote } from "../core/audio.js";
+import { codeOf } from "../core/theory.js";
 import { fluteSvg } from "./flute.js";
 import { ding, playPair } from "./sound.js";
 
@@ -93,6 +94,65 @@ const VERDICT = {
   note: ["There it is: Sa!", "Hold still and do it again. Find the sweet spot five times."],
 };
 
+// Notes played one after another on the flute voice. Returns a function that stops them.
+function playRow(notes, secs, gap) {
+  const ts = notes.map((n, i) => setTimeout(() => playNote(n, secs), i * (gap || secs * 1000 + 250)));
+  return () => ts.forEach(clearTimeout);
+}
+
+// A microphone step without a microphone (redesign W30): play it, judge it by ear, and say so. It
+// opens from "No microphone?" under the meter, from "Go on without it" when the microphone is
+// blocked, and at once where the browser has no microphone at all. "Use the microphone" goes back.
+// opts: { notes: [semi], hear() -> stop(), onShow() (stop listening), onPass() }.
+// Returns { show(), wrap(meterEl, ...more) -> el, destroy() }.
+export function byEar(s, api, opts) {
+  let stopHear = null, box = null, live = null, more = [];
+  const hear = h("button", { type: "button", class: "btn" }, icon("play"), " Hear it");
+  hear.addEventListener("click", () => { if (stopHear) stopHear(); stopHear = opts.hear() || null; });
+  const clean = h("button", { type: "button", class: "btn primary big" }, "I played it cleanly");
+  clean.addEventListener("click", () => {
+    api.data[s.id] = { passed: true, byEar: true }; api.save(); ding(true);
+    clean.disabled = true; said.hidden = false;
+    if (opts.onPass) opts.onPass();
+    api.ready();
+  });
+  const said = h("p", { class: "small muted", hidden: true }, "Noted. Next time, try it with the microphone too: it hears what the ear misses.");
+  const useMic = h("button", { type: "button", class: "btn ghost" }, icon("mic"), " Use the microphone");
+  const open = h("button", { type: "button", class: "linkbtn lesson-nomiclink" }, "No microphone? Judge it by ear");
+  const panel = h("div", { class: "stack lesson-nomic", hidden: true },
+    h("p", { class: "lesson-nomic-notes mono", translate: "no" }, opts.notes.map(codeOf).join(" ")),
+    h("p", { class: "lesson-q" }, "No microphone? Play it and judge by ear:"),
+    h("div", { class: "row" }, hear),
+    h("div", { class: "row" }, clean),
+    said,
+    h("div", { class: "row" }, useMic));
+  function show() {
+    if (opts.onShow) { try { opts.onShow(); } catch (e) { /* not listening */ } }
+    if (live) live.hidden = true;
+    open.hidden = true; more.forEach(m => { m.dataset.wasHidden = String(m.hidden); m.hidden = true; });
+    panel.hidden = false;
+    const q = panel.querySelector(".lesson-q"); if (q) { q.setAttribute("tabindex", "-1"); q.focus({ preventScroll: true }); }
+  }
+  useMic.addEventListener("click", () => {
+    if (stopHear) { stopHear(); stopHear = null; }
+    panel.hidden = true; open.hidden = false;
+    if (live) live.hidden = false;
+    more.forEach(m => { m.hidden = m.dataset.wasHidden === "true"; });
+  });
+  open.addEventListener("click", show);
+  return {
+    show,
+    wrap(meterEl, ...rest) {
+      live = meterEl; more = rest;
+      box = h("div", { class: "stack" }, meterEl, open, ...rest, panel);
+      // No microphone in this browser at all: the step starts on its no-microphone path.
+      if (typeof navigator !== "undefined" && !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) show();
+      return box;
+    },
+    destroy() { if (stopHear) stopHear(); },
+  };
+}
+
 export const MORE_KINDS = {
   // A guided breath: a circle grows while you breathe in and shrinks while you breathe out.
   // { inhale, exhale, rounds, inText, outText }
@@ -163,7 +223,7 @@ export const MORE_KINDS = {
         if (started && last.level < Math.max(0.006, floor * 3) && frames.filter(f => f.t > last.t - 0.8).every(f => f.level < Math.max(0.006, floor * 3))) finish();
         if (t > 60) finish();
       });
-      if (!u) { msg.textContent = "The microphone is not available here."; return; }
+      if (!u) { msg.textContent = "The microphone is not available here. Hiss evenly anyway, timing it on a clock, then go on."; api.ready(); return; }
       unsub = u; btn.replaceChildren(icon("stop"), " Stop"); msg.textContent = "Hiss now: \"sssss\", the same from start to end.";
     });
     return { el: h("div", { class: "stack lesson-center" }, h("div", { class: "lesson-timer" }, secs, h("span", { class: "small muted" }, "seconds")), meter, msg, h("div", { class: "row" }, btn), res), destroy: stop };
@@ -223,23 +283,28 @@ export const MORE_KINDS = {
   // Hold a note on the live ring (core/live.js holdMeter), once or several times with a rest
   // between. { target, seconds, cents, times, giveUp }
   hold: { make(s, api) {
-    let timer = 0;
+    let timer = 0, meter = null;
+    const targets = s.targets || Array(s.times || 1).fill(s.target);
     const later = h("button", { type: "button", class: "linkbtn lesson-later", hidden: true }, "Not yet? Go on, and try again tomorrow");
-    const meter = holdMeter({ targets: s.targets || Array(s.times || 1).fill(s.target), seconds: s.seconds, cents: s.cents || 30, onPass: () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
+    const passed = () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); };
+    const heardAs = targets.map(n => (n === null || n === undefined ? 0 : n));
+    const ear = byEar(s, api, { notes: heardAs, hear: () => playRow(heardAs, 1.6), onShow: () => meter.stop(), onPass: () => { clearTimeout(timer); later.hidden = true; } });
+    meter = holdMeter({ targets, seconds: s.seconds, cents: s.cents || 30, onPass: passed, noMic: ear.show });
     later.addEventListener("click", () => { api.data[s.id] = { passed: false }; api.save(); later.hidden = true; api.ready(); });
     timer = setTimeout(() => { later.hidden = false; }, (s.giveUp || 45) * 1000 * (window.__lessonTime || 1));
-    return { el: h("div", { class: "stack" }, meter.el, later), destroy() { clearTimeout(timer); meter.destroy(); } };
+    return { el: ear.wrap(meter.el, later), destroy() { clearTimeout(timer); meter.destroy(); ear.destroy(); } };
   } },
 
   // Play a written phrase; the microphone marks each note as it is heard. { phrase: [semi], reps, giveUp }
   phrase: { make(s, api) {
-    let timer = 0;
-    const play = () => s.phrase.forEach((n, i) => setTimeout(() => playNote(n, 0.55), i * 600));
+    let timer = 0, pc = null;
+    const play = () => playRow(s.phrase, 0.55, 600);
     const later = h("button", { type: "button", class: "linkbtn lesson-later", hidden: true }, "Not yet? Go on, and try again tomorrow");
-    const pc = phraseCheck({ phrase: s.phrase, reps: s.reps || 1, hear: play, onPass: () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
+    const ear = byEar(s, api, { notes: s.phrase, hear: play, onShow: () => pc.stop(), onPass: () => { clearTimeout(timer); later.hidden = true; } });
+    pc = phraseCheck({ phrase: s.phrase, reps: s.reps || 1, hear: play, noMic: ear.show, onPass: () => { clearTimeout(timer); later.hidden = true; api.data[s.id] = { passed: true }; api.save(); api.ready(); } });
     later.addEventListener("click", () => { api.data[s.id] = { passed: false }; api.save(); later.hidden = true; api.ready(); });
     timer = setTimeout(() => { later.hidden = false; }, (s.giveUp || 60) * 1000 * (window.__lessonTime || 1));
-    return { el: h("div", { class: "stack" }, pc.el, later), destroy() { clearTimeout(timer); pc.destroy(); } };
+    return { el: ear.wrap(pc.el, later), destroy() { clearTimeout(timer); pc.destroy(); ear.destroy(); } };
   } },
 
   // Hear Sa from the drone, then hum it from memory (in any octave). The drone stops before the
