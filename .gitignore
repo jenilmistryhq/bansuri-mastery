@@ -24,3 +24,7 @@ node_modules/
 _site/
 tests/visual/
 hindi-review.csv
+.security-harness/
+
+# graft's local graph cache - regenerable, not committed (run `graft build`).
+/graft/
