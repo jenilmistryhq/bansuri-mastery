@@ -32,7 +32,8 @@ export function parseMidi(bytes) {
   const raw = [], tempos = [];
   let key = null, timeSig = null;
   for (let t = 0; t < ntrks && r.pos < bytes.length - 8; t++) {
-    const id = r.str(4), len = r.u32(), end = r.pos + len;
+    // A track cannot run past the file: a crafted length would otherwise keep the parser busy for minutes.
+    const id = r.str(4), len = r.u32(), end = Math.min(r.pos + len, bytes.length);
     if (id !== "MTrk") { r.pos = end; continue; }
     const tr = { name: "", program: null, channels: new Set(), events: [] };
     let tick = 0, status = 0;

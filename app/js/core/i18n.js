@@ -32,11 +32,17 @@ export function setDict(d) {
 
 export function hasDict() { return !!dict; }
 
+const MAX_TEXT = 2000;
+
 // Translates one string; anything unknown stays as it is.
 export function t(s) {
   if (!dict || typeof s !== "string") return s;
-  const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(s), core = m[2];
-  if (!core || !/[A-Za-z]/.test(core)) return s;
+  // Leading and trailing space are kept around the translation. Found by trimming, not by a regex:
+  // a lazy middle group backtracks quadratically, and text from a link can be very long.
+  const core = s.trim();
+  // No entry is anywhere near this long, so longer text (a pasted essay, say) cannot match.
+  if (!core || core.length > MAX_TEXT || !/[A-Za-z]/.test(core)) return s;
+  const start = s.indexOf(core), m = [s, s.slice(0, start), core, s.slice(start + core.length)];
   let out = dict.get(core);
   if (out === undefined) {
     for (const p of patterns) {

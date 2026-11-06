@@ -1,7 +1,7 @@
 // A teacher's review arriving (#/feedback/<data>): kept in this browser and shown with the earlier
 // reviews; its practice task appears on Today until marked done (review.js).
 import { h, icon } from "../util.js";
-import { RUBRIC, decodeLink, addFeedback, feedback, requests } from "../review.js";
+import { RUBRIC, decodeLink, addFeedback, cleanFeedback, feedback, requests } from "../review.js";
 import { getRecording } from "../recorder.js";
 import { errorState } from "../states.js";
 
@@ -40,11 +40,28 @@ export async function render(main, { params }) {
   const page = h("div", { class: "page reviewpage" });
   main.append(page);
   let f = null;
-  try { const o = await decodeLink(params[0]); if (o && o.kind === "feedback") f = addFeedback(o); } catch (e) { f = null; }
+  try { const o = await decodeLink(params[0]); if (o && o.kind === "feedback") f = cleanFeedback(o); } catch (e) { f = null; }
   if (!f) { page.append(errorState("This review link could not be read", "It may be cut short. Ask your teacher to send it again.", "#/me/teacher")); return; }
-  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "From your teacher"), h("h1", null, f.what), h("p", { class: "muted" }, "Saved in the app. The practice task is on Today until you mark it done.")),
-    reviewCard(f, "This review"),
-    h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/today" }, icon("today"), " To Today"), h("a", { class: "btn", href: "#/me/teacher/feedback" }, "All reviews")));
-  const older = feedback().slice(1, 4);
+  // A link can come from anyone, so nothing is saved until the learner says so, and the page says
+  // whether this answers a review they asked for and whether it would replace one already kept.
+  const same = x => ["id", "date", "teacher", "what", "comment", "task", "due"].every(k => (x[k] || null) === (f[k] || null)) && JSON.stringify(x.scores) === JSON.stringify(f.scores);
+  const kept = feedback().find(x => f.id && x.id === f.id);
+  const asked = requests().find(r => f.id && r.id === f.id);
+  const done = () => [h("p", { class: "muted" }, "Saved in the app. The practice task is on Today until you mark it done."),
+    h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/today" }, icon("today"), " To Today"), h("a", { class: "btn", href: "#/me/teacher/feedback" }, "All reviews"))];
+  const status = h("div", { class: "stack rvaccept" });
+  if (kept && same(kept)) status.append(...done());
+  else {
+    const save = h("button", { type: "button", class: "btn primary big" }, "Save this review");
+    save.addEventListener("click", () => { addFeedback(f); status.replaceChildren(...done()); });
+    status.append(
+      asked ? h("p", null, "This answers the review you asked for" + (asked.what ? ": " + asked.what : "") + ".")
+        : h("p", { class: "notice" }, "This is not a reply to a review you asked for in this app. Save it only if you know who sent it."),
+      kept ? h("p", { class: "small" }, "It replaces the review " + (kept.teacher ? "from " + kept.teacher + " " : "") + "saved on " + kept.date + ".") : null,
+      h("div", { class: "row" }, save, h("a", { class: "btn", href: "#/today" }, "Not now")));
+  }
+  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, f.teacher ? [h("span", null, "Sent by"), " " + f.teacher] : "A review"), h("h1", null, f.what || "A review")),
+    reviewCard(f, "This review"), status);
+  const older = feedback().filter(x => x.id !== f.id).slice(0, 3);
   if (older.length) page.append(h("h2", null, "Earlier reviews"), ...older.map(x => reviewCard(x)));
 }

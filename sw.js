@@ -1,6 +1,6 @@
 // Service worker: keeps the app and the whole course available offline.
 // VERSION is rewritten by scripts/build_app.py whenever any app or course file changes.
-const VERSION = "b4ba4b3aed4b";
+const VERSION = "250363c29f21";
 const CACHE = "bansuri-" + VERSION;
 const VOICE_CACHE = "voice-clips-v1";
 
@@ -112,12 +112,16 @@ self.addEventListener("fetch", event => {
   // Voice clips never change (their names are hashes of their text), so they are kept across
   // updates in their own cache: from the cache when saved, otherwise fetched and saved.
   if (rel.startsWith("app/voice/") && rel.endsWith(".mp3")) {
+    // Only audio is kept or served from this cache, and never as a page: the cache outlives
+    // updates, so nothing else may live in it.
+    const isAudio = r => /^audio\//.test(r.headers.get("Content-Type") || "");
     event.respondWith((async () => {
       const cache = await caches.open(VOICE_CACHE);
-      const hit = await cache.match(req);
-      if (hit) return hit;
+      const hit = req.mode === "navigate" ? null : await cache.match(req);
+      if (hit && isAudio(hit)) return hit;
+      if (hit) await cache.delete(req);
       const res = await fetch(req);
-      if (res.ok) await cache.put(req, res.clone());
+      if (res.ok && isAudio(res)) await cache.put(req, res.clone());
       return res;
     })());
     return;

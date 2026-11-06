@@ -120,8 +120,14 @@ export function toast(msg, ms) {
   }, 350);
 }
 
+// A stored value of the wrong kind (a damaged or crafted backup, say) reads as the fallback, so one
+// bad entry cannot break every screen that reads it.
 export function store(key, fallback) {
-  try { const v = localStorage.getItem(key); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; }
+  let v;
+  try { v = localStorage.getItem(key); if (v === null) return fallback; v = JSON.parse(v); } catch (e) { return fallback; }
+  if (Array.isArray(fallback)) return Array.isArray(v) ? v : fallback;
+  if (fallback && typeof fallback === "object") return v && typeof v === "object" && !Array.isArray(v) ? v : fallback;
+  return v;
 }
 export function storeSet(key, value) {
   try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (e) { return false; }

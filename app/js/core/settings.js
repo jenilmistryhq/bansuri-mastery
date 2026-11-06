@@ -14,7 +14,8 @@ export const SETTINGS_DEFAULTS = Object.freeze({ saNote: 0, saOct: 5, a4: 440, v
 const settingsListeners = new Set();
 let settingsCache = null;
 
-function cleanSettings(s) {
+export function cleanSettings(s) {
+  if (!s || typeof s !== "object") s = {};
   const n = (v, lo, hi, d) => { v = Number(v); return Number.isFinite(v) && v >= lo && v <= hi ? v : d; };
   return {
     saNote: Math.round(n(s.saNote, 0, 11, SETTINGS_DEFAULTS.saNote)),

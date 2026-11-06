@@ -6648,5 +6648,18 @@
 "Getting the reading voice ready... {n}%": "पढ़ने वाली आवाज़ तैयार हो रही है... {n}%",
 "A natural reading voice is downloaded once (about 115 MB: the voice from Hugging Face and its player from this site), then works on this device.": "पढ़ने वाली एक स्वाभाविक आवाज़ एक बार डाउनलोड होती है (लगभग 115 MB: आवाज़ Hugging Face से और उसका प्लेयर इसी साइट से), फिर इस डिवाइस पर चलती है।",
 "The reading voice could not load. Check the connection and try again.": "पढ़ने वाली आवाज़ लोड नहीं हो सकी। इंटरनेट देखिए और फिर कोशिश कीजिए।",
-"Review of {x}": "{x} की समीक्षा"
+"Review of {x}": "{x} की समीक्षा",
+"Save this review": "यह समीक्षा सहेजिए",
+"This answers the review you asked for: {x}.": "यह आपकी माँगी हुई समीक्षा का जवाब है: {x}।",
+"This answers the review you asked for.": "यह आपकी माँगी हुई समीक्षा का जवाब है।",
+"This is not a reply to a review you asked for in this app. Save it only if you know who sent it.": "यह इस ऐप में आपकी माँगी किसी समीक्षा का जवाब नहीं है। इसे तभी सहेजिए जब आप जानते हों कि इसे किसने भेजा है।",
+"It replaces the review from {x} saved on {y}.": "यह {y} को सहेजी गई {x} की समीक्षा की जगह लेगी।",
+"It replaces the review saved on {x}.": "यह {x} को सहेजी गई समीक्षा की जगह लेगी।",
+"Sent by": "भेजने वाले:",
+"A review": "एक समीक्षा",
+"It also changes these settings:": "यह इन सेटिंग्स को भी बदलेगा:",
+"Language": "भाषा",
+"Pilot study": "पायलट अध्ययन",
+"Tuning (A4)": "ट्यूनिंग (A4)",
+"Display and practice settings": "दिखावट और अभ्यास की सेटिंग्स"
 }

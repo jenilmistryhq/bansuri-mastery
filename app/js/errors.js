@@ -10,7 +10,8 @@ export function logError(message, detail) {
   const list = read();
   list.push({
     t: new Date().toISOString(),
-    route: (location.hash || "#/").split("#").slice(0, 2).join("#").slice(0, 80),
+    // The screen only: a link's data (a share card's name, a review, a move link) stays out of the report.
+    route: (location.hash || "#/").split("#").slice(0, 2).join("#").split("/").map(p => (p.length > 24 ? "<data>" : p)).join("/").slice(0, 80),
     msg: String(message || "Unknown error").slice(0, 300),
     at: detail ? String(detail).slice(0, 300) : "",
   });

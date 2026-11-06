@@ -167,7 +167,16 @@ function ratesView(page) {
 async function teacherSide(page, data) {
   let req;
   try { req = await decodeLink(data); } catch (e) { req = null; }
-  if (!req || req.kind !== "review") { page.append(errorState("This review link could not be read", "It may be cut short. Ask for the link again.", "#/me/teacher")); return undefined; }
+  if (!req || typeof req !== "object" || req.kind !== "review") { page.append(errorState("This review link could not be read", "It may be cut short. Ask for the link again.", "#/me/teacher")); return undefined; }
+  // A link can come from anyone: keep only the fields a request has, trimmed to the lengths the
+  // student's side allows (very long text would also slow the page down).
+  const str = (v, n) => (v == null ? "" : String(v)).slice(0, n);
+  const num = v => (Number.isFinite(Number(v)) ? Math.round(Number(v) * 10) / 10 : null);
+  const mIn = req.measures && typeof req.measures === "object" ? req.measures : null;
+  req = { kind: "review", id: str(req.id, 40), name: str(req.name, 40), what: str(req.what, 200), question: str(req.question, 600),
+    date: /^\d{4}-\d{2}-\d{2}$/.test(req.date) ? req.date : "",
+    measures: mIn && [mIn.pitchSD, mIn.levelCV, mIn.air, mIn.attack].every(v => num(v) !== null)
+      ? { noteName: str(mIn.noteName, 12), pitchSD: num(mIn.pitchSD), levelCV: num(mIn.levelCV), air: num(mIn.air), attack: num(mIn.attack) } : null };
   const scores = {}, notes = {};
   const player = h("audio", { controls: true, class: "rvplayer" });
   player.preservesPitch = true;
@@ -201,7 +210,7 @@ async function teacherSide(page, data) {
   page.append(
     h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Review for a student"), h("h1", null, (req.name ? req.name + ": " : "") + req.what),
       req.question ? h("p", null, h("b", null, "Their question: "), req.question) : null,
-      h("p", { class: "small muted" }, "Asked " + req.date + ". Open the recording they sent, listen (slower if you like), rate the seven points and give one practice task.")),
+      h("p", { class: "small muted" }, (req.date ? "Asked " + req.date + ". " : "") + "Open the recording they sent, listen (slower if you like), rate the seven points and give one practice task.")),
     h("section", { class: "card" }, h("h2", null, "The recording"), fileIn, h("div", { class: "row" }, player, h("label", { class: "field" }, "Speed", rate)),
       m ? h("p", { class: "small" }, "Measured by the app on a held " + (m.noteName || "note") + ": pitch wavers " + m.pitchSD + " cents, loudness " + m.levelCV + "%, breath noise " + m.air + "%, settles in " + m.attack + " ms.") : null),
     h("section", { class: "card" }, h("h2", null, "Rate seven points"), h("p", { class: "small muted" }, "Leave a point blank if the recording does not show it (posture needs a video)."), rows),

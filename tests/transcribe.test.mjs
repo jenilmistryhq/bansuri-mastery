@@ -382,4 +382,13 @@ await test("ornaments: andolan (a slow swing) is marked, vibrato is not; murki r
   assert.deepEqual(ev[0].murki, [2, 0, -1]); assert.equal(ev[1].andolan, true);
 });
 
+await test("MIDI: a track length past the end of the file is cut to the file (a crafted file cannot hang the page)", async () => {
+  const M = await import("../app/js/midi.js");
+  // A header, then one track that claims 4 GB but holds 4 bytes.
+  const bytes = new Uint8Array([0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1, 0x01, 0xe0, 0x4d, 0x54, 0x72, 0x6b, 0xff, 0xff, 0xff, 0xff, 0, 0xff, 0x2f, 0]);
+  const t0 = Date.now();
+  try { M.parseMidi(bytes); } catch (e) { /* refusing the file is fine too */ }
+  assert.ok(Date.now() - t0 < 1000, "parsed in " + (Date.now() - t0) + " ms");
+});
+
 console.log("transcribe tests: " + passed + " passed");

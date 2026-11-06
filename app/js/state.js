@@ -1,5 +1,6 @@
 // Learner progress, stored in this browser only (localStorage). Versioned, with backup export/import.
 import { today } from "./util.js";
+import { cleanSettings } from "./core/settings.js";
 
 const KEY = "bansuri.progress";
 const listeners = new Set();
@@ -103,6 +104,11 @@ export function resetAll() { state = fresh(); save(); }
 // Besides progress and settings it carries what the learner made: My songs, saved notations,
 // compositions, learned songs, students and coach history (STORES, as stored).
 const STORES = ["bansuri.feedback", "bansuri.review.requests", "bansuri.tone.history", "bansuri.tone.checks", "bansuri.ornaments", "bansuri.ornament.models", "bansuri.mysongs", "bansuri.transcribed", "bansuri.compose.saved", "bansuri.songs.learned", "bansuri.students", "bansuri.coach.history", "bansuri.lessons"];
+// What each store holds (a list or a keyed object), and the most one may take: a backup comes
+// from a file anyone could have made, and one oversized entry would fill the browser's storage so
+// that progress could no longer be saved.
+const LISTS = new Set(["bansuri.feedback", "bansuri.review.requests", "bansuri.tone.history", "bansuri.mysongs", "bansuri.transcribed", "bansuri.compose.saved", "bansuri.students", "bansuri.coach.history"]);
+const MAX_STORE = 1024 * 1024;
 export function backupObject() {
   const stores = {};
   for (const k of STORES) { try { const v = localStorage.getItem(k); if (v !== null) stores[k] = v; } catch (e) { /* storage unavailable */ } }
@@ -113,17 +119,28 @@ function readSettingsRaw() {
   try { return JSON.parse(localStorage.getItem("bansuri.settings") || "null"); } catch (e) { return null; }
 }
 
+// What a backup or a move link would put in place: progress and settings checked exactly as they
+// will be saved, so a preview can show the truth.
+export function cleanedImport(obj) {
+  return { progress: migrate(obj && obj.progress), settings: obj && isObj(obj.settings) ? cleanSettings(obj.settings) : null };
+}
+
 export function restoreFrom(obj) {
   if (!obj || obj.app !== "bansuri-mastery" || obj.kind !== "backup" || !obj.progress) throw new Error("This file is not a Bansuri Mastery backup.");
-  state = migrate(obj.progress);
-  if (obj.settings && typeof obj.settings === "object") {
-    try { localStorage.setItem("bansuri.settings", JSON.stringify(obj.settings)); } catch (e) { /* ignore */ }
+  const clean = cleanedImport(obj);
+  state = clean.progress;
+  if (clean.settings) {
+    try { localStorage.setItem("bansuri.settings", JSON.stringify(clean.settings)); } catch (e) { /* ignore */ }
   }
-  // Only the known keys, and only values that are valid JSON.
+  // Only the known keys, and only values that are valid JSON of the right kind and size.
   if (obj.stores && typeof obj.stores === "object") for (const k of STORES) {
     const v = obj.stores[k];
-    if (typeof v !== "string") continue;
-    try { JSON.parse(v); localStorage.setItem(k, v); } catch (e) { /* not valid, or storage full */ }
+    if (typeof v !== "string" || v.length > MAX_STORE) continue;
+    try {
+      const parsed = JSON.parse(v);
+      if (LISTS.has(k) ? !Array.isArray(parsed) : !isObj(parsed)) continue;
+      localStorage.setItem(k, v);
+    } catch (e) { /* not valid, or storage full */ }
   }
   save();
 }

@@ -1491,6 +1491,10 @@ try {
     await go(fbLink ? fbLink[0].slice(1) : "/feedback/x");
     const fbText = await text();
     check(/clear but small/.test(fbText) && /long tones on sa/.test(fbText), "review: the student's app shows the ratings and the task");
+    // Nothing is kept until the learner says so; the page says it answers their own request.
+    check(/answers the review you asked for/.test(fbText) && await page.evaluate(() => !JSON.parse(localStorage.getItem("bansuri.feedback") || "[]").some(f => /long tones on sa/i.test(f.task))), "review: a reply is not saved before Save this review, and it says it answers your request");
+    await clickText("#main button", "Save this review"); await sleep(200);
+    check(await page.evaluate(() => JSON.parse(localStorage.getItem("bansuri.feedback") || "[]").some(f => /long tones on sa/i.test(f.task))), "review: Save this review keeps it");
     await go("/today");
     check(/from your teacher/.test(await text()) && /long tones on sa/.test(await text()), "review: the practice task is on Today");
   });
@@ -2822,6 +2826,50 @@ try {
       }
     }
     await ctx.close();
+  });
+  await section("Security fixes: links, backups, translation", async () => {
+    // From the security review (.security-harness): link data is bounded and checked, a backup
+    // cannot break the app, and what a link would change is shown before it is kept.
+    await go("/today");
+    const snap = await page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; });
+    const mod = q => new URL("app/js/" + q, BASE).href;
+    // A reply nobody asked for: shown with a warning, kept only after Save this review.
+    const forged = await page.evaluate(async m => { const { encodeData } = await import(m); return encodeData({ v: 1, kind: "feedback", id: "rq-nobody", teacher: "Someone", what: "Forged piece", comment: "x", task: "Forged task", scores: { tone: 2 } }); }, mod("linkdata.js"));
+    await go("/feedback/" + forged);
+    check(/not a reply to a review you asked for/.test(await text()) && await page.evaluate(() => !JSON.parse(localStorage.getItem("bansuri.feedback") || "[]").some(f => f.id === "rq-nobody")), "security: an unasked-for review link warns and saves nothing until Save");
+    // A link that expands enormously is refused quickly instead of filling memory.
+    const bomb = await page.evaluate(async m => { const { encodeData } = await import(m); return encodeData({ kind: "feedback", comment: "a".repeat(30 * 1024 * 1024) }); }, mod("linkdata.js"));
+    const t0 = Date.now();
+    await go("/feedback/" + bomb);
+    check(Date.now() - t0 < 8000 && /could not be read/.test(await text()) && bomb.length < 100000, "security: a link that expands past the limit is refused (" + bomb.length + " characters, " + (Date.now() - t0) + " ms)");
+    // A damaged or crafted saved value reads as empty instead of blanking every screen.
+    await page.evaluate(() => localStorage.setItem("bansuri.feedback", "{}"));
+    await go("/today");
+    check(await page.evaluate(() => document.querySelector("#main").innerText.trim().length > 20), "security: a saved value of the wrong kind does not blank the app");
+    // A crafted backup: settings are cleaned (no oversized junk kept), stores of the wrong kind are skipped.
+    const restored = await page.evaluate(async m => {
+      localStorage.removeItem("bansuri.feedback"); const { restoreFrom } = await import(m);
+      restoreFrom({ app: "bansuri-mastery", kind: "backup", progress: { current: 3 }, settings: { lang: "en", junk: "x".repeat(200000) }, stores: { "bansuri.feedback": "{}", "bansuri.lessons": "[]", "bansuri.mysongs": "[]" } });
+      return { settings: (localStorage.getItem("bansuri.settings") || "").length, fb: localStorage.getItem("bansuri.feedback"), lessons: localStorage.getItem("bansuri.lessons"), songs: localStorage.getItem("bansuri.mysongs") };
+    }, mod("state.js"));
+    check(restored.settings < 2000 && restored.fb !== "{}" && restored.lessons !== "[]" && restored.songs === "[]", "security: a backup's settings are cleaned and stores of the wrong kind are skipped " + JSON.stringify(Object.assign({}, restored, { fb: String(restored.fb).slice(0, 20), lessons: String(restored.lessons).slice(0, 20) })));
+    // A move link: the preview shows the data as it would be saved, and the settings it changes.
+    const move = await page.evaluate(async m => { const { encodeData } = await import(m); return encodeData({ app: "bansuri-mastery", kind: "move", progress: { current: 120.5, log: "many" }, settings: { lang: "hi", pilot: true } }); }, mod("linkdata.js"));
+    await go("/move/" + move);
+    const mv = await page.evaluate(() => ({ cells: [...document.querySelectorAll("#main tbody tr")].map(r => r.children[1] && r.children[1].textContent), note: (document.querySelector("#main .movesettings") || {}).textContent || "" }));
+    check(mv.cells[0] === "Day 0" && mv.cells[2] === "0" && /Language/.test(mv.note) && /Pilot study/.test(mv.note), "security: the move preview shows the cleaned data and the settings it changes " + JSON.stringify(mv));
+    // The translation of very long text stays fast (it used a regex that grew with the square of the length).
+    const ms = await page.evaluate(async (a, b) => {
+      const i18n = await import(a); const d = await (await fetch(b)).json(); i18n.setDict(d);
+      const s = " " + "word ".repeat(80000) + " ", t1 = performance.now(); i18n.t(s); i18n.t("x" + " ".repeat(200000) + "y"); return performance.now() - t1;
+    }, mod("core/i18n.js"), new URL("app/i18n/hi.json", BASE).href);
+    check(ms < 500, "security: translating very long text stays fast (" + Math.round(ms) + " ms)");
+    // The problem report keeps the screen, not a link's data.
+    const route = await page.evaluate(async m => { location.hash = "#/share/" + "A".repeat(60); const { logError, errorList } = await import(m); logError("test"); return errorList().slice(-1)[0].route; }, mod("errors.js"));
+    check(route === "#/share/<data>", "security: the problem report leaves out a link's data (" + route + ")");
+    // Put everything back as it was.
+    await page.evaluate(o => { localStorage.clear(); for (const [k, v] of Object.entries(o)) localStorage.setItem(k, v); }, snap);
+    await page.reload({ waitUntil: "networkidle0" });
   });
   await section("Every day's lesson, walked through", async () => {
     // Each lesson in app/js/lessons, done start to finish by a walker that knows how to complete

@@ -3,21 +3,12 @@
 // The recording goes alongside through the phone's share sheet (or as a downloaded file). Feedback
 // received is kept in this browser (bansuri.feedback, in backups) and shown on Today and Progress.
 import { store, storeSet, today } from "./util.js";
+import { encodeData, decodeData } from "./linkdata.js";
 
-const b64url = bytes => { let s = ""; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
-const unb64url = str => Uint8Array.from(atob(str.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
-async function pipe(bytes, stream) { return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer()); }
-
-export async function encodeLink(obj) {
-  const json = new TextEncoder().encode(JSON.stringify(obj));
-  if (typeof CompressionStream !== "undefined") return "z" + b64url(await pipe(json, new CompressionStream("gzip")));
-  return "j" + b64url(json);
-}
-export async function decodeLink(data) {
-  const bytes = unb64url(data.slice(1));
-  const raw = data[0] === "z" ? await pipe(bytes, new DecompressionStream("gzip")) : bytes;
-  return JSON.parse(new TextDecoder().decode(raw));
-}
+// A request or a reply is a few kilobytes of text; anything far larger is not one.
+const MAX_REVIEW = 256 * 1024;
+export const encodeLink = obj => encodeData(obj);
+export const decodeLink = data => decodeData(data, MAX_REVIEW);
 export const linkTo = (kind, data) => location.origin + location.pathname + "#/" + kind + "/" + data;
 
 // The rubric: what a teacher rates, 1 to 5, each level described so ratings mean the same thing
@@ -34,11 +25,13 @@ export const RUBRIC = [
 
 // Requests the student made (so a reply can be matched) and feedback received.
 const REQ = "bansuri.review.requests", FB = "bansuri.feedback";
-export const requests = () => store(REQ, []);
+const isObj = x => !!x && typeof x === "object" && !Array.isArray(x);
+export const requests = () => store(REQ, []).filter(isObj);
 export function addRequest(r) { const l = requests(); l.unshift(r); storeSet(REQ, l.slice(0, 40)); }
-export const feedback = () => store(FB, []);
-// Checked and trimmed like any data from a link; a newer reply to the same request replaces it.
-export function addFeedback(f) {
+export const feedback = () => store(FB, []).filter(isObj).map(f => Object.assign({ scores: {}, notes: {} }, f, { scores: isObj(f.scores) ? f.scores : {}, notes: isObj(f.notes) ? f.notes : {} }));
+// Checked and trimmed like any data from a link (a link can come from anyone).
+export function cleanFeedback(f) {
+  f = isObj(f) ? f : {};
   const clean = {
     id: String(f.id || "").slice(0, 40), date: /^\d{4}-\d{2}-\d{2}$/.test(f.date) ? f.date : today(), teacher: String(f.teacher || "").slice(0, 60),
     what: String(f.what || "").slice(0, 200), comment: String(f.comment || "").slice(0, 2000), task: String(f.task || "").slice(0, 600),
@@ -49,6 +42,12 @@ export function addFeedback(f) {
     if (Number.isInteger(v) && v >= 1 && v <= 5) clean.scores[r.key] = v;
     if (f.notes && typeof f.notes[r.key] === "string" && f.notes[r.key].trim()) clean.notes[r.key] = f.notes[r.key].slice(0, 400);
   }
+  return clean;
+}
+// Saved only when the learner says so (views/feedback.js); a newer reply to the same request
+// replaces the earlier one.
+export function addFeedback(f) {
+  const clean = cleanFeedback(f);
   const l = feedback().filter(x => !(clean.id && x.id === clean.id));
   l.unshift(clean);
   storeSet(FB, l.slice(0, 60));
