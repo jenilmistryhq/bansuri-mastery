@@ -10,6 +10,14 @@ import { separate } from "./demucs.js";
 // Pinned to one version of the file, so the download is always the model this code was tested with.
 const MODEL_URL = "https://huggingface.co/timcsy/demucs-web-onnx/resolve/92e33df61cfc9eb820272aaa62d2ef6dcf4d950d/htdemucs_embedded.onnx";
 const MODEL_CACHE = "demucs-model-v1", MODEL_BYTES = 180534758;
+// The file's SHA-256 at that commit (Hugging Face's own record of it): checked before the model is
+// used or cached, so a changed or damaged download is never run.
+const MODEL_SHA256 = "e5e425c17683f163a472462eb5f5a4ffcd11c31858d57fbd0833b012d8b88077";
+async function checked(buf) {
+  const hex = [...new Uint8Array(await crypto.subtle.digest("SHA-256", buf))].map(b => b.toString(16).padStart(2, "0")).join("");
+  if (hex !== MODEL_SHA256) throw new Error("The downloaded model is not the expected file. Try again later.");
+  return buf;
+}
 ort.env.wasm.wasmPaths = new URL("../vendor/ort/", import.meta.url).href;
 ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1)) : 1;
 
@@ -22,7 +30,7 @@ async function cached() {
 // The model's bytes: from the cache, or downloaded (with progress) and then cached.
 async function modelBytes(id) {
   let cache = null;
-  try { cache = await caches.open(MODEL_CACHE); const hit = await cache.match(MODEL_URL); if (hit) return hit.arrayBuffer(); } catch (e) { cache = null; }
+  try { cache = await caches.open(MODEL_CACHE); const hit = await cache.match(MODEL_URL); if (hit) return checked(await hit.arrayBuffer()).catch(async e => { await cache.delete(MODEL_URL); throw e; }); } catch (e) { if (e && /not the expected file/.test(e.message)) throw e; cache = null; }
   const res = await fetch(MODEL_URL);
   if (!res.ok || !res.body) throw new Error("The model could not be downloaded (" + res.status + ").");
   const total = Number(res.headers.get("Content-Length")) || MODEL_BYTES, reader = res.body.getReader(), parts = [];
@@ -34,9 +42,9 @@ async function modelBytes(id) {
     const pc = Math.min(100, Math.round(got / total * 100));
     if (pc !== last) { last = pc; post(id, { progress: ["Downloading the separation model (once)... ", pc] }); }
   }
-  const blob = new Blob(parts);
+  const blob = new Blob(parts), buf = await checked(await blob.arrayBuffer());
   if (cache) { try { await cache.put(MODEL_URL, new Response(blob, { headers: { "Content-Type": "application/octet-stream" } })); } catch (e) { /* no room: it is downloaded again next time */ } }
-  return blob.arrayBuffer();
+  return buf;
 }
 async function load(id) {
   if (session) return session;

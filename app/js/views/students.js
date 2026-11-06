@@ -15,8 +15,15 @@ export function addStudentLinks(text) {
   for (const p of found) {
     const c = decode(p);
     if (!c) continue;
-    const name = (c.name || "Unnamed").trim();
-    list = list.filter(x => (decode(x.p) || {}).name !== name || !name || name === "Unnamed");
+    // A newer link from the same student replaces the older one. The same student means the same
+    // learner id (made on their device); a name alone, which anyone could type, replaces only an
+    // older link that also had no id.
+    const name = (c.name || "").trim();
+    list = list.filter(x => {
+      const old = decode(x.p) || {};
+      if (c.id || old.id) return c.id !== old.id;
+      return !name || old.name !== name;
+    });
     list.push({ p, added: new Date().toISOString().slice(0, 10) });
     added++;
   }
@@ -45,7 +52,7 @@ export function studentsBody() {
   return [h("section", { class: "hero" }, h("h1", null, "My students"),
     h("p", { class: "muted" }, "For teachers. Students send you their progress link; this table keeps them together on this device. Nothing is uploaded, so it updates when a student sends a new link.")),
   h("section", { class: "card" }, input, h("div", { class: "row" }, h("button", { type: "button", class: "btn primary", onclick: () => { const n = addStudentLinks(input.value); input.value = ""; toast(n ? n + " student link" + (n === 1 ? "" : "s") + " added." : "No student links found in that text."); draw(); } }, "Add"))),
-  h("section", { class: "card" }, tableHost)];
+  h("section", { class: "card" }, tableHost, h("p", { class: "small muted" }, "Each row is what that student's app reported; the app cannot check it."))];
 }
 
 export async function render(main) {

@@ -23,7 +23,8 @@ function moveOut(main) {
       const q = qrcode(0, "L"); q.addData(link); q.make();
       qr = h("img", { class: "qrimg", src: q.createDataURL(4, 8), alt: "QR code of the transfer link: scan it with the other device's camera" });
     }
-    out.replaceChildren(h("div", { class: "row" }, input, send), qr || h("p", { class: "small muted" }, "Your progress is too large for a QR code now; send the link to yourself instead (WhatsApp, email)."));
+    out.replaceChildren(h("div", { class: "row" }, input, send), qr || h("p", { class: "small muted" }, "Your progress is too large for a QR code now; send the link to yourself instead (WhatsApp, email)."),
+      h("p", { class: "small muted" }, "Anyone who has this link can read your progress in it: send it only to yourself."));
     out.hidden = false;
   });
   main.append(h("div", { class: "page movepage" },

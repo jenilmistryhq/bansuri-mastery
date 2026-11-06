@@ -88,6 +88,14 @@ export function save() {
 }
 
 export function update(fn) { fn(state); save(); return state; }
+
+// The app open in two tabs: each takes up what the other saves, so practice logged in one tab is
+// not overwritten by the other tab's older copy at its next save.
+if (typeof window !== "undefined") window.addEventListener("storage", e => {
+  if (e.key !== KEY || e.newValue === null || e.storageArea !== localStorage) return;
+  try { state = migrate(JSON.parse(e.newValue)); } catch (err) { return; }
+  listeners.forEach(fn => { try { fn(state); } catch (x) { /* listener errors must not break syncing */ } });
+});
 export function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
 
 export function ensureStarted() {

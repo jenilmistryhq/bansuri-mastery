@@ -6661,5 +6661,8 @@
 "Language": "भाषा",
 "Pilot study": "पायलट अध्ययन",
 "Tuning (A4)": "ट्यूनिंग (A4)",
-"Display and practice settings": "दिखावट और अभ्यास की सेटिंग्स"
+"Display and practice settings": "दिखावट और अभ्यास की सेटिंग्स",
+"Anyone who has this link can read what is in it: send it only to your teacher.": "जिसके पास यह लिंक होगा, वह इसमें लिखी बातें पढ़ सकता है: इसे सिर्फ़ अपने गुरु को भेजिए।",
+"Anyone who has this link can read your progress in it: send it only to yourself.": "जिसके पास यह लिंक होगा, वह इसमें आपकी प्रगति पढ़ सकता है: इसे सिर्फ़ ख़ुद को भेजिए।",
+"Each row is what that student's app reported; the app cannot check it.": "हर पंक्ति वही है जो उस शिष्य के ऐप ने बताया; ऐप इसकी जाँच नहीं कर सकता।"
 }

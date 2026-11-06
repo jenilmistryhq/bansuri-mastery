@@ -2,7 +2,7 @@
 // level and badges as one row) and your flute. Level and badges open on their own (#/me/level). The
 // share card's payload (encodePayload, sharePayload) is used by Me > Teacher > Share progress.
 import { h, today, addDays, parseDate, fmtMinutes, icon } from "../util.js";
-import { getState } from "../state.js";
+import { getState, update } from "../state.js";
 import { totals, streaks, practiceDates, getPlan, getDay, current, milestoneState } from "../course.js";
 import { rules } from "../badges.js";
 import { holdSummary } from "../livestats.js";
@@ -23,12 +23,26 @@ export function encodePayload(obj) {
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+function learnerId() {
+  let id = getState().prefs.learnerId;
+  if (typeof id !== "string" || !/^[A-Za-z0-9_-]{16}$/.test(id)) {
+    const b = new Uint8Array(12);
+    crypto.getRandomValues(b);
+    id = btoa(String.fromCharCode(...b)).replace(/\+/g, "-").replace(/\//g, "_");
+    update(s => { s.prefs.learnerId = id; });
+  }
+  return id;
+}
+
 export function sharePayload(name, forTeacher) {
   const s = getState(), tt = totals(), st = streaks();
   const d = getDay(current());
   const passed = getPlan().milestones.filter(m => milestoneState(m.id).status === "passed").map(m => m.id);
   const out = { v: 1, n: (name || "").slice(0, 40), d: current(), p: d ? d.phase : 0, s: st.current, b: st.best, m: Math.round(tt.minutes), ms: passed, t: today(), since: s.startedAt || today() };
   if (forTeacher) {
+    // A random id for this learner, so the teacher's table tells two students apart by more than a
+    // name anyone could type (views/students.js).
+    out.id = learnerId();
     // For a teacher: minutes per week (8 weeks), the longest steady hold per note, recent play-along
     // accuracy and play-back results, all as the microphone measured them.
     out.w = weeklyMinutes(practiceDates(), today(), 8).map(w => Math.round(w.mins));

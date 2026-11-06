@@ -2867,6 +2867,27 @@ try {
     // The problem report keeps the screen, not a link's data.
     const route = await page.evaluate(async m => { location.hash = "#/share/" + "A".repeat(60); const { logError, errorList } = await import(m); logError("test"); return errorList().slice(-1)[0].route; }, mod("errors.js"));
     check(route === "#/share/<data>", "security: the problem report leaves out a link's data (" + route + ")");
+    // Review requests get random ids, so a forged reply cannot guess one.
+    const ids = await page.evaluate(async m => { const { newRequestId } = await import(m); return [newRequestId(), newRequestId()]; }, mod("review.js"));
+    check(ids.every(x => /^rq[A-Za-z0-9_-]{16}$/.test(x)) && ids[0] !== ids[1], "security: review request ids are random " + ids.join(" "));
+    // A teacher's students: a link with a classmate's name but another learner id adds a row, it does not replace theirs.
+    const rows = await page.evaluate(async m => {
+      const { addStudentLinks } = await import(m);
+      const enc = o => btoa(JSON.stringify(o)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+      localStorage.removeItem("bansuri.students");
+      const card = (id, day) => "#/share/" + enc({ v: 1, n: "Asha", d: day, p: 1, s: 1, b: 1, m: 10, ms: [], t: "2026-11-01", id });
+      addStudentLinks(card("AAAAAAAAAAAAAAAA", 40)); addStudentLinks(card("BBBBBBBBBBBBBBBB", 99)); const two = JSON.parse(localStorage.getItem("bansuri.students")).length;
+      addStudentLinks(card("AAAAAAAAAAAAAAAA", 41)); const still = JSON.parse(localStorage.getItem("bansuri.students")).length;
+      return [two, still];
+    }, mod("views/students.js"));
+    check(rows[0] === 2 && rows[1] === 2, "security: students are told apart by their learner id, not their name " + rows.join(","));
+    // Two tabs: progress saved in another tab is taken up here, so this tab does not overwrite it.
+    const synced = await page.evaluate(async m => {
+      const S = await import(m), other = Object.assign({}, S.getState(), { current: 77 });
+      window.dispatchEvent(new StorageEvent("storage", { key: "bansuri.progress", newValue: JSON.stringify(other), storageArea: localStorage }));
+      return S.getState().current;
+    }, mod("state.js"));
+    check(synced === 77, "security: progress saved in another tab is taken up (" + synced + ")");
     // Put everything back as it was.
     await page.evaluate(o => { localStorage.clear(); for (const [k, v] of Object.entries(o)) localStorage.setItem(k, v); }, snap);
     await page.reload({ waitUntil: "networkidle0" });

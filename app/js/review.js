@@ -27,6 +27,13 @@ export const RUBRIC = [
 const REQ = "bansuri.review.requests", FB = "bansuri.feedback";
 const isObj = x => !!x && typeof x === "object" && !Array.isArray(x);
 export const requests = () => store(REQ, []).filter(isObj);
+// A request's id is random (not a time), so only someone holding the request link (the teacher it
+// was sent to) can make a reply that answers it; the reply page says whether it does.
+export function newRequestId() {
+  const b = new Uint8Array(12);
+  crypto.getRandomValues(b);
+  return "rq" + btoa(String.fromCharCode(...b)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
 export function addRequest(r) { const l = requests(); l.unshift(r); storeSet(REQ, l.slice(0, 40)); }
 export const feedback = () => store(FB, []).filter(isObj).map(f => Object.assign({ scores: {}, notes: {} }, f, { scores: isObj(f.scores) ? f.scores : {}, notes: isObj(f.notes) ? f.notes : {} }));
 // Checked and trimmed like any data from a link (a link can come from anyone).

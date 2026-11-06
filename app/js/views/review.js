@@ -5,7 +5,7 @@
 // sheet. With data: the teacher's side, a rubric (review.js RUBRIC) with comments and a practice
 // task, which becomes a reply link (#/feedback/<data>, views/feedback.js).
 import { h, toast, today, icon, addDays, store, storeSet } from "../util.js";
-import { RUBRIC, encodeLink, decodeLink, linkTo, addRequest, feedback as feedbackList } from "../review.js";
+import { RUBRIC, encodeLink, decodeLink, linkTo, addRequest, newRequestId, feedback as feedbackList } from "../review.js";
 import { takeHandoff } from "../reviewhandoff.js";
 import { segNav } from "../segnav.js";
 import { errorState } from "../states.js";
@@ -104,7 +104,7 @@ export async function render(main, { params, view: screen }) {
   let made = null;
   const out = h("div", { class: "stack rvlinkout", hidden: true });
   const make = h("button", { type: "button", class: "btn primary big", onclick: async () => {
-    const req = { v: 1, kind: "review", id: "rq" + Date.now().toString(36), date: today(), name: nameIn.value.trim().slice(0, 40), what: whatSel.value + (titleIn.value.trim() ? ": " + titleIn.value.trim() : ""), question: qIn.value.trim().slice(0, 600), measures: hand && hand.measures ? hand.measures : null };
+    const req = { v: 1, kind: "review", id: newRequestId(), date: today(), name: nameIn.value.trim().slice(0, 40), what: whatSel.value + (titleIn.value.trim() ? ": " + titleIn.value.trim() : ""), question: qIn.value.trim().slice(0, 600), measures: hand && hand.measures ? hand.measures : null };
     const link = linkTo("review", await encodeLink(req));
     // The recording is kept in the Journal, so the review can be heard next to it when it comes back.
     const rec = file ? await keepForReview(file, req) : null;
@@ -121,7 +121,7 @@ export async function render(main, { params, view: screen }) {
       const how = await shareOrCopy(made.text, made.link, file);
       toast(how === "shared" ? "Sent. Your teacher opens the link, listens and fills in the review." : how === "copied" ? "The link is copied" + (file ? " and the recording downloaded: send both to your teacher." : ": send it to your teacher with the recording.") : "Not sent.");
     });
-    out.replaceChildren(box, h("div", { class: "row" }, copy, share));
+    out.replaceChildren(box, h("div", { class: "row" }, copy, share), h("p", { class: "small muted" }, "Anyone who has this link can read what is in it: send it only to your teacher."));
     out.hidden = false;
   } }, "Make the review link");
   page.append(

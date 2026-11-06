@@ -15,6 +15,7 @@ export function decode(p) {
     const out = { name: typeof o.n === "string" ? o.n.slice(0, 40) : "", day: int(o.d, 100000), phase: int(o.p, 9), streak: int(o.s, 100000), best: int(o.b, 100000), minutes: int(o.m, 10000000),
       ms: Array.isArray(o.ms) ? o.ms.filter(x => typeof x === "string" && /^M\d{1,2}$/.test(x)).slice(0, 20) : [], date: date(o.t), since: date(o.since) };
     if (out.day === null) return null;
+    if (typeof o.id === "string" && /^[A-Za-z0-9_-]{16}$/.test(o.id)) out.id = o.id;
     // Teacher details, when included: checked and trimmed like the rest.
     const num = (x, lo, hi) => Number.isFinite(x) && x >= lo && x <= hi;
     if (Array.isArray(o.w)) out.weeks = o.w.slice(0, 8).filter(x => num(x, 0, 10000));
