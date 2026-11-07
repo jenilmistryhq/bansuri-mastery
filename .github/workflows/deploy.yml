@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  check:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -55,6 +55,35 @@ jobs:
           python scripts/build_voice.py --check
           python scripts/size_budget.py
 
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install tools
+        run: |
+          pip install -r requirements.txt
+          npm ci
+
+      - name: Cache the WebKit browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-webkit-1.48.2
+
+      - name: Install WebKit browser
+        run: npx playwright-core install --with-deps webkit
+
       - name: Unit tests
         run: |
           node tests/core.test.mjs
@@ -72,20 +101,11 @@ jobs:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tests/transcribe-real.mjs
 
-      - name: Cache the WebKit browser
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-webkit-1.48.2
-
       - name: Safari engine (WebKit) test
-        run: |
-          npx playwright-core install --with-deps webkit
-          node tests/webkit.mjs
+        run: node tests/webkit.mjs
 
       - name: Assemble site (app at /, reference site at /docs/)
         env:
-          # Set a repository variable SITE_URL (e.g. https://bansuri.example.com/docs/) when using a custom domain.
           SITE_URL: ${{ vars.SITE_URL }}
         run: |
           if [ -z "$SITE_URL" ]; then unset SITE_URL; fi
@@ -106,7 +126,7 @@ jobs:
 
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: build
+    needs: [check, test]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
