@@ -57,10 +57,15 @@ jobs:
 
   test:
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
+        if: matrix.shard == 1
         with:
           python-version: "3.12"
           cache: pip
@@ -72,19 +77,22 @@ jobs:
 
       - name: Install tools
         run: |
-          pip install -r requirements.txt
+          if [ ${{ matrix.shard }} -eq 1 ]; then pip install -r requirements.txt; fi
           npm ci
 
       - name: Cache the WebKit browser
+        if: matrix.shard == 1
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-webkit-1.48.2
 
       - name: Install WebKit browser
+        if: matrix.shard == 1
         run: npx playwright-core install --with-deps webkit
 
       - name: Unit tests
+        if: matrix.shard == 1
         run: |
           node tests/core.test.mjs
           node tests/live.test.mjs
@@ -94,17 +102,21 @@ jobs:
       - name: Browser smoke test
         env:
           CHROME_PATH: /usr/bin/google-chrome
+          WALK_SHARD: ${{ matrix.shard }}/4
         run: node tests/smoke.mjs
 
       - name: Notation from real recordings
+        if: matrix.shard == 1
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tests/transcribe-real.mjs
 
       - name: Safari engine (WebKit) test
+        if: matrix.shard == 1
         run: node tests/webkit.mjs
 
       - name: Assemble site (app at /, reference site at /docs/)
+        if: matrix.shard == 1
         env:
           SITE_URL: ${{ vars.SITE_URL }}
         run: |
@@ -115,12 +127,15 @@ jobs:
           touch _site/.nojekyll
 
       - name: Smoke test the assembled site
+        if: matrix.shard == 1
         env:
           CHROME_PATH: /usr/bin/google-chrome
           SITE_ROOT: _site
+          WALK_ONLY: m0
         run: node tests/smoke.mjs
 
       - uses: actions/upload-pages-artifact@v3
+        if: matrix.shard == 1
         with:
           path: _site
 
