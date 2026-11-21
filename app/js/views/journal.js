@@ -124,9 +124,9 @@ async function capsuleView(urls) {
   const caps = recs.filter(isCapsule).sort((a, b) => (a.created < b.created ? -1 : 1));
   const newest = recs.find(r => !isCapsule(r) && r.kind !== "video");
   const out = [h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Journal"), h("h1", null, "Time capsule"),
-    h("p", { class: "muted" }, "The sound you made on Day 0, next to your newest recording. Hear how far you have come."))];
+    h("p", { class: "muted" }, "Your first recorded sound, next to your newest recording. Hear how far you have come."))];
   if (!caps.length) {
-    out.push(h("section", { class: "card emptycard" }, h("p", { class: "emptystate" }, "No time capsule yet. Day 0 records a few seconds of your first sound and keeps it here."),
+    out.push(h("section", { class: "card emptycard" }, h("p", { class: "emptystate" }, "No time capsule yet. Record a few seconds of your sound and save it here to compare later."),
       h("a", { class: "btn", href: "#/me/journal/recordings" }, "Record yourself now")));
     return out;
   }
@@ -148,7 +148,7 @@ async function capsuleView(urls) {
     ? col("Today", newest)
     : h("div", { class: "card capsulecol" }, h("h2", { class: "grouphead" }, "Today"), h("p", { class: "small muted" }, "Record a long Sa now, then come back and hear the two side by side."),
       h("a", { class: "btn", href: "#/me/journal/recordings" }, "Record yourself now"));
-  out.push(h("div", { class: "grid2 capsulepair" }, col(first.day === 0 ? "Day 0" : first.label, first), now));
+  out.push(h("div", { class: "grid2 capsulepair" }, col(first.day === 0 ? "First recording" : first.label, first), now));
   if (best) out.push(h("p", { class: "small muted" }, "Your longest steady note so far: {n} s.".replace("{n}", best.toFixed(1))));
   if (boxes.length === 2) out.push(h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: async e => { e.currentTarget.disabled = true; for (const [r, box] of boxes) await analyse(r, box); } }, "Compare the pitch of both")));
   // Later time capsules, when there are any.
@@ -215,6 +215,7 @@ function recordScreen(main) {
 export async function render(main, { params, view: screen } = {}) {
   if (screen === "record") return recordScreen(main);
   const page = h("div", { class: "page" });
+  page.append(backHead("#/me", "Me", "Journal"));
   const urls = [];
   const cleanups = [];
   const tt = totals(), st = streaks();

@@ -30,7 +30,7 @@ defines the **10 numbered formulas** used everywhere in this course. This book w
 - **Formula 7** has repeated notes: separate them with a breath pulse ("hu") or, after
   [L13](../lessons/L13-articulation-tonguing-and-slurs.md), with the tongue. When the scale has
   an odd number of notes, the last group has only 2 notes; hold the last note 2 beats.
-- Use a **C drone** and a **metronome**.
+- Use a **tanpura set to your flute's Sa** and a **metronome**.
 
 ### BPM ladder (as in L12)
 

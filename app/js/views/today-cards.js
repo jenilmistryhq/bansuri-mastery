@@ -4,7 +4,8 @@ import { h, fmtDate, fmtMinutes, store, storeSet } from "../util.js";
 import { getState } from "../state.js";
 import { daysBetween, addDays } from "../util.js";
 import { listRecordings } from "../recorder.js";
-import { getDay, current, milestoneState, dueReviews, upcomingReviews, markReview, streaks, totals, practiceDates, lastIndex, getPlan } from "../course.js";
+import { getDay, current, milestoneState, dueReviews, upcomingReviews, markReview, totals, streaks, practiceDates, lastIndex, getPlan } from "../course.js";
+import { weekStrip } from "../ui.js";
 import { today } from "../util.js";
 import { mountBench } from "../bench/bench.js";
 import { fetchDoc } from "../content.js";
@@ -14,7 +15,6 @@ import { currentTask, markTaskDone } from "../review.js";
 import { codeOf } from "../core/theory.js";
 import { getSettings } from "../core/settings.js";
 import { icon } from "../util.js";
-import { weekStrip } from "../ui.js";
 import { saveBackup } from "../backup.js";
 import { levelOf, xpState } from "../xp.js";
 import { NEWS } from "../news.js";
@@ -111,9 +111,9 @@ const parseDateLocal = s => { const [y, m, d] = s.split("-").map(Number); return
 // day as a lesson, or else its session page.
 export function dayHref(n) {
   const l = lessonForDay(n), day = getDay(n);
-  if (l) return "#/lesson/" + l.id;
+  if (l) return "#/lesson/" + l.id + "#start";
   if (day && day.kind === "milestone" && day.milestone && milestoneState(day.milestone).status !== "passed") return "#/milestone/" + day.milestone;
-  return practiceLesson("p" + n) ? "#/lesson/p" + n : "#/session/" + n;
+  return practiceLesson("p" + n) ? "#/lesson/p" + n + "#start" : "#/session/" + n;
 }
 
 // The current unit (redesign 05 L1): the days from the last milestone to the next one still open,
@@ -130,8 +130,8 @@ export function unitStrip(n) {
   dots.push(h("b", { class: "unit-ms" + (left === 0 ? " now" : "") }, ms.id));
   return h("section", { class: "card unitstrip" },
     h("div", { class: "stack tight" }, h("span", { class: "eyebrow" }, "This unit"), h("b", null, ms.title)),
-    h("div", { class: "unit-dots", role: "img", "aria-label": "Day " + (n - first + 1) + " of " + (ms.day - first + 1) + " in this unit" }, dots),
-    h("a", { class: "unit-link", href: "#/milestone/" + ms.id }, h("span", null, left === 0 ? "The milestone is today" : left + (left === 1 ? " day" : " days") + " to the milestone"), h("span", { class: "chev", "aria-hidden": "true" }, ">")));
+    h("div", { class: "unit-dots", role: "img", "aria-label": "Activity " + (n - first + 1) + " of " + (ms.day - first + 1) + " in this unit" }, dots),
+    h("a", { class: "unit-link", href: "#/milestone/" + ms.id }, h("span", null, left === 0 ? "Checkpoint ready" : left + (left === 1 ? " learning activity" : " learning activities") + " to the next checkpoint"), h("span", { class: "chev", "aria-hidden": "true" }, ">")));
 }
 
 // Messages that are not about today's practice (news, the backup reminder, the install offer) are
@@ -157,7 +157,8 @@ const remember = (k, v) => storeSet(SEEN, Object.assign(store(SEEN, {}), { [k]: 
 function installToast(cleanups) {
   const s = getState(), ios = /iPhone|iPad|iPod/.test(navigator.userAgent), evt = window.__installEvent;
   if ((window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone) return null;
-  if (seen().installOffered || s.prefs.installDismissed || !(s.days[0] && s.days[0].done) || (!ios && !evt)) return null;
+  const hasDay0 = (s.days[0] && s.days[0].done) || (s.milestones.M0 && s.milestones.M0.status === "passed");
+  if (seen().installOffered || s.prefs.installDismissed || !hasDay0 || (!ios && !evt)) return null;
   remember("installOffered", today());
   return toastCard("Put the app on your home screen",
     ios ? h("p", { class: "small" }, h("b", null, "Keeps your progress safe: "), "on iPhone, Safari deletes a website's saved data when it is not opened for about a week. On the home screen, the app keeps it.", " ", "In Safari, tap the Share button, then \"Add to Home Screen\".")
@@ -172,7 +173,7 @@ function newsToast(cleanups) {
   if (seen().newsSeen === NEWS.id) return null;
   remember("newsSeen", NEWS.id);
   if (!s.startedAt) return null;
-  return toastCard(NEWS.title, h("ul", { class: "small" }, NEWS.items.map(t => h("li", null, t))),
+  return toastCard(NEWS.title, h("p", { class: "small" }, "Your profile is refreshed, and lessons now follow your flute's configured Sa."),
     close => [h("a", { class: "btn small", href: "#/me", onclick: close }, "See your progress")], "Got it", cleanups);
 }
 
@@ -197,13 +198,16 @@ export function messageToast(cleanups) {
 
 // Your progress in one card: level and how far to the next (in days, not XP), this week, quests.
 export function progressCard() {
-  // Points stay quiet (redesign decision 6): the level lives in Me > Progress and on the reward;
-  // Today keeps the week and one line of quests.
-  const qs = questState(), left = qs.list.filter(q => !q.done);
+  const plan = getPlan(), n = current(), day = getDay(n), phase = day && plan.phases.find(p => p.id === day.phase);
+  const activities = phase ? plan.days.filter(x => x.phase === phase.id) : [];
+  const done = activities.filter(x => x.n < n).length, pct = activities.length ? Math.round(done / activities.length * 100) : 0;
+  const lv = levelOf(xpState().total);
   return h("section", { class: "card progresscard" },
-    h("a", { class: "small muted", href: "#/me" }, "Your week"),
-    weekStrip(new Set(practiceDates().keys())),
-    h("a", { class: "questline small", href: "#/skills" }, left.length ? "Quests: " + (qs.list.length - left.length) + " of " + qs.list.length + " done. Next: " + left[0].text : "All of today's quests are done."));
+    h("div", { class: "row between" }, h("b", null, "Your path"), h("span", { class: "chip info" }, "Level " + lv.level)),
+    h("p", { class: "small muted" }, phase ? "Phase " + phase.id + ": " + phase.title : "Choose a learning activity to get started."),
+    h("div", { class: "row between small" }, h("span", null, "Learning activities"), h("b", null, done + " / " + activities.length)),
+    h("div", { class: "progressbar missionbar", role: "progressbar", "aria-label": "Learning activities completed in this phase", "aria-valuemin": "0", "aria-valuemax": String(activities.length || 1), "aria-valuenow": String(done) }, h("i", { style: { width: pct + "%" } })),
+    h("a", { class: "questline small", href: "#/course" }, "View your path and checkpoints"));
 }
 
 // One tap to the tools used most.
@@ -212,7 +216,7 @@ export function quickActions() {
   // The tuner is the Flute dock's Tuner tab: it opens over Today.
   const tuner = h("button", { type: "button", class: "quickact", onclick: () => document.dispatchEvent(new CustomEvent("bansuri:dock", { detail: { tab: "tuner" } })) }, h("span", { class: "quickicon", "aria-hidden": "true" }, icon("bench")), h("span", null, "Flute and tuner"));
   return h("nav", { class: "quickacts", "aria-label": "Quick actions" },
-    tuner, a("#/skills/tone/check", "coach", "Tone check"), getSettings().focus ? a("#/skills/fix", "coach", "Fix a problem") : a("#/skills/games", "star", "Play a game"),
+    tuner, a("#/skills/tone/check", "coach", "Tone check"), getSettings().focus ? a("#/teacher/fix", "coach", "Fix a problem") : a("#/skills/games", "star", "Play a game"),
     a("#/music", "note", "Songs"), a("#/music/listen", "listen", "Listen"), a("#/today/quick", "today", "5 minutes"));
 }
 
@@ -279,7 +283,7 @@ export function welcomeBackCard(cur) {
   return h("section", { class: "resume todayhero welcomeback" },
     h("div", { class: "resume-body" },
       h("h1", { class: "title" }, "Welcome back"),
-      h("p", null, "You left off at Day " + cur + "."),
+      h("p", null, "Pick up where you left off."),
       h("p", { class: "muted" }, "A gentle restart is ready."),
       h("a", { class: "btn primary big", href: dayHref(cur) || "#/session/" + cur }, "Continue"),
       h("a", { class: "btn", href: "#/today/quick" }, "Start with 5 minutes")));
@@ -293,13 +297,13 @@ export function adaptiveCard(cur) {
   if (tries >= 2) {
     const day = getDay(cur);
     const bench = day && day.blocks.find(b => b.bench && b.bench.bpm);
-    return h("section", { class: "card notice-card" }, h("h2", null, "This day is taking a few tries"),
-      h("p", null, "That is normal: " + tries + " sessions on Day " + cur + " so far. Three things usually help:"),
+    return h("section", { class: "card notice-card" }, h("h2", null, "This activity is taking a few tries"),
+      h("p", null, "That is normal: this activity has taken a few tries. Three things usually help:"),
       h("ul", { class: "stack", style: { margin: "0", paddingLeft: "1.2em" } },
         h("li", null, bench ? "Slow down: play the exercises 10 BPM slower (" + Math.max(30, bench.bench.bpm - 10) + " BPM), then build back up." : "Slow down: play everything at a slower tempo, then build back up."),
         h("li", null, "Find the exact problem: ", h("a", { href: "#/skills/tone/check" }, "let the app listen"), " to a long note, or loop the hard bar in the Bench."),
-        h("li", null, "Rest a day if your lips or hands are tired; it often clicks the day after.")),
-      h("div", { class: "row" }, h("a", { class: "btn", href: "#/skills/fix" }, "Fix a problem"), h("a", { class: "btn", href: "#/session/" + Math.max(0, cur - 1) }, "Practise Day " + Math.max(0, cur - 1) + " again")));
+        h("li", null, "Rest if your lips or hands are tired; it often clicks after a break.")),
+      h("div", { class: "row" }, h("a", { class: "btn", href: "#/teacher/fix" }, "Fix a problem"), h("a", { class: "btn", href: "#/session/" + Math.max(0, cur - 1) }, "Explore earlier activities")));
   }
   return null;
 }
@@ -356,7 +360,7 @@ export function realBansuriCard() {
   return h("details", { class: "card" },
     h("summary", null, h("b", null, "Hear a real bansuri"), h("span", { class: "small muted" }, " - what a bamboo flute actually sounds like")),
     // Two sentences, two strings: the second names the library's "Start here" tag, which Hindi glosses.
-    h("p", { class: "small muted" }, "The flute sound in the Practice Bench is synthesised: it gets the pitches right, not the breathy bamboo tone. These short, openly licensed recordings are by amateur players (credits in app/audio/CREDITS.txt); some are in other keys than your C flute.",
+    h("p", { class: "small muted" }, "The flute sound in the Practice Bench is synthesised: it gets the pitches right, not the breathy bamboo tone. These short, openly licensed recordings are by amateur players (credits in app/audio/CREDITS.txt); some are in a different key from your flute.",
       " ", "For professional tone, listen to the short tracks marked \"Start here\" in the ",
       h("a", { href: "#/read/08-LISTENING-LIBRARY.md" }, "listening library"), "."),
     h("div", { class: "stack", style: { gap: "2px" } }, h("span", { class: "small" }, "A held Sa, then Sa up to upper Sa and back (sankalp, CC BY 4.0; roguentropy, CC0; Freesound)"),

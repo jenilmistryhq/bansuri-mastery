@@ -7,7 +7,7 @@
 | 1 | Chromatic scale `S r R g G m M P d D n N S'` up and down, slowly with drone | Every note within +/-20 cents; clean | Yes |
 | 2 | Each komal note held 4 s | Within +/-15 cents, 3 times in a row | Yes |
 | 3 | Aroh, avroh, pakad and a composition in one komal raga (Khamaj, Des, Kafi, Bhimpalasi or Bageshri) | Correct notes; Pitch 3+ | Yes |
-| 4 | One melody played with Sa = C, then with Pa as Sa (Sa = G), then with Ma as Sa (Sa = F), on your C flute | Correct in all three; written notation for each | Yes |
+| 4 | One melody played with your flute's natural Sa, then with Pa as Sa and Ma as Sa | Correct in all three; written notation for each | Yes |
 | 5 | Transpose a given 8-bar sargam notation into another Sa and convert it to Western staff (or the reverse) | No errors | Yes |
 | 6 | Ear: EX-EAR Level 6 (12-note identification) | 17/20 | Yes |
 | 7 | Original 16-bar melody with labelled phrase structure **and** an original sthayi in Bhupali or Yaman in teentaal | Notated, performed with a loop, recorded | Yes |

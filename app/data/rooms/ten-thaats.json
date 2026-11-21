@@ -1,0 +1,299 @@
+{
+  "id": "ten-thaats",
+  "title": "The 10 Thaats",
+  "tasks": [
+    {
+      "id": "what-is-a-thaat",
+      "title": "What Is a Thaat?",
+      "content": [
+        "In the early twentieth century, Pandit Vishnu Narayan Bhatkhande faced a monumental problem: hundreds of ragas existed across the Hindustani tradition, taught orally, with no unifying classification. His solution was the thaat system - ten parent scales that account for every standard raga in North Indian classical music.",
+        "A thaat is a seven-note scale. Every thaat uses all seven swara names - Sa, Re, Ga, Ma, Pa, Dha, Ni - but each swara takes either its shuddha (natural) or vikrit (altered) form. The vikrit forms are komal (flat) for Re, Ga, Dha, and Ni, and tivra (sharp) for Ma. Sa and Pa are achal swaras - immovable notes that never change.",
+        "Since there are four swaras with a komal option and one with a tivra option, the total possible combinations are 2 x 2 x 2 x 2 x 2 = 32 scales. But Bhatkhande selected the ten that cover the vast majority of real ragas. A raga belongs to whichever thaat contains its notes (with some exceptions for ragas that borrow notes).",
+        "Think of a thaat as a family name. Raga Yaman, Raga Bhupali, and Raga Hindol all belong to the Kalyan thaat because their notes are drawn from the Kalyan scale. The thaat tells you the raw material; the raga tells you how to use it."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many thaats did Bhatkhande define?",
+          "options": [
+            { "text": "7", "why": "There are 7 swaras, but 10 thaats. The number of thaats comes from the most common scale combinations, not the note count." },
+            { "text": "10", "right": true, "yes": "Correct. Bhatkhande selected 10 parent scales that cover virtually all Hindustani ragas." },
+            { "text": "12", "why": "12 is the number of semitones in an octave. The thaat count is 10." },
+            { "text": "22", "why": "22 is the traditional number of shrutis (microtones). There are 10 thaats." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two swaras are 'achal' - they never change across any thaat?",
+          "options": [
+            { "text": "Sa and Re", "why": "Re has komal and shuddha forms. Sa is achal, but the second achal swara is Pa." },
+            { "text": "Sa and Pa", "right": true, "yes": "Right. Sa (the tonic) and Pa (the perfect fifth) are fixed in every thaat and every raga." },
+            { "text": "Sa and Ma", "why": "Ma actually has two forms: shuddha and tivra. Sa and Pa are the two immovable swaras." },
+            { "text": "Ga and Dha", "why": "Both Ga and Dha have komal and shuddha variants. The achal swaras are Sa and Pa." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bilawal-natural",
+      "title": "Bilawal - The Natural Scale",
+      "content": [
+        "Bilawal is the starting point of the thaat system. It uses all seven shuddha swaras with no komal or tivra alterations: Sa R G m P D N. If you play the shuddha saptak from Sa to Sa on your bansuri, you are playing the Bilawal thaat.",
+        "Western musicians will recognize this as the major scale (C major on a C bansuri). The intervals are: whole step, whole step, half step, whole step, whole step, whole step, half step. This pattern of whole and half steps is the foundation from which the other nine thaats depart.",
+        "Famous ragas in Bilawal thaat include Alhaiya Bilawal (a grand morning raga), Deshkar (a pentatonic raga using Sa Re Ga Pa Dha), and Hansadhwani (a beloved five-note raga: Sa Re Ga Pa Ni). Because Bilawal uses all natural notes, its ragas tend to feel bright, open, and straightforward.",
+        "Playing the Bilawal scale cleanly is not just an exercise - it is the reference against which every other thaat is heard. When you later play Kalyan and hear the tivra Ma, your ear measures it against the shuddha Ma you learned here."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the Bilawal scale ascending: Sa R G m P D N Sa'",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which Western scale is equivalent to the Bilawal thaat?",
+          "options": [
+            { "text": "Minor scale", "why": "The minor scale has komal Ga, komal Dha, and komal Ni. Bilawal uses all shuddha swaras." },
+            { "text": "Major scale", "right": true, "yes": "Correct. Bilawal with all shuddha swaras matches the intervals of the Western major scale." },
+            { "text": "Pentatonic scale", "why": "The pentatonic scale uses only five notes. Bilawal, like all thaats, uses all seven." },
+            { "text": "Chromatic scale", "why": "The chromatic scale uses all 12 semitones. Bilawal uses only 7 of the 12." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kalyan-one-note",
+      "title": "Kalyan - One Note Changes Everything",
+      "content": [
+        "Take the Bilawal scale and change exactly one note: raise shuddha Ma(5) to tivra Ma(6). That single semitone shift creates the Kalyan thaat - and an entirely different emotional world. Where Bilawal is bright and daytime, Kalyan is luminous and nocturnal.",
+        "The Kalyan scale is: Sa R G M P D N (semitones 0 2 4 6 7 9 11). The tivra Ma creates a tritone interval with Sa (6 semitones apart), which gives the scale a distinctive floating, expansive quality. Western musicians will recognize this as the Lydian mode.",
+        "Kalyan is arguably the most important thaat for bansuri students. It is home to Raga Yaman - the first raga every Hindustani music student learns. Other Kalyan ragas include Bhupali (a pentatonic subset: Sa R G P D), Hindol (another pentatonic raga: Sa G M D N), and Kedar (which mixes Kalyan and Bilawal elements).",
+        "The critical ear training point: learn to hear the difference between shuddha Ma(5) and tivra Ma(6). This one interval separates Bilawal ragas from Kalyan ragas. When you hear tivra Ma in a raga, your first instinct should be to check whether it belongs to the Kalyan family."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 6, 7, 9, 11, 12],
+          "prompt": "Play the Kalyan scale ascending: Sa R G M P D N Sa'",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [5, 6],
+          "rounds": 5,
+          "prompt": "Distinguish shuddha Ma from tivra Ma - listen and identify",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "khamaj-romantic",
+      "title": "Khamaj - The Romantic Scale",
+      "content": [
+        "Khamaj takes the Bilawal scale and lowers one note: shuddha Ni(11) becomes komal Ni(10). The scale is Sa R G m P D n (semitones 0 2 4 5 7 9 10). Western musicians will hear this as the Mixolydian mode.",
+        "The komal Ni gives Khamaj ragas a warm, romantic, slightly wistful quality. Where shuddha Ni reaches upward with tension toward the upper Sa, komal Ni settles back, content to stay where it is. This relaxed quality makes Khamaj ragas popular in light classical, thumri, and film music.",
+        "Important ragas in Khamaj thaat include Khamaj itself (a late-night raga of romance and longing), Des (a beloved monsoon raga), Jhinjhoti (a light, playful raga), and Tilak Kamod (which adds Kalyan elements). Many ghazals and thumris are set in Khamaj or its relatives.",
+        "The Khamaj thaat is a gateway to understanding how a single komal note changes mood. Compare: play the Bilawal scale ending on shuddha Ni before Sa - it feels resolved, complete. Now play Khamaj ending on komal Ni before Sa - it feels softer, more intimate. That one note is the difference between a formal declaration and a whispered confidence."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 10, 12],
+          "prompt": "Play the Khamaj scale ascending: Sa R G m P D n Sa'",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which single note distinguishes Khamaj from Bilawal?",
+          "options": [
+            { "text": "Komal Re instead of shuddha Re", "why": "Re stays shuddha in Khamaj. It is Ni that changes." },
+            { "text": "Tivra Ma instead of shuddha Ma", "why": "That change creates Kalyan, not Khamaj. Khamaj changes Ni." },
+            { "text": "Komal Ni instead of shuddha Ni", "right": true, "yes": "Exactly. Khamaj lowers Ni from shuddha(11) to komal(10), creating its warm, romantic character." },
+            { "text": "Komal Ga instead of shuddha Ga", "why": "Komal Ga appears in Kafi, Asavari, Bhairavi, and Todi - but not Khamaj." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bhairav-morning",
+      "title": "Bhairav - The Morning Tension",
+      "content": [
+        "Bhairav thaat introduces a sound that is immediately recognizable: the combination of komal Re(1) and komal Dha(8), both sitting just one semitone above Sa and Pa respectively. The scale is Sa r G m P d N (semitones 0 1 4 5 7 8 11).",
+        "These two semitone intervals (Sa to komal Re, and Pa to komal Dha) create a profound tension - a pulling, yearning quality that Indian classical music associates with the early morning hours. When the first light breaks and the world is suspended between night and day, Bhairav ragas capture that threshold feeling.",
+        "The gap between komal Re(1) and shuddha Ga(4) is three semitones - an unusually wide interval that gives Bhairav its dramatic character. Similarly, the gap between komal Dha(8) and shuddha Ni(11) mirrors this width in the upper tetrachord. These wide intervals are what make Bhairav ragas sound so distinctive.",
+        "Famous Bhairav ragas include Bhairav itself (a majestic morning raga named after Lord Shiva), Ahir Bhairav (which mixes Bhairav and Kafi elements for a gentler morning feel), and Nat Bhairav. The Bhairav family is one of the richest in Hindustani music, with dozens of derivative ragas exploring different facets of its dramatic intervals."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 4, 5, 7, 8, 11, 12],
+          "prompt": "Play the Bhairav scale ascending: Sa r G m P d N Sa'",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [0, 1, 4, 5, 7, 8, 11],
+          "rounds": 5,
+          "prompt": "Identify the notes of the Bhairav thaat by ear",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "kafi-asavari",
+      "title": "Kafi and Asavari",
+      "content": [
+        "Kafi and Asavari are the two thaats built around komal Ga(3). They share that signature flat third that gives both families their characteristic warmth and emotional depth. But they differ in their upper notes, creating distinct moods.",
+        "Kafi thaat uses komal Ga(3) and komal Ni(10), with shuddha Dha(9): Sa R g m P D n (semitones 0 2 3 5 7 9 10). Western ears will hear this as the Dorian mode. Kafi ragas feel romantic, playful, and bittersweet. The thaat is associated with Holi, the festival of colors, and many folk songs. Important Kafi ragas include Kafi, Bhimpalasi (an afternoon raga), Bageshree (a midnight raga of deep longing), and Pilu (a light classical favorite).",
+        "Asavari thaat adds komal Dha(8) to the mix: Sa R g m P d n (semitones 0 2 3 5 7 8 10). Western ears will hear this as the natural minor scale (Aeolian mode). The komal Dha brings a darker, more serious quality. Important Asavari ragas include Asavari itself, Darbari Kanada (a grand, somber night raga where komal Ga receives a distinctive slow oscillation called andolan), and Jaunpuri.",
+        "The key distinction: Kafi has shuddha Dha(9) and feels lighter and more romantic. Asavari has komal Dha(8) and feels heavier and more contemplative. Both share komal Ga(3) and komal Ni(10)."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What distinguishes Asavari from Kafi thaat?",
+          "options": [
+            { "text": "Asavari uses shuddha Ga instead of komal Ga", "why": "Both Kafi and Asavari use komal Ga. The difference is in Dha." },
+            { "text": "Asavari uses komal Dha, while Kafi uses shuddha Dha", "right": true, "yes": "Correct. Kafi has shuddha Dha(9), giving it a lighter feel. Asavari has komal Dha(8), making it darker and more serious." },
+            { "text": "Asavari uses tivra Ma instead of shuddha Ma", "why": "Both Kafi and Asavari use shuddha Ma. Tivra Ma appears in Kalyan, Poorvi, Marwa, and Todi." },
+            { "text": "They use completely different notes", "why": "They share five notes and differ only in Dha: shuddha Dha in Kafi vs komal Dha in Asavari." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which thaat uses komal Ga and komal Ni but shuddha Dha?",
+          "answer": "Kafi",
+          "accept": ["kafi", "KAFI", "Kaafi"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "poorvi-marwa-todi",
+      "title": "Poorvi, Marwa, and Todi",
+      "content": [
+        "Three thaats share the unusual combination of komal Re(1) and tivra Ma(6). This pairing creates some of the most dramatic, intense scales in Hindustani music. The komal Re pulls downward toward Sa while the tivra Ma pushes upward toward Pa, creating a constant push-pull tension.",
+        "Poorvi thaat: Sa r G M P d N (semitones 0 1 4 6 7 8 11). It has shuddha Ga(4) and komal Dha(8). Poorvi ragas are associated with the late afternoon and early evening - the transition from day to night. Important ragas include Poorvi itself and Puriya Dhanashree.",
+        "Marwa thaat: Sa r G M P D N (semitones 0 1 4 6 7 9 11). Like Poorvi but with shuddha Dha(9) instead of komal. This one change lightens the mood slightly. Marwa ragas include Marwa (a dramatic sunset raga where Pa is often omitted entirely) and Puriya (which also avoids Pa, creating an extraordinary five-note world of tension).",
+        "Todi thaat: Sa r g M P d N (semitones 0 1 3 6 7 8 11). The most altered of the three - it uses komal Ga(3) in addition to komal Re(1) and komal Dha(8). The combination of three komal swaras with tivra Ma creates a dense, complex, deeply emotional scale. Miyan ki Todi (attributed to Tansen) is one of the greatest morning ragas, while Multani is a powerful afternoon raga."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which thaat uses komal Ga, komal Re, tivra Ma, and komal Dha?",
+          "options": [
+            { "text": "Poorvi", "why": "Poorvi has shuddha Ga, not komal Ga. Poorvi is Sa r G M P d N." },
+            { "text": "Marwa", "why": "Marwa has shuddha Ga and shuddha Dha. Marwa is Sa r G M P D N." },
+            { "text": "Todi", "right": true, "yes": "Correct. Todi has the most alterations of the three: komal Re, komal Ga, tivra Ma, and komal Dha." },
+            { "text": "Bhairavi", "why": "Bhairavi has shuddha Ma, not tivra Ma. Bhairavi is Sa r g m P d n." }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 1, 3, 6, 7, 8, 11],
+          "rounds": 5,
+          "prompt": "Identify notes from the Todi thaat - listen carefully for komal Re, komal Ga, and tivra Ma",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "bhairavi-four-komal",
+      "title": "Bhairavi - Four Komal Notes",
+      "content": [
+        "Bhairavi thaat represents the maximum departure from Bilawal: four of the five variable swaras take their komal form. The scale is Sa r g m P d n (semitones 0 1 3 5 7 8 10). Only Ma stays shuddha (and of course Sa and Pa are always fixed).",
+        "This density of komal swaras gives Bhairavi an unmistakable emotional depth - devotional, compassionate, sometimes melancholy. It is no coincidence that some of the most emotionally powerful ragas in the entire Hindustani tradition belong to Bhairavi thaat.",
+        "Raga Bhairavi is unique in Indian classical music: it is traditionally the closing raga of a concert, regardless of what time of day the concert occurs. It is also the only raga where musicians freely borrow notes from outside the thaat (called mishra or mixed Bhairavi), adding shuddha Re, shuddha Ga, shuddha Dha, or shuddha Ni for color. This freedom makes Bhairavi the most expressive canvas available to a performer.",
+        "Another important Bhairavi thaat raga is Malkauns (using only Sa g m d n - a haunting pentatonic raga of the deep night). Western musicians may notice that the Bhairavi scale resembles the Phrygian mode, though the treatment and emotional context are entirely different."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 3, 5, 7, 8, 10, 12],
+          "prompt": "Play the Bhairavi scale ascending: Sa r g m P d n Sa'",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "How many komal swaras does the Bhairavi thaat use?",
+          "options": [
+            { "text": "Two", "why": "Two komal swaras would describe Bhairav (komal Re and komal Dha) or Kafi (komal Ga and komal Ni)." },
+            { "text": "Three", "why": "Three komal swaras describes Asavari (komal Ga, Dha, Ni) or Todi (komal Re, Ga, Dha). Bhairavi has four." },
+            { "text": "Four", "right": true, "yes": "Correct. Bhairavi uses komal Re, komal Ga, komal Dha, and komal Ni - the maximum number of komal swaras." },
+            { "text": "Five", "why": "Only four swaras can be komal (Re, Ga, Dha, Ni). Ma can be tivra but not komal. So four is the maximum." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thaat-challenge",
+      "title": "Thaat Identification Challenge",
+      "content": [
+        "Now that you know all ten thaats, it is time to test your knowledge. Identifying a thaat from its swaras is a fundamental skill - when you encounter a new raga, the first question is always: which thaat does it belong to?",
+        "Here is a quick reference for the key distinguishing features of each thaat. Focus on which swaras are altered from the Bilawal baseline (all shuddha):",
+        "Bilawal: all shuddha (the baseline). Kalyan: tivra Ma only. Khamaj: komal Ni only. Bhairav: komal Re + komal Dha. Kafi: komal Ga + komal Ni. Asavari: komal Ga + komal Dha + komal Ni. Bhairavi: komal Re + komal Ga + komal Dha + komal Ni. Poorvi: komal Re + tivra Ma + komal Dha. Marwa: komal Re + tivra Ma. Todi: komal Re + komal Ga + tivra Ma + komal Dha.",
+        "Notice the pattern: each thaat can be described by which swaras depart from shuddha. Learning to quickly scan for komal Re, komal Ga, tivra Ma, komal Dha, and komal Ni will let you identify any thaat instantly."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "A scale uses Sa, shuddha Re, komal Ga, shuddha Ma, Pa, komal Dha, and komal Ni. Which thaat is it?",
+          "options": [
+            { "text": "Kafi", "why": "Kafi has komal Ga and komal Ni, but shuddha Dha - not komal Dha." },
+            { "text": "Bhairavi", "why": "Bhairavi also uses komal Re, which this scale does not have." },
+            { "text": "Asavari", "right": true, "yes": "Correct. Komal Ga + shuddha Re + komal Dha + komal Ni = Asavari." },
+            { "text": "Todi", "why": "Todi uses komal Re and tivra Ma, neither of which appears in this scale." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A scale uses komal Re, shuddha Ga, tivra Ma, Pa, shuddha Dha, and shuddha Ni. Which thaat is it?",
+          "options": [
+            { "text": "Poorvi", "why": "Poorvi uses komal Dha, but this scale has shuddha Dha." },
+            { "text": "Kalyan", "why": "Kalyan uses shuddha Re, not komal Re." },
+            { "text": "Todi", "why": "Todi uses komal Ga and komal Dha, but this scale has shuddha Ga and shuddha Dha." },
+            { "text": "Marwa", "right": true, "yes": "Correct. Komal Re + shuddha Ga + tivra Ma + shuddha Dha = Marwa." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which thaat changes only tivra Ma from the Bilawal baseline, with all other swaras remaining shuddha?",
+          "answer": "Kalyan",
+          "accept": ["kalyan", "KALYAN", "Kalyaan"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "playing-across-thaats",
+      "title": "Playing Across Thaats",
+      "content": [
+        "The best way to internalize the thaats is to play them back to back and listen to how one or two note changes completely transform the mood. This final exercise puts your fingers and your ears to work.",
+        "Start with Bilawal (all shuddha) and then play Kalyan immediately after. The only change is Ma(5) becoming M(6), but notice how the entire mood shifts from bright and open to luminous and floating. That is the power of a single note change in Indian music.",
+        "Now consider a bigger contrast: play Bilawal (all shuddha) and then Bhairavi (four komal notes). The difference is dramatic - from a sunlit meadow to a dimly lit temple. Yet both scales use all seven swara names. The thaats are like different lenses through which the same seven colours are filtered.",
+        "As you progress in your musical journey, you will encounter ragas from every thaat. Each thaat family has its own emotional palette, its own time of day, its own set of characteristic phrases. Mastering the thaats gives you a mental map of the entire Hindustani system - when you hear a raga for the first time, you can place it in its family and immediately understand its raw materials."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 6, 4, 2, 0],
+          "prompt": "Play Bilawal ascending then Kalyan descending - hear how tivra Ma transforms the descent",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 6, 7, 9, 10, 11],
+          "rounds": 6,
+          "prompt": "Mixed ear training - identify swaras from across multiple thaats, including both forms of Ma and Ni",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I can name all 10 thaats and identify them by their altered swaras",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

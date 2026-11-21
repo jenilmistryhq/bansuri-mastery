@@ -1,0 +1,430 @@
+{
+  "id": "meend-and-slides",
+  "title": "Meend - Slides Between Notes",
+  "description": "Master the art of meend (gliding between notes) - the ornament that gives bansuri its singing voice.",
+  "difficulty": "medium",
+  "skills": ["ornaments", "technique", "expression"],
+  "minutes": 40,
+  "order": 7,
+  "prerequisites": ["dha-ni-full-saptak"],
+  "tasks": [
+    {
+      "id": "t1-what-is-meend",
+      "title": "What is meend?",
+      "content": [
+        "Meend is the art of gliding smoothly from one note to another, passing through every pitch in between rather than jumping directly.",
+        "While Western instruments often play notes as separate, discrete steps, Indian music treats the space between notes as musically important. Meend is how you fill that space.",
+        { "type": "list", "items": [
+          "Meend = a smooth, continuous slide between two notes",
+          "It can go up (ascending meend) or down (descending meend)",
+          "The speed of the slide is expressive - slow meend feels contemplative, fast meend feels energetic",
+          "On bansuri, meend is produced by gradually uncovering or covering finger holes"
+        ] },
+        { "type": "note", "text": "Meend is what makes the bansuri sound like a human voice. When people say the bansuri 'sings', they are usually hearing meend." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What is meend?",
+          "options": [
+            { "text": "Playing two notes at the same time", "right": false, "why": "That would be a chord. The bansuri plays one note at a time." },
+            { "text": "A smooth glide between two notes", "right": true, "yes": "Exactly! Meend is a continuous slide from one pitch to another." },
+            { "text": "A fast repeated note", "right": false, "why": "That would be a gamak or andolan, not meend." },
+            { "text": "A silence between two notes", "right": false, "why": "Meend is the opposite - it fills the space between notes with sound." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "How is meend produced on the bansuri?",
+          "options": [
+            { "text": "By changing your lip position only", "right": false, "why": "Lip changes affect tone but cannot produce a full meend between distant notes." },
+            { "text": "By gradually uncovering or covering finger holes", "right": true, "yes": "Right! Slowly rolling your finger off or onto a hole creates the smooth pitch glide." },
+            { "text": "By blowing harder", "right": false, "why": "Blowing harder jumps to the upper octave, not to the next note." },
+            { "text": "By tilting the flute", "right": false, "why": "Tilting can slightly bend pitch, but it cannot produce a proper meend." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Think of meend as 'walking' between notes instead of 'jumping'.",
+        "The key technique is gradual finger movement - not lifting all at once."
+      ]
+    },
+    {
+      "id": "t2-why-bansuri-is-perfect",
+      "title": "Why bansuri excels at meend",
+      "content": [
+        "The bansuri's open finger holes are its greatest advantage for meend. Unlike a piano (which can only jump between fixed pitches) or a guitar (which needs string bending), the bansuri can reach every pitch between two notes simply by partially covering a hole.",
+        { "type": "list", "items": [
+          "Open holes = infinite pitch control between any two adjacent notes",
+          "No keys or pads to get in the way of smooth movement",
+          "Your fingertip is the mechanism - you have complete control over how much of the hole is open",
+          "The bamboo tube amplifies even tiny pitch changes into audible slides"
+        ] },
+        "This is why the bansuri is considered one of the best instruments for Indian classical music - it can express the subtle pitch movements that define each raga.",
+        { "type": "note", "text": "The sitar and sarangi also excel at meend. But the bansuri's directness - no string, no reed, just breath and fingers - makes its meend particularly pure and voice-like." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Why can the bansuri play meend so naturally?",
+          "options": [
+            { "text": "Its bamboo material resonates differently", "right": false, "why": "Material affects tone color but does not enable meend." },
+            { "text": "Its open finger holes allow infinite pitch control", "right": true, "yes": "Correct! Partial hole coverage gives you every pitch between two notes." },
+            { "text": "It has more holes than other flutes", "right": false, "why": "The number of holes does not determine meend ability." },
+            { "text": "It is played side-blown instead of end-blown", "right": false, "why": "The blowing direction affects embouchure, not meend capability." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "confirm",
+          "prompt": "I understand that partial finger coverage is the key to meend on bansuri",
+          "points": 0
+        }
+      ],
+      "hints": [
+        "Think about what happens when your finger is halfway off a hole - the pitch is halfway between two notes."
+      ]
+    },
+    {
+      "id": "t3-slow-meend-sa-re",
+      "title": "Slow meend: Sa to Re",
+      "content": [
+        "Your first meend: a slow glide from Sa (semitone 0) to Re (semitone 2).",
+        "Start by playing a steady Sa with all holes closed. Then, very slowly, begin to uncover the bottom hole. Do not lift your finger off - slide it or roll it gradually.",
+        { "type": "list", "items": [
+          "Start: all holes closed (Sa)",
+          "Very slowly roll your bottom finger sideways, uncovering the hole little by little",
+          "You should hear the pitch rise smoothly - no jumps",
+          "End: bottom hole fully open (Re)",
+          "The whole slide should take about 3-4 seconds"
+        ] },
+        { "type": "note", "text": "The most common beginner mistake is lifting the finger too fast. The slide should be so slow that a listener cannot tell exactly when Sa ends and Re begins." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Start on Sa and hold it steady for 2 seconds before your meend.",
+          "target": 0,
+          "seconds": 2,
+          "cents": 35,
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "hold",
+          "prompt": "Now arrive at Re and hold it steady for 3 seconds.",
+          "target": 2,
+          "seconds": 3,
+          "cents": 35,
+          "points": 15
+        }
+      ],
+      "hints": [
+        "Roll your finger sideways rather than lifting it straight up.",
+        "Keep your breath steady throughout - do not change air pressure during the slide.",
+        "If the pitch jumps instead of gliding, you are moving your finger too fast."
+      ]
+    },
+    {
+      "id": "t4-meend-re-ga",
+      "title": "Meend: Re to Ga",
+      "content": [
+        "Now try the same technique from Re (semitone 2) to Ga (semitone 4).",
+        "This meend covers the same interval as Sa to Re (a whole step, two semitones), but the finger movement feels different because you are uncovering the second hole from the bottom.",
+        "Start on a clear Re, then slowly uncover the next hole to glide up to Ga.",
+        { "type": "note", "text": "Each finger has a slightly different range of motion and sensitivity. Practice meend on each pair of adjacent notes to build even control across all your fingers." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Play Re and hold it for 2 seconds.",
+          "target": 2,
+          "seconds": 2,
+          "cents": 35,
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "hold",
+          "prompt": "Glide to Ga and hold it steady for 3 seconds.",
+          "target": 4,
+          "seconds": 3,
+          "cents": 35,
+          "points": 15
+        }
+      ],
+      "hints": [
+        "Make sure Re is clean and stable before you begin the slide.",
+        "The transition should be inaudible - no bump or click as you move.",
+        "Practice the finger movement without blowing first to build muscle memory."
+      ]
+    },
+    {
+      "id": "t5-ear-training-meend",
+      "title": "Ear training - hearing meend",
+      "content": [
+        "A good meend player also needs a trained ear. Can you identify which notes are being connected by a meend?",
+        "In these exercises, you will hear a note and need to identify it. Imagine each note as a landing point that a meend could arrive at or depart from.",
+        { "type": "note", "text": "In a raga performance, the notes that a meend connects are just as important as the starting and ending notes. Knowing which notes are involved helps you understand the raga's character." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "prompt": "This note is the starting point of a meend. What is it?",
+          "played": 0,
+          "options": [
+            { "label": "Sa", "value": 0 },
+            { "label": "Re", "value": 2 },
+            { "label": "Ga", "value": 4 },
+            { "label": "Ma", "value": 5 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "ear",
+          "prompt": "A meend lands on this note. Identify it.",
+          "played": 4,
+          "options": [
+            { "label": "Re", "value": 2 },
+            { "label": "Ga", "value": 4 },
+            { "label": "Ma", "value": 5 },
+            { "label": "Pa", "value": 7 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "ear",
+          "prompt": "This is the top of a descending meend. What note?",
+          "played": 7,
+          "options": [
+            { "label": "Ma", "value": 5 },
+            { "label": "Pa", "value": 7 },
+            { "label": "Dha", "value": 9 },
+            { "label": "Ni", "value": 11 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q4",
+          "type": "ear",
+          "prompt": "And the bottom of that descending meend lands here.",
+          "played": 5,
+          "options": [
+            { "label": "Ga", "value": 4 },
+            { "label": "Ma", "value": 5 },
+            { "label": "Pa", "value": 7 },
+            { "label": "Re", "value": 2 }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Listen for the characteristic quality of each note - Sa is stable and grounded, Ga is bright, Pa is strong.",
+        "If you are unsure, hum the note and compare it to Sa in your head."
+      ]
+    },
+    {
+      "id": "t6-wider-meend",
+      "title": "Meend across wider intervals",
+      "content": [
+        "So far you have slid between adjacent notes (one step). Now try a wider meend: Sa to Ga, covering four semitones in one continuous slide.",
+        "This requires uncovering two holes gradually. The technique is the same - slow, controlled finger movement - but now you coordinate two fingers.",
+        { "type": "list", "items": [
+          "Start on Sa (all holes closed)",
+          "Begin uncovering the bottom hole slowly (passing through Re)",
+          "As the first hole opens fully, begin uncovering the second hole",
+          "The pitch should rise smoothly through Sa - Re - Ga with no jumps",
+          "End on a clear, stable Ga"
+        ] },
+        { "type": "note", "text": "Wide meend is an advanced technique. It is fine if your first attempts have small bumps at Re - smooth it out with practice." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Start on Sa and hold it for 2 seconds.",
+          "target": 0,
+          "seconds": 2,
+          "cents": 30,
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "hold",
+          "prompt": "Glide up to Ga and hold it for 3 seconds.",
+          "target": 4,
+          "seconds": 3,
+          "cents": 30,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Think of it as one continuous movement, not two separate slides.",
+        "Your breath must stay rock-steady throughout - any wobble in air pressure will show in the pitch.",
+        "Practice at half speed first. Speed up only when the glide is smooth."
+      ]
+    },
+    {
+      "id": "t7-descending-meend",
+      "title": "Meend in descending phrases",
+      "content": [
+        "Descending meend is just as important as ascending. In many ragas, the descending movement is where the deepest emotion lives.",
+        "To slide down, you reverse the technique: start with an open hole and slowly cover it, lowering the pitch smoothly.",
+        "Try sliding from Ga down to Sa - a wide descending meend.",
+        { "type": "note", "text": "Descending meend often feels more natural on bansuri because closing holes is a more controlled movement than opening them. Many players find their descending meend is smoother than their ascending." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Start on Ga and hold it for 2 seconds.",
+          "target": 4,
+          "seconds": 2,
+          "cents": 35,
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "hold",
+          "prompt": "Slide down to Sa and hold for 3 seconds.",
+          "target": 0,
+          "seconds": 3,
+          "cents": 30,
+          "points": 20
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "Why do many players find descending meend easier?",
+          "options": [
+            { "text": "Lower notes are always easier to play", "right": false, "why": "Lower notes are not inherently easier - it depends on the flute and the player." },
+            { "text": "Closing holes is a more controlled movement than opening them", "right": true, "yes": "Correct! Gradually covering a hole gives you finer pitch control than gradually uncovering one." },
+            { "text": "Gravity helps the fingers move down", "right": false, "why": "The flute is held horizontally, so gravity is not a factor in this direction." },
+            { "text": "Less air is needed for lower notes", "right": false, "why": "Air pressure and meend technique are independent skills." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Reverse everything: start with the hole open and slowly close it.",
+        "The temptation is to close too fast at the end. Keep the same slow speed throughout.",
+        "Listen for a bump at Re as you pass through - that is where most people lose smoothness."
+      ]
+    },
+    {
+      "id": "t8-meend-with-straight",
+      "title": "Combining meend with straight notes",
+      "content": [
+        "Real music mixes meend with straight (direct) notes. The contrast between sliding into a note and attacking it cleanly is a powerful expressive tool.",
+        "Try this pattern: play Sa straight (direct attack), then meend up to Ga, then play Ma straight, then meend back down to Re.",
+        "Pattern: Sa (straight) -> meend to Ga -> Ma (straight) -> meend to Re",
+        { "type": "note", "text": "A common beginner habit is to slide into every note. Resist this. Use meend deliberately where you want expression, and play straight where you want clarity. The mix is what makes music interesting." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play this mixed pattern: Sa, Ga, Ma, Re (straight notes between meends)",
+          "notes": [0, 4, 5, 2],
+          "tempo": 40,
+          "points": 20
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Why should you NOT slide into every note?",
+          "options": [
+            { "text": "It is bad technique", "right": false, "why": "Meend is not bad technique - it is essential. But overuse weakens its impact." },
+            { "text": "Overuse makes meend lose its expressive power", "right": true, "yes": "Right! Contrast between meend and straight notes gives each more impact." },
+            { "text": "It confuses the listener about which raga you are playing", "right": false, "why": "Ragas are defined by note selection, not by how much meend you use." },
+            { "text": "It wastes breath", "right": false, "why": "Meend does not use significantly more breath than straight notes." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Make the contrast obvious: sharp, clean attacks on the straight notes, smooth slow slides for the meend.",
+        "Think of it as speaking vs. singing - sometimes you state a note clearly, sometimes you sing into it."
+      ]
+    },
+    {
+      "id": "t9-meend-melody",
+      "title": "A melody featuring meend",
+      "content": [
+        "Here is a short, expressive melody that uses meend as a central element. It is inspired by the kind of phrasing you hear in Raga Yaman.",
+        "The phrase: Sa - (meend up to) Ga - Ma Pa - (meend down to) Ma Ga - Re Sa",
+        "Play the notes marked with meend slowly and expressively. The straight notes (Ma, Pa) should be clean and direct.",
+        { "type": "note", "text": "This phrase shape - ascending with meend, reaching a peak, then descending - is one of the most common and beautiful patterns in Indian classical music." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play the meend melody: Sa Ga Ma Pa Ma Ga Re Sa",
+          "notes": [0, 4, 5, 7, 5, 4, 2, 0],
+          "tempo": 45,
+          "points": 25
+        }
+      ],
+      "hints": [
+        "Slide slowly from Sa to Ga (ascending meend), then play Ma and Pa cleanly.",
+        "On the descent, let Pa melt down to Ma and Ga before landing on Re and Sa.",
+        "Take a breath after Pa at the peak - the descent is a new phrase."
+      ]
+    },
+    {
+      "id": "t10-challenge-phrase",
+      "title": "Meend mastery challenge",
+      "content": [
+        "Final challenge: a longer phrase that tests both your meend technique and your musicality.",
+        "The phrase uses meend in both directions, combined with straight notes and a wider range. Take your time and focus on making each slide smooth and each straight note clean.",
+        "Phrase: Sa Re Ga - Pa - Dha Pa - Ma Ga Re Sa",
+        { "type": "note", "text": "Completing this room means you have one of the bansuri's most essential ornaments in your toolkit. From here, you can add other ornaments (kan, andolan, murki) and begin exploring ragas." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play the challenge phrase: Sa Re Ga Pa Dha Pa Ma Ga Re Sa",
+          "notes": [0, 2, 4, 7, 9, 7, 5, 4, 2, 0],
+          "tempo": 50,
+          "points": 25
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Which ornament have you been learning in this room?",
+          "options": [
+            { "text": "Kan (grace note)", "right": false, "why": "Kan is a quick flick to a note and back - a different ornament." },
+            { "text": "Gamak (shake)", "right": false, "why": "Gamak is a rapid oscillation on a note." },
+            { "text": "Meend (slide/glide)", "right": true, "yes": "Yes! Meend is the smooth glide between notes that gives bansuri its singing quality." },
+            { "text": "Murki (turn)", "right": false, "why": "Murki is a quick ornamental cluster of notes." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "confirm",
+          "prompt": "I have completed the Meend room and can glide between notes on my bansuri!",
+          "points": 0
+        }
+      ],
+      "hints": [
+        "Break it into two halves: ascending (Sa Re Ga Pa Dha) and descending (Pa Ma Ga Re Sa).",
+        "The turnaround at Dha-Pa is the trickiest part. Take a breath before it if needed.",
+        "Focus on making the whole phrase sound like one musical statement, not a list of notes."
+      ]
+    }
+  ]
+}

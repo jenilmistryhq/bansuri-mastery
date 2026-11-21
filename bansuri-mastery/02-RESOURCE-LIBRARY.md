@@ -162,7 +162,7 @@ differently tuned flute and would confuse you.
 | R-A07 | YouTube C drone tracks: ["C Scale Tanpura, Sa Pa Drone..."](https://www.youtube.com/watch?v=eJOOVwcy1XE), ["Pa Sa (Sol Do) Tanpura Drone In C"](https://www.youtube.com/watch?v=7sYBmAt0b1M) | Free | Seen | Check length and quality first. Make sure the drone is in C. |
 
 > **Android users:** the research found no verified Android tanpura or tabla app listing.
-> Search the Play Store for "tanpura" and "tabla", and check that any app lets you set Sa = C
+> Search the Play Store for "tanpura" and "tabla", and check that any app lets you set the drone to your flute's Sa (C is only the reference example)
 > and choose a taal. R-A01 (browser) works on any phone.
 
 ### 7.2 Tuner, metronome, recording, slow-down

@@ -1,0 +1,256 @@
+{
+  "id": "stage-and-sound",
+  "title": "Stage and Sound - Live Performance Setup",
+  "tasks": [
+    {
+      "id": "from-practice-to-stage",
+      "title": "From Practice Room to Stage",
+      "content": [
+        "The jump from practicing alone to performing for others is one of the biggest transitions in a musician's journey. Beyond musical preparation, live performance requires understanding amplification, stage setup, and sound management.",
+        "The bansuri presents unique challenges: it is a quiet instrument with multiple sound sources (the embouchure hole and the open finger holes), and its breathy, airy quality demands careful microphone technique. A standard vocal mic pointed at your mouth will miss half the instrument's sound.",
+        "This room covers the practical skills that turn a good player into a good performer. You will learn how to choose and position a microphone, set up a stage, run a sound check, solve common problems, and prepare yourself mentally and physically for live performance."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why does the bansuri present unique amplification challenges compared to most other instruments?",
+          "options": [
+            {"text": "It produces sound from multiple sources - the embouchure hole and the open finger holes", "right": true, "yes": "Exactly. Unlike a voice or a guitar, the bansuri radiates sound from several points along its length, making mic placement a real challenge."},
+            {"text": "It is an extremely loud instrument that overwhelms microphones", "why": "The bansuri is actually one of the quieter instruments on a typical Indian classical stage."},
+            {"text": "It produces frequencies that microphones cannot detect", "why": "The bansuri's frequencies are well within the range of standard microphones. The challenge is capturing all its sound sources."},
+            {"text": "It requires a wireless microphone to function", "why": "Any mic type can work with bansuri. The challenge is placement and capturing its multiple sound sources."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Where does the bansuri's sound come from?",
+          "options": [
+            {"text": "From both the embouchure hole and the open finger holes", "right": true, "yes": "Right. Sound radiates from every opening in the flute, which is why a single mic pointed at one spot misses part of the sound."},
+            {"text": "Only from the embouchure hole where you blow", "why": "The embouchure is the primary sound source, but open finger holes also radiate significant sound."},
+            {"text": "Only from the open end of the flute", "why": "Unlike some wind instruments, the bansuri's sound comes from the embouchure and all open finger holes, not just one end."},
+            {"text": "From vibrations in the bamboo wall", "why": "While the bamboo does vibrate slightly, the sound primarily comes from the air column exiting through the embouchure hole and open finger holes."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "choosing-a-microphone",
+      "title": "Choosing a Microphone",
+      "content": [
+        "Four main microphone types work for bansuri, each with trade-offs:",
+        "Condenser microphones capture the bansuri's full frequency range and breathy quality beautifully. They need phantom power (supplied by a mixer or audio interface) and are more sensitive to feedback. Best for quiet venues and recording.",
+        "Dynamic microphones are robust, affordable, and feedback-resistant. They may miss some of the bansuri's delicate overtones and breathy character. Good for loud venues with other amplified instruments.",
+        "Ribbon microphones offer beautiful warmth and natural detail, but they are fragile and expensive. Mainly used in studio recording, not live performance.",
+        "Clip-on (lavalier) microphones attach near the embouchure and allow freedom of movement. They may pick up handling noise from your fingers on the flute. Good for performances that require standing or moving.",
+        "For most performers starting out, a condenser microphone offers the best balance of quality and practicality."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which microphone type best captures the bansuri's breathy quality and full frequency range?",
+          "options": [
+            {"text": "Condenser microphone", "right": true, "yes": "Correct. Condenser mics are the most sensitive and capture the bansuri's full character, including its subtle breathy overtones."},
+            {"text": "Dynamic microphone", "why": "Dynamic mics are robust but may miss the bansuri's delicate overtones and airy quality."},
+            {"text": "Ribbon microphone", "why": "Ribbon mics are excellent but fragile and expensive - mainly practical in a studio, not on stage."},
+            {"text": "Clip-on microphone", "why": "Clip-on mics are convenient for movement but are not as detailed as a good condenser mic."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which microphone type is the most feedback-resistant for live performance?",
+          "options": [
+            {"text": "Dynamic microphone", "right": true, "yes": "Right. Dynamic mics reject background noise and are less prone to feedback, making them reliable in loud or challenging venues."},
+            {"text": "Condenser microphone", "why": "Condenser mics are more sensitive and therefore MORE prone to feedback, not less."},
+            {"text": "Ribbon microphone", "why": "Ribbon mics are delicate and mainly used in studios, not for live feedback-resistant applications."},
+            {"text": "All microphone types handle feedback equally", "why": "Different mic types have very different feedback characteristics. Dynamic mics reject unwanted sound most effectively."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mic-placement",
+      "title": "Mic Placement",
+      "content": [
+        "Mic placement for bansuri is different from voice or most other instruments. The goal is to capture sound from both the embouchure hole and the finger holes in a single mic position.",
+        "The ideal position: 6 to 12 inches from the flute, slightly below and in front of the embouchure area, angled to capture sound from both the embouchure hole and the nearest open finger holes.",
+        "Pointing the mic directly at the embouchure captures breath noise but misses finger-hole resonance. Pointing it at the finger holes captures body resonance but misses the embouchure's direct sound. The sweet spot is in between - angled so it 'sees' both sound sources.",
+        "Some advanced setups use two microphones: one for the embouchure area and one for the body of the flute. The sound engineer then blends the two signals. This gives maximum control but requires more equipment and expertise.",
+        "Whatever your setup, the most important thing is consistency. If you sway while playing (most bansuri players do), the mic distance changes and the volume fluctuates. Practice maintaining a consistent distance from the microphone."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the ideal microphone distance for bansuri?",
+          "options": [
+            {"text": "6 to 12 inches from the flute", "right": true, "yes": "Correct. This distance captures the full sound without excessive breath noise or feedback risk."},
+            {"text": "Touching or nearly touching the flute", "why": "Too close causes excessive breath noise and distortion. The bansuri needs some air between it and the mic."},
+            {"text": "3 to 4 feet away", "why": "Too far away picks up too much room sound, reduces clarity, and increases feedback risk in live settings."},
+            {"text": "The distance does not matter at all", "why": "Distance matters greatly. Too close causes noise, too far causes feedback and loss of clarity."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why should the microphone be angled rather than pointed directly at the embouchure?",
+          "options": [
+            {"text": "To capture sound from both the embouchure hole and the finger holes", "right": true, "yes": "Exactly. Angling the mic lets it pick up sound from multiple sources, giving a fuller, more complete bansuri tone."},
+            {"text": "To make the mic look better on stage", "why": "Mic angle is about sound quality, not appearance. It needs to capture the bansuri's multiple sound sources."},
+            {"text": "To reduce the volume of the bansuri", "why": "The angle is about capturing all sound sources, not reducing volume. Volume is controlled by gain and distance."},
+            {"text": "Because condenser mics only work at an angle", "why": "Condenser mics work in any orientation. The angle is specifically about capturing both embouchure and finger-hole sound."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stage-setup",
+      "title": "Stage Setup",
+      "content": [
+        "Traditional Indian classical performance is seated on the floor. The tabla player sits to your right, slightly behind. The harmonium or tanpura player sits to your left. The microphone sits on a low boom stand positioned as described in the previous task.",
+        "A monitor speaker (or in-ear monitors) faces you so you can hear yourself over the tabla and the audience. Without monitoring, the bansuri's quiet sound gets lost on stage and you lose control of pitch and dynamics.",
+        "The tanpura drone - whether from a live tanpura behind you, an electronic tanpura box, or a smartphone app - runs continuously throughout the performance. This drone is your pitch reference, your foundation, your anchor.",
+        "Modern performers sometimes stand, using a standard-height mic stand. This works well for fusion concerts or informal settings. The same principles of mic placement apply whether sitting or standing.",
+        "The key principle: you must be able to hear three things clearly on stage - yourself, the drone, and the tabla. If you cannot hear any one of these, your performance will suffer. Adjust monitor levels until all three are balanced."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What are the three things a bansuri performer must hear clearly on stage?",
+          "options": [
+            {"text": "Yourself (the bansuri), the tanpura drone, and the tabla", "right": true, "yes": "Correct. These three form the essential sound triangle. Losing any one of them means losing pitch reference, rhythmic grounding, or awareness of your own sound."},
+            {"text": "The audience, the stage manager, and the sound engineer", "why": "While communication with the team matters, the essential sound triangle for performance is your own sound, the drone, and the tabla."},
+            {"text": "Only the tabla - everything else is secondary", "why": "The tabla is important, but you also need to hear yourself and the tanpura drone for pitch reference and self-monitoring."},
+            {"text": "Only the tanpura drone", "why": "The drone is essential, but you also need to hear yourself and the tabla to maintain balance and rhythmic coordination."}
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In traditional Indian classical performance, where is the tabla placed relative to the bansuri player?",
+          "answer": "right",
+          "accept": ["to the right", "on the right", "right side", "to your right"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "the-sound-check",
+      "title": "The Sound Check",
+      "content": [
+        "A proper sound check covers four essential tests. Never skip the sound check, even if the venue says it is not necessary.",
+        "First, play your quietest passages. These are the most vulnerable to feedback and the hardest for a mic to pick up. If the mic cannot capture your softest playing without howling feedback, you need to adjust gain, mic position, or EQ before anything else.",
+        "Second, play your loudest passages. Does the sound distort? If so, reduce the gain or increase the mic distance slightly. You need headroom for dynamic peaks.",
+        "Third, check your monitors. Can you hear yourself, the tanpura drone, and the tabla in a balanced mix? If any one element overwhelms or disappears, adjust the monitor levels. Ask the sound engineer to send you a separate monitor mix if possible.",
+        "Fourth, walk the venue. Have someone play your bansuri (or play a recording through the PA) while you listen from different seats in the audience. Check for dead spots where the sound disappears, feedback zones where it howls, and overall tonal balance. What sounds good on stage may sound very different in the back row."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the first thing to test in a bansuri sound check?",
+          "options": [
+            {"text": "Your quietest passages - they are most vulnerable to feedback", "right": true, "yes": "Correct. If your softest playing causes feedback, you have a fundamental problem that must be solved before anything else."},
+            {"text": "Your loudest passages - to test for distortion", "why": "Loud passages matter, but quiet passages are tested first because they reveal feedback problems, which are the most critical to solve."},
+            {"text": "The tabla - to check rhythm balance", "why": "The tabla check comes later. The bansuri player's own mic and feedback behavior must be tested first."},
+            {"text": "The audience microphone", "why": "Audience microphones are for recording, not for the performer's sound check."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why should someone listen from the audience area during a sound check?",
+          "options": [
+            {"text": "What sounds good on stage may sound very different in the audience - there may be dead spots or feedback zones", "right": true, "yes": "Right. Stage sound and audience sound are different environments. Walking the room reveals problems you cannot hear from the stage."},
+            {"text": "To count how many seats are in the venue", "why": "Venue capacity is a logistics matter, not a sound check concern."},
+            {"text": "To check whether the stage lighting looks good", "why": "Lighting is important but separate from the sound check."},
+            {"text": "It is not important - the stage sound is what matters", "why": "The audience hears the performance from the audience, not from the stage. Their experience is what the sound check is ultimately for."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solving-common-problems",
+      "title": "Solving Common Problems",
+      "content": [
+        "Feedback: the bansuri's breathy frequencies in the 1 to 4 kHz range can cause howling feedback, especially with condenser mics in reverberant rooms. Ask the sound engineer to apply a narrow EQ cut at the problem frequency. If you hear feedback starting to build (a ringing tone), slightly change your angle to the mic.",
+        "Breath noise: condenser microphones amplify every inhale and exhale. Position the mic slightly off-axis, so the breath stream passes beside the mic rather than directly into it. Ask the sound engineer for a low-frequency cut (high-pass filter) around 200 to 400 Hz to reduce breath rumble.",
+        "Movement: bansuri players naturally sway and move while playing, which changes the mic distance and causes volume fluctuations. Practice maintaining a consistent distance from the microphone. If you need to move freely, use a clip-on mic instead of a stand-mounted one.",
+        "Stage fright: fear and anxiety directly affect your breathing, which directly affects your bansuri playing. Counter it with pre-performance breathing exercises: 5 minutes of slow, deep breaths backstage. Visualize yourself playing well. Remember that nervousness and excitement produce the same physical sensations - the difference is interpretation."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What frequency range typically causes feedback problems with the bansuri?",
+          "options": [
+            {"text": "1 to 4 kHz - the breathy, airy frequencies", "right": true, "yes": "Correct. The bansuri's distinctive breathy character lives in this range, and these frequencies are the most common source of feedback."},
+            {"text": "Below 100 Hz - the deep bass frequencies", "why": "The bansuri does not produce significant energy below 100 Hz. Its feedback problems are in the mid-high range."},
+            {"text": "Above 15 kHz - the ultra-high frequencies", "why": "The bansuri's feedback problems are typically in the 1-4 kHz range, not in the ultra-high frequencies."},
+            {"text": "The bansuri never causes feedback", "why": "Any amplified instrument can cause feedback. The bansuri's breathy quality in the 1-4 kHz range makes it particularly prone to feedback."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How can you reduce breath noise picked up by a condenser microphone?",
+          "options": [
+            {"text": "Position the mic slightly off-axis so the breath stream passes beside it, not directly into it", "right": true, "yes": "Right. Off-axis placement lets the mic capture your sound without catching the direct blast of your breath."},
+            {"text": "Breathe less while playing", "why": "Breath control is fundamental to bansuri playing - you cannot simply breathe less. The solution is mic positioning."},
+            {"text": "Switch to a ribbon microphone", "why": "Ribbon mics are even MORE sensitive to breath and air movement. They can actually be damaged by direct breath."},
+            {"text": "Turn the mic volume to maximum", "why": "Increasing volume would amplify the breath noise even more, not reduce it."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-recording-basics",
+      "title": "Home Recording Basics",
+      "content": [
+        "You do not need a professional studio to make good recordings. A basic home setup requires surprisingly little equipment.",
+        "Start with a condenser USB microphone. This connects directly to your computer without needing a separate audio interface. Many excellent USB condenser mics are available at affordable prices.",
+        "Find a quiet room. Close windows, turn off fans, air conditioners, and noisy appliances. Soft furnishings (carpets, curtains, cushions) help reduce room echo. Record at night when ambient noise is lowest.",
+        "Install a basic DAW (digital audio workstation) on your computer. Free options like Audacity are more than sufficient for simple recording. Position the mic as you would on stage - 6 to 12 inches away, angled to capture both embouchure and finger holes.",
+        "If possible, record the tanpura drone on a separate track. This lets you adjust the balance between your bansuri and the drone after recording, rather than committing to a fixed blend.",
+        "Start by recording your practice sessions. Listening back is one of the most powerful ways to improve - you hear things in the recording that you miss while playing."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the minimum equipment needed for home bansuri recording?",
+          "options": [
+            {"text": "A condenser USB microphone, a quiet room, and a computer with free recording software", "right": true, "yes": "Correct. This basic setup is enough to make recordings that you can learn from and even share. Professional quality comes later."},
+            {"text": "A professional studio with soundproofing and multiple microphones", "why": "Professional studios produce excellent results, but a USB mic and quiet room are enough to start recording at home."},
+            {"text": "An expensive audio interface and monitor speakers", "why": "An audio interface improves quality but is not necessary when starting. A USB mic connects directly to your computer."},
+            {"text": "Recording equipment costs thousands of dollars to get started", "why": "A decent USB condenser mic and free software are all you need. Good home recordings are very accessible."}
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "Recording your practice sessions and listening back is one of the most powerful tools for improvement. I will start recording my practice sessions regularly."
+        }
+      ]
+    },
+    {
+      "id": "performance-preparation",
+      "title": "Performance Preparation",
+      "content": [
+        "Musical preparation and technical setup are both necessary, but neither is sufficient alone. A complete performance requires attention to every dimension.",
+        "Musical preparation: practice the full program at least three times through without stopping, simulating performance conditions. Time your pieces. Know the transitions between ragas or sections.",
+        "Equipment checklist: check batteries in your electronic tanpura, bring spare cables, test your microphone, pack your tanpura box and any backup instruments. Arrive early enough for a proper sound check.",
+        "Physical preparation: eat lightly about 2 hours before the performance. Stay hydrated - dry lips and throat affect embouchure and breath. Avoid dairy, which can increase mucus and affect your airstream.",
+        "Mental preparation: visualize the performance going well. Imagine the audience engaged and responsive. Expect some nervousness - it sharpens your focus. If anxiety grows, return to your breathing.",
+        "Backstage: spend 5 minutes on swara sadhana. Hold Sa against the drone. This centers your pitch, calms your breathing, and connects you to the music before you face the audience.",
+        "On stage: acknowledge the audience with a smile or namaste. Take one full, slow breath. Begin. The best performances feel like a conversation with the audience, not a demonstration of skill."
+      ],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I will prepare a complete performance checklist covering musical, equipment, physical, and mental preparation before my next public performance."
+        },
+        {
+          "type": "choice",
+          "prompt": "What should you do backstage immediately before performing?",
+          "options": [
+            {"text": "5 minutes of swara sadhana on Sa to center your pitch and calm your breathing", "right": true, "yes": "Perfect. Holding Sa against the drone is the ideal pre-performance ritual - it centers pitch, calms nerves, and reconnects you to the music."},
+            {"text": "Practice your most difficult passages at full speed", "why": "Backstage is too late for difficult technical practice. It will increase anxiety rather than calm you. Center yourself with simple Sa instead."},
+            {"text": "Eat a large meal for energy", "why": "A full stomach interferes with breath control. Eat lightly 2 hours before, not right before the performance."},
+            {"text": "Nothing - just walk on stage and start", "why": "Taking even 5 minutes to center yourself with Sa makes a noticeable difference in your opening sound and your confidence."}
+          ]
+        }
+      ]
+    }
+  ]
+}

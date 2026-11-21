@@ -1,0 +1,269 @@
+{
+  "id": "raga-kedar",
+  "title": "Raga Kedar - The Devotional Evening",
+  "tasks": [
+    {
+      "id": "t1-mountain-raga",
+      "title": "The Mountain Raga",
+      "content": [
+        "Kedar takes its name from Kedarnath - the sacred mountain abode of Lord Shiva in the Himalayas. This evening raga carries a deeply devotional quality, like a prayer offered at sunset. It is one of the 'big six' ragas that every serious musician must know.",
+        "Classified under the Kalyan thaat, Kedar has a unique personality - gentle yet profound, simple in structure yet infinitely expressive. It is performed in the first prahar of night (early evening, roughly 6-9 PM), when the day's activity winds down and the mind turns inward. The raga's spiritual quality makes it one of the most beloved choices for bhajan and devotional singing."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is Raga Kedar named after?",
+          "options": [
+            {"text": "Kedarnath - Lord Shiva's mountain abode", "right": true, "yes": "Correct. Kedarnath in the Himalayas is one of the most sacred pilgrimage sites, and the raga carries that same spiritual weight."},
+            {"text": "A king named Kedar who patronized music", "why": "The name comes from Kedarnath, the sacred mountain temple of Lord Shiva."},
+            {"text": "The Sanskrit word for 'evening light'", "why": "While Kedar is an evening raga, its name comes from Kedarnath, Lord Shiva's Himalayan abode."},
+            {"text": "A particular melodic pattern called kedar", "why": "The name refers to Kedarnath, the sacred mountain of Lord Shiva."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What quality most defines Kedar's character?",
+          "options": [
+            {"text": "Bhakti (devotion) and shanta (peace)", "right": true, "yes": "Exactly. Kedar sounds like a prayer - devotional, peaceful, and deeply spiritual."},
+            {"text": "Sringar (romantic love)", "why": "That is more characteristic of ragas like Bihag or Khamaj. Kedar's character is devotional and peaceful."},
+            {"text": "Veera (heroism and energy)", "why": "Kedar is gentle and devotional, not heroic or energetic."},
+            {"text": "Hasya (joy and playfulness)", "why": "Kedar has a quiet, prayerful quality rather than playful joy."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t2-double-ma",
+      "title": "The Double Ma",
+      "content": [
+        "Kedar's most distinctive feature: it uses BOTH shuddha Ma(5) AND tivra Ma(6). But unlike Bihag (which uses tivra Ma going up and shuddha Ma coming down), Kedar places both Ma notes together in its ascending phrase: tivra Ma(6) falls to shuddha Ma(5) before rising to Pa(7).",
+        "This phrase M-m-P (6-5-7) is the raga's DNA. It sounds like a sigh followed by a gentle rise - perfectly suited to devotional expression. The tivra Ma reaches upward with yearning, the fall to shuddha Ma is a moment of surrender, and the rise to Pa is the quiet resolution of prayer."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does Kedar's use of double Ma differ from Bihag's?",
+          "options": [
+            {"text": "Kedar puts both Ma notes together (tivra then shuddha) in one phrase", "right": true, "yes": "Correct. The M-m-P phrase (tivra Ma falling to shuddha Ma, then rising to Pa) is Kedar's signature - completely different from Bihag's approach."},
+            {"text": "Kedar uses only tivra Ma, Bihag uses only shuddha Ma", "why": "Both ragas use both versions of Ma. The difference is in how they are arranged within phrases."},
+            {"text": "Kedar and Bihag treat the double Ma in exactly the same way", "why": "Their treatments are very different. Bihag separates them (tivra in ascent, shuddha in descent). Kedar places them together."},
+            {"text": "Kedar uses shuddha Ma in ascent and tivra Ma in descent", "why": "It is the opposite - tivra Ma appears in the ascending phrase, falling to shuddha Ma before Pa."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "What is the semitone sequence of Kedar's signature phrase M-m-P? (Write three numbers separated by hyphens)",
+          "answer": "6-5-7",
+          "accept": ["6, 5, 7", "6 5 7", "6-5-7"],
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t3-signature-phrase",
+      "title": "The Signature Phrase",
+      "content": [
+        "M m P - tivra Ma(6) to shuddha Ma(5) to Pa(7). This three-note phrase IS Kedar. When you hear it, you know the raga instantly. No other major raga uses this particular movement.",
+        "The tivra Ma creates a brief moment of heightened emotion that immediately softens as it falls to shuddha Ma, then resolves upward to Pa. This 'tension-release-resolution' pattern mirrors the emotional arc of prayer: reaching upward, surrendering, finding peace. Practice this phrase until it becomes second nature - it is the key that unlocks the entire raga."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [6, 5, 7],
+          "prompt": "Play the signature M-m-P phrase: tivra Ma to shuddha Ma to Pa.",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 6, 5, 7],
+          "prompt": "Now play Sa leading into the signature phrase: Sa, tivra Ma, shuddha Ma, Pa.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What emotional arc does the M-m-P phrase create?",
+          "options": [
+            {"text": "Tension, release, resolution - like the arc of prayer", "right": true, "yes": "Exactly. Tivra Ma reaches upward (tension), falls to shuddha Ma (release), and rises to Pa (resolution)."},
+            {"text": "Joy, excitement, celebration", "why": "The phrase has a more contemplative, devotional quality than celebratory."},
+            {"text": "Sadness, grief, mourning", "why": "While the phrase has emotional depth, it is more about devotion and peaceful resolution than grief."},
+            {"text": "Surprise, wonder, amazement", "why": "The phrase creates a devotional arc of tension-release-resolution, not surprise."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t4-ascending",
+      "title": "Ascending Kedar",
+      "content": [
+        "The ascent: Sa, then the signature M m P (skipping or lightly touching Re and Ga), then Pa Dha Ni Sa'. The lower part of the ascent (Sa to Pa) is defined by the double-Ma phrase. The upper part (Pa to Sa') is smooth and flowing.",
+        "Notice that Re(2) and Ga(4) are weak in the ascent - they are often skipped entirely, giving Kedar an angular, leaping quality in its lower half. The jump from Sa(0) directly to tivra Ma(6) spans 6 semitones, creating a dramatic opening gesture. Above Pa, the ascent becomes smooth and even - Dha(9) and Ni(11) flow naturally to upper Sa(12)."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 6, 5, 7, 9, 11, 12],
+          "prompt": "Play Kedar's ascending movement: Sa, tivra Ma, shuddha Ma, Pa, Dha, Ni, Sa'.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which notes are weak or skipped in Kedar's ascent?",
+          "options": [
+            {"text": "Re and Ga - they are often skipped in the ascending movement", "right": true, "yes": "Correct. The ascent leaps from Sa directly to tivra Ma, bypassing Re and Ga. They appear more prominently in the descent."},
+            {"text": "Dha and Ni - they are avoided in the upper register", "why": "Dha and Ni flow smoothly in the upper part of the ascent. It is Re and Ga that are weak."},
+            {"text": "Pa and Sa - they are only lightly touched", "why": "Pa is a strong pivot note in Kedar, and Sa is the samvadi. Re and Ga are the weak notes in ascent."},
+            {"text": "No notes are weak - all appear equally", "why": "Re and Ga are notably weak in the ascending movement, often skipped entirely."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t5-descending",
+      "title": "Descending Kedar",
+      "content": [
+        "The descent: Sa' Ni Dha Pa, then shuddha Ma Pa Dha Pa (the characteristic oscillation around Pa), then shuddha Ma Ga Re Sa. In descent, ONLY shuddha Ma(5) is used - tivra Ma disappears completely.",
+        "Re(2) and Ga(4) appear fully in the descent, giving it a warmer, more complete quality than the angular ascent. The oscillation pattern m-P-D-P (5-7-9-7) is a hallmark of Kedar's descent - it lingers around Pa, creating a gentle rocking motion before settling downward through Ga and Re to Sa."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 7, 5, 7, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play Kedar's descending movement with the Pa oscillation: Sa' Ni Dha Pa, shuddha Ma Pa Dha Pa, shuddha Ma Ga Re Sa.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which Ma appears in Kedar's descent?",
+          "options": [
+            {"text": "Only shuddha Ma - tivra Ma disappears in descent", "right": true, "yes": "Correct. Tivra Ma is exclusively an ascending feature. The descent uses only shuddha Ma."},
+            {"text": "Only tivra Ma - shuddha Ma disappears in descent", "why": "It is the opposite. Tivra Ma belongs only to the ascending phrase. Shuddha Ma carries the descent."},
+            {"text": "Both Ma notes appear in descent just as in ascent", "why": "Tivra Ma is used only in the ascending M-m-P phrase. The descent uses shuddha Ma exclusively."},
+            {"text": "Neither Ma appears in descent - only Pa", "why": "Shuddha Ma is prominent in the descent, appearing in the Pa oscillation and the final descent to Sa."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t6-vadi-ma",
+      "title": "Ma - The Soul of Kedar",
+      "content": [
+        "Shuddha Ma(5) is the vadi of Kedar. It appears in both ascent and descent, anchoring the raga throughout. Sa(0) is the samvadi. The Ma-Sa axis spans 5 semitones (a perfect fourth), one of the most stable and consonant intervals in music.",
+        "This stability gives Kedar its grounded, devotional quality. When you sustain shuddha Ma against the drone, you hear Kedar's prayer - steady, centered, at peace. Ma is where the raga feels most at home. Many phrases begin from Ma, return to Ma, or use Ma as a resting point between movements."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold shuddha Ma (the vadi) for 6 seconds. Feel how it anchors the raga with quiet stability.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What interval does the vadi-samvadi axis (Ma to Sa) create in Kedar?",
+          "options": [
+            {"text": "A perfect fourth (5 semitones)", "right": true, "yes": "Correct. The perfect fourth is one of the most stable intervals, perfectly suited to Kedar's grounded devotional character."},
+            {"text": "A perfect fifth (7 semitones)", "why": "Ma to Sa spans 5 semitones (a perfect fourth), not 7."},
+            {"text": "A major third (4 semitones)", "why": "Ma(5) to Sa(0) spans 5 semitones going down (or 7 going up). The interval is a perfect fourth."},
+            {"text": "An octave (12 semitones)", "why": "Ma to Sa spans 5 semitones, which is a perfect fourth."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t7-pa-pivot",
+      "title": "Pa as the Pivot",
+      "content": [
+        "Pa(7) is Kedar's pivot point. The signature phrase M m P lands on Pa. The oscillation m P D P revolves around Pa. Many phrases in Kedar touch Pa repeatedly, making it the most frequently visited note after shuddha Ma.",
+        "Pa acts as a fulcrum - below it, the double-Ma phrase provides Kedar's distinctive color. Above it, the scale flows smoothly through Dha and Ni. Pa is where Kedar's two halves meet. When you play the oscillation m-P-D-P (5-7-9-7), you feel Pa's gravitational pull - everything orbits around it."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Pa for 5 seconds. Feel how it anchors the upper half of the raga.",
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [5, 7, 9, 7, 5, 7],
+          "prompt": "Play the oscillation around Pa: shuddha Ma, Pa, Dha, Pa, shuddha Ma, Pa.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is Pa called the pivot of Kedar?",
+          "options": [
+            {"text": "The signature phrase lands on Pa, and many phrases oscillate around it", "right": true, "yes": "Correct. Pa is where the M-m-P phrase resolves, where oscillations center, and where the raga's two halves meet."},
+            {"text": "Pa is the vadi of Kedar", "why": "Shuddha Ma is the vadi, not Pa. But Pa is the pivot around which many phrases revolve."},
+            {"text": "Pa is the highest note in Kedar", "why": "Kedar goes up to Sa'. Pa is the pivot because phrases oscillate around it, not because of its register."},
+            {"text": "Pa is played louder than other notes", "why": "Pa's importance is about its structural role as a point of resolution and oscillation, not volume."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t8-kedar-vs-bihag",
+      "title": "Kedar vs Bihag",
+      "content": [
+        "Both Kedar and Bihag use dual Ma, and both are evening or night ragas. But the treatment is entirely different. In Bihag, the ascending phrase is Ga to tivra Ma to Pa (4-6-7) - tivra Ma ascends toward Pa, creating brightness. In Kedar, the phrase is tivra Ma to shuddha Ma to Pa (6-5-7) - tivra Ma descends to shuddha Ma before Pa, creating a devotional sigh.",
+        "Bihag sounds sweet and romantic. Kedar sounds devotional and profound. Same two Ma notes, completely different ragas. This comparison teaches one of the deepest lessons in Indian music: the raga lives not in which notes you use, but in HOW you use them."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the melodic direction of tivra Ma in Bihag compared to Kedar?",
+          "options": [
+            {"text": "Bihag: tivra Ma ascends to Pa. Kedar: tivra Ma descends to shuddha Ma.", "right": true, "yes": "Exactly. In Bihag, tivra Ma rises (G-M'-P). In Kedar, tivra Ma falls (M'-m-P). This directional difference creates completely different moods."},
+            {"text": "Both ragas use tivra Ma in ascending motion only", "why": "In Kedar, tivra Ma actually descends to shuddha Ma within the ascending phrase - a unique treatment."},
+            {"text": "Bihag: tivra Ma descends. Kedar: tivra Ma ascends.", "why": "It is the opposite. Bihag's tivra Ma ascends (Ga to tivra Ma to Pa), Kedar's descends (tivra Ma to shuddha Ma)."},
+            {"text": "The direction is the same in both ragas", "why": "The direction differs fundamentally: ascending in Bihag, descending within the ascending phrase in Kedar."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which raga sounds more devotional?",
+          "options": [
+            {"text": "Kedar - its M-m-P phrase creates a prayerful quality", "right": true, "yes": "Correct. Kedar's devotional character comes from the tension-release-resolution of its signature phrase, while Bihag is sweeter and more romantic."},
+            {"text": "Bihag - its dual Ma creates devotional depth", "why": "Bihag's character is sweet and romantic rather than devotional. Kedar carries the prayerful quality."},
+            {"text": "Both sound equally devotional", "why": "While both are beautiful, Kedar has a specifically devotional character associated with Kedarnath and prayer, while Bihag is sweeter and more romantic."},
+            {"text": "Neither sounds devotional - both are romantic", "why": "Kedar is strongly associated with bhakti (devotion) and shanta (peace). Its character is distinctly devotional."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t9-playing-kedar",
+      "title": "Playing Kedar",
+      "content": [
+        "Play the full arc: begin with Sa, state the signature M m P phrase, ascend through Dha and Ni to upper Sa, then descend with the smooth flowing phrases using shuddha Ma. Let the double-Ma phrase carry its prayer.",
+        "Kedar is a raga of quiet depth - it does not shout, it whispers to the soul. Play slowly, with intention. Let each note settle before moving to the next. The M-m-P phrase should feel like a natural sigh, not a technical exercise. When you play Kedar well, you will feel the same peace that pilgrims feel approaching Kedarnath at dusk."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 6, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the full Kedar arc: Sa, M-m-P ascent, up to Sa', then the flowing descent through all notes back to Sa.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will explore Kedar's devotional depth and practice the M-m-P phrase until it becomes natural."
+        }
+      ]
+    }
+  ]
+}

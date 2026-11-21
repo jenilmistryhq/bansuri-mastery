@@ -213,7 +213,7 @@ Details: [knowledge-tree/D06-PIT-pitch.md](knowledge-tree/D06-PIT-pitch.md)
 |---|---|---|---|---|---|---|
 | [ ] | PIT-01 | Understand pitch (how high or low a sound is) and that Sa is the reference "home" pitch | 1 | Core | P0 | |
 | [ ] | PIT-02 | Read a chromatic tuner: note name, cents, flat/sharp | 1 | Core | P1 | |
-| [ ] | PIT-03 | Play with a tanpura or shruti-box drone on C; hear when a note "locks" with the drone... | 2 | Core | P1 | |
+| [ ] | PIT-03 | Play with a tanpura or shruti-box drone matched to your flute's Sa; hear when a note "locks" with the drone... | 2 | Core | P1 | |
 | [ ] | PIT-04 | Raise pitch by rolling the flute out and/or faster air; lower it by rolling in and/or... | 2 | High | P2 | |
 | [ ] | PIT-05 | Hum or sing Sa from the drone, then sing simple sargam in tune | 2 | Core | P1 onward | |
 | [ ] | PIT-06 | Know that Indian theory describes 22 shrutis (microtonal positions) and that some... | 4 | Medium | P4 | |
@@ -249,7 +249,7 @@ Details: [knowledge-tree/D08-THY-theory.md](knowledge-tree/D08-THY-theory.md)
 |---|---|---|---|---|---|---|
 | [ ] | THY-01 | Name the 7 swaras (Sa Re Ga Ma Pa Dha Ni), their full names (Shadja ... Nishad) and sargam | 1 | Core | P0 | |
 | [ ] | THY-02 | Mandra, madhya, taar octaves; octave = same note at double pitch | 1 | Core | P1 | |
-| [ ] | THY-03 | Sargam is relative to Sa; Western C D E... are fixed pitches; on your flute Sa = C | 2 | Core | P1 | |
+| [ ] | THY-03 | Sargam is relative to your chosen Sa; Western C D E... are fixed pitches; C5 is one worked example | 2 | Core | P1 | |
 | [ ] | THY-04 | Shuddha vs komal (r g d n) vs tivra (M); 12 notes per octave | 2 | Core | P2 | |
 | [ ] | THY-05 | Semitone/whole-tone; count semitones between any two swaras; Western interval names... | 3 | High | P2-P3 | |
 | [ ] | THY-06 | The pattern of the major scale (W W H W W W H) equals Bilawal thaat | 2 | High | P2 | |
@@ -359,7 +359,7 @@ Details: [knowledge-tree/D14-TRN-transposition.md](knowledge-tree/D14-TRN-transp
 
 | Status | ID | Objective | Diff | Imp | Phase | Date mastered |
 |---|---|---|---|---|---|---|
-| [ ] | TRN-01 | Sa = C (C5); comfortable range about `.P` (G4) to `G'` (E6), with `M'` (F#6) as the... | 2 | Core | P2 | |
+| [ ] | TRN-01 | Find your flute's natural Sa and comfortable range; C5 medium values are a worked reference example | 2 | Core | P2 | |
 | [ ] | TRN-02 | Play a melody with a different note as Sa on the same flute (for example Pa-as-Sa or... | 4 | High | P4 | |
 | [ ] | TRN-03 | Pick the flute key for a song or singer's key | 3 | High | P4 | |
 | [ ] | TRN-04 | Rewrite sargam or Western notation into a new key | 3 | High | P4 | |

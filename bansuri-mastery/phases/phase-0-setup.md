@@ -21,7 +21,7 @@
 | Tool | Choice | Notes |
 |---|---|---|
 | **Bansuri Practice Bench** (tanpura, tala metronome, pitch checker, fingering chart) | [Practice Bench](../tools/index.md) ([open it](../tools/practice-bench.html)) | Covers the drone, tuner and metronome rows below. If its live tuner cannot use your microphone, use its recording check |
-| Drone (tanpura) set to **C** | [R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box) browser shruti box, or an app ([R-A02](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)) | Test that you can hear it through a speaker, not only earphones |
+| Drone (tanpura) set to **your flute's Sa** | [R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box) browser shruti box, or an app ([R-A02](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)) | Match it to the Sa note and octave you saved in your flute profile; C5 is the default example |
 | Chromatic tuner | Any app that shows cents ([R-A10](../02-RESOURCE-LIBRARY.md#72-tuner-metronome-recording-slow-down)-R-A12) | Must show note name **and** cents |
 | Metronome | Any free app (most tuners include one) | Must be adjustable 40-200 BPM |
 | Recorder | Phone voice recorder or [R-A13](../02-RESOURCE-LIBRARY.md#72-tuner-metronome-recording-slow-down) Audacity | Test that playback is clear |

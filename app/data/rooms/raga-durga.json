@@ -1,0 +1,314 @@
+{
+  "id": "raga-durga",
+  "title": "Raga Durga - The Evening Pentatonic",
+  "description": "Learn Durga, a pentatonic raga with shuddha Ma that introduces your first half-hole in a raga.",
+  "difficulty": "medium",
+  "skills": [
+    "raga",
+    "melody",
+    "technique"
+  ],
+  "minutes": 45,
+  "order": 13,
+  "prerequisites": [
+    "raga-bhupali"
+  ],
+  "tasks": [
+    {
+      "id": "t1-intro",
+      "title": "A Different Kind of Five",
+      "content": [
+        "You already know Bhupali - Sa Re Ga Pa Dha, five shuddha notes with no Ma or Ni. Durga uses the same number of notes but swaps one: Ma replaces Ga, giving us Sa Re ma Pa Dha.",
+        "That single swap changes everything. Bhupali is serene and contemplative. Durga is resolute, strong, devotional. The name itself means 'the invincible one' - this is a raga of inner strength.",
+        "Durga belongs to Bilawal thaat (the thaat of all shuddha notes). Both Ga and Ni are varjit (omitted). The shuddha Ma in Durga is your first half-hole note in a raga context - up to now, Bhupali let you avoid it."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Which notes does Raga Durga use?",
+          "options": [
+            {
+              "text": "Sa Re Ga Pa Dha",
+              "why": "That is Raga Bhupali. Durga replaces Ga with Ma."
+            },
+            {
+              "text": "Sa Re ma Pa Dha",
+              "right": true,
+              "yes": "Correct. Five notes with shuddha Ma instead of Ga."
+            },
+            {
+              "text": "Sa Re Ga ma Pa",
+              "why": "Durga omits Ga entirely and includes Dha."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t2-aroh-avroh",
+      "title": "Aroha and Avaroha",
+      "content": [
+        "Durga's scale movement is straightforward - all five notes in order, both ascending and descending.",
+        "Aroha (ascending): Sa Re ma Pa Dha Sa'\nAvaroha (descending): Sa' Dha Pa ma Re Sa",
+        "The raga's time is late evening. Its vadi (most important note) is Re, and its samvadi (second most important) is Pa. Listen for how Re and Pa anchor the phrases - they are the notes you linger on, the notes you return to after exploring.",
+        "Notice what is missing: there is no Ga to soften the interval between Re and Ma, and no Ni to lead into the upper Sa. These gaps give Durga its direct, unadorned character.",
+        "Pay attention to the Ma-Pa pair. These two notes are only 2 semitones apart, creating a strong, grounded interval that reinforces the feeling of stability. When you sustain Ma and slide gently into Pa, you hear the core of Durga's strength - two closely spaced notes that support each other like pillars."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Which notes are varjit (omitted) in Durga?",
+          "options": [
+            {
+              "text": "Ma and Ni",
+              "why": "Ma is used - it is one of Durga's defining notes."
+            },
+            {
+              "text": "Ga and Ni",
+              "right": true,
+              "yes": "Right. No Ga and no Ni - just Sa, Re, ma, Pa, Dha."
+            },
+            {
+              "text": "Re and Dha",
+              "why": "Both Re and Dha are present. Re is actually the vadi."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t3-hold-ma",
+      "title": "Holding Shuddha Ma",
+      "content": [
+        "Shuddha Ma is produced by half-covering the third hole from the top. In Bhupali you could avoid it, but in Durga it is central - you cannot play this raga without a solid Ma.",
+        "The challenge is pitch stability. A half-hole note wobbles easily because your finger position is less secure than a fully open or fully closed hole. The slightest shift sends Ma sharp or flat.",
+        "Hold Ma for 5 seconds with your tuner. Keep it within 20 cents of the target. If it drifts, adjust your finger angle rather than your breath - breath changes affect tone, while finger angle affects pitch."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "target": 5,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold shuddha Ma steady for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t4-rasa",
+      "title": "Durga's Emotional Landscape",
+      "content": [
+        "Raga Durga is named after Goddess Durga - the warrior goddess who embodies strength, protection, and fearless compassion. The raga carries that spirit. Its primary rasa (emotional essence) is veera - heroism, strength, and courage. Its secondary rasa is shanta - peace and serenity.",
+        "Despite using only five notes, Durga has enormous emotional range. In the lower register, Durga sounds calm and stable, evoking shanta rasa. Play Sa Re ma slowly down low and you feel groundedness and contentment. In the upper register, Durga sounds powerful and bright, evoking veera rasa. Play Pa Dha Sa' with energy and you feel triumph and resolve.",
+        "What gives Durga this neutral, resolute quality? The absence of Ga and Ni. In Western terms, Ga (the third) is the note that determines whether music sounds major (happy) or minor (sad). Ni (the seventh) adds tension and longing. By omitting both, Durga sidesteps the happy-sad axis entirely. It is neither joyful nor melancholy - it is strong. Resolute. Unwavering.",
+        "Compare this with Bhupali, which also uses five notes. Bhupali includes Ga, which gives it a sweet, romantic quality. Durga replaces Ga with Ma, trading sweetness for strength. Same number of notes, completely different emotional world."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What is the primary rasa (emotional essence) of Raga Durga?",
+          "options": [
+            {
+              "text": "Shringar (romance and beauty)",
+              "why": "Shringar is associated with ragas like Bhupali or Yaman. Durga is about strength, not romance."
+            },
+            {
+              "text": "Veera (heroism and courage)",
+              "right": true,
+              "yes": "Right. Durga evokes veera rasa - strength, heroism, and fearless resolve - named for the warrior goddess herself."
+            },
+            {
+              "text": "Karuna (sadness and compassion)",
+              "why": "Karuna is associated with ragas that use komal notes. Durga's character is resolute, not sorrowful."
+            }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Why does the absence of Ga and Ni give Durga a neutral, strong quality?",
+          "options": [
+            {
+              "text": "Because fewer notes always sound stronger",
+              "why": "It is not about the number of notes - Bhupali also has five notes but sounds romantic, not strong."
+            },
+            {
+              "text": "Because Ga determines major/minor mood and Ni adds longing - without them, Durga sidesteps the happy-sad axis",
+              "right": true,
+              "yes": "Exactly. Ga is the note that makes music feel happy or sad. Ni adds tension and yearning. Without either, Durga stands on neutral, resolute ground."
+            },
+            {
+              "text": "Because Ma and Pa are inherently strong notes",
+              "why": "While Ma and Pa do contribute to Durga's grounded sound, the key insight is about what is absent, not what is present."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t5-durga-vs-bhupali",
+      "title": "Durga vs Bhupali - One Note Apart",
+      "content": [
+        "Durga and Bhupali share four notes: Sa, Re, Pa, Dha. The only difference is Durga's Ma versus Bhupali's Ga. This is one of the clearest demonstrations in Indian music of how a single note can transform a raga's entire mood.",
+        "Bhupali's Ga (the major third, shuddha Ga) creates a sweet, open, consonant sound above Sa. It gives Bhupali its serene, meditative quality - the kind of raga you play while watching the sunset.",
+        "Durga's Ma (the perfect fourth, shuddha Ma) is a stronger, more grounded interval. It pulls toward Pa rather than resting peacefully. This tension gives Durga its resolute, courageous character - less meditation, more determination.",
+        "When you hear a pentatonic phrase and are unsure whether it is Durga or Bhupali, listen for the third note above Sa. If it feels sweet and settled, that is Ga (Bhupali). If it feels taut and forward-moving, that is Ma (Durga)."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "notes": [4, 5],
+          "rounds": 4,
+          "prompt": "Is this note Ga (Bhupali) or Ma (Durga)?",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t6-core-phrases",
+      "title": "Core Phrases of Durga",
+      "content": [
+        "Every raga has a pakad - a catch phrase that identifies it instantly. Durga's pakad revolves around Re, Ma, and Pa:",
+        "Phrase 1: Sa Re ma Pa - the ascending core. This four-note climb is the essence of Durga. It moves with purpose, without the gentleness of Ga to slow it down.",
+        "Phrase 2: Dha Pa ma Re Sa - the descending resolution. This phrase brings you home with the same directness.",
+        "Phrase 3: ma Pa Dha Sa' Dha Pa - reaching the upper octave. Notice how Dha leads straight to upper Sa with no Ni to cushion the leap.",
+        "Play the ascending core now - Sa Re ma Pa. Keep each note clean and distinct."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "phrase": [0, 2, 5, 7],
+          "prompt": "Play Sa Re ma Pa - Durga's ascending core",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t7-descending",
+      "title": "The Descending Phrase",
+      "content": [
+        "Durga's avaroha phrases are where the raga's strength shows most clearly. The descent from Dha through Pa to Ma to Re to Sa has a quality of confident resolution - each note stepping firmly downward.",
+        "In performance, the descending phrases often carry more weight than the ascending ones. A skilled player uses the descent to arrive back at Sa with authority, like completing a statement rather than trailing off.",
+        "Now play a longer, more challenging descending phrase that spans both octaves. Start from upper Sa, descend through the full scale, and add the lower Dha for a complete arc: Sa' Dha Pa ma Re Sa Dha(lower). This phrase requires breath control and smooth transitions across the full range."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "phrase": [12, 9, 7, 5, 2, 0, -3],
+          "prompt": "Play Sa' Dha Pa ma Re Sa Dha(lower) - the extended descent",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "t8-bhupali-comparison-deep",
+      "title": "Bhupali and Durga: A Deep Comparison",
+      "content": [
+        "Let us examine the Bhupali-Durga relationship in depth, because it teaches one of the most important lessons in Indian music: a single note can transform everything.",
+        "Bhupali: Sa Re Ga Pa Dha. Uses Ga (semitone 4), no Ma, no Ni. Durga: Sa Re Ma Pa Dha. Uses Ma (semitone 5), no Ga, no Ni. The only difference is one note - Ga or Ma - separated by just one semitone.",
+        "Yet the resulting ragas inhabit completely different worlds. Bhupali is an evening raga associated with shringar rasa (romance, beauty). Its Ga gives it what Western musicians would call a 'major' quality - open, bright, sweet. Durga is a late-night raga associated with veera rasa (heroism, courage). Its Ma gives it what Western musicians might call a 'suspended fourth' quality - strong, unresolved, grounded.",
+        "This is a defining principle of Indian classical music: the raga system is not about scales (many ragas share the same notes) but about how each note is treated, which notes are emphasized, and which single note defines the character. Change one note and you change the entire emotional universe."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "notes": [0, 2, 4, 7, 9],
+          "rounds": 4,
+          "prompt": "These notes are from Bhupali (Sa Re Ga Pa Dha). Identify each one.",
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "In Western music terms, what quality does Durga's Ma give the raga compared to Bhupali's Ga?",
+          "options": [
+            {
+              "text": "A minor quality - darker and sadder",
+              "why": "A minor quality comes from komal Ga. Durga has no Ga at all, komal or shuddha."
+            },
+            {
+              "text": "A suspended fourth quality - strong and unresolved",
+              "right": true,
+              "yes": "Correct. Ma (the fourth) creates a 'sus4' quality - stable and strong rather than sweet. It pulls toward Pa instead of resting like Ga does."
+            },
+            {
+              "text": "A diminished quality - tense and unstable",
+              "why": "Diminished intervals involve flattened fifths. Durga uses a perfect fifth (Pa) and sounds grounded, not tense."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t9-ear-training",
+      "title": "Ear Training: Durga's Five Notes",
+      "content": [
+        "Now that you know Durga's notes and phrases, train your ear to identify each note in isolation. This is harder than it sounds with a pentatonic raga - without Ga and Ni, the remaining five notes are more spread out, and each one carries more responsibility.",
+        "Listen for these landmarks: Sa is home. Re is bright and slightly tense. Ma has the half-hole quality, warm but focused. Pa is the strong fifth, the anchor of the upper half. Dha is open and expansive, reaching toward the upper octave.",
+        "You will hear one of Durga's five notes. Identify which one it is."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "notes": [0, 2, 5, 7, 9],
+          "rounds": 5,
+          "prompt": "Identify this note from Raga Durga",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t10-quiz",
+      "title": "Durga Mastery Check",
+      "content": [
+        "Let us confirm you have absorbed Durga's essentials - its notes, its thaat, its character, and its relationship to other ragas."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "List Durga's 5 notes in ascending order (use S R m P D format).",
+          "answer": "S R m P D",
+          "accept": ["S R m P D", "s r m p d", "Sa Re ma Pa Dha", "sa re ma pa dha"],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Which thaat does Durga belong to?",
+          "options": [
+            {
+              "text": "Kalyan",
+              "why": "Kalyan thaat has tivra Ma. Durga uses shuddha Ma."
+            },
+            {
+              "text": "Bilawal",
+              "right": true,
+              "yes": "Correct. Bilawal thaat uses all shuddha notes - Durga omits Ga and Ni from that set."
+            },
+            {
+              "text": "Kafi",
+              "why": "Kafi thaat has komal Ga and komal Ni. Durga has no Ga or Ni at all."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

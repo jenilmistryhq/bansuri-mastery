@@ -1,0 +1,358 @@
+{
+  "id": "sa-the-home-note",
+  "title": "Sa - The Home Note",
+  "description": "Learn why Sa is the foundation of all Indian music, understand your bansuri, and prove you can hold Sa steady.",
+  "difficulty": "beginner",
+  "skills": ["tone", "breath", "pitch"],
+  "minutes": 35,
+  "order": 1,
+  "prerequisites": [],
+  "tasks": [
+    {
+      "id": "t1-what-is-sa",
+      "title": "What is Sa?",
+      "content": [
+        "Sa (Shadja) is the first and most important note of the Indian musical scale. Every other note is defined by its distance from Sa.",
+        "Unlike Western music where C is always a fixed pitch, Sa can be any pitch. A flute player chooses their Sa based on the size of their flute.",
+        { "type": "note", "text": "Sa is not a fixed frequency - it is wherever you place it. The relationship between notes is what matters." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "confirm",
+          "prompt": "I understand that Sa is the home note",
+          "points": 0
+        }
+      ],
+      "hints": []
+    },
+    {
+      "id": "t2-know-your-bansuri",
+      "title": "Know your bansuri",
+      "content": [
+        "The bansuri is a side-blown bamboo flute from India. Unlike a Western flute made of metal with mechanical keys, a bansuri is a simple tube with open finger holes.",
+        { "type": "list", "items": [
+          "Material: bamboo (sometimes wood or plastic for practice flutes)",
+          "Holes: one blowing hole plus six finger holes",
+          "No keys or pads - your fingertips cover the holes directly",
+          "Length determines the pitch: a longer flute plays lower, a shorter one plays higher"
+        ] },
+        "Bansuris are named by the note their Sa corresponds to in Western pitch. A 'C flute' has its Sa at C, an 'E flute' at E, and so on.",
+        { "type": "note", "text": "A medium E or F flute is the most common choice for beginners - it balances comfortable finger spacing with a pleasing tone." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "How many finger holes does a standard bansuri have? Type the number.",
+          "answer": "6",
+          "accept": ["6", "six"],
+          "points": 10,
+          "yes": "Correct! Six finger holes plus the blowing hole.",
+          "no": "A standard bansuri has 6 finger holes (plus the blowing hole, for 7 total openings)."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "What determines the pitch of a bansuri's Sa?",
+          "options": [
+            { "text": "How hard you blow", "right": false, "why": "Blowing harder raises the octave but doesn't change the fundamental Sa." },
+            { "text": "The length of the bamboo tube", "right": true, "yes": "Right! A longer tube makes a lower Sa, a shorter tube a higher one." },
+            { "text": "The thickness of the bamboo walls", "right": false, "why": "Wall thickness affects tone colour but not the fundamental pitch." },
+            { "text": "The number of finger holes", "right": false, "why": "Standard bansuris all have six finger holes regardless of pitch." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Think of a ruler held over the edge of a desk - a longer overhang vibrates more slowly and makes a lower sound."
+      ]
+    },
+    {
+      "id": "t3-holding-the-bansuri",
+      "title": "How to hold your bansuri",
+      "content": [
+        "Holding the bansuri correctly prevents fatigue and helps your fingers move cleanly.",
+        { "type": "list", "items": [
+          "Hold the flute to your right - the blowing hole is at the left end, fingers cover holes to the right",
+          "Left hand covers the top three holes (closest to the blowing hole)",
+          "Right hand covers the bottom three holes (farthest from the blowing hole)",
+          "Support the flute between the base of your left index finger and your right pinky or the heel of your right palm",
+          "Keep your fingers curved gently - flat fingers leak air around the edges of the holes"
+        ] },
+        { "type": "note", "text": "Your arms should feel relaxed. If your shoulders or neck hurt, you are probably tensing up. Drop your shoulders and let the flute rest lightly." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Which hand covers the three holes closest to the blowing hole?",
+          "options": [
+            { "text": "Right hand", "right": false, "why": "The right hand covers the bottom three holes, farthest from the blowing hole." },
+            { "text": "Left hand", "right": true, "yes": "Correct! Left hand on top (near the blowing hole), right hand on the bottom." },
+            { "text": "Either hand works", "right": false, "why": "Standard bansuri technique always uses the left hand for the top three holes." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "confirm",
+          "prompt": "I am holding my bansuri with my left hand on the top holes and right hand on the bottom holes",
+          "points": 0
+        }
+      ],
+      "hints": [
+        "Imagine the blowing hole is a mouth at the left end - your left hand is 'closer to the mouth'."
+      ]
+    },
+    {
+      "id": "t4-breath-basics",
+      "title": "Breath basics",
+      "content": [
+        "The bansuri runs entirely on your breath. No reed, no mechanism - just air crossing the blowing hole at the right angle.",
+        { "type": "list", "items": [
+          "Breathe from your belly (diaphragm), not your chest - this gives a steady, controlled airstream",
+          "Shape your lips into a relaxed, gentle 'poo' shape - not tight, not wide open",
+          "Aim the airstream across the far edge of the blowing hole, not straight into it",
+          "About two-thirds of the blowing hole should be covered by your lower lip",
+          "The air should feel like a warm, slow sigh - not a sharp blow"
+        ] },
+        "Many beginners blow too hard. The bansuri responds best to a gentle, steady stream. If you hear a breathy hiss with no tone, adjust your lip angle rather than blowing harder.",
+        { "type": "note", "text": "A good test: hold your palm 15 cm from your mouth and blow the way you would for the bansuri. You should feel a gentle, warm, steady stream, not a sharp puff." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Where should you breathe from when playing the bansuri?",
+          "options": [
+            { "text": "Your chest and shoulders", "right": false, "why": "Chest breathing is shallow and makes the airstream unsteady." },
+            { "text": "Your belly (diaphragm)", "right": true, "yes": "Right! Diaphragmatic breathing gives you control and endurance." },
+            { "text": "Your throat", "right": false, "why": "Throat tension restricts air flow and tires you quickly." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "If you hear a breathy hiss with no clear tone, what should you do?",
+          "options": [
+            { "text": "Blow much harder", "right": false, "why": "Blowing harder usually just makes a louder hiss or jumps to the upper octave." },
+            { "text": "Adjust your lip angle and position", "right": true, "yes": "Yes! Small adjustments to the angle and coverage make a big difference." },
+            { "text": "Cover fewer finger holes", "right": false, "why": "Finger holes change the pitch, not whether a tone sounds." },
+            { "text": "Press your lips tighter together", "right": false, "why": "Tight lips restrict the airstream and make tone harder to produce." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Think 'warm sigh', not 'blowing out candles'.",
+        "Two-thirds of the blowing hole covered by your lower lip is a good starting position."
+      ]
+    },
+    {
+      "id": "t5-sa-on-different-flutes",
+      "title": "Sa on different flutes",
+      "content": [
+        "Every bansuri has its own Sa. When we say 'E flute' or 'G flute', we mean the Western note that sounds when all six finger holes are closed.",
+        { "type": "list", "items": [
+          "Small flutes (G, A, Bb) - higher Sa, brighter sound, closer finger spacing",
+          "Medium flutes (E, F) - mid-range Sa, balanced tone, comfortable for most hands",
+          "Bass flutes (C, D) - lower Sa, deep and mellow, wider finger spacing"
+        ] },
+        "No matter which flute you play, the sargam relationships are the same. Sa is always all holes closed, Re is always lifting the bottom finger, and so on. The music is identical - only the absolute pitch changes.",
+        { "type": "note", "text": "This is why Indian musicians can switch flutes mid-performance for different ragas. The fingerings and musical logic stay the same." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "If you switch from an E flute to a G flute, what changes?",
+          "options": [
+            { "text": "The fingerings for each note change", "right": false, "why": "Fingerings are the same on every bansuri - Sa is always all holes closed." },
+            { "text": "The absolute pitch of Sa goes up, but the sargam stays the same", "right": true, "yes": "Exactly! The relative note system stays identical - only the starting pitch differs." },
+            { "text": "You need to learn a new scale", "right": false, "why": "The sargam scale is the same on every bansuri." },
+            { "text": "Nothing changes at all", "right": false, "why": "The pitch does change - a G flute sounds higher than an E flute." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "On any bansuri, what do you do with the finger holes to play Sa?",
+          "answer": "close all",
+          "accept": ["close all", "close them all", "close all holes", "all closed", "cover all", "cover all holes", "close them"],
+          "points": 10,
+          "yes": "Right - all six holes closed gives you Sa on any bansuri.",
+          "no": "To play Sa, close (cover) all six finger holes."
+        }
+      ],
+      "hints": [
+        "Sa is the note you get when every finger hole is covered.",
+        "Think of the flute letter (E, G, etc.) as a label for where Sa sits in Western pitch."
+      ]
+    },
+    {
+      "id": "t6-knowledge-check",
+      "title": "Knowledge check",
+      "content": [
+        "Let's check what you have learned so far about Sa, the bansuri, and how they fit together."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What makes Sa different from the Western note C?",
+          "options": [
+            { "text": "Sa is always higher than C", "right": false, "why": "Sa is not defined by a fixed frequency." },
+            { "text": "Sa can be placed at any pitch", "right": true, "yes": "Exactly! Sa is relative, not fixed." },
+            { "text": "Sa and C are the same thing", "right": false, "why": "C is a fixed frequency; Sa is relative." },
+            { "text": "Sa cannot be played on flute", "right": false, "why": "Sa is the first note every bansuri player learns!" }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "How many notes are in the basic Indian musical scale (saptak)? Type the number.",
+          "answer": "7",
+          "accept": ["7", "seven", "saat"],
+          "points": 10,
+          "yes": "Correct! Sa, Re, Ga, Ma, Pa, Dha, Ni - seven notes.",
+          "no": "Not quite. The saptak has seven notes: Sa Re Ga Ma Pa Dha Ni."
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "Which part of your body should provide the power behind your airstream?",
+          "options": [
+            { "text": "Your cheeks", "right": false, "why": "Puffing your cheeks wastes air and gives no control." },
+            { "text": "Your diaphragm (belly)", "right": true, "yes": "Yes! Deep belly breathing gives you steady, controlled air." },
+            { "text": "Your throat muscles", "right": false, "why": "Throat tension restricts the air and tires you fast." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q4",
+          "type": "type",
+          "prompt": "Name the seven swaras of the basic scale in order, separated by spaces (e.g. Sa Re ...).",
+          "answer": "Sa Re Ga Ma Pa Dha Ni",
+          "accept": ["Sa Re Ga Ma Pa Dha Ni", "sa re ga ma pa dha ni", "S R G M P D N", "SRGMPDN"],
+          "points": 10,
+          "yes": "Perfect! Sa Re Ga Ma Pa Dha Ni - the sargam.",
+          "no": "The seven swaras in order: Sa Re Ga Ma Pa Dha Ni."
+        }
+      ],
+      "hints": [
+        "Think of 'sargam' - Sa Re Ga Ma Pa Dha Ni.",
+        "Count them: Sa, Re, Ga, Ma, Pa, Dha, Ni."
+      ]
+    },
+    {
+      "id": "t7-find-your-sa",
+      "title": "Find your Sa",
+      "content": [
+        "Now pick up your flute. Close all six finger holes, place your lips on the blowing hole, and blow gently.",
+        "You are listening for a clear, steady tone - your Sa. It may take a few tries to find the right lip angle.",
+        { "type": "note", "text": "If you only hear air noise: cover more of the blowing hole with your lower lip, angle your airstream slightly downward, and blow more gently." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Play your Sa and hold it for at least 2 seconds.",
+          "target": 0,
+          "seconds": 2,
+          "cents": 50,
+          "points": 15
+        }
+      ],
+      "hints": [
+        "Cover about two-thirds of the blowing hole with your lower lip.",
+        "Direct the air gently across the far edge of the hole, not straight into it.",
+        "If you hear nothing, try rolling the flute very slightly toward or away from you."
+      ]
+    },
+    {
+      "id": "t8-hold-sa",
+      "title": "Hold Sa steady",
+      "content": [
+        "Good - you found your Sa! Now the goal is to hold it steady for longer.",
+        "A steady note means the pitch does not waver up and down. Keep your breath even and your lips relaxed.",
+        "Your goal: hold Sa for 4 seconds without the pitch wobbling more than 35 cents."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Sa steady for 4 seconds.",
+          "target": 0,
+          "seconds": 4,
+          "cents": 35,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Relax your lips and jaw. Tension makes the pitch unstable.",
+        "Aim the air stream slightly downward across the blowing hole.",
+        "Keep your breath slow and steady - imagine blowing across a cup of hot tea."
+      ]
+    },
+    {
+      "id": "t9-longer-hold",
+      "title": "Extend your breath",
+      "content": [
+        "Four seconds is a good start. Now push to six seconds - this builds the breath control you will need for every piece of music you play.",
+        "Before you begin, take a deep breath filling your belly first, then your chest. Use that air slowly and evenly.",
+        { "type": "note", "text": "Professional bansuri players can sustain a note for 15-20 seconds or more. Six seconds is your first real milestone." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Sa for 6 seconds with steady pitch.",
+          "target": 0,
+          "seconds": 6,
+          "cents": 35,
+          "points": 25
+        }
+      ],
+      "hints": [
+        "Take a full belly breath before you start - fill from the bottom up.",
+        "If you run out of air at 4-5 seconds, you may be blowing too hard. Ease off the pressure slightly.",
+        "Think of the air as a slow, steady river, not a quick burst."
+      ]
+    },
+    {
+      "id": "t10-final-challenge",
+      "title": "Sa mastery challenge",
+      "content": [
+        "Final challenge: hold Sa for 8 seconds with tight pitch control (within 25 cents). This is the standard that sets you up for learning your next notes.",
+        "Take your time. Breathe deeply, settle your posture, and when you are ready, go for it.",
+        { "type": "note", "text": "If you cannot hit 8 seconds yet, that is completely fine. Come back to this room after a few days of practice - your breath control improves fast." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Sa for 8 seconds with tight pitch (25 cents tolerance).",
+          "target": 0,
+          "seconds": 8,
+          "cents": 25,
+          "points": 30
+        },
+        {
+          "id": "q2",
+          "type": "confirm",
+          "prompt": "I have completed the Sa - The Home Note room!",
+          "points": 0
+        }
+      ],
+      "hints": [
+        "Posture check: shoulders down, arms relaxed, belly soft.",
+        "Take two or three calm breaths before your attempt to settle your body.",
+        "Focus on keeping the air pressure absolutely even - no surges, no drops."
+      ]
+    }
+  ]
+}

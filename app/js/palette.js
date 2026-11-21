@@ -8,12 +8,12 @@ import { current } from "./course.js";
 
 // "dock:<tab>" opens the Flute dock on that tab, over the screen you are on.
 const SCREENS = () => [
-  ["Today", "#/today", "today"], ["Today's session", "#/session/" + current(), "play"], ["Course", "#/course", "plan"], ["Course book", "#/course/book", "library"],
+  ["Today", "#/today", "today"], ["Today's session", "#/session/" + current(), "play"], ["Course", "#/course", "plan"], ["Rooms", "#/rooms", "star"],
   ["Tuner: which note, how many cents", "dock:tuner", "mic"], ["Drone (tanpura)", "dock:drone", "wave"], ["Taal: tabla and metronome", "dock:taal", "wave"], ["Fingering chart", "dock:fingers", "hand"],
-  ["Fix a problem: tone check and symptoms", "#/skills/fix", "coach"], ["Listen", "#/music/listen", "listen"],
+  ["Fix a problem: tone check and symptoms", "#/teacher/fix", "coach"], ["Listen", "#/music/listen", "listen"],
   ["Long tones", "#/skills/tone/longtones", "mic"], ["Tone check", "#/skills/tone/check", "coach"], ["Tap the beat", "#/skills/rhythm/tap", "mic"], ["Ear quiz", "#/skills/ear/quiz", "listen"], ["Play it back", "#/skills/ear/playback", "mic"], ["Ragas", "#/music/ragas", "note"],
   ["Songs: play along", "#/music", "note"], ["Games", "#/skills/games", "star"], ["Make a melody", "#/music/compose", "note"], ["Notation from a recording (YouTube, a file)", "#/music/transcribe", "note"], ["5-minute practice", "#/today/quick", "today"],
-  ["Progress and level", "#/me", "progress"], ["Journal: record and log", "#/me/journal", "journal"], ["Settings", "#/me/settings", "settings"], ["Privacy", "#/me/privacy", "settings"], ["My students (for teachers)", "#/me/teacher/students", "me"],
+  ["Progress and level", "#/me", "progress"], ["Journal: record and log", "#/me/journal", "journal"], ["Settings", "#/me/settings", "settings"], ["Privacy", "#/me/privacy", "settings"], ["My students (for teachers)", "#/teacher/students", "me"],
   ["Your flute", "#/me/flute", "settings"], ["Check my flute", "#/me/flute/check", "mic"], ["Settings: voice and language", "#/me/settings/voice", "speaker"],
   ["Settings: accessibility", "#/me/settings/display", "settings"], ["Settings: backup and data", "#/me/settings/data", "settings"],
 ];

@@ -1,0 +1,354 @@
+{
+  "id": "bansuri-care",
+  "title": "Bansuri Care and Selection",
+  "tasks": [
+    {
+      "id": "understanding-your-instrument",
+      "title": "Understanding Your Instrument",
+      "content": [
+        "The bansuri is one of the simplest instruments in the world - a hollow bamboo tube with holes. No keys, no pads, no mechanism. Just bamboo, air, and your fingers.",
+        "This simplicity is both its beauty and its challenge. Every aspect of the sound depends entirely on you: your breath shapes the tone, your lips direct the air, your fingers control the pitch. There is nothing between you and the music.",
+        "The bamboo itself is a living material. It responds to humidity, temperature, and age. Understanding how bamboo behaves helps you work with your instrument rather than against it. A well-understood bansuri becomes an extension of your body."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What material is a bansuri made from?",
+          "options": [
+            {
+              "text": "Bamboo",
+              "right": true,
+              "yes": "Correct. The bansuri is traditionally made from bamboo - a natural, organic material that gives it its warm, breathy tone."
+            },
+            {
+              "text": "Hardwood like rosewood or ebony",
+              "why": "Those woods are used for Western flutes and clarinets. The bansuri's character comes specifically from bamboo."
+            },
+            {
+              "text": "Metal like silver or nickel",
+              "why": "Metal flutes are Western concert flutes. The bansuri's warm tone depends on bamboo's natural resonance."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What makes the bansuri unique compared to Western flutes?",
+          "options": [
+            {
+              "text": "It has more keys and buttons",
+              "why": "The opposite is true. The bansuri has no keys or mechanism at all."
+            },
+            {
+              "text": "It has no keys or mechanism - just open holes on a bamboo tube",
+              "right": true,
+              "yes": "Right. This simplicity means every nuance of sound comes directly from the player's breath and fingers, with nothing in between."
+            },
+            {
+              "text": "It can only play one octave",
+              "why": "A skilled bansuri player can cover nearly three octaves through overblowing and half-holing techniques."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "choosing-a-bansuri",
+      "title": "Choosing a Bansuri",
+      "content": [
+        "The size of a bansuri determines its key - the pitch of its Sa when all finger holes are closed. Smaller flutes produce higher pitches, larger flutes produce lower ones.",
+        "Common sizes and their characters:\n- E flute (~14 inches): bright, easy to blow, small finger stretch. Good for beginners and children.\n- D flute (~18 inches): the most popular concert size. Balanced tone, comfortable for most adult hands. This is the standard.\n- C flute (~21 inches): deeper, warmer, more resonant. Requires more breath and wider finger stretch.\n- A or B bass flutes (~24-30 inches): very deep and powerful. For advanced players with large hands and strong breath support.",
+        "If you are starting out, a D or E flute is the best choice. The D flute is versatile enough for learning and performing. Many professionals use a D flute as their primary instrument."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which size bansuri is most popular for concerts?",
+          "options": [
+            {
+              "text": "E flute (~14 inches)",
+              "why": "The E flute is bright and easy to play but is considered small for most concert settings."
+            },
+            {
+              "text": "D flute (~18 inches)",
+              "right": true,
+              "yes": "Correct. The D flute offers the best balance of tone, playability, and projection for concert performance."
+            },
+            {
+              "text": "A bass flute (~28 inches)",
+              "why": "Bass flutes are impressive but specialized. The D flute is the standard concert choice."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What determines a bansuri's key (pitch of its Sa)?",
+          "answer": "size",
+          "accept": ["size", "its size", "the size", "length", "its length", "the length"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "what-makes-good-bansuri",
+      "title": "What Makes a Good Bansuri",
+      "content": [
+        "Quality in a bansuri depends on four factors:",
+        "First, the bamboo. It must be properly seasoned - dried naturally for one to three years after harvesting. Fresh bamboo warps and cracks. The wall thickness should be uniform around the tube, and there should be no visible cracks or weak spots.",
+        "Second, the embouchure hole. Unlike a Western flute's circular embouchure, the bansuri's blowing hole is oval or elliptical. This shape helps produce the warm, breathy tone that defines the instrument. The edges must be clean and smooth.",
+        "Third, intonation. Every note should be reasonably in tune without requiring extreme adjustments of your embouchure or angle. When testing a new flute, play every note of the saptak against a tuner.",
+        "Fourth, tone quality. A good bansuri produces a warm, full sound without buzzing, rattling, or excessive airiness. If a note sounds thin or harsh no matter how you blow, the flute may have construction issues."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How long should bamboo be seasoned before making a bansuri?",
+          "options": [
+            {
+              "text": "It can be used fresh immediately",
+              "why": "Fresh bamboo contains too much moisture. It will warp and crack as it dries."
+            },
+            {
+              "text": "One to three years of natural drying",
+              "right": true,
+              "yes": "Correct. Proper seasoning removes moisture gradually, stabilizing the bamboo and preventing future cracking."
+            },
+            {
+              "text": "At least ten years",
+              "why": "While longer seasoning can help, one to three years is the standard. Beyond that, the bamboo can become too brittle."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What shape is the bansuri's embouchure (blowing) hole?",
+          "options": [
+            {
+              "text": "Perfectly circular",
+              "why": "A circular hole is typical of Western flutes. The bansuri uses a different shape."
+            },
+            {
+              "text": "Oval or elliptical",
+              "right": true,
+              "yes": "Right. The oval shape helps produce the bansuri's characteristic warm, breathy tone quality."
+            },
+            {
+              "text": "Square",
+              "why": "A square hole would create harsh edges and uneven airflow. The oval shape allows smooth tone production."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thread-binding",
+      "title": "The Thread Binding",
+      "content": [
+        "Look at any bansuri and you will see decorative thread wrapping - often in bright colors - wound tightly around certain sections. This binding is not just for appearance. It serves a critical structural purpose.",
+        "When holes are cut into bamboo, they create weak points where cracks can start and spread. The thread binding reinforces these areas, holding the bamboo together under the stress of humidity changes and regular handling. The most important binding points are around the embouchure hole and near each finger hole.",
+        "Traditional makers use cotton or silk thread coated with lacquer for durability. Some modern makers use synthetic cord. If you notice thread loosening or unraveling on your bansuri, have it re-wrapped soon - exposed stress points are where cracks begin.",
+        "The binding also slightly affects the bamboo's vibration, contributing to the instrument's tonal character. This is why experienced makers are particular about how tightly and where they wind the thread."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the primary purpose of the thread binding on a bansuri?",
+          "options": [
+            {
+              "text": "Pure decoration to make the flute look attractive",
+              "why": "While it is decorative, the primary purpose is structural reinforcement."
+            },
+            {
+              "text": "To reinforce the bamboo at stress points and prevent cracking",
+              "right": true,
+              "yes": "Correct. The holes create weak points in the bamboo, and the binding holds those areas together."
+            },
+            {
+              "text": "To change the pitch of certain notes",
+              "why": "The binding has a subtle effect on vibration but its main job is preventing cracks."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Where on the bansuri is thread binding most important?",
+          "options": [
+            {
+              "text": "Only at the ends of the tube",
+              "why": "The ends are less critical. The holes are where cracks start."
+            },
+            {
+              "text": "Around the embouchure hole and finger holes",
+              "right": true,
+              "yes": "Right. These are the stress points where the bamboo is weakest and most likely to crack."
+            },
+            {
+              "text": "It does not matter where the binding goes",
+              "why": "Placement matters greatly. Binding must cover the areas around holes where the bamboo is most vulnerable."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oiling-your-bansuri",
+      "title": "Oiling Your Bansuri",
+      "content": [
+        "Bamboo is a natural, organic material that absorbs and releases moisture with changes in weather and humidity. Without care, it can dry out, become brittle, and crack.",
+        "Regular oiling keeps the bamboo supple and prevents cracking. The traditional oil is mustard oil, which has been used by Indian craftsmen for centuries. Almond oil is a good alternative that some players prefer for its lighter scent.",
+        "The oiling process is simple: every two to three months, pour a few drops of oil into the blowing end of the flute. Tilt the flute slowly so the oil coats the entire interior surface. Let any excess drain out the bottom. Some players also wipe the outside of the bamboo lightly with an oiled cloth.",
+        "Do not over-oil. Too much oil can soften the bamboo or leave residue that affects the tone. A thin, even coat on the inside is all you need."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What oil is traditionally used for bansuri maintenance?",
+          "answer": "mustard oil",
+          "accept": ["mustard oil", "mustard", "sarson oil", "sarson ka tel"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How often should you oil your bansuri?",
+          "options": [
+            {
+              "text": "Every day after playing",
+              "why": "Daily oiling is too frequent and would over-saturate the bamboo."
+            },
+            {
+              "text": "Every two to three months",
+              "right": true,
+              "yes": "Correct. This frequency keeps the bamboo supple without over-saturating it."
+            },
+            {
+              "text": "Only when you first buy it",
+              "why": "A single oiling is not enough. Bamboo needs regular care throughout its life."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "moisture-and-temperature",
+      "title": "Moisture and Temperature",
+      "content": [
+        "Every time you play, your breath deposits moisture inside the bamboo tube. This is normal, but moisture left sitting inside can cause problems over time - mold growth, warping, or gradual weakening of the bamboo.",
+        "After each playing session, stand your flute upright with the blowing end pointing up. Leave it for ten to fifteen minutes so the moisture can drain downward and evaporate. Never put a damp flute straight into a closed case.",
+        "Temperature is the other major concern. Bamboo contracts in cold weather and expands in heat. Rapid temperature changes are especially dangerous - they create internal stress that can crack the bamboo. Never leave your bansuri in a hot car, in direct sunlight for long periods, or near a heater.",
+        "In cold weather, warm the flute gently before playing. Hold it in your hands for a minute or two, then blow warm air gently through it. This gradual warming prevents the thermal shock that comes from blowing warm breath into ice-cold bamboo."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How should you handle your bansuri immediately after playing?",
+          "options": [
+            {
+              "text": "Put it straight into a sealed case to protect it",
+              "why": "A sealed case traps the moisture from your breath inside, which can cause mold and warping."
+            },
+            {
+              "text": "Stand it upright (blowing end up) and let it air dry for 10-15 minutes",
+              "right": true,
+              "yes": "Correct. This allows moisture to drain and evaporate naturally before storage."
+            },
+            {
+              "text": "Wipe the inside with a cloth immediately",
+              "why": "Pushing a cloth through can damage the delicate inside surface. Air drying is gentler and more effective."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why are extreme temperatures dangerous for a bamboo bansuri?",
+          "options": [
+            {
+              "text": "They change the colour of the bamboo",
+              "why": "Colour change is cosmetic. The real danger is structural."
+            },
+            {
+              "text": "Bamboo contracts in cold and expands in heat, which can cause cracking",
+              "right": true,
+              "yes": "Right. Rapid expansion or contraction creates internal stress that can split the bamboo."
+            },
+            {
+              "text": "Temperature has no effect on bamboo",
+              "why": "Temperature has a significant effect. Bamboo is organic and responds to heat and cold."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "carrying-and-storage",
+      "title": "Carrying and Storage",
+      "content": [
+        "For daily storage at home, keep your bansuri in a cloth sleeve in a room-temperature location, away from direct sunlight and heat sources. A wall-mounted rack or vertical stand works well if you play frequently.",
+        "For travel, use a padded cloth roll or a rigid tube case. Never carry a bare bansuri loose in a backpack or bag where it can be knocked against hard objects, bent, or sat upon. Bamboo is strong along its length but fragile against lateral force.",
+        "If you own multiple flutes, store them in a rack or hanging vertically. Laying flutes in a pile invites accidental damage.",
+        "The worst enemies of a bansuri are: sitting on it (the most common accident), dropping it on a hard surface, extreme heat (cars, radiators, sunny windowsills), and extreme dryness (heated rooms in winter without humidification). A well-cared-for bamboo bansuri can last for decades."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the safest way to transport a bansuri?",
+          "options": [
+            {
+              "text": "Loose in a backpack with other items",
+              "why": "A loose flute can be knocked, bent, or crushed by other items. Always use a case."
+            },
+            {
+              "text": "In a padded cloth roll or rigid tube case",
+              "right": true,
+              "yes": "Correct. A dedicated case protects against bumps, bending, and pressure."
+            },
+            {
+              "text": "In your hand without any covering",
+              "why": "While careful hand-carrying works for short distances, a case is safer for any real travel."
+            }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will establish a regular care routine for my bansuri: air drying after playing, oiling every few months, and protecting it from temperature extremes."
+        }
+      ]
+    },
+    {
+      "id": "building-your-collection",
+      "title": "Building Your Collection",
+      "content": [
+        "Serious bansuri players own multiple flutes in different keys. This is not about having more instruments for its own sake - each key brings a genuinely different character to the same raga.",
+        "Yaman played on a bass C flute sounds majestic, expansive, and deeply meditative. The same Yaman on a small E flute sounds bright, sparkling, and energetic. The raga's grammar is identical, but the emotional landscape changes with the flute's voice.",
+        "Start with one good D flute and learn on it thoroughly. As your skills grow, consider adding a C flute (for deeper, slower ragas) and an E flute (for brighter, faster pieces). Many experienced players eventually own four to six flutes covering a range of keys.",
+        "When you hear a recording of a bansuri performance you love, pay attention to the pitch - it tells you what key the player is using. This can guide your next purchase. Concert performers typically carry three to five flutes to a performance, selecting the key that best serves each raga they plan to present."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why do serious bansuri players own multiple flutes?",
+          "options": [
+            {
+              "text": "Because each flute can only play one raga",
+              "why": "Any raga can be played on any size flute. The reason is about tonal character, not limitation."
+            },
+            {
+              "text": "Each key brings a different emotional character to the same raga",
+              "right": true,
+              "yes": "Correct. The raga's grammar stays the same, but different keys give it a different voice and mood."
+            },
+            {
+              "text": "They break frequently and need replacements",
+              "why": "A well-cared-for bansuri lasts for years. Multiple flutes are about artistic choice, not breakage."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which key of bansuri is recommended for a beginner?",
+          "answer": "D",
+          "accept": ["D", "d", "D flute", "key of D", "E", "e", "D or E"],
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

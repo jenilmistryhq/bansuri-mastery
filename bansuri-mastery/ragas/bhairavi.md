@@ -26,17 +26,17 @@ colour. In strict classical Bhairavi only the listed notes are used. Wikipedia m
   Re and Pa are sometimes skipped in ascent and Ga in descent.
 - The cadence `g m g r S` is very characteristic.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 Five half-hole notes: `r` (`XXH OOO`), `g` (`XHO OOO`), `m` (`HOO OOO`), `d` (`XXX XXH`, register 2)
 and `n` (`XXX XHO`, register 2).
 
-> **Recommendation:** strict Bhairavi with Sa = C is very demanding on a 6-hole flute. Bansuri
-> players often use a different note as Sa so fewer half-holes are needed. On your flute,
-> **Ni (B) as Sa** makes every Bhairavi note a plain fingering: S r g m P d n = B C D E F# G A.
-> (F#, the all-open note, becomes Pa and can be weak in tone.) Set the drone to B. See
-> [L26](../lessons/L26-keys-transposition-and-limits.md). Learn Bhairavi with Sa = C as a
-> half-hole intonation study, and with Sa = B for performance.
+> **Recommendation:** strict Bhairavi is very demanding on a 6-hole flute. Bansuri
+> players often treat a different swara as Sa so fewer half-holes are needed. On a standard
+> 6-hole fingering, treating Ni as Sa makes the Bhairavi scale use plain fingerings. The actual
+> Western notes depend on your flute's key. Set the app's tanpura to the chosen Sa. See
+> [L26](../lessons/L26-keys-transposition-and-limits.md). Learn Bhairavi with your flute's Sa as
+> a half-hole intonation study, and with Ni as Sa for performance.
 
 ## Similar ragas
 
@@ -109,7 +109,7 @@ S d P d | m P g m | n d - S | - r g m |
 g r S - | .d .n S r | .n S m m | g g r S ||
 ```
 
-Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

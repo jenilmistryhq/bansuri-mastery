@@ -1,6 +1,7 @@
 // Reader (#/read/<path>): renders a curriculum Markdown file inside the app. Its tools (W40):
 // the page's contents, hearing it read in the app's natural voice, and A A for its text size.
 import { getSettings, setSettings } from "../core/settings.js";
+import { westOf } from "../core/theory.js";
 import { h, store, storeSet, icon } from "../util.js";
 import { fetchDoc, renderMarkdown, filesList } from "../content.js";
 import { makePlayable, stopPlayable } from "../playable.js";
@@ -82,23 +83,28 @@ export async function render(main, { params }) {
   const page = h("div", { class: "page readerpage" });
   main.append(page);
   if (!/^[A-Za-z0-9._\/-]+\.md$/.test(path) || path.includes("..")) {
-    page.append(h("div", { class: "card" }, h("h2", null, "Page not found"), h("p", null, "That address does not point to a course page."), h("a", { href: "#/course/book" }, "Open the course book")));
+    page.append(h("div", { class: "card" }, h("h2", null, "Page not found"), h("p", null, "That address does not point to a course page."), h("a", { href: "#/course" }, "Back to course")));
     return;
   }
   let md;
   try { md = await fetchDoc(path); }
-  catch (e) { page.append(h("div", { class: "card" }, h("h2", null, "Could not open this page"), h("p", null, String(e.message)), h("a", { href: "#/course/book" }, "Open the course book"))); return; }
+  catch (e) { page.append(h("div", { class: "card" }, h("h2", null, "Could not open this page"), h("p", null, String(e.message)), h("a", { href: "#/course" }, "Back to course"))); return; }
 
   const { node, title } = renderMarkdown(md, path);
   const cleanups = [];
   document.title = title + " - Bansuri Mastery";
   const folder = path.includes("/") ? path.split("/")[0] : "";
-  const crumbs = h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/course/book" }, "Course book"), folder ? [" / ", h("span", null, GROUP_LABEL[folder] || folder)] : null);
+  const crumbs = h("nav", { class: "crumbs", "aria-label": "Breadcrumbs" }, h("a", { href: "#/course" }, "Course"), folder ? [" / ", h("span", null, GROUP_LABEL[folder] || folder)] : null);
   node.classList.add("reader");
   const full = h("article", { class: "card" }, node);
   // The tools row sits under the breadcrumbs; it is filled once the page knows its mode.
   const tools = h("div", { class: "row rd-tools" });
-  page.append(crumbs, tools);
+  page.append(crumbs);
+  const flute = getSettings();
+  if (flute.saNote !== 0 || flute.saOct !== 5) page.append(h("section", { class: "card reader-flute-note" },
+    h("b", null, "Your flute setting: " + westOf(0) + "."),
+    h("p", { class: "small muted" }, "Some Western note names in this course use C5 as a worked example. Sargam and fingering patterns are relative to Sa, and the app's sounds follow your flute setting. Check your own flute's comfortable range and half-hole sweet spots.")));
+  page.append(tools);
   let showFull = null;
   // Lessons open as cards (one idea at a time); the full text is one tap away.
   // In Hindi, lessons show their Hindi text (title, objectives, explanation, steps) where it exists.

@@ -1,0 +1,261 @@
+{
+  "id": "bandish-taans-tihai",
+  "title": "Bandish, Taans and Tihai",
+  "tasks": [
+    {
+      "id": "bandish-structure",
+      "title": "Bandish Structure",
+      "content": "A bandish (composition) has two main parts:\n\n- **Sthayi** - the refrain, using the lower and middle registers. It states the raga's main theme and always returns to sam (beat 1).\n- **Antara** - the verse, moving into the upper register. It develops the theme and then returns to the sthayi.\n\nSome compositions add:\n- **Sanchari** - a development section exploring the full range\n- **Abhog** - a concluding section that resolves everything\n\nThe sthayi is the heart. No matter where the music goes, it always returns to the sthayi.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the sthayi in a bandish?",
+          "options": [
+            {
+              "text": "The opening improvisation",
+              "why": "The sthayi is a fixed refrain, not improvisation."
+            },
+            {
+              "text": "The refrain that states the main theme and returns to sam",
+              "right": true,
+              "yes": "Correct. The sthayi is the anchor of the entire composition."
+            },
+            {
+              "text": "The final section of the performance",
+              "why": "The final section would be the abhog. The sthayi is the recurring refrain."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sthayi-anchor",
+      "title": "The Sthayi as Anchor",
+      "content": "The sthayi is not just a melody - it is the anchor for the entire performance. Here is how it works in practice:\n\n1. The musician plays the sthayi to establish the composition\n2. They improvise - exploring the raga with taans, bol-bant, or bol-taan\n3. After each improvisation, they return to the sthayi\n4. This cycle repeats with increasing intensity\n5. The sthayi is the last thing played before a tihai ends the section\n\nThe audience recognises the sthayi. When you return to it after an improvisation, it grounds everyone. The longer and more adventurous the improvisation, the more satisfying the return.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why does the musician keep returning to the sthayi?",
+          "options": [
+            {
+              "text": "Because they forgot what to play next",
+              "why": "The return is deliberate, not a lapse. It grounds the music after improvisation."
+            },
+            {
+              "text": "It grounds the music and gives the listener a familiar anchor after improvisation",
+              "right": true,
+              "yes": "Exactly. The sthayi-improvisation-sthayi cycle is the backbone of a performance."
+            },
+            {
+              "text": "The tabla player requires it",
+              "why": "While the tabla recognises the sthayi, the return is a musical choice, not a tabla requirement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "what-is-taan",
+      "title": "What Is a Taan?",
+      "content": "A taan is a fast run of notes within a raga. Taans add excitement and display the musician's command of the raga's grammar.\n\nA taan must follow the raga's rules - it never uses notes outside the raga. The speed makes this challenging: at taan speed, there is no time to think about each note. The raga must be in your fingers.\n\nTaans typically end on sam or on the mukhda (the pickup phrase leading into the sthayi). This landing is what makes a taan musically satisfying - it is not just speed, but speed with purpose.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is a taan?",
+          "options": [
+            {
+              "text": "A slow, meditative phrase",
+              "why": "That would be alap. A taan is fast."
+            },
+            {
+              "text": "A fast melodic run within the raga's notes",
+              "right": true,
+              "yes": "Correct. Taans are rapid sequences of notes that follow the raga's grammar."
+            },
+            {
+              "text": "A rhythmic pattern for tabla",
+              "why": "That would be a theka or tukda. Taans are melodic."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "types-of-taans",
+      "title": "Types of Taans",
+      "content": "There are several types of taans, each with a different character:\n\n- **Sapat taan** - straight ascending or descending runs. Sa Re Ga Ma Pa Dha Ni Sa. The simplest and most common type.\n- **Alankar taan** - patterned runs using an alankar as the template. For example: Sa Re Ga, Re Ga Ma, Ga Ma Pa - stepping up in overlapping groups.\n- **Gamak taan** - with oscillation on each note, adding weight and intensity.\n- **Bol taan** - using the syllables (bol) of a composition as rhythmic anchors for the melodic run.\n\nBegin with sapat taans. They build the finger speed and raga familiarity you need for more complex types.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which type of taan is best for a beginner to start with?",
+          "options": [
+            {
+              "text": "Gamak taan - oscillation on every note",
+              "why": "Gamak taans require advanced finger control. Start simpler."
+            },
+            {
+              "text": "Sapat taan - straight ascending or descending runs",
+              "right": true,
+              "yes": "Right. Sapat taans build the basic speed and familiarity needed for all other types."
+            },
+            {
+              "text": "Bol taan - with vocal syllables",
+              "why": "Bol taans require knowing a composition's text. Start with pure melodic runs."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-ascending-taan",
+      "title": "Practice: Ascending Taan",
+      "content": "Play a full ascending sapat taan from Sa to upper Sa:\n\nSa Re Ga Ma Pa Dha Ni Sa'\n\nStart slowly and evenly - every note the same length, every interval clean. Speed is not the goal yet. Evenness is.\n\nA common mistake is rushing through the middle notes (Ma Pa Dha) and slowing down at the top (Ni Sa'). Keep every note equal.\n\nOnce this is even and clean at a slow tempo, gradually increase speed over days and weeks.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play a full ascending run: Sa Re Ga Ma Pa Dha Ni Sa'",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "what-is-tihai",
+      "title": "What Is a Tihai?",
+      "content": "A tihai is a phrase repeated three times so that the third repetition lands exactly on sam (beat 1 of the next cycle). It is the standard way to end a section or a performance.\n\nThe word tihai comes from 'teen' meaning three. The structure is:\n\nPhrase - gap - Phrase - gap - Phrase (lands on sam)\n\nThe math: (phrase length x 3) + (gap x 2) = beats remaining to sam.\n\nTihais create a powerful sense of arrival. When a tihai hits sam cleanly, the audience feels it - it is one of the most satisfying moments in a performance.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many times is a tihai phrase repeated?",
+          "options": [
+            {
+              "text": "Two times",
+              "why": "Tihai comes from 'teen' (three). It is always three repetitions."
+            },
+            {
+              "text": "Three times, landing on sam",
+              "right": true,
+              "yes": "Correct. Three repetitions landing on sam - that is the definition of a tihai."
+            },
+            {
+              "text": "Four times",
+              "why": "Three, not four. The name comes from 'teen' (three)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tihai-math",
+      "title": "Tihai Math",
+      "content": "To calculate a tihai, you need to know:\n- The phrase length (in beats)\n- The gap between repetitions (in beats)\n- The total: (phrase x 3) + (gap x 2)\n\nExample in Teentaal (16 beats):\n- Phrase = 4 beats, gap = 1 beat\n- Total = (4 x 3) + (1 x 2) = 12 + 2 = 14 beats\n- If you start on beat 3, you land on beat 17 (which is sam)\n\nAnother example:\n- Phrase = 3 beats, gap = 1 beat\n- Total = (3 x 3) + (1 x 2) = 9 + 2 = 11 beats\n- Start on beat 7 to land on sam (7 + 11 - 1 = 17 = sam)",
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "A tihai phrase is 3 beats long with a 1-beat gap. What is the total length in beats?",
+          "answer": "11",
+          "accept": ["11", "eleven"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "mukhda-concept",
+      "title": "The Mukhda - Your Refrain",
+      "content": "The mukhda is the opening phrase of the sthayi that leads into sam. Think of it as the refrain's hook - the few notes that the audience remembers and that the musician returns to after every improvisation.\n\nIn performance, the mukhda works like this:\n1. The musician improvises freely within the raga\n2. When ready to return, they play the mukhda\n3. The mukhda picks up a few beats before sam\n4. It lands on sam, and the sthayi begins again\n\nThe mukhda is the bridge between freedom and structure. A well-timed mukhda return after a daring improvisation is one of the most satisfying moments in a performance.\n\nEvery bandish has a mukhda. Learning it is as important as learning the full composition - it is your exit ramp from improvisation back to the composition.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the mukhda in a bandish?",
+          "options": [
+            {
+              "text": "The opening phrase of the sthayi that leads into sam",
+              "right": true,
+              "yes": "Correct. The mukhda is the hook - the pickup phrase that lands on beat 1."
+            },
+            {
+              "text": "The fastest section of the composition",
+              "why": "Speed relates to taan, not mukhda. The mukhda is a returning phrase."
+            },
+            {
+              "text": "The ending phrase of the antara",
+              "why": "The antara returns to the sthayi via the mukhda, but the mukhda belongs to the sthayi."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When does a musician play the mukhda during a performance?",
+          "options": [
+            {
+              "text": "Only at the very beginning",
+              "why": "The mukhda is played repeatedly - after every improvisation to return to the sthayi."
+            },
+            {
+              "text": "After improvising, to return to the composition and land on sam",
+              "right": true,
+              "yes": "Right. The mukhda is the bridge from free exploration back to the structured composition."
+            },
+            {
+              "text": "Only during the alap",
+              "why": "The alap has no composition. The mukhda appears once the bandish begins."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tihai-calculation",
+      "title": "Tihai Calculation Practice",
+      "content": "The master formula for a tihai is:\n\n3P + 2G = T\n\nWhere P = phrase length in beats, G = gap between repetitions, and T = total beats to fill before sam.\n\nFor a bedam (gapless) tihai: G = 0, so 3P = T. The phrase must divide evenly into T.\n\nFor a damdar (gapped) tihai: G = (T - 3P) / 2. The gap must come out as a whole number.\n\nExample in Teentaal (16 beats):\n- P = 4, G = ? : T = 16, so G = (16 - 12) / 2 = 2\n- Pattern: [4 beats] [2 rest] [4 beats] [2 rest] [4 beats] = sam\n\nExample in Jhaptaal (10 beats):\n- P = 2, G = ? : T = 10, so G = (10 - 6) / 2 = 2\n- Pattern: [2 beats] [2 rest] [2 beats] [2 rest] [2 beats] = sam",
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "In tihai math, 3P + 2G = T. If P = 4 and T = 16, what is G?",
+          "answer": "2",
+          "accept": ["2", "two"],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "For a bedam tihai in a 15-beat cycle (3P = T, G = 0), what is P?",
+          "answer": "5",
+          "accept": ["5", "five"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Can a bedam tihai (G = 0) work in Teentaal (16 beats)?",
+          "options": [
+            {
+              "text": "No - 16 does not divide evenly by 3",
+              "right": true,
+              "yes": "Correct. 16 / 3 = 5.33, which is not a whole number. You need a gap (damdar tihai) or start from a different beat."
+            },
+            {
+              "text": "Yes - P = 5 works perfectly",
+              "why": "3 x 5 = 15, not 16. You would land one beat early."
+            },
+            {
+              "text": "Yes - P = 4 works",
+              "why": "3 x 4 = 12, not 16. You would land four beats early."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-sam-landing",
+      "title": "Practice: Landing on Sa",
+      "content": "The most important skill in bandish and tihai playing is landing cleanly - arriving at the target note with confidence.\n\nPractice this descending phrase that resolves on Sa:\n\nPa Ma Re Sa\n\nThis is a common closing pattern. The descent from Pa through Ma and Re to Sa creates a strong feeling of resolution. Play it cleanly, with Sa as a firm arrival, not a question.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [7, 5, 2, 0],
+          "prompt": "Play Pa Ma Re Sa - descending to home",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

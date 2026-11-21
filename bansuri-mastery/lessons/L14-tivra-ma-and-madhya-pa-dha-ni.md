@@ -128,7 +128,7 @@ Rest your lips for 1 minute if the tone becomes airy. Overblowing tires the lips
 ## 8. Independent exercises
 
 1. Leap drill: `.P P .P P` then `.D D`, `.N N` at 50 BPM. 10 clean leaps each.
-2. Play `S R G M P - - - | M G R S - - - -` with a drone on C. Listen for M sounding
+2. Play `S R G M P - - - | M G R S - - - -` with a drone on your flute's Sa. Listen for M sounding
    bright and "leaning" upward to P.
 3. Write your own 8-note melody using `S R G M P` and play it. (Preview of [L30](L30-composition-foundations.md).)
 

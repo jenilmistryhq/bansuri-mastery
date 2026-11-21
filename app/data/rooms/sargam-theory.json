@@ -1,0 +1,554 @@
+{
+  "id": "sargam-theory",
+  "title": "Sargam Theory Challenge",
+  "description": "Test your knowledge of the seven swaras, their names, and their relationships.",
+  "difficulty": "medium",
+  "skills": ["theory", "notation"],
+  "minutes": 35,
+  "order": 3,
+  "prerequisites": ["sa-the-home-note"],
+  "tasks": [
+    {
+      "id": "t1-seven-notes",
+      "title": "The seven swaras",
+      "content": [
+        "Indian music uses seven fundamental notes called swaras, collectively known as sargam (from Sa-Re-Ga-Ma).",
+        { "type": "list", "items": [
+          "Sa (Shadja) - the tonic, always fixed as your reference",
+          "Re (Rishabh) - the second note",
+          "Ga (Gandhar) - the third note",
+          "Ma (Madhyam) - the fourth note, the middle of the scale",
+          "Pa (Pancham) - the fifth note, always fixed relative to Sa",
+          "Dha (Dhaivat) - the sixth note",
+          "Ni (Nishad) - the seventh note, leading back to Sa"
+        ] },
+        { "type": "note", "text": "Sa and Pa are called 'achal' (immovable) swaras - they never change. The other five can be sharpened or flattened." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Which two notes are 'achal' (immovable) and never change?",
+          "options": [
+            { "text": "Sa and Re", "right": false, "why": "Re has komal (flat) and shuddha (natural) forms." },
+            { "text": "Sa and Pa", "right": true, "yes": "Correct! Sa and Pa are the two fixed notes." },
+            { "text": "Ga and Ni", "right": false, "why": "Both Ga and Ni have komal and shuddha forms." },
+            { "text": "Ma and Pa", "right": false, "why": "Ma has shuddha and tivra (sharp) forms." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "What does the word 'sargam' come from?",
+          "options": [
+            { "text": "The first four swaras: Sa Re Ga Ma", "right": true, "yes": "Exactly! Sargam is shorthand for Sa-Re-Ga-Ma." },
+            { "text": "A Sanskrit word meaning 'scale'", "right": false, "why": "It is actually a concatenation of the first four note names." },
+            { "text": "The name of an ancient musician", "right": false, "why": "It comes from the note names themselves." },
+            { "text": "The seven planets in Vedic astrology", "right": false, "why": "While there are connections, the word is from Sa-Re-Ga-Ma." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "The mnemonic: Sa and Pa are the pillars. Everything else can move.",
+        "Sargam is like 'do-re-mi' - named after the notes themselves."
+      ]
+    },
+    {
+      "id": "t2-full-names",
+      "title": "Name all seven swaras",
+      "content": [
+        "Each swara has a full Sanskrit name. These names have been used for thousands of years and each carries meaning.",
+        { "type": "list", "items": [
+          "Sa = Shadja ('born of six' - the source from which the other notes are derived)",
+          "Re = Rishabh ('the bull' - strong and steady)",
+          "Ga = Gandhar ('fragrant' - sweet and melodious)",
+          "Ma = Madhyam ('the middle' - sits at the centre of the scale)",
+          "Pa = Pancham ('the fifth' - always a perfect fifth above Sa)",
+          "Dha = Dhaivat ('sustained' - resonant and full)",
+          "Ni = Nishad ('sitting down' - the note that settles back toward Sa)"
+        ] }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "What is the full name of 'Sa'?",
+          "answer": "Shadja",
+          "accept": ["shadja", "shadaj", "shadjam"],
+          "points": 10,
+          "no": "It's Shadja - meaning 'born of six' because all other notes derive from it."
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What is the full name of 'Ma'?",
+          "answer": "Madhyam",
+          "accept": ["madhyam", "madhyama"],
+          "points": 10,
+          "no": "It's Madhyam - meaning 'the middle', as it sits at the centre of the scale."
+        },
+        {
+          "id": "q3",
+          "type": "type",
+          "prompt": "What is the full name of 'Pa'?",
+          "answer": "Pancham",
+          "accept": ["pancham", "panchama"],
+          "points": 10,
+          "no": "It's Pancham - meaning 'the fifth'."
+        },
+        {
+          "id": "q4",
+          "type": "choice",
+          "prompt": "Which swara's name means 'the middle'?",
+          "options": [
+            { "text": "Ga (Gandhar)", "right": false, "why": "Gandhar means 'fragrant'." },
+            { "text": "Ma (Madhyam)", "right": true, "yes": "Right! Madhyam means 'the middle' - it sits at the centre of the scale." },
+            { "text": "Pa (Pancham)", "right": false, "why": "Pancham means 'the fifth'." },
+            { "text": "Dha (Dhaivat)", "right": false, "why": "Dhaivat means 'sustained'." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Shadja, Rishabh, Gandhar, Madhyam, Pancham, Dhaivat, Nishad.",
+        "Ma = Madhyam = Middle. Pa = Pancham = Fifth."
+      ]
+    },
+    {
+      "id": "t3-komal-tivra",
+      "title": "Komal and tivra",
+      "content": [
+        "Five of the seven notes come in two flavours:",
+        { "type": "list", "items": [
+          "Komal (flat) - the lowered version, written in lowercase: r, g, d, n",
+          "Shuddha (natural) - the standard version, written in uppercase: R, G, D, N",
+          "Ma is special: its two forms are shuddha Ma (m) and tivra Ma (M, sharpened)"
+        ] },
+        "This gives us 12 notes in total - the same 12 pitches as Western music, but named and thought about differently."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What is the sharpened form of Ma called?",
+          "options": [
+            { "text": "Komal Ma", "right": false, "why": "Komal means flat. Ma's raised form has a different name." },
+            { "text": "Tivra Ma", "right": true, "yes": "Correct! Tivra means sharp or intense." },
+            { "text": "Shuddha Ma", "right": false, "why": "Shuddha Ma is the natural (lower) form." },
+            { "text": "Ati Ma", "right": false, "why": "Ati is not the standard term for Ma's raised form." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Which notes can take a komal (flat) form?",
+          "options": [
+            { "text": "Re, Ga, Dha, Ni", "right": true, "yes": "Right! These four plus Ma (which uses tivra instead) are the vikrit swaras." },
+            { "text": "Sa, Re, Ga, Ma", "right": false, "why": "Sa is achal (immovable) and can never be flattened." },
+            { "text": "All seven notes", "right": false, "why": "Sa and Pa are fixed. Ma uses tivra, not komal." },
+            { "text": "Re, Ma, Dha, Ni", "right": false, "why": "Ma does not take komal form - it uses tivra (sharp) instead." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "type",
+          "prompt": "What is the Hindi/Sanskrit word for 'flat' in Indian music?",
+          "answer": "komal",
+          "accept": ["komal", "komala"],
+          "points": 10,
+          "no": "The word is 'komal', meaning soft or tender."
+        }
+      ],
+      "hints": [
+        "Remember: komal = lowered, shuddha = natural, tivra = sharpened.",
+        "Only Ma uses 'tivra' instead of a second 'shuddha'. All others use 'komal' for their lowered form.",
+        "The four komal notes: Re, Ga, Dha, Ni. Ma is the odd one out - it goes sharp, not flat."
+      ]
+    },
+    {
+      "id": "t4-chromatic",
+      "title": "The chromatic scale - all 12 pitches",
+      "content": [
+        "When you count every shuddha, komal and tivra note, you get 12 distinct pitches in one octave. This is the same number as the 12 semitones in Western music.",
+        { "type": "list", "items": [
+          "S - Sa",
+          "r - komal Re",
+          "R - shuddha Re",
+          "g - komal Ga",
+          "G - shuddha Ga",
+          "m - shuddha Ma",
+          "M - tivra Ma",
+          "P - Pa",
+          "d - komal Dha",
+          "D - shuddha Dha",
+          "n - komal Ni",
+          "N - shuddha Ni"
+        ] },
+        { "type": "note", "text": "Notice that between Ga and Ma there is no extra note, and between Pa and Dha there is no extra note. These are the two 'half-step' gaps in the natural scale." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "How many total distinct pitches are there in one saptak (octave)?",
+          "answer": "12",
+          "accept": ["12", "twelve", "barah"],
+          "points": 10,
+          "yes": "Right! 7 shuddha + 4 komal + 1 tivra = 12 pitches."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Between which two shuddha notes is there NO komal or tivra note?",
+          "options": [
+            { "text": "Sa and Re", "right": false, "why": "Komal Re sits between Sa and shuddha Re." },
+            { "text": "Re and Ga", "right": false, "why": "Komal Ga sits between shuddha Re and shuddha Ga." },
+            { "text": "Ga and Ma", "right": true, "yes": "Correct! There is no note between shuddha Ga and shuddha Ma - it is a natural half step." },
+            { "text": "Ma and Pa", "right": false, "why": "Tivra Ma sits between shuddha Ma and Pa." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "How many 'vikrit' (movable) swaras are there?",
+          "options": [
+            { "text": "3", "right": false, "why": "There are more than three movable notes." },
+            { "text": "5", "right": true, "yes": "Right! Re, Ga, Ma, Dha, Ni are the five vikrit swaras." },
+            { "text": "7", "right": false, "why": "Sa and Pa are achal (immovable), so not all seven are vikrit." },
+            { "text": "12", "right": false, "why": "12 is the total number of pitches, not the number of movable swaras." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Count: S, r, R, g, G, m, M, P, d, D, n, N = 12 pitches.",
+        "The two natural half steps: Ga-Ma and Ni-Sa (upper). No notes sit between them.",
+        "Vikrit means 'altered' - Re, Ga, Ma, Dha and Ni each have two forms."
+      ]
+    },
+    {
+      "id": "t5-notation",
+      "title": "Read sargam notation",
+      "content": [
+        "In written sargam notation:",
+        { "type": "list", "items": [
+          "Uppercase = shuddha (natural): S R G M P D N",
+          "Lowercase = komal (flat): r g d n, and tivra Ma is uppercase M",
+          "A dot below = lower octave (mandra saptak)",
+          "A dot above = upper octave (taar saptak)",
+          "No dot = middle octave (madhya saptak)"
+        ] },
+        "A dash (-) means hold the previous note for another beat. A comma separates notes within the same beat. A semicolon marks a bar line."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "In sargam notation, what does a lowercase 'g' mean?",
+          "options": [
+            { "text": "Shuddha Ga (natural Ga)", "right": false, "why": "Shuddha Ga is written as uppercase G." },
+            { "text": "Komal Ga (flat Ga)", "right": true, "yes": "Right! Lowercase means komal (flat)." },
+            { "text": "Ga in the lower octave", "right": false, "why": "Lower octave is shown with a dot below, not by case." },
+            { "text": "A grace note on Ga", "right": false }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "Write the ascending sargam scale in capital letters, from Sa to Ni (e.g. S R G ...). Spaces between notes.",
+          "answer": "S R G M P D N",
+          "accept": ["S R G M P D N", "SRGMPDN", "s r g m p d n", "srgmpdn"],
+          "points": 15,
+          "no": "The seven shuddha swaras in order: S R G M P D N"
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "In notation, what does a dash (-) after a note mean?",
+          "options": [
+            { "text": "Play the note softly", "right": false, "why": "A dash is about duration, not volume." },
+            { "text": "Hold the previous note for another beat", "right": true, "yes": "Right! A dash sustains the note." },
+            { "text": "Skip one beat of silence", "right": false, "why": "Silence is usually written differently." },
+            { "text": "Play the note in the lower octave", "right": false, "why": "Octave is shown with dots, not dashes." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "The first letters: Sa Re Ga Ma Pa Dha Ni.",
+        "Uppercase = natural, lowercase = flat, dot above = high, dot below = low.",
+        "A dash (-) means 'keep holding that note'."
+      ]
+    },
+    {
+      "id": "t6-octaves",
+      "title": "The three octaves",
+      "content": [
+        "The bansuri's range spans roughly three octaves (saptaks). Each octave repeats the same seven swaras at a higher or lower pitch.",
+        { "type": "list", "items": [
+          "Mandra saptak (low octave) - deep, meditative, written with a dot below the note",
+          "Madhya saptak (middle octave) - the natural speaking range of the flute, no dot",
+          "Taar saptak (upper octave) - bright and piercing, written with a dot above the note"
+        ] },
+        "Most bansuri melodies live in the madhya saptak, dipping into mandra and reaching up to taar for expression.",
+        { "type": "note", "text": "The upper octave on a bansuri requires more air pressure (overblowing). The lower octave needs a gentle, relaxed breath." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "What is the name of the middle octave?",
+          "answer": "Madhya",
+          "accept": ["madhya", "madhya saptak", "madhyam"],
+          "points": 10,
+          "no": "It's the Madhya saptak - the middle octave where most melodies live."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "How is a note in the upper octave (taar saptak) written in sargam notation?",
+          "options": [
+            { "text": "With a dot below the note", "right": false, "why": "A dot below means the lower octave (mandra saptak)." },
+            { "text": "With a dot above the note", "right": true, "yes": "Right! A dot above means taar saptak." },
+            { "text": "In bold or italic letters", "right": false, "why": "Sargam notation uses dots for octave, not font style." },
+            { "text": "With an exclamation mark after it", "right": false }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "type",
+          "prompt": "What is the Sanskrit name for the low octave?",
+          "answer": "Mandra",
+          "accept": ["mandra", "mandra saptak"],
+          "points": 10,
+          "no": "It's Mandra saptak - the low, deep octave."
+        }
+      ],
+      "hints": [
+        "The three saptaks: Mandra (low), Madhya (middle), Taar (high).",
+        "Think: Mandra = mantra = deep and meditative. Taar = star = high and bright."
+      ]
+    },
+    {
+      "id": "t7-thaat",
+      "title": "What is a thaat?",
+      "content": [
+        "A thaat is a parent scale - a set of seven notes (one form of each swara) from which ragas are derived. The thaat system was organized by Pandit Vishnu Narayan Bhatkhande in the early 20th century.",
+        "There are 10 thaats in Hindustani (North Indian) classical music. Each thaat:",
+        { "type": "list", "items": [
+          "Uses exactly seven notes - one version of each swara",
+          "Must include Sa and Pa (the two fixed notes)",
+          "Chooses shuddha or komal for Re, Ga, Dha, Ni",
+          "Chooses shuddha or tivra for Ma",
+          "Is named after its most famous raga"
+        ] },
+        { "type": "note", "text": "A thaat is a scale, not a raga. A raga has rules about ascending, descending, emphasis and mood. A thaat is just the set of notes." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "How many thaats are there in the Bhatkhande system?",
+          "answer": "10",
+          "accept": ["10", "ten", "das"],
+          "points": 10,
+          "no": "There are 10 thaats in the Bhatkhande system."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "What is a thaat?",
+          "options": [
+            { "text": "A parent scale of seven notes from which ragas are derived", "right": true, "yes": "Correct! A thaat is the foundation - the set of notes a raga draws from." },
+            { "text": "A rhythmic cycle used in Indian music", "right": false, "why": "That would be a 'taal'. A thaat is about notes, not rhythm." },
+            { "text": "A specific raga with strict performance rules", "right": false, "why": "A thaat is simpler - just a scale. A raga adds rules for melody and mood." },
+            { "text": "An ornament or embellishment technique", "right": false, "why": "Ornaments are called 'alankar' or by specific names like meend, kan, murki." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Thaat = parent scale. Raga = child melody built from that scale.",
+        "10 thaats, organized by Bhatkhande. Each named after its most famous raga."
+      ]
+    },
+    {
+      "id": "t8-bilawal",
+      "title": "Bilawal thaat - the natural scale",
+      "content": [
+        "Bilawal is the most fundamental thaat. It uses all seven shuddha (natural) swaras - no komal or tivra notes at all.",
+        "Its notes: S R G m P D N (Sa Re Ga Ma Pa Dha Ni - all in their natural form).",
+        "This is equivalent to the Western major scale (C major = C D E F G A B). If you can play the shuddha sargam ascending and descending, you already know Bilawal thaat.",
+        { "type": "note", "text": "Bilawal thaat is named after Raga Bilawal, which is traditionally performed in the morning and conveys a bright, serene mood." },
+        "The other nine thaats each change one or more notes from their shuddha form. For example, Kafi thaat uses komal Ga and komal Ni, giving it a minor-like feel."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What makes Bilawal thaat special among the ten thaats?",
+          "options": [
+            { "text": "It is the oldest thaat", "right": false, "why": "While it may have ancient roots, its special status is about its notes." },
+            { "text": "It uses all shuddha (natural) swaras - no komal or tivra", "right": true, "yes": "Exactly! Bilawal is the 'default' scale - all notes in their natural form." },
+            { "text": "It uses only three notes", "right": false, "why": "Every thaat uses all seven swaras." },
+            { "text": "It can only be played at night", "right": false, "why": "Bilawal is traditionally a morning raga." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Which Western scale is equivalent to Bilawal thaat?",
+          "options": [
+            { "text": "Minor scale", "right": false, "why": "The minor scale has flattened 3rd, 6th and 7th degrees." },
+            { "text": "Major scale", "right": true, "yes": "Right! Bilawal with all shuddha notes maps to the major scale." },
+            { "text": "Pentatonic scale", "right": false, "why": "The pentatonic scale has only five notes." },
+            { "text": "Chromatic scale", "right": false, "why": "The chromatic scale uses all 12 pitches." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "type",
+          "prompt": "Which thaat uses komal Ga and komal Ni, giving a minor-like feel?",
+          "answer": "Kafi",
+          "accept": ["kafi", "kaafi"],
+          "points": 15,
+          "no": "It's Kafi thaat - its komal Ga and komal Ni give it a gentle, plaintive quality similar to the Western minor scale."
+        }
+      ],
+      "hints": [
+        "Bilawal = all natural = major scale.",
+        "Kafi is mentioned in the content above - it flattens Ga and Ni."
+      ]
+    },
+    {
+      "id": "t9-intervals",
+      "title": "Intervals and note relationships",
+      "content": [
+        "Understanding the distance between notes helps you hear and play melodies accurately.",
+        { "type": "list", "items": [
+          "Sa to Pa is always a perfect fifth (7 semitones) - the strongest consonance after the octave",
+          "Sa to Ma is a perfect fourth (5 semitones)",
+          "Sa to Ga is a major third (4 semitones); Sa to komal Ga is a minor third (3 semitones)",
+          "Sa to Re is a major second (2 semitones); Sa to komal Re is a minor second (1 semitone)",
+          "Sa to upper Sa is an octave (12 semitones)"
+        ] },
+        "In Indian theory, the relationship between Sa and Pa is called 'samvadi' (consonant). Every raga has a 'vadi' (most important note) and a 'samvadi' (second most important), usually a fourth or fifth apart.",
+        { "type": "note", "text": "The vadi-samvadi relationship is what gives a raga its character. It is like the main character and supporting character of a story." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "How many semitones are between Sa and Pa?",
+          "answer": "7",
+          "accept": ["7", "seven"],
+          "points": 10,
+          "no": "Sa to Pa is 7 semitones - a perfect fifth."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "What is the 'vadi' of a raga?",
+          "options": [
+            { "text": "The first note played", "right": false, "why": "The first note is part of the raga's ascending pattern, not necessarily the vadi." },
+            { "text": "The most important note - the 'king' of the raga", "right": true, "yes": "Right! The vadi is the note that gets the most emphasis and around which phrases revolve." },
+            { "text": "The highest note in the raga", "right": false, "why": "The vadi can be any note in the raga's scale." },
+            { "text": "The note that is always played last", "right": false, "why": "Ragas typically end on Sa, but the vadi is about emphasis, not position." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "If a raga's vadi is Re, its samvadi is most likely which note?",
+          "options": [
+            { "text": "Ga (a second above)", "right": false, "why": "The samvadi is typically a fourth or fifth from the vadi." },
+            { "text": "Pa (a fourth above)", "right": true, "yes": "Right! Re to Pa is a perfect fourth - the typical vadi-samvadi relationship." },
+            { "text": "Sa (the home note)", "right": false, "why": "Sa is always important, but the samvadi is usually a fourth or fifth from the vadi." },
+            { "text": "Ni (a seventh above)", "right": false, "why": "The samvadi sits a fourth or fifth away, not a seventh." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Count the semitones: S(0) r(1) R(2) g(3) G(4) m(5) M(6) P(7).",
+        "Vadi = king note, samvadi = minister note. They are usually a fourth or fifth apart.",
+        "Re to Pa: R(2) to P(7) = 5 semitones = a perfect fourth."
+      ]
+    },
+    {
+      "id": "t10-final-quiz",
+      "title": "Comprehensive theory quiz",
+      "content": [
+        "Time to put everything together. This final set of questions draws from every topic in this room."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "Name the five vikrit (movable) swaras, separated by spaces (use their short names).",
+          "answer": "Re Ga Ma Dha Ni",
+          "accept": ["Re Ga Ma Dha Ni", "re ga ma dha ni", "R G M D N", "r g m d n"],
+          "points": 15,
+          "no": "The five vikrit swaras are Re, Ga, Ma, Dha, Ni."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Which of these sequences uses only shuddha swaras (Bilawal thaat)?",
+          "options": [
+            { "text": "S R g m P D N", "right": false, "why": "This has komal Ga (lowercase g)." },
+            { "text": "S R G m P D N", "right": true, "yes": "Correct! All uppercase (except Sa which is always S and Ma which is lowercase m for shuddha)." },
+            { "text": "S R G M P D N", "right": false, "why": "Uppercase M is tivra Ma, not shuddha Ma. Shuddha Ma is lowercase m." },
+            { "text": "S r G m P d N", "right": false, "why": "This has komal Re (r) and komal Dha (d)." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "type",
+          "prompt": "In which saptak (octave) do most bansuri melodies live? Type its name.",
+          "answer": "Madhya",
+          "accept": ["madhya", "madhya saptak", "middle"],
+          "points": 10,
+          "no": "Most melodies live in the Madhya saptak (middle octave)."
+        },
+        {
+          "id": "q4",
+          "type": "choice",
+          "prompt": "A thaat must always include which two notes?",
+          "options": [
+            { "text": "Sa and Re", "right": false, "why": "Re is vikrit and comes in two forms. Sa is required, but Re is not fixed." },
+            { "text": "Sa and Pa", "right": true, "yes": "Right! Sa and Pa are the two achal swaras that every thaat must include." },
+            { "text": "Ga and Ni", "right": false, "why": "Both Ga and Ni are vikrit swaras." },
+            { "text": "Sa and Ni", "right": false, "why": "Ni is vikrit and can take komal or shuddha form." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q5",
+          "type": "type",
+          "prompt": "How many thaats are in the Bhatkhande system?",
+          "answer": "10",
+          "accept": ["10", "ten", "das"],
+          "points": 10,
+          "no": "There are 10 thaats."
+        }
+      ],
+      "hints": [
+        "The two achal swaras: Sa and Pa.",
+        "Shuddha Ma is written lowercase m. Tivra Ma is uppercase M.",
+        "Madhya = middle octave."
+      ]
+    }
+  ]
+}

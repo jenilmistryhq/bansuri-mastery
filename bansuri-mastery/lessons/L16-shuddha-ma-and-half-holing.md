@@ -109,7 +109,7 @@ Steps:  S -2- R -2- G -1- m -2- P -2- D -2- N -1- S'
 - Not assessed: videos not watched for this curriculum. **Ignore** any video that says
   all-open is shuddha Ma (see [Known disagreements](../02-RESOURCE-LIBRARY.md#known-disagreements-between-sources)).
 
-**What you should hear:** with a C drone, shuddha Ma sounds **calm and settled**; tivra Ma
+**What you should hear:** with a drone on your Sa, shuddha Ma sounds **calm and settled**; tivra Ma
 sounds **bright and restless**, wanting to move up to Pa. If your `m` sounds "between" and
 sour, it is out of tune.
 

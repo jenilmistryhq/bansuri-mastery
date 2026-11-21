@@ -1,0 +1,249 @@
+{
+  "id": "raga-marwa",
+  "title": "Raga Marwa - The Sunset Raga",
+  "tasks": [
+    {
+      "id": "twilight-raga",
+      "title": "The Raga of Twilight",
+      "content": [
+        "Marwa is performed at sandhiprakash - the exact moment when day meets night, roughly between 5 and 7 PM. It captures the tension of that transition: the anxiety of losing light, the yearning for what is passing away.",
+        "With no Pa (the perfect fifth) and a deliberately de-emphasized Sa (the tonic), Marwa creates a sense of rootlessness that perfectly mirrors the unstable twilight hour. Where other ragas feel grounded, Marwa floats.",
+        "Marwa is one of the 'big six' ragas that every serious Hindustani musician must master. It belongs to the Marwa thaat - one of the ten thaats named after this very raga. Its emotional landscape is viraha (painful separation), restlessness, and intense yearning."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When is Raga Marwa traditionally performed?",
+          "options": [
+            { "text": "At sunset (sandhiprakash)", "right": true, "yes": "Correct. Sandhiprakash means the junction of day and night - the exact moment of twilight." },
+            { "text": "Late at night (midnight)", "why": "Late night belongs to ragas like Malkauns and Bihag. Marwa captures the specific tension of sunset." },
+            { "text": "Early morning", "why": "Morning ragas like Bhairav have a different character. Marwa belongs to the fading light of evening." },
+            { "text": "Any time of day", "why": "Marwa is strongly associated with sunset. Its restless mood mirrors the anxiety of losing daylight." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which commonly used note is completely ABSENT from Raga Marwa?",
+          "options": [
+            { "text": "Pa (the perfect fifth)", "right": true, "yes": "Correct. Marwa uses only six notes and omits Pa entirely, creating a floating, unanchored quality." },
+            { "text": "Sa (the tonic)", "why": "Sa is present in Marwa but deliberately de-emphasized. It is not absent - just avoided." },
+            { "text": "Ga (the third)", "why": "Ga (shuddha Ga) is a full member of Marwa's scale and appears prominently in phrases." },
+            { "text": "Re (the second)", "why": "Komal Re is one of the most important notes in Marwa. It is the samvadi (second most important note)." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "no-pa-no-rest",
+      "title": "No Pa, No Rest",
+      "content": [
+        "Marwa's six notes are: Sa (0), komal Re (1), Ga (4), tivra Ma (6), Dha (9), and Ni (11). No Pa. This is extraordinary - the perfect fifth is one of the strongest consonances in music, and Marwa simply removes it.",
+        "But it goes further. Sa itself - the tonic, the home note, the foundation of every raga - is deliberately avoided and de-emphasized. Marwa barely touches Sa. Without Pa as the structural fifth and without Sa as a resting point, the raga floats with no anchor.",
+        "Compare this to a raga like Yaman, where Sa and Pa are strong pillars that give the melody a sense of stability. Marwa deliberately removes both pillars. The feeling is one of perpetual yearning - never quite arriving home."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Besides Pa (which is absent), which note is deliberately de-emphasized and avoided in Marwa?",
+          "options": [
+            { "text": "Sa (the tonic)", "right": true, "yes": "Correct. Marwa rarely rests on Sa. The raga hovers around Dha and komal Re instead, creating perpetual restlessness." },
+            { "text": "Ni", "why": "Ni is prominently used in Marwa. It appears in the aroha and many characteristic phrases." },
+            { "text": "Ga", "why": "Ga is a strong note in Marwa, used freely in both ascending and descending phrases." },
+            { "text": "Dha", "why": "Dha is the vadi (king note) of Marwa - the most important note in the raga, not an avoided one." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many notes does Raga Marwa use? (Enter the number.)",
+          "answer": "6",
+          "accept": ["six", "Six", "SIX"],
+          "points": 1
+        }
+      ]
+    },
+    {
+      "id": "komal-re-tension",
+      "title": "The Komal Re Tension",
+      "content": [
+        "Komal Re sits just 1 semitone above Sa. This extreme proximity creates intense musical tension - the two notes almost touch but never merge. It is one of the tightest intervals in the entire swara system.",
+        "In Marwa, komal Re is prominent and frequently used, so this tension is constant. Every time the melody passes through komal Re, you feel the gravitational pull of Sa just below it. The movement from komal Re down to Sa is one of the most emotionally charged resolutions in Indian music.",
+        "But here is the key: Marwa avoids resolving to Sa. It keeps the tension alive by hovering on komal Re or leaping away to Ga. The itch to resolve is never fully scratched. This unresolved tension is what gives Marwa its characteristic restlessness and yearning."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 1,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold komal Re steadily. Feel how close it sits to Sa - just one semitone apart. This proximity is what creates Marwa's characteristic tension.",
+          "points": 3
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does komal Re create such intense tension against Sa in Marwa?",
+          "options": [
+            { "text": "It is only 1 semitone above Sa - extremely close proximity", "right": true, "yes": "Correct. The near-touching closeness of komal Re and Sa creates a constant pull that Marwa deliberately leaves unresolved." },
+            { "text": "It is a dissonant interval of a tritone", "why": "The interval between Sa and komal Re is a minor second (1 semitone), not a tritone. The tension comes from closeness, not dissonance." },
+            { "text": "It clashes with Pa", "why": "Pa is absent from Marwa entirely. The tension of komal Re comes from its proximity to Sa." },
+            { "text": "It is played very loudly", "why": "Volume is not the source of tension. The tension is structural - komal Re sits so close to Sa that the pull between them is constant." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ascending-marwa",
+      "title": "Ascending Marwa",
+      "content": [
+        "The aroha (ascending scale) of Marwa often starts from lower Ni: .Ni r G M D N Sa'. Notice something remarkable: even the ascent avoids lingering on Sa. It launches from lower Ni in the mandra saptak and passes through komal Re immediately.",
+        "The wide leap from komal Re (1) to Ga (4) - three semitones - is characteristic of Marwa. This leap bypasses the absent Re-Ga territory and creates a sense of urgency. Then Ga (4) to tivra Ma (6) to Dha (9): each step pulls further from Sa's gravity.",
+        "By starting from lower Ni rather than Sa, the ascent announces Marwa's essential character from the very first note: this raga does not want to be at home."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 1, 4, 6, 9, 11, 12],
+          "prompt": "Play the ascending Marwa scale starting from lower Ni. Feel how the melody launches upward from below Sa rather than starting at home.",
+          "points": 3
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Marwa's ascent traditionally start from lower Ni rather than Sa?",
+          "options": [
+            { "text": "To avoid emphasizing Sa as a starting point", "right": true, "yes": "Correct. Starting from lower Ni reinforces Marwa's core principle: Sa is not the resting point. The raga approaches Sa from below and immediately moves past it." },
+            { "text": "Because lower Ni sounds better", "why": "It is not about sound preference but about the raga's grammar. Marwa avoids Sa as a point of rest or departure." },
+            { "text": "Because Sa is too high to start from", "why": "Sa can be sung or played at any pitch. The choice to start from lower Ni is a deliberate feature of Marwa's structure." },
+            { "text": "To make the scale longer", "why": "Scale length is not the reason. Starting from lower Ni is a musical statement about where Marwa's center of gravity lies - not on Sa." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "descending-marwa",
+      "title": "Descending Marwa",
+      "content": [
+        "The avaroha (descending scale) of Marwa: Sa' N D M G, M G r Sa. The descent is where Marwa's true character shows most clearly.",
+        "Notice the phrase M G r Sa at the end. The resolution to Sa comes reluctantly, through komal Re, almost unwillingly. The melody does not stride confidently home - it tiptoes, hesitates, and arrives at Sa as if by accident.",
+        "Some musicians end phrases on komal Re rather than Sa, leaving the raga perpetually suspended. Others touch Sa so lightly that it barely registers before the melody springs away again. This reluctant relationship with the tonic is what makes Marwa one of the most emotionally intense ragas in the entire system."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 6, 4, 6, 4, 1, 0],
+          "prompt": "Play the descending Marwa scale. Notice how the descent to Sa at the end feels reluctant - through tivra Ma, Ga, back to tivra Ma, then Ga, komal Re, and finally a light touch on Sa.",
+          "points": 3
+        },
+        {
+          "type": "ear",
+          "notes": [0, 1, 4, 6, 9, 11],
+          "rounds": 4,
+          "prompt": "Identify Marwa's notes by ear. Listen for the distinctive komal Re (just above Sa) and the absent Pa.",
+          "points": 2
+        }
+      ]
+    },
+    {
+      "id": "dha-king-note",
+      "title": "Dha - The King Note",
+      "content": [
+        "Dha (semitone 9) is the vadi of Marwa - the king note, the most important swara in the raga. It receives the most weight, the longest durations, and the most elaborate ornamentation.",
+        "Since Sa is avoided as a resting point, Dha serves as a kind of substitute home note. When a Marwa performance needs a moment of stability, the melody settles on Dha rather than Sa. This is highly unusual - in most ragas, Sa is the ultimate point of rest.",
+        "Komal Re (semitone 1) is the samvadi - the queen note. These two notes define Marwa's axis. The interval between Dha and komal Re (from 9 down to 1, or from 1 up to 9 - spanning 8 semitones, a minor sixth) creates Marwa's distinctive emotional color: wide, yearning, and bittersweet."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 9,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Dha steadily - the vadi of Marwa. Feel how it serves as the raga's anchor point, the substitute for Sa as a place of rest.",
+          "points": 3
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Dha function almost as a home note in Marwa?",
+          "options": [
+            { "text": "Because Sa is deliberately avoided, Dha takes over as the point of rest", "right": true, "yes": "Correct. With Sa de-emphasized, Dha (the vadi) becomes Marwa's center of gravity - an unusual arrangement that gives the raga its unique character." },
+            { "text": "Because Dha is always the most important note in every raga", "why": "Different ragas have different vadi notes. In Yaman, Ga is the vadi. In Bhairavi, Ma is the vadi. Dha's prominence is specific to Marwa." },
+            { "text": "Because Dha is the highest note in the scale", "why": "Ni (semitone 11) is higher than Dha (semitone 9) in Marwa's scale. Dha's importance comes from its role as vadi, not its pitch." },
+            { "text": "Because Pa is absent and Dha is the nearest replacement", "why": "While Pa's absence is relevant to Marwa's character, Dha's role as vadi is about being the raga's emotional center, not just a substitute for Pa." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "core-phrases",
+      "title": "Marwa's Core Phrases",
+      "content": [
+        "Every raga has characteristic phrases (pakad) that define its identity. Marwa's essential phrases all share one trait: they either avoid Sa entirely or touch it only in passing.",
+        "The key phrases: (1) .N r G - approaching from lower Ni, through komal Re, landing on Ga. This is the classic entry into Marwa. (2) G M D N - climbing through the upper register with momentum. (3) D N r' Sa' - touching the upper komal Re before arriving at upper Sa. (4) M G r .N Sa - the reluctant descent to home through komal Re and lower Ni.",
+        "When you play these phrases in sequence, you feel Marwa's restless character. The melody is always moving, always seeking, never quite settling. Even when it arrives at Sa, it feels temporary - a brief pause before the next wave of yearning."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 1, 4, 6, 9, 11],
+          "prompt": "Play the ascending phrase from lower Ni through the scale to Ni. Feel the momentum as each note pulls further from Sa's gravity.",
+          "points": 3
+        },
+        {
+          "type": "play",
+          "phrase": [6, 4, 1, -1, 0],
+          "prompt": "Play the reluctant descent: tivra Ma, Ga, komal Re, lower Ni, and finally a light touch on Sa. Let the resolution feel reluctant.",
+          "points": 3
+        }
+      ]
+    },
+    {
+      "id": "marwa-vs-puriya",
+      "title": "Marwa vs Puriya",
+      "content": [
+        "Here is one of the most remarkable facts in Hindustani music: Marwa and Puriya use the EXACT same notes. Sa, komal Re, Ga, tivra Ma, Dha, Ni. Same six notes. No Pa in either raga. Identical pitch material.",
+        "Yet they are completely different ragas with distinct moods and characters. In Marwa, Dha is the vadi and the mood is restless, intense, full of yearning. In Puriya, Ga is the vadi and the mood is more serene, expansive, and contemplative.",
+        "The phrasing differs significantly: Marwa emphasizes the Dha-Ni-komal Re arc (the upper axis), while Puriya emphasizes the Ga-tivra Ma-Dha arc (the middle range). This is a profound lesson in how raga is about far more than a set of notes - it is about emphasis, phrasing, mood, and the relationships between notes. Same ingredients, completely different ragas."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the difference between Marwa's and Puriya's note sets?",
+          "options": [
+            { "text": "There is no difference - they use the exact same notes", "right": true, "yes": "Correct. Marwa and Puriya share identical notes: Sa, komal Re, Ga, tivra Ma, Dha, Ni. The difference lies entirely in emphasis, phrasing, and vadi." },
+            { "text": "Puriya adds Pa while Marwa omits it", "why": "Both ragas omit Pa. Their note sets are completely identical." },
+            { "text": "Marwa uses komal Re while Puriya uses shuddha Re", "why": "Both use komal Re. Every single note is the same in both ragas." },
+            { "text": "Puriya uses shuddha Ma instead of tivra Ma", "why": "Both use tivra Ma. The two ragas share every note - the difference is in treatment, not content." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which note is Marwa's vadi compared to Puriya's vadi?",
+          "options": [
+            { "text": "Marwa: Dha, Puriya: Ga", "right": true, "yes": "Correct. This difference in vadi is what gives each raga its distinct personality despite sharing the same notes." },
+            { "text": "Marwa: Ga, Puriya: Dha", "why": "It is the reverse. Dha is Marwa's vadi (restless, intense) and Ga is Puriya's vadi (serene, expansive)." },
+            { "text": "Both have Dha as vadi", "why": "If they shared the same vadi with the same notes, they would be the same raga. Puriya's vadi is Ga." },
+            { "text": "Marwa: Ni, Puriya: komal Re", "why": "Neither raga has these as vadi. Marwa's vadi is Dha and Puriya's is Ga." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "playing-marwa",
+      "title": "Playing Marwa",
+      "content": [
+        "Now put it all together. Play a phrase that captures Marwa's restless spirit. Begin from lower Ni, climb through the scale, and descend - but resist the urge to resolve firmly on Sa.",
+        "This is the hardest thing about Marwa: your musical instinct says 'go home to Sa' and the raga says 'not yet.' Every other raga you have learned treats Sa as the ultimate point of rest. Marwa asks you to unlearn that instinct and find stability elsewhere - on Dha, on komal Re, anywhere but Sa.",
+        "When you can play Marwa and feel comfortable avoiding Sa, you have crossed an important threshold in your understanding of Hindustani music. You have learned that a raga is not just a scale but a living, breathing personality with its own logic and emotions."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 1, 4, 6, 9, 11, 12, 11, 9, 6, 4, 1, 0],
+          "prompt": "Play a complete Marwa phrase: ascend from lower Ni through the scale to upper Sa, then descend back to Sa. Let the final Sa feel like a reluctant arrival, not a triumphant homecoming.",
+          "points": 4
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand why Marwa avoids Sa - the deliberate avoidance of the tonic creates a perpetual sense of yearning that defines this sunset raga."
+        }
+      ]
+    }
+  ]
+}

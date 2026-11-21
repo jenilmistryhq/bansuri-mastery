@@ -1,0 +1,269 @@
+{
+  "id": "meet-your-flute",
+  "title": "Meet Your Flute",
+  "tasks": [
+    {
+      "id": "welcome",
+      "title": "Welcome",
+      "content": "The bansuri is a simple bamboo flute. No keys, no pads - just holes, breath, and your ears.\n\nBefore you play a note, you need to know your instrument. This room walks you through inspecting the flute, holding it, and finding your home note, Sa.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I have my bansuri ready"
+        }
+      ]
+    },
+    {
+      "id": "parts-of-the-flute",
+      "title": "Parts of the Flute",
+      "content": "A bansuri has:\n- **Blowing hole** (mukha randhra) - the hole nearest the closed end, where your breath enters\n- **Finger holes** - six holes numbered 1 (nearest the blowing hole) to 6\n- **Cork end** - the closed end near the blowing hole, sealed with a cork that tunes the flute\n- **Open end** - the far end, left open\n\nSome flutes have thread bindings to prevent cracking.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which end of the bansuri is sealed with a cork?",
+          "options": [
+            {
+              "text": "The end nearest the blowing hole",
+              "right": true,
+              "yes": "Correct. The cork seals the air column and sets the pitch of Sa."
+            },
+            {
+              "text": "The far end away from the blowing hole",
+              "why": "The far end is open. The cork is near the blowing hole."
+            },
+            {
+              "text": "Both ends are sealed",
+              "why": "Only one end is sealed - the end near the blowing hole."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How many finger holes does a standard bansuri have?",
+          "options": [
+            {
+              "text": "Four",
+              "why": "A standard bansuri has six finger holes."
+            },
+            {
+              "text": "Six",
+              "right": true,
+              "yes": "Right. Six holes, numbered 1 (nearest the mouth) to 6."
+            },
+            {
+              "text": "Eight",
+              "why": "That would be a western flute. A bansuri has six."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inspect-your-flute",
+      "title": "Inspect Your Flute",
+      "content": "Before playing, check for problems:\n\n1. **Cracks** - Look along the full length, especially near the ends and blowing hole. A crack is a thin dark line following the grain.\n2. **Bindings** - If your flute has thread wraps, they should be tight, not loose or unravelling.\n3. **Cork** - The closed end should be firmly plugged. Never push or move the cork - its position tunes the flute.\n4. **Hole edges** - Run a fingertip around each hole. Edges should be smooth with no splinters.\n\nIf you find damage, do not play until you have consulted the maker or a repair guide.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I have inspected my flute and it looks good"
+        },
+        {
+          "type": "choice",
+          "prompt": "You notice the cork has shifted. What should you do?",
+          "options": [
+            {
+              "text": "Push it back into position",
+              "why": "Never move the cork yourself. Its position is set by the maker to tune the flute correctly."
+            },
+            {
+              "text": "Leave it and ask the maker",
+              "right": true,
+              "yes": "Correct. The cork position is precise - only the maker should adjust it."
+            },
+            {
+              "text": "Remove it and play without it",
+              "why": "The cork seals the air column. Without it, the flute will not sound right."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "choose-your-side",
+      "title": "Choose Your Comfortable Side",
+      "content": "Players hold the bansuri pointing either right or left - both are correct. The choice depends on which feels natural.\n\nTry holding the flute both ways for a few breaths:\n- **Right side**: Left hand on top (holes 1-3), right hand on bottom (holes 4-6)\n- **Left side**: Right hand on top, left hand on bottom\n\nMost players point right, but there is no wrong choice. Pick what feels comfortable today.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which side feels more natural to you?",
+          "options": [
+            {
+              "text": "Right side (flute points right)",
+              "right": true,
+              "yes": "Most players choose this. Good."
+            },
+            {
+              "text": "Left side (flute points left)",
+              "right": true,
+              "yes": "Less common but equally valid. Many great players use this side."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "three-support-points",
+      "title": "Three Support Points",
+      "content": "The flute rests on three points:\n1. Your **lower lip** - the blowing hole sits just below it\n2. Your **left thumb** (or right, depending on your side)\n3. Your **right thumb**\n\nWith these three points the flute stays steady even with all fingers lifted. The fingers only need to cover the holes - they should never grip or squeeze.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I can balance the flute on three points with all fingers lifted"
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the role of the fingers on a bansuri?",
+          "options": [
+            {
+              "text": "To grip and hold the flute steady",
+              "why": "The thumbs and lip hold the flute. Fingers only cover holes."
+            },
+            {
+              "text": "To cover and uncover the holes",
+              "right": true,
+              "yes": "Exactly. The lightest seal that covers the hole is all you need."
+            },
+            {
+              "text": "To press the holes as hard as possible",
+              "why": "Hard pressing causes tension and fatigue. Use the lightest touch that seals the hole."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "find-your-sa",
+      "title": "Find Your Sa",
+      "content": "Sa is the home note - the foundation of all Indian music. On the bansuri, Sa sounds when you close the top three holes (1, 2, 3) and blow gently across the blowing hole.\n\nEvery flute has its own Sa pitch. A small flute's Sa is higher; a long flute's Sa is lower. Your Sa does not need to match any standard pitch - it is whatever your flute gives you.\n\nClose holes 1, 2, 3. Blow gently across (not into) the blowing hole. Listen to the note that comes out. That is your Sa.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 4,
+          "cents": 40,
+          "prompt": "Play Sa (close holes 1-2-3) and hold it for 4 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "the-drone",
+      "title": "Listen with a Drone",
+      "content": "A tanpura drone holds Sa underneath everything you play. It gives your ear a constant reference point.\n\nIn this app, the drone plays your flute's Sa. When you hear it, play Sa on your flute and listen to how the two notes blend. When your Sa matches the drone, the sound becomes rich and calm. When it drifts, you hear beats or roughness.\n\nPractice with the drone running whenever you can. It trains your ear without you even trying.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When your Sa matches the drone perfectly, what do you hear?",
+          "options": [
+            {
+              "text": "Beats or roughness in the sound",
+              "why": "Beats and roughness mean your pitch is drifting from the drone. When matched, the sound is smooth."
+            },
+            {
+              "text": "A rich, calm blend with no beating",
+              "right": true,
+              "yes": "Exactly. When two notes match, they blend into one smooth, rich sound."
+            },
+            {
+              "text": "Complete silence",
+              "why": "Two matched notes reinforce each other - they get richer, not quieter."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "safe-practice",
+      "title": "Safe Practice",
+      "content": "Bansuri is a physical activity. Like any instrument, overdoing it causes strain.\n\n**Rules for safe practice:**\n- Rest every 2-3 minutes of playing, especially in the first weeks\n- Stop if you feel dizzy (too much air) or if your lips, jaw or fingers hurt\n- Start with 10-15 minutes per day and build up gradually\n- Keep your shoulders relaxed and jaw unclenched at all times",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "You have been playing for 3 minutes and your lips feel tired. What should you do?",
+          "options": [
+            {
+              "text": "Push through - more practice is always better",
+              "why": "Pushing through fatigue builds bad habits and can cause strain."
+            },
+            {
+              "text": "Rest for a minute, then continue",
+              "right": true,
+              "yes": "Correct. Short, frequent rests prevent strain and keep your embouchure fresh."
+            },
+            {
+              "text": "Stop for the day",
+              "why": "A short rest is usually enough. Stopping entirely is not necessary unless you feel pain."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How long should a beginner practice each day?",
+          "options": [
+            {
+              "text": "As long as possible",
+              "why": "More is not better when you are building a new physical skill. Quality over quantity."
+            },
+            {
+              "text": "10-15 minutes, building up gradually",
+              "right": true,
+              "yes": "Right. Short, focused sessions with rest prevent strain."
+            },
+            {
+              "text": "At least one hour",
+              "why": "One hour is too much for a beginner. Start with 10-15 minutes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-plan",
+      "title": "Make a Practice Plan",
+      "content": "The best practice plan is one you actually follow. Choose a time and place that work for you most days.\n\nA good beginner session:\n1. Warm up: shoulder rolls, finger stretches, low breathing (2 min)\n2. Long tones on Sa (3-5 min)\n3. New material from today's room (5-8 min)\n4. Cool down: soft Sa with the drone (1-2 min)\n\nConsistency matters more than length. Ten minutes every day beats an hour once a week.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which practice habit produces the best results for a beginner?",
+          "options": [
+            {
+              "text": "One long session on the weekend",
+              "why": "An hour once a week is less effective than short daily sessions. Consistency beats length."
+            },
+            {
+              "text": "Ten minutes every day",
+              "right": true,
+              "yes": "Right. Daily consistency builds muscle memory and ear training far faster than occasional long sessions."
+            },
+            {
+              "text": "Practice only when inspired",
+              "why": "Inspiration helps, but daily habit is what builds real skill. Even uninspired sessions count."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "setup-complete",
+      "title": "Setup Complete",
+      "content": "You have:\n- Inspected your flute\n- Found your comfortable side\n- Learned the three support points\n- Found your Sa and heard the drone\n- Made a practice plan\n\nYou are ready to start making music. The next room teaches you posture, breathing, and your first real sound.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "Let's go!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

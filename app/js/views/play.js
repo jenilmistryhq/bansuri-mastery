@@ -227,17 +227,27 @@ export async function render(main, { params, view }) {
   // music; "No microphone" keeps the games played by ear or by tapping.
   const FILTER = "bansuri.games.filter";
   let noMic = store(FILTER, "all") === "nomic";
-  const card = (k, title, text, onClick) => h("button", { type: "button", class: "gamecard", dataset: { game: k }, onclick: onClick }, h("b", null, title), h("span", { class: "small muted" }, text));
-  const GROUPS = SKILLS.map(s => [s.title, s.games]).concat([["Music", MUSIC_GAMES], ["Make and practise", ["compose", "quick"]]]);
+  const card = (k, title, text, onClick) => {
+    const best = gameBest(k);
+    return h("button", { type: "button", class: "gamecard", dataset: { game: k }, onclick: onClick },
+      h("div", { class: "gamecard-top" },
+        h("b", null, title),
+        NO_MIC.includes(k) ? h("span", { class: "gamecard-nomic" }, "No mic") : null),
+      h("span", { class: "small muted" }, text),
+      best !== null ? h("span", { class: "gamecard-best small" }, "Best: " + best) : null);
+  };
+  const GROUPS = SKILLS.map(s => [s.title, s.games, s.id]).concat([["Music", MUSIC_GAMES, "music"], ["Make and practise", ["compose", "quick"], "make"]]);
   const list = h("div", { class: "gamelist" });
   const chip = (label, on) => h("button", { type: "button", class: "chipbtn", "aria-pressed": String(on) }, label);
   const allBtn = chip("All", !noMic), micBtn = chip("No microphone", noMic);
   const draw = () => {
     allBtn.setAttribute("aria-pressed", String(!noMic)); micBtn.setAttribute("aria-pressed", String(noMic));
     list.replaceChildren();
-    for (const [head, keys] of GROUPS) {
+    for (const [head, keys, gid] of GROUPS) {
       const shown = keys.filter(k => !noMic || NO_MIC.includes(k));
-      if (shown.length) list.append(h("h2", { class: "grouphead" }, head), h("section", { class: "games" }, shown.map(k => card(k, GAMES[k][0], GAMES[k][1], NAV_ONLY.has(k) ? GAMES[k][2] : () => go(k)))));
+      if (shown.length) list.append(h("div", { class: "gamegroup", dataset: { skill: gid } },
+        h("h2", { class: "grouphead" }, head),
+        h("section", { class: "games" }, shown.map(k => card(k, GAMES[k][0], GAMES[k][1], NAV_ONLY.has(k) ? GAMES[k][2] : () => go(k))))));
     }
   };
   const setFilter = v => { noMic = v; storeSet(FILTER, v ? "nomic" : "all"); draw(); };

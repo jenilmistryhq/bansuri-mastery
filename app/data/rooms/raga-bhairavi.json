@@ -1,0 +1,312 @@
+{
+  "id": "raga-bhairavi",
+  "title": "Raga Bhairavi - The Morning Raga",
+  "description": "Learn Bhairavi, the raga with all four komal notes - a test of half-holing mastery and a concert staple.",
+  "difficulty": "hard",
+  "skills": [
+    "raga",
+    "technique",
+    "theory"
+  ],
+  "minutes": 45,
+  "order": 15,
+  "prerequisites": [
+    "raga-kafi"
+  ],
+  "tasks": [
+    {
+      "id": "t1-intro",
+      "title": "The Raga of Compassion",
+      "content": [
+        "Bhairavi is one of the most emotionally powerful ragas in Hindustani music. Its scale uses all four komal (flat) notes - komal Re, komal Ga, komal Dha, and komal Ni - giving it a deeply tender, devotional quality.",
+        "The word Bhairavi means 'the awe-inspiring one' and is an epithet of the goddess Parvati. The raga's mood ranges from quiet morning devotion to the bittersweet intensity of a concert's final piece.",
+        "Bhairavi is prescribed as a morning raga, but it holds a unique privilege: it is the conventional concert closer. No audience objects to Bhairavi at any hour, because its emotional depth provides a satisfying conclusion to any musical journey."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many komal (flat) notes does Bhairavi use?",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10,
+          "yes": "Right - komal Re, Ga, Dha, and Ni.",
+          "no": "Four: komal Re, komal Ga, komal Dha, and komal Ni."
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is Bhairavi allowed as a concert closer even though it is a morning raga?",
+          "options": [
+            {
+              "text": "Its emotional depth makes it a satisfying conclusion at any hour",
+              "right": true,
+              "yes": "Exactly. Bhairavi's universal emotional appeal overrides the time-of-day convention."
+            },
+            {
+              "text": "Concerts always end in the morning",
+              "why": "Many concerts end in the evening. Bhairavi is a special exception to the time rules."
+            },
+            {
+              "text": "It is too simple to perform earlier",
+              "why": "Bhairavi is one of the most complex and demanding ragas. Its closing position is a mark of honour."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-scale",
+      "title": "The Bhairavi Scale",
+      "content": [
+        "Aroha (ascending): Sa r g m P d n Sa'",
+        "Avaroha (descending): Sa' n d P m g r Sa",
+        "In semitones: Sa(0), r(1), g(3), m(5), P(7), d(8), n(10), Sa'(12). Four of these notes require half-holing on the bansuri - r, g, d, and n. This makes Bhairavi the ultimate test of your half-hole technique.",
+        "The vadi (most important note) is Ma, and the samvadi (second most important) is Sa. Phrases tend to dwell in the lower half of the scale, from Sa to Pa, with the upper register used sparingly and gently."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which notes in Bhairavi do NOT require half-holing on the bansuri?",
+          "options": [
+            {
+              "text": "Sa, Ma, and Pa",
+              "right": true,
+              "yes": "Correct. Sa, Ma, and Pa are the only notes that use full finger positions. Everything else is a half-hole."
+            },
+            {
+              "text": "Sa, Ga, and Pa",
+              "why": "Komal Ga requires a half-hole. Only Sa, Ma, and Pa use full positions."
+            },
+            {
+              "text": "Re, Ma, and Pa",
+              "why": "Komal Re requires a half-hole. Only Sa, Ma, and Pa use full positions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-hold-komal",
+      "title": "Holding the Komal Notes",
+      "content": [
+        "Bhairavi's four komal notes demand precise half-holing. Each one must sound clean and in tune, not sharp or buzzy.",
+        "Start with komal Re (semitone 1). This is a delicate note - just a semitone above Sa. Your half-hole must be very precise. Then move to komal Ga (semitone 3), which sits a semitone below shuddha Ga.",
+        "Hold each note for 5 seconds. The pitch detector will tell you if you are in tune. Aim to stay within 25 cents of the target - komal notes are unforgiving."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 1,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold komal Re (r) steady for 5 seconds",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 3,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold komal Ga (g) steady for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t4-hold-upper",
+      "title": "Upper Komal Notes",
+      "content": [
+        "Now the upper komal notes. Komal Dha (semitone 8) sits a semitone above Pa, and komal Ni (semitone 10) sits a semitone above shuddha Dha.",
+        "These notes are especially important in Bhairavi because the avaroha (descent) passes through both: Sa' n d P. The transition from komal Ni down through komal Dha to Pa is one of the raga's most characteristic movements.",
+        "Hold each for 5 seconds within 25 cents. If you find one harder than the other, spend extra time on it after this room."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 8,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold komal Dha (d) steady for 5 seconds",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 10,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold komal Ni (n) steady for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t5-phrases",
+      "title": "Bhairavi's Signature Phrases",
+      "content": [
+        "Every raga has a pakad - a catch phrase that identifies it. Bhairavi's pakad revolves around the lower register:",
+        "m g r Sa - the classic Bhairavi descent, dwelling on Ma before sliding down through the komal notes to rest on Sa.",
+        "r g m P - the ascending climb from komal Re through komal Ga to Ma and Pa. This phrase opens many Bhairavi compositions.",
+        "d P m g - another descent, this time starting from komal Dha. The movement from d to P to m shows Bhairavi's gravitational pull downward.",
+        "Play each phrase slowly, letting each note ring before moving to the next."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [5, 3, 1, 0],
+          "prompt": "Play m g r Sa - the classic Bhairavi descent",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [1, 3, 5, 7],
+          "prompt": "Play r g m P - the ascending pakad phrase",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t6-ear",
+      "title": "Bhairavi Ear Training",
+      "content": [
+        "Recognizing Bhairavi's notes by ear is essential. The komal notes sit very close to their neighbours, so your ear must learn their precise colour.",
+        "Komal Re (1) is only a semitone above Sa (0) - a very narrow interval. Komal Ga (3) is a minor third above Sa. Komal Dha (8) is a semitone above Pa (7). Komal Ni (10) is a minor seventh.",
+        "Listen to each note and identify it. The more you train, the faster you will recognize Bhairavi's notes in a performance."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 1, 3, 5, 7, 8, 10],
+          "rounds": 6,
+          "prompt": "Identify each Bhairavi note by ear",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "t7-descent",
+      "title": "The Full Descent",
+      "content": [
+        "The avaroha of Bhairavi is one of the most beautiful descending phrases in all of Indian music. Starting from upper Sa, it passes through every komal note on the way down: Sa' n d P m g r Sa.",
+        "This seven-note descent tests your half-holing across the full range. Each transition must be smooth - no gaps, no squeaks, no rushing. Let the notes flow like water downhill.",
+        "Play it slowly at first. Speed is not the goal - clean intonation on every komal note is."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [10, 8, 7, 5, 3, 1, 0],
+          "prompt": "Play the Bhairavi descent: n d P m g r Sa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "t8-mishra",
+      "title": "Mishra Bhairavi",
+      "content": [
+        "In performance, Bhairavi is almost always played as Mishra (mixed) Bhairavi. This means the performer borrows shuddha (natural) versions of the komal notes alongside the komal forms.",
+        "For example, a phrase might use shuddha Re in ascent but komal Re in descent. Or shuddha Dha might appear as a quick grace note before komal Dha. This mixing gives Mishra Bhairavi extraordinary versatility.",
+        "Nearly any note can appear in Mishra Bhairavi, making it one of the most flexible ragas in the repertoire. This is why it works as a concert closer - the performer can draw on almost the entire chromatic palette.",
+        "Many devotional songs (bhajans) and film songs are set in Bhairavi or Mishra Bhairavi, making it one of the most widely heard ragas outside the concert hall."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does 'Mishra' mean in the context of Mishra Bhairavi?",
+          "options": [
+            {
+              "text": "Mixed - shuddha notes are borrowed alongside the komal notes",
+              "right": true,
+              "yes": "Correct. Mishra Bhairavi can use nearly any note from the chromatic scale, giving it extraordinary range."
+            },
+            {
+              "text": "Fast - the raga is played at high speed",
+              "why": "Mishra means mixed, referring to the borrowing of notes from outside the strict scale."
+            },
+            {
+              "text": "Ancient - it is the oldest form of the raga",
+              "why": "Mishra means mixed. It refers to blending shuddha and komal forms of the same notes."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which Western mode does the Bhairavi thaat correspond to?",
+          "options": [
+            {
+              "text": "Dorian",
+              "why": "Dorian corresponds to Kafi thaat. Bhairavi matches Phrygian."
+            },
+            {
+              "text": "Phrygian",
+              "right": true,
+              "yes": "Right. Bhairavi thaat maps to the Phrygian mode - the white keys from E to E on a piano."
+            },
+            {
+              "text": "Lydian",
+              "why": "Lydian corresponds to Kalyan thaat (with tivra Ma). Bhairavi matches Phrygian."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t9-composition",
+      "title": "A Bhairavi Composition",
+      "content": [
+        "Here is a simple Bhairavi bandish to practise:",
+        "Sthayi: | m g r Sa | r g m P | d P m g | r Sa - - |",
+        "Antara: | m P d n | Sa' n d P | m g r Sa | - - - - |",
+        "Notice how the sthayi stays in the lower register (Sa to P) while the antara reaches up to Sa' before descending back home. This is the classic Bhairavi arc - intimate and grounded below, with brief, poignant visits to the upper octave.",
+        "Play the sthayi phrase now. Take it slowly and focus on clean intonation at every komal note."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [5, 3, 1, 0, 1, 3, 5, 7],
+          "prompt": "Play the sthayi: m g r Sa, r g m P",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I have practised both the sthayi and antara slowly"
+        }
+      ]
+    },
+    {
+      "id": "t10-quiz",
+      "title": "Bhairavi Mastery Check",
+      "content": [
+        "Final check on your understanding and feel for Bhairavi. This raga will be your companion for years - every return to it reveals new depth."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the vadi (most important note) of Bhairavi?",
+          "options": [
+            {
+              "text": "komal Re",
+              "why": "Komal Re is important but not the vadi. The vadi is Ma."
+            },
+            {
+              "text": "Ma",
+              "right": true,
+              "yes": "Correct. Ma is the vadi and Sa is the samvadi."
+            },
+            {
+              "text": "Pa",
+              "why": "Pa is a resting point but not the vadi. The vadi is Ma."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many half-holes does the full Bhairavi scale require on the bansuri?",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10,
+          "yes": "Right - r, g, d, and n all need half-holes.",
+          "no": "Four: komal Re, komal Ga, komal Dha, and komal Ni."
+        }
+      ]
+    }
+  ]
+}

@@ -27,9 +27,9 @@ and with dhun (light raga-based tunes), and very common in film and folk music.
 - It is handled freely. Occasional `m` and `n` appear in light music. Learn the core S R G P D
   movement first, then add colour notes only after hearing how good players use them.
 
-## On your C flute
+## Pitch reference: C5 medium
 
-Excellent on bansuri because the mandra notes `.P .D` are rich on a C flute. Needs firm sealing
+The mandra notes `.P .D` can sound rich on bansuri; check that they speak comfortably on your flute. Needs firm sealing
 for `.P` (`XXX XXX`). Colour notes: `m` (`HOO OOO`), `n` (`XXX XHO`, register 2).
 
 ## Similar ragas
@@ -90,7 +90,7 @@ It was transcribed from the public-domain book (Bhatkhande died in 1936) into th
 S R G G | G G G R | G R S R | G R S .D ||
 ```
 
-Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

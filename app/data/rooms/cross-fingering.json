@@ -1,0 +1,218 @@
+{
+  "id": "cross-fingering",
+  "title": "Cross-Fingering and Alternate Fingerings",
+  "tasks": [
+    {
+      "id": "t1-beyond-standard",
+      "title": "Beyond Standard Fingering",
+      "content": [
+        "The standard 6-hole bansuri fingering system covers all 12 notes through combinations of open, closed, and half-open holes. But there are alternate ways to finger many of these notes. Cross-fingering (also called fork fingering) means closing a hole below an open one, creating a different acoustic path to the same pitch.",
+        "These alternate fingerings offer different timbres, easier transitions in fast passages, and sometimes better intonation for specific notes on specific flutes. Learning them expands your palette beyond the standard fingering chart."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is cross-fingering?",
+          "options": [
+            { "text": "Closing a hole below an open one to create an alternate acoustic path", "right": true, "yes": "Correct - the 'cross' or 'fork' pattern breaks the usual bottom-to-top hole opening order." },
+            { "text": "Using your fingers from the opposite hand", "why": "Cross-fingering refers to the hole pattern, not which hand you use." },
+            { "text": "Playing with your fingers crossed over each other", "why": "The 'cross' refers to the fingering pattern on the holes, not the physical position of your fingers." },
+            { "text": "A technique only used on Western flutes", "why": "Cross-fingering is used on many flute types worldwide, including the bansuri." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why would you use an alternate fingering for a note you can already play?",
+          "options": [
+            { "text": "Different timbre, easier transitions, or better intonation on your specific flute", "right": true, "yes": "Yes - alternate fingerings offer practical and timbral advantages depending on the musical context." },
+            { "text": "Alternate fingerings are always louder", "why": "Volume is not the main advantage. Alternate fingerings offer different colors and easier transitions." },
+            { "text": "Standard fingerings are incorrect", "why": "Standard fingerings are perfectly correct. Alternates are additional options, not replacements." },
+            { "text": "To impress the audience with unusual hand positions", "why": "The audience hears the result, not the fingering. Alternates serve musical purposes." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-how-it-works",
+      "title": "How Cross-Fingering Works",
+      "content": [
+        "In standard fingering, you open holes from the bottom up: more holes open means higher pitch. Cross-fingering breaks this pattern. A closed hole below an open one changes the air column's behavior, creating a different set of standing waves inside the bamboo tube.",
+        "The resulting note may have a slightly different color (timbre) compared to the standard fingering for the same pitch. This timbral difference is not a flaw - it is a musical resource. Some cross-fingered notes have a warmer, more muted quality. Others have a brighter edge. Skilled players choose between standard and alternate fingerings based on what color they want in that moment."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does closing a hole below an open one affect the sound?",
+          "options": [
+            { "text": "It changes the air column's behavior, producing the note with a different timbre", "right": true, "yes": "Correct - the altered acoustic path creates a different set of standing waves, changing the note's color." },
+            { "text": "It has no effect on the sound at all", "why": "Every hole's state affects the air column. Closing a lower hole definitely changes the sound." },
+            { "text": "It always makes the note completely out of tune", "why": "Cross-fingering produces usable notes - sometimes with slightly different pitch that can be adjusted with embouchure." },
+            { "text": "It doubles the volume of the note", "why": "Volume is not significantly affected. The main change is in timbre and sometimes pitch." }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand that timbral differences between fingerings can be musically useful, not just technical curiosities."
+        }
+      ]
+    },
+    {
+      "id": "t3-komal-alternates",
+      "title": "Alternate Fingerings for Komal Notes",
+      "content": [
+        "komal Re, komal Ga, komal Dha, and komal Ni each have multiple possible fingerings on most bansuris. The standard approach uses half-holing - partially covering a hole to lower its pitch by one semitone. An alternate approach uses cross-fingering - a different combination of open and closed holes.",
+        "For example, komal Dha can be played by half-covering hole 1 (the standard method) OR by leaving hole 1 open while closing holes 2 and 3 beneath it. Each approach produces the same pitch (or close to it) but with a slightly different tonal color. The standard half-hole tends to be brighter, while the cross-fingered version is often warmer and more muted."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the standard technique for producing komal notes on the bansuri?",
+          "options": [
+            { "text": "Half-holing - partially covering a hole", "right": true, "yes": "Correct - half-holing is the standard technique taught for all komal (flat) notes." },
+            { "text": "Blowing harder to raise the pitch", "why": "Blowing harder raises pitch (sharpens). Komal notes are LOWER, not higher." },
+            { "text": "Using a different bansuri for each komal note", "why": "All komal notes can be played on a single bansuri using half-holing or cross-fingering." },
+            { "text": "Pressing the holes harder", "why": "Pressing harder does not change pitch. Partial coverage (half-holing) is the technique." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the alternate technique for komal notes that uses a different hole pattern instead of half-holing?",
+          "answer": "cross-fingering",
+          "accept": ["cross fingering", "fork fingering", "cross-fingering", "fork-fingering", "crossfingering"],
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "t4-seven-hole",
+      "title": "The 7-Hole Bansuri",
+      "content": [
+        "Pannalal Ghosh, the pioneer who made the bansuri a classical concert instrument in the mid-20th century, added a 7th finger hole to the traditional 6-hole design. This extra hole was specifically for komal Ni - eliminating the difficult cross-fingering or half-holing otherwise needed for that note.",
+        "Some modern flutes have 7 or even 8 holes. The trade-off is real: more holes means more finger coordination and a wider finger stretch. But it also means more direct access to notes that otherwise require indirect techniques. Whether to use a 6-hole or 7-hole bansuri is a personal choice that depends on your hand size, playing style, and the music you want to play."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Who added the 7th hole to the bansuri?",
+          "answer": "Pannalal Ghosh",
+          "accept": ["pannalal ghosh", "pannalal", "Pannalal", "pannal lal ghosh"],
+          "points": 5
+        },
+        {
+          "type": "choice",
+          "prompt": "What note does the 7th hole on a bansuri provide direct access to?",
+          "options": [
+            { "text": "komal Ni", "right": true, "yes": "Correct - the 7th hole was added specifically to give direct, clean access to komal Ni." },
+            { "text": "tivra Ma", "why": "tivra Ma is typically produced through half-holing on a standard 6-hole bansuri." },
+            { "text": "Upper Sa", "why": "Upper Sa is produced by overblowing, not by an extra hole." },
+            { "text": "komal Re", "why": "komal Re uses the bottom hole. The 7th hole was added for komal Ni." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t5-every-flute-different",
+      "title": "Every Flute Is Different",
+      "content": [
+        "Because each bamboo bansuri is hand-crafted, no two flutes are exactly alike. The bore diameter, hole placement, hole size, and wall thickness all vary slightly from one flute to the next. This means the cross-fingering that produces a perfect komal Dha on one flute might be slightly sharp or flat on another.",
+        "You must discover which alternate fingerings work on YOUR specific instrument. This is not a limitation - it is part of the intimate relationship between a player and their flute. Spend time experimenting: try different cross-fingering combinations, check each with a tuner, and note which ones give you clean, in-tune notes. Your fingering chart is personal to your instrument."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why do cross-fingerings vary between different bansuris?",
+          "options": [
+            { "text": "Each bamboo flute is hand-crafted with slightly different bore, hole size, and placement", "right": true, "yes": "Exactly - the hand-crafted nature means every flute's acoustics are slightly unique." },
+            { "text": "Different brands use different tuning systems", "why": "The variation comes from the hand-crafted nature of bamboo, not from different tuning standards." },
+            { "text": "Cross-fingerings only work on expensive flutes", "why": "Cross-fingering works on all bansuris, but the specific combinations that produce good results vary." },
+            { "text": "They do not vary - all bansuris use the same cross-fingerings", "why": "Hand-crafted bamboo instruments are never identical. What works on one flute may need adjustment on another." }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will experiment with alternate fingerings on my own bansuri and document which ones produce clean, in-tune notes."
+        }
+      ]
+    },
+    {
+      "id": "t6-venting",
+      "title": "Venting for Intonation",
+      "content": [
+        "Venting means partially opening a hole below the sounding hole to adjust its pitch slightly. This is a subtle but powerful technique for fine-tuning intonation in real time. If a note is slightly flat, venting (partially opening) a lower hole raises it by allowing more air to escape. If slightly sharp, covering a lower hole more fully lowers it by lengthening the effective air column.",
+        "Advanced players use venting constantly, making micro-adjustments to intonation that the audience hears as 'perfectly in tune' playing. These adjustments are invisible to the eye but audible to the trained ear. Venting is one of the techniques that separates good players from great ones."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does venting a lower hole do to a note's pitch?",
+          "options": [
+            { "text": "Partially opening a lower hole raises the pitch slightly", "right": true, "yes": "Correct - venting allows more air to escape, shortening the effective air column and raising the pitch." },
+            { "text": "It always lowers the pitch", "why": "Opening a hole raises pitch. CLOSING a hole more fully would lower pitch." },
+            { "text": "It has no effect on pitch, only volume", "why": "Venting definitely affects pitch. That is its primary purpose - fine-tuning intonation." },
+            { "text": "It changes the note to a completely different swara", "why": "Venting makes subtle adjustments, not large pitch changes. It fine-tunes, not transforms." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When would you vent a lower hole?",
+          "options": [
+            { "text": "When a note is slightly flat and needs to be raised in pitch", "right": true, "yes": "Yes - venting raises pitch slightly, correcting flatness in real time." },
+            { "text": "Only during the alap section", "why": "Venting is used throughout a performance, whenever micro-intonation adjustment is needed." },
+            { "text": "Only when playing in the upper register", "why": "Venting can be useful in any register where intonation needs fine-tuning." },
+            { "text": "Never - venting damages the bamboo", "why": "Venting is a standard playing technique. It does not damage the instrument." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-extended-techniques",
+      "title": "Extended Techniques",
+      "content": [
+        "Beyond standard and cross-fingering, the bansuri supports several extended techniques that expand its sonic palette. Harmonics are produced by overblowing - increasing air pressure to excite a higher mode of vibration, producing a note an octave or more above the fingered pitch. These harmonics have a pure, clear quality different from the standard tone.",
+        "Whistle tones are very soft, ethereal sounds at the edge of pitch, created with minimal air and a relaxed embouchure. They sound ghostly and delicate. Breathy tones mix the sound of air with the note itself, creating an intimate, airy effect. These extended techniques are used sparingly for special moments of expression - they lose their impact if overused."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How are harmonics produced on the bansuri?",
+          "options": [
+            { "text": "By overblowing - increasing air pressure to excite a higher vibration mode", "right": true, "yes": "Correct - overblowing causes the air column to vibrate in a higher mode, producing harmonic overtones." },
+            { "text": "By pressing the holes harder", "why": "Pressing harder does not produce harmonics. Overblowing (increased air pressure) does." },
+            { "text": "By using a special mouthpiece", "why": "The bansuri has no mouthpiece. Harmonics come from the player's air pressure and embouchure." },
+            { "text": "By tilting the bansuri at an angle", "why": "While air angle matters for tone, harmonics are primarily produced by overblowing." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What quality do whistle tones have?",
+          "options": [
+            { "text": "Very soft, ethereal, and ghostly - at the edge of pitch", "right": true, "yes": "Yes - whistle tones are delicate, otherworldly sounds created with minimal air." },
+            { "text": "Extremely loud and piercing", "why": "Whistle tones are the opposite - very soft and barely audible, created with minimal air." },
+            { "text": "Harsh and buzzy", "why": "Whistle tones are ethereal and pure. Harsh sounds come from too much pressure, not too little." },
+            { "text": "Identical to normal playing but faster", "why": "Whistle tones have a completely different character - ghostly and minimal, not faster normal notes." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-practical",
+      "title": "Practical Cross-Fingering",
+      "content": [
+        "The best way to learn cross-fingering is methodical experimentation. For each komal note: (1) Play it with standard half-holing and check the pitch with a tuner. (2) Try alternative finger combinations while singing the target pitch in your head. (3) Check the alternate fingering with a tuner. (4) Compare the timbre of standard vs. alternate - notice the color difference. (5) Practice transitions into and out of each fingering in musical phrases.",
+        "Over time, you will build a personal 'fingering chart' for your specific bansuri - a map of which fingerings produce the best results for each note in different musical contexts. This chart belongs to you and your instrument alone."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 2, 3, 4, 5, 7],
+          "prompt": "Play the chromatic notes from Sa through Pa: Sa, komal Re, Re, komal Ga, Ga, Ma, Pa. Notice which notes require half-holing on your bansuri.",
+          "points": 10
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will create a personal fingering chart for my bansuri by systematically testing alternate fingerings for each note."
+        }
+      ]
+    }
+  ]
+}

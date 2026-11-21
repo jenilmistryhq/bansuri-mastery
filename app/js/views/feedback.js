@@ -41,14 +41,14 @@ export async function render(main, { params }) {
   main.append(page);
   let f = null;
   try { const o = await decodeLink(params[0]); if (o && o.kind === "feedback") f = cleanFeedback(o); } catch (e) { f = null; }
-  if (!f) { page.append(errorState("This review link could not be read", "It may be cut short. Ask your teacher to send it again.", "#/me/teacher")); return; }
+  if (!f) { page.append(errorState("This review link could not be read", "It may be cut short. Ask your teacher to send it again.", "#/teacher")); return; }
   // A link can come from anyone, so nothing is saved until the learner says so, and the page says
   // whether this answers a review they asked for and whether it would replace one already kept.
   const same = x => ["id", "date", "teacher", "what", "comment", "task", "due"].every(k => (x[k] || null) === (f[k] || null)) && JSON.stringify(x.scores) === JSON.stringify(f.scores);
   const kept = feedback().find(x => f.id && x.id === f.id);
   const asked = requests().find(r => f.id && r.id === f.id);
   const done = () => [h("p", { class: "muted" }, "Saved in the app. The practice task is on Today until you mark it done."),
-    h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/today" }, icon("today"), " To Today"), h("a", { class: "btn", href: "#/me/teacher/feedback" }, "All reviews"))];
+    h("div", { class: "row" }, h("a", { class: "btn primary", href: "#/today" }, icon("today"), " To Today"), h("a", { class: "btn", href: "#/teacher/feedback" }, "All reviews"))];
   const status = h("div", { class: "stack rvaccept" });
   if (kept && same(kept)) status.append(...done());
   else {

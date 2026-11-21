@@ -1,0 +1,307 @@
+{
+  "id": "breath-mastery",
+  "title": "Breath Mastery",
+  "tasks": [
+    {
+      "id": "breath-is-everything",
+      "title": "Breath Is Everything",
+      "content": [
+        "The bansuri is unique among instruments. There is no reed to vibrate, no mouthpiece to buzz into, no mechanism between you and the sound. Your breath hits the far edge of the blowing hole, splits, and becomes music. That is all there is.",
+        "This directness means breath control IS tone control. Every aspect of your sound - pitch, volume, timbre, stability - depends entirely on how you manage your air. A pianist can press a key with poor posture and still produce the correct pitch. A bansuri player with poor breath produces nothing usable.",
+        "On a reed instrument like the shehnai or clarinet, the reed does much of the work of converting air into vibration. The player's breath activates the reed, but the reed has its own resonant frequency. On the bansuri, YOU are the reed. Your lips shape the air, your breath speed sets the pitch, and your diaphragm controls the volume. There is no intermediary.",
+        "This is why breath mastery is not just one skill among many for a bansuri player. It is THE fundamental skill on which every other skill depends."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is breath control more critical for bansuri than for reed instruments?",
+          "options": [
+            {
+              "text": "The bansuri is louder and needs more air",
+              "why": "Actually, the bansuri is relatively quiet. The issue is not volume but the absence of a reed - your breath IS the sound source."
+            },
+            {
+              "text": "There is no reed or mechanism - your breath directly becomes the sound",
+              "right": true,
+              "yes": "Exactly. With no reed to assist, your breath is the sole source of vibration. You are the reed."
+            },
+            {
+              "text": "Bansuri notes are higher pitched",
+              "why": "Pitch range is not the reason. The critical difference is the absence of any mechanism between breath and sound."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diaphragmatic-breathing",
+      "title": "Diaphragmatic Breathing",
+      "content": [
+        "The diaphragm is a dome-shaped muscle sitting below your lungs, separating the chest cavity from the abdomen. When it contracts, it pulls downward, creating a vacuum that draws air into your lungs from the bottom up. Your belly expands outward as the diaphragm descends.",
+        "This is called diaphragmatic breathing (or belly breathing), and it is the correct way to breathe for bansuri. It fills the lungs completely, gives you maximum air capacity, and keeps your upper body relaxed.",
+        "The opposite - chest breathing - fills only the top portion of the lungs. Your shoulders rise, your neck tenses, and you get perhaps half the air capacity. Chest breathing is a survival reflex (gasping for air when startled), not a musical technique.",
+        "Test yourself right now: place one hand on your belly and one on your chest. Take a slow, deep breath. If your belly hand moves outward first and your chest hand stays mostly still, you are breathing correctly. If your chest rises and your shoulders lift, you need to retrain your breath.",
+        "To practice: lie on your back with a book on your belly. Breathe so the book rises on the inhale and falls on the exhale. Your chest should barely move. Do this for 5 minutes daily until it becomes automatic."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "During correct diaphragmatic breathing, which direction does the belly move on inhale?",
+          "options": [
+            {
+              "text": "Inward - the belly pulls in",
+              "why": "That is the opposite. The belly expands outward as the diaphragm descends and pushes the organs down."
+            },
+            {
+              "text": "Outward - the belly expands",
+              "right": true,
+              "yes": "Correct. The diaphragm contracts downward, pushing the belly outward and pulling air into the lungs from the bottom up."
+            },
+            {
+              "text": "It should not move at all",
+              "why": "If the belly does not move, you are chest breathing. The belly must expand outward."
+            }
+          ]
+        },
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 8,
+          "cents": 25,
+          "prompt": "Hold Sa for 8 seconds using diaphragmatic breath support. Feel your belly engaged throughout.",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "the-air-column",
+      "title": "The Air Column",
+      "content": [
+        "Think of your breath as a continuous column of air that extends from your diaphragm, through your open throat, across your shaped lips, and into the flute. This column is your instrument's engine.",
+        "The air column must have three qualities:",
+        "First, it must be STEADY. No surges, no dips, no pulsing. A steady column produces a steady note. Any fluctuation in air pressure shows up immediately as a wobble in pitch or volume. The diaphragm acts as a piston, pushing air out at a constant, controlled rate.",
+        "Second, it must be FOCUSED. The air stream should be narrow and directed, like water from a garden hose with the nozzle tightened, not a wide spray. A focused stream hits the edge of the blowing hole precisely. A diffuse stream wastes air and produces a breathy, weak tone.",
+        "Third, it must be SUPPORTED. Even at the end of a long phrase when your lungs are nearly empty, the diaphragm must maintain gentle upward pressure. Without support, the last few notes of a phrase sag in pitch and fade in volume. Supported air sounds confident. Unsupported air sounds like it is running out."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 8,
+          "cents": 20,
+          "prompt": "Hold Re for 8 seconds with a steady, focused, supported air column. No wobble.",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What does 'breath support' mean for a bansuri player?",
+          "options": [
+            {
+              "text": "Blowing as hard as possible",
+              "why": "Support is about steady pressure, not force. Blowing hard wastes air and raises pitch."
+            },
+            {
+              "text": "The diaphragm maintains constant gentle pressure to keep the air column steady",
+              "right": true,
+              "yes": "Right. Support means the diaphragm acts as a piston, maintaining consistent pressure even as your lungs empty."
+            },
+            {
+              "text": "Holding your breath between notes",
+              "why": "Holding your breath creates tension. Support means maintaining steady airflow, not stopping it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "breath-economy",
+      "title": "Breath Economy",
+      "content": [
+        "The most common beginner mistake is using too much air. A good bansuri tone needs surprisingly little - think of blowing gently across the top of a bottle, not blowing out a campfire.",
+        "Experiment right now: play Sa as softly as you can while still producing a clear, stable tone. That gentle amount of air is much closer to the correct amount than whatever you were using before. Most beginners use two to three times more air than necessary.",
+        "Excess air causes multiple problems: you run out of breath quickly (forcing awkward gasping between phrases), the pitch goes sharp (more air = higher pitch on the bansuri), and the tone becomes harsh and forced rather than sweet and resonant.",
+        "Economy means using the minimum air required for maximum musical result. A well-supported, focused air stream at modest volume produces the richest, warmest bansuri tone. The flute rewards gentleness, not force.",
+        "Test: can you hold Sa for 10 seconds? If you can hold it for 15, you are using good economy. If you run out at 6-7 seconds, you are almost certainly blowing too hard. The fix is not to take bigger breaths - it is to use less air per second."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 10,
+          "cents": 25,
+          "prompt": "Hold Sa for 10 seconds. Use the minimum air needed for a clear tone. This tests your breath economy.",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the most common beginner breathing mistake on bansuri?",
+          "options": [
+            {
+              "text": "Not blowing hard enough",
+              "why": "The opposite is true. Beginners almost always blow too hard."
+            },
+            {
+              "text": "Using too much air - blowing too hard",
+              "right": true,
+              "yes": "Correct. Beginners typically use 2-3 times more air than needed. The bansuri rewards gentleness, not force."
+            },
+            {
+              "text": "Breathing too often",
+              "why": "Frequent breaths are fine if well-timed. The core problem is excessive air pressure per note."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "planning-breath-points",
+      "title": "Planning Breath Points",
+      "content": [
+        "In Indian classical music, breaths are not random interruptions. They are planned at musically meaningful moments: at the end of a phrase, at sam (beat 1), or at a natural melodic pause. The audience should never hear you gasping for air in the middle of a phrase.",
+        "Think of breath points like punctuation in speech. You breathe at commas and full stops, not in the middle of a word. Similarly, you breathe between musical phrases, not in the middle of one.",
+        "Planning means knowing BEFORE you play exactly where you will breathe. Look at the phrase you are about to play. Where are the natural pauses? Where does one musical idea end and the next begin? That is where your breath goes.",
+        "Advanced players can play long phrases of 10-15 seconds in a single breath. They achieve this through breath economy (using minimal air) and breath planning (choosing phrases that fit their capacity). If a phrase is too long for one breath, they break it at a musically logical point - never at a random spot.",
+        "Practice this phrase in one breath. If you run out, you are using too much air. Focus on economy."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 5, 4, 2, 0],
+          "prompt": "Play Sa Re Ga Ma Pa Ma Ga Re Sa in one smooth breath. Keep the air steady throughout.",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Where is the best place to take a breath in a melody?",
+          "options": [
+            {
+              "text": "In the middle of a phrase, wherever you run out of air",
+              "why": "Breathing mid-phrase breaks the musical line. Plan your breaths at phrase boundaries."
+            },
+            {
+              "text": "At the end of a musical phrase or at a natural pause",
+              "right": true,
+              "yes": "Correct. Breathe between phrases, like punctuation in speech - at commas and full stops, never mid-word."
+            },
+            {
+              "text": "Only at the very beginning of the piece",
+              "why": "You will need multiple breaths in any piece longer than a few seconds. The key is WHERE you take them."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-quick-breath",
+      "title": "The Quick Breath",
+      "content": [
+        "Between phrases, you often have only a fraction of a second to breathe. This quick breath is a critical technique that separates fluent playing from choppy playing.",
+        "The technique: open your mouth wide, drop your jaw, and let air rush in through both nose and mouth simultaneously. The diaphragm drops instantly, pulling air in like a bellows. The whole process takes less than half a second.",
+        "It should feel like a quick, controlled gasp - not a panicked suck for air. The key is relaxation: a tense throat restricts airflow. A relaxed, open throat lets air flood in almost instantly.",
+        "Practice this sequence: play Sa for 6 seconds, take a quick breath (less than half a second), then play Pa for 6 seconds. The transition should be nearly seamless - the listener should barely notice the break.",
+        "Common mistake: lifting the flute away from your lips to breathe. Keep the flute in position. Breathe through the corners of your mouth and your nose without moving the flute. This saves the time it takes to reposition."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 25,
+          "prompt": "Hold Sa for 6 seconds, take a quick breath, then hold Pa. Start with Sa.",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 6,
+          "cents": 25,
+          "prompt": "Now hold Pa for 6 seconds. This tests whether your quick breath gave you enough air.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "How should you take a quick breath between phrases?",
+          "options": [
+            {
+              "text": "Remove the flute from your lips, breathe deeply, then reposition",
+              "why": "Removing the flute wastes time and breaks the musical flow. Keep it in position."
+            },
+            {
+              "text": "Open your jaw, let air rush through mouth and nose with the flute in position",
+              "right": true,
+              "yes": "Correct. Keep the flute in place, open wide, and let air rush in through the corners of your mouth and nose. Fast and seamless."
+            },
+            {
+              "text": "Hold your breath and play shorter phrases instead",
+              "why": "Shorter phrases limit your musical expression. Learning the quick breath lets you play longer, more expressive lines."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "breath-and-dynamics",
+      "title": "Breath and Dynamics",
+      "content": [
+        "Dynamics - changes in volume - on the bansuri come entirely from breath. There is no other way to change the volume. But there is a complication: on the bansuri, air pressure affects both volume AND pitch.",
+        "More air pressure makes the note louder AND sharper (higher in pitch). Less air pressure makes it softer AND flatter (lower). This coupling is unique to the bansuri and similar edge-blown instruments.",
+        "This means you must compensate when changing dynamics. When playing louder, slightly roll the flute toward you or adjust your lip coverage to prevent going sharp. When playing softer, increase your breath support to prevent the pitch from sagging flat.",
+        "Advanced players use this coupling expressively. A gentle crescendo (swell) on a sustained note creates both a volume increase and a subtle pitch rise, adding warmth and life to the note. A decrescendo creates the opposite - a gentle settling that feels like resolution.",
+        "The challenge is making these dynamic changes while keeping the pitch centred. This requires the finest control of your air column - simultaneously changing the pressure while adjusting your embouchure to compensate."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What happens to pitch when you increase air pressure on the bansuri?",
+          "options": [
+            {
+              "text": "The pitch drops (goes flat)",
+              "why": "On bansuri, more air pressure raises the pitch, not lowers it."
+            },
+            {
+              "text": "The pitch rises (goes sharp)",
+              "right": true,
+              "yes": "Correct. More air pressure = louder AND sharper. This coupling means you must compensate with embouchure adjustments when changing dynamics."
+            },
+            {
+              "text": "The pitch stays the same - only volume changes",
+              "why": "Unlike a piano, the bansuri's pitch and volume are coupled through air pressure. More air changes both."
+            }
+          ]
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Ga within 15 cents for 6 seconds. This tight tolerance tests your ability to maintain stable pitch while supporting the note.",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "the-prana-connection",
+      "title": "The Prana Connection",
+      "content": [
+        "In Indian philosophy, prana is the life force that flows through all living things. It is carried by the breath - every inhale draws prana in, every exhale sends it out into the world.",
+        "The bansuri holds a special place in Indian culture as a prana instrument. When you play, you literally breathe life into a piece of bamboo. The sound that emerges is your breath made audible - your life force given voice.",
+        "This is not just a poetic metaphor. When you play with awareness of your breath - feeling it leave your body, travel through the bamboo, and emerge as sound - something changes in the quality of the music. It becomes more personal, more alive, more connected to the moment.",
+        "The great masters speak of 'becoming the breath' rather than 'controlling the breath.' Control implies fighting. Becoming implies unity. When breath, instrument, and musician become one continuous flow, the music plays itself.",
+        "As a final exercise, play a full ascending and descending saptak. Try to play the entire phrase in a single breath. Feel the breath as a continuous stream that rises through the notes and descends back home. Do not think about individual notes - think about one unbroken flow of air that happens to pass through different shapes."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the full saptak up and down: Sa Re Ga Ma Pa Dha Ni Sa' Ni Dha Pa Ma Ga Re Sa. Try to play it in one breath.",
+          "points": 25
+        },
+        {
+          "type": "confirm",
+          "prompt": "I commit to practising breath awareness daily - feeling the connection between my breath and the sound",
+          "points": 5
+        }
+      ]
+    }
+  ]
+}

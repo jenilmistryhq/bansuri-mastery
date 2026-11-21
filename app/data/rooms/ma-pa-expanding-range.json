@@ -1,0 +1,298 @@
+{
+  "id": "ma-pa-expanding-range",
+  "title": "Ma and Pa - Expanding Your Range",
+  "description": "Add Ma and Pa to your vocabulary, play the first five notes, and start hearing the pentatonic scale.",
+  "difficulty": "easy",
+  "skills": ["notes", "ear", "melody"],
+  "minutes": 40,
+  "order": 4,
+  "prerequisites": ["sa-re-ga-first-three"],
+  "tasks": [
+    {
+      "id": "t1-meet-ma",
+      "title": "Meet Ma - the fourth note",
+      "content": [
+        "Ma (Madhyam) means 'the middle one' - it sits right at the centre of the saptak. To play Ma on the bansuri, lift three bottom fingers while keeping the top three closed.",
+        { "type": "list", "items": [
+          "Sa - all holes closed",
+          "Re - lift 1 bottom finger",
+          "Ga - lift 2 bottom fingers",
+          "Ma - lift 3 bottom fingers (only the top 3 remain closed)"
+        ] },
+        { "type": "note", "text": "Ma is the boundary between the lower and upper halves of the scale. In many ragas, Ma defines the mood - shuddha Ma feels calm, tivra Ma feels tense." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "How many bottom fingers do you lift to play Ma?",
+          "options": [
+            { "text": "One", "right": false, "why": "One bottom finger gives you Re." },
+            { "text": "Two", "right": false, "why": "Two bottom fingers gives you Ga." },
+            { "text": "Three", "right": true, "yes": "Correct! Three bottom fingers lifted, three top fingers closed." },
+            { "text": "All six", "right": false, "why": "All fingers lifted would overblow to the upper octave." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What does 'Madhyam' mean in English?",
+          "answer": "middle",
+          "accept": ["middle", "the middle", "the middle one", "center", "centre"],
+          "points": 10,
+          "no": "Madhyam means 'the middle one' - Ma sits at the centre of the seven notes."
+        }
+      ],
+      "hints": [
+        "Ma is the fourth of seven notes - right in the middle.",
+        "Madhyam shares its root with 'middle'."
+      ]
+    },
+    {
+      "id": "t2-hold-ma",
+      "title": "Hold Ma steady",
+      "content": [
+        "With three holes open, Ma needs slightly more air support than the lower notes. Keep your breath steady and your embouchure relaxed.",
+        "Hold Ma for 4 seconds without the pitch drifting."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Ma steady for 4 seconds.",
+          "target": 5,
+          "seconds": 4,
+          "cents": 35,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "If the pitch wavers, you may be using too much air. Ease back slightly.",
+        "Make sure the three closed fingers are sealing their holes completely - even a tiny leak sharpens the note.",
+        "Keep your jaw and throat relaxed. Tension travels into the sound."
+      ]
+    },
+    {
+      "id": "t3-meet-pa",
+      "title": "Meet Pa - the fifth note",
+      "content": [
+        "Pa (Pancham) means 'the fifth'. Like Sa, Pa is an 'achal' (immovable) swara - it never changes in any raga.",
+        "To play Pa, lift four bottom fingers. Only the top two remain closed.",
+        { "type": "note", "text": "The interval from Sa to Pa (a perfect fifth) is the strongest consonance in music. When you play Pa over a Sa drone, you will hear them lock together." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Pa is special because it is an 'achal' swara. What does that mean?",
+          "options": [
+            { "text": "It is the loudest note", "right": false, "why": "Volume depends on breath, not the note." },
+            { "text": "It never has a komal or tivra form", "right": true, "yes": "Correct! Like Sa, Pa is immovable - it has only one form." },
+            { "text": "It can only be played in one octave", "right": false, "why": "Pa exists in every octave." },
+            { "text": "It must always be played last", "right": false, "why": "Pa can appear anywhere in a phrase." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Only two notes are 'achal' (immovable) - Sa and Pa."
+      ]
+    },
+    {
+      "id": "t4-hold-pa",
+      "title": "Hold Pa steady",
+      "content": [
+        "Pa requires even more air support. With four holes open, the air column is shorter and the note wants to jump up. Stay gentle.",
+        "Hold Pa for 4 seconds."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Pa steady for 4 seconds.",
+          "target": 7,
+          "seconds": 4,
+          "cents": 35,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "If the note squeaks or jumps up, you are blowing too hard. Back off the air pressure.",
+        "Think of blowing gently across a bottle top - just enough to make it sing.",
+        "Check that the two closed fingers are fully covering their holes."
+      ]
+    },
+    {
+      "id": "t5-five-note-fingering",
+      "title": "Fingering quiz",
+      "content": [
+        "Let's make sure you know the fingering for all five notes before playing them together."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "To go from Ga to Ma, what do you do?",
+          "options": [
+            { "text": "Lift one more bottom finger", "right": true, "yes": "Right! Each ascending note lifts one more finger from the bottom." },
+            { "text": "Close one finger", "right": false, "why": "Ascending means opening more holes, not closing them." },
+            { "text": "Blow harder", "right": false, "why": "Blowing harder overblows to the upper octave - the fingering changes the note." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "How many finger holes are OPEN when you play Pa?",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10,
+          "no": "Pa has four holes open and two closed (the top two)."
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "If you are playing Pa and you close one finger (the third from top), which note do you get?",
+          "options": [
+            { "text": "Ma", "right": true, "yes": "Correct! Closing one hole from Pa brings you back down to Ma." },
+            { "text": "Ga", "right": false, "why": "Ga has three holes closed." },
+            { "text": "Dha", "right": false, "why": "Dha is above Pa - you would need to open another hole." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Count from the bottom: 0 open = Sa, 1 open = Re, 2 open = Ga, 3 open = Ma, 4 open = Pa.",
+        "Going down reverses the pattern: close fingers from bottom to top."
+      ]
+    },
+    {
+      "id": "t6-ear-five-notes",
+      "title": "Ear training - five notes",
+      "content": [
+        "Now that you know all five notes, train your ear to tell them apart. You will hear one note at a time - identify which one."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "prompt": "Identify the note you hear.",
+          "notes": [0, 2, 4, 5, 7],
+          "count": 8,
+          "pass": 5,
+          "points": 25
+        }
+      ],
+      "hints": [
+        "Sa (lowest) and Pa (highest) are the easiest to spot - listen for the extremes first.",
+        "Ma and Ga are close together. Ma sounds slightly more serious; Ga is brighter.",
+        "Re sits between Sa and Ga - it has a gentle, calm quality."
+      ]
+    },
+    {
+      "id": "t7-ascending",
+      "title": "Play the ascending scale",
+      "content": [
+        "Play all five notes going up: Sa, Re, Ga, Ma, Pa. One note at a time, clearly and steadily."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Sa Re Ga Ma Pa (ascending).",
+          "phrase": [0, 2, 4, 5, 7],
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Go slowly. Each note should ring clearly before you move to the next.",
+        "If a note sounds muddy, pause and check your finger positions.",
+        "Breathe out steadily - do not speed up or slow down the air."
+      ]
+    },
+    {
+      "id": "t8-descending",
+      "title": "Play the descending scale",
+      "content": [
+        "Now come back down: Pa, Ma, Ga, Re, Sa. Descending is harder because closing fingers takes more precision than opening them."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Pa Ma Ga Re Sa (descending).",
+          "phrase": [7, 5, 4, 2, 0],
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Press each finger down firmly as you descend - air leaks cause squeaks.",
+        "Descending often feels less natural. Practice this direction more than ascending.",
+        "Think of placing each finger like pressing a piano key - definite and clean."
+      ]
+    },
+    {
+      "id": "t9-simple-melody",
+      "title": "A simple five-note tune",
+      "content": [
+        "Here is your first tune using all five notes. It goes up, pauses on Pa, then comes back down:",
+        "Sa Re Ga Ma Pa - Pa Ma Ga Re Sa",
+        { "type": "note", "text": "This ascending-descending pattern is called an 'aaroha-avroha' and is the backbone of every raga." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Sa Re Ga Ma Pa (ascending half).",
+          "phrase": [0, 2, 4, 5, 7],
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "play",
+          "prompt": "Play Pa Ma Ga Re Sa (descending half).",
+          "phrase": [7, 5, 4, 2, 0],
+          "points": 15
+        }
+      ],
+      "hints": [
+        "Break it in half if needed - master the ascent, then the descent, then connect them.",
+        "The aaroha-avroha is the most fundamental melodic pattern in Indian music. This one exercise trains everything."
+      ]
+    },
+    {
+      "id": "t10-challenge",
+      "title": "Final challenge - pentatonic phrase",
+      "content": [
+        "Play this melodic phrase that skips between notes instead of going step by step:",
+        "Sa Ga Pa Ga Re Sa",
+        "This kind of leap is common in real melodies and tests both your ear and your fingers.",
+        { "type": "note", "text": "These five notes (Sa Re Ga Ma Pa) form a pentatonic scale - the same five-note pattern found in folk music around the world." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play the phrase: Sa Ga Pa Ga Re Sa.",
+          "phrase": [0, 4, 7, 4, 2, 0],
+          "points": 25
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What is the name for the ascending pattern of notes in a raga?",
+          "answer": "aaroha",
+          "accept": ["aaroha", "aroha", "aroh", "aaroh"],
+          "points": 10,
+          "no": "The ascending pattern is called 'aaroha'. The descending is 'avroha'."
+        }
+      ],
+      "hints": [
+        "For the skip from Sa to Ga, lift two fingers at once - practise this move on its own first.",
+        "The jump from Ga to Pa is just one more finger. Listen for the interval locking in.",
+        "Take your time. Speed comes later; clarity comes first."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,259 @@
+{
+  "id": "raga-bhupali",
+  "title": "Raga Bhupali - Five Pure Notes",
+  "description": "Learn the pentatonic raga Bhupali - five shuddha notes that form one of the most beautiful melodies in Indian music.",
+  "difficulty": "medium",
+  "skills": ["raga", "melody", "theory"],
+  "minutes": 45,
+  "order": 12,
+  "prerequisites": ["komal-swaras"],
+  "tasks": [
+    {
+      "id": "why-bhupali",
+      "title": "The Beauty of Five Notes",
+      "content": [
+        "Bhupali uses only five notes: Sa, Re, Ga, Pa, Dha. No Ma, no Ni, no half-holes needed. This makes it one of the most accessible ragas to play on the bansuri, but do not mistake simplicity for shallowness. With fewer notes, every phrase carries more weight. There is nowhere to hide.",
+        "Bhupali belongs to the Kalyan thaat and is classified as audav-audav jati, meaning five notes ascending and five notes descending. It is a sampoorna pentatonic raga - every note it uses appears in both directions. The absence of Ma and Ni creates wide, open intervals that give Bhupali its characteristic spacious, serene feeling.",
+        "Many of India's most beloved bhajans (devotional songs) are set in Bhupali. Its pure, clean sound has made it a vehicle for spiritual expression for centuries."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many notes does Raga Bhupali use?",
+          "answer": "5",
+          "accept": ["5", "five"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two notes are absent from Bhupali?",
+          "options": [
+            { "text": "Re and Dha", "why": "Both Re and Dha are present in Bhupali." },
+            { "text": "Ma and Ni", "right": true, "yes": "Correct. Bhupali omits Ma and Ni, leaving Sa Re Ga Pa Dha." },
+            { "text": "Ga and Pa", "why": "Both Ga and Pa are core notes of Bhupali." }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "aroha-avaroha",
+      "title": "Aroha and Avaroha",
+      "content": [
+        "Bhupali's ascending and descending lines are symmetric - the same five notes in the same order, just reversed. Aroha: Sa Re Ga Pa Dha Sa'. Avaroha: Sa' Dha Pa Ga Re Sa.",
+        "This symmetry is unusual. Many ragas have different ascending and descending paths, skipping notes or adding zigzag movements. Bhupali's directness is part of its character - it moves in straight lines, with no tricks or surprises. The raga's beauty comes not from complexity but from how you colour each note with breath, dynamics, and timing.",
+        "Notice the intervals when you play the aroha. Sa to Re is a whole tone (2 semitones). Re to Ga is another whole tone. Then Ga to Pa skips Ma entirely - a minor third (3 semitones). Pa to Dha is a whole tone again. These wide and narrow steps create the raga's distinct melodic shape."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is unusual about Bhupali's aroha and avaroha?",
+          "options": [
+            { "text": "They use different notes", "why": "Bhupali uses the same five notes in both directions." },
+            { "text": "They are symmetric - same notes both ways", "right": true, "yes": "Right. Bhupali's ascending and descending lines mirror each other perfectly." },
+            { "text": "The avaroha skips Pa", "why": "Pa appears in both directions in Bhupali." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 9, 12],
+          "prompt": "Play Bhupali's aroha: Sa Re Ga Pa Dha Sa'",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "vadi-samvadi",
+      "title": "Vadi and Samvadi",
+      "content": [
+        "Bhupali's vadi (king note) is Ga (semitone 4) and its samvadi (minister note) is Dha (semitone 9). These two notes are separated by a perfect fifth, the same consonant interval that links vadi and samvadi in many ragas.",
+        "When you play Bhupali, give Ga and Dha extra time and emphasis. Hold them longer. Return to them. Let them ring. Ga anchors the lower half of the raga's range, while Dha anchors the upper half. Together they define the two poles around which Bhupali's melodies orbit.",
+        "A simple test: if you play a Bhupali phrase and it does not touch Ga or Dha within a few notes, it probably does not sound like Bhupali. These two notes are the raga's gravitational centres."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the vadi (king note) of Raga Bhupali?",
+          "options": [
+            { "text": "Sa", "why": "Sa is the tonic, the home note - the vadi is a different concept." },
+            { "text": "Ga", "right": true, "yes": "Correct. Ga (semitone 4) is Bhupali's most important note." },
+            { "text": "Dha", "why": "Dha is the samvadi (minister note), not the vadi." },
+            { "text": "Pa", "why": "Pa is present in Bhupali but is not its most emphasised note." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Ga (the vadi) for 6 seconds - feel it as Bhupali's anchor",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 9,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Dha (the samvadi) for 6 seconds - feel the upper anchor",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "pakad-phrases",
+      "title": "Bhupali's Signature Phrases",
+      "content": [
+        "Bhupali's pakad (characteristic phrase) captures the raga's essence in a few notes. The most common pakad is: Ga Re Sa, Dha Pa Ga, Sa Re Ga Pa Ga. Notice how every phrase centres on Ga - descending to it, rising from it, or passing through it.",
+        "Other important Bhupali phrases include: Dha Pa Ga Re Sa (a full descent from the upper register), Sa Re Ga Pa (the opening upward sweep), and Pa Dha Sa' Dha Pa (touching the upper Sa and returning). These phrases are your building blocks for improvisation.",
+        "When you improvise in Bhupali, your phrases should feel like gentle waves - rising from Sa through Ga toward Dha, then falling back. The raga has a rocking, cradling quality that comes from this constant oscillation between its two anchors."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 2, 0, 9, 7, 4],
+          "prompt": "Play the Bhupali pakad: Ga Re Sa, Dha Pa Ga",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 4],
+          "prompt": "Play the opening sweep: Sa Re Ga Pa Ga",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "mood-and-time",
+      "title": "Mood and Time",
+      "content": [
+        "Bhupali is an evening raga, traditionally performed in the first prahar of the night (roughly 6 PM to 9 PM). Its mood is peaceful, devotional, and serene - a raga of quiet contentment rather than drama or intensity.",
+        "The absence of Ma and Ni removes all tension from the scale. There is no tritone pull, no leading tone pushing toward resolution. What remains is pure consonance - intervals that feel stable and restful. This is why Bhupali works so well for bhajans and meditative music.",
+        "Many famous compositions exist in Bhupali. The bhajan 'Meera bai' traditions frequently use this raga. Film songs in Bhupali are common too - composers reach for it whenever they want purity and calm without sadness."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When is Raga Bhupali traditionally performed?",
+          "options": [
+            { "text": "Morning", "why": "Morning belongs to ragas like Bhairav and Bhairavi." },
+            { "text": "Evening (first prahar of the night)", "right": true, "yes": "Correct. Bhupali is an evening raga, sharing its time slot with Yaman." },
+            { "text": "Afternoon", "why": "Afternoon is the time for ragas like Bhimpalasi or Multani." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Bhupali sound so peaceful compared to seven-note ragas?",
+          "options": [
+            { "text": "It is played more slowly", "why": "Tempo is a performer's choice. Bhupali's calm comes from its intervals." },
+            { "text": "The absence of Ma and Ni removes all tonal tension", "right": true, "yes": "Exactly. Without the tritone (Ma) or leading tone (Ni), only consonant intervals remain." },
+            { "text": "It uses a special tuning system", "why": "Bhupali uses standard tuning - its character comes from which notes are included." }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "bhupali-vs-deshkar",
+      "title": "Bhupali vs Deshkar",
+      "content": [
+        "Here is a profound lesson about ragas: Raga Deshkar uses exactly the same five notes as Bhupali - Sa Re Ga Pa Dha. Same scale, but a completely different raga. How is this possible?",
+        "The difference lies in the vadi and the phrasing. In Deshkar, the vadi is Dha (not Ga), and the emphasis shifts to the upper register. Deshkar phrases tend to live around Pa, Dha, and upper Sa, while Bhupali phrases gravitate toward Sa, Re, and Ga in the lower register. Deshkar's time is also different - it is a morning raga.",
+        "This is the essence of the raga system. A raga is not just a scale - it is a way of using a scale. The same five notes, when emphasized differently, phrased differently, and played at a different time of day, become two entirely different musical personalities. It is like two people with the same vocabulary but completely different ways of speaking."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does Raga Deshkar differ from Bhupali?",
+          "options": [
+            { "text": "Deshkar uses different notes", "why": "Same five notes: Sa Re Ga Pa Dha." },
+            { "text": "Different vadi and phrasing emphasis", "right": true, "yes": "Correct. Same notes, but Deshkar emphasises Dha and the upper register, while Bhupali emphasises Ga and the lower register." },
+            { "text": "Deshkar belongs to a different thaat", "why": "Both belong to Kalyan thaat." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "What is the vadi of Deshkar (the note that differs from Bhupali's vadi)?",
+          "answer": "Dha",
+          "accept": ["Dha", "dha", "D"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "ear-training",
+      "title": "Ear Training - Bhupali's Five Notes",
+      "content": [
+        "With only five notes to work with, your ear needs to distinguish them quickly and confidently. Each note in Bhupali has a clear identity: Sa is home, Re is the first step out, Ga is the warm anchor, Pa is the pivot point, and Dha is the high lookout before the upper Sa.",
+        "Listen carefully and identify each note. Because there are only five to choose from, you should aim for perfect accuracy. The wide gap between Ga and Pa (three semitones, since Ma is absent) is a useful landmark - if the interval sounds wider than the others, you have crossed from the lower group (Sa Re Ga) into the upper group (Pa Dha)."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 7, 9],
+          "rounds": 5,
+          "prompt": "Identify each note of Raga Bhupali",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "play-phrases",
+      "title": "Play Bhupali Phrases",
+      "content": [
+        "Now bring Bhupali to life on your bansuri. Start with the full descending line, which is the most natural-sounding direction in this raga. Then try the ascending line, and finally some characteristic phrases that weave between the registers.",
+        "When playing Bhupali, resist the urge to rush. Let each note breathe. The raga's beauty comes from space and clarity, not speed. Hold Ga a little longer when you pass through it. Let Dha ring before descending. These small touches transform a scale exercise into music."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 9, 7, 4, 2, 0],
+          "prompt": "Play the descending line: Sa' Dha Pa Ga Re Sa",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 9, 12],
+          "prompt": "Play the ascending line: Sa Re Ga Pa Dha Sa'",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [4, 2, 0, 2, 4, 7, 9],
+          "prompt": "Play a Bhupali phrase: Ga Re Sa Re Ga Pa Dha",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "composition",
+      "title": "A Short Bhupali Composition",
+      "content": [
+        "Here is a simple four-phrase Bhupali bandish that uses the raga's characteristic movements. Each phrase highlights a different part of the range.",
+        "Sthayi (first line): Ga Re Sa - Re Ga Pa - (the gentle rise from home). Antara (second line): Pa Dha Sa' - Dha Pa Ga Re - Sa (the ascent and return). Play the sthayi a few times until it feels natural, then try the antara. When you can play both, connect them into a single flowing melody.",
+        "Notice how the composition keeps returning to Ga - this is not an accident. The vadi anchors every phrase, pulling the melody back to its centre of gravity. A well-written Bhupali composition sounds inevitable, as if the notes could not have gone anywhere else."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 2, 0, 2, 4, 7],
+          "prompt": "Play the sthayi: Ga Re Sa Re Ga Pa",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [7, 9, 12, 9, 7, 4, 2, 0],
+          "prompt": "Play the antara: Pa Dha Sa' Dha Pa Ga Re Sa",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I can play both the sthayi and antara connected as one piece"
+        }
+      ]
+    }
+  ]
+}

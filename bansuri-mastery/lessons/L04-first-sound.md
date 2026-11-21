@@ -76,7 +76,7 @@ Once you get a sound, hold it for 2-4 seconds, gently. Don't chase volume. A sof
 
 - A **soft, round, slightly breathy** tone, like a gentle "hooo". Some air noise is normal at first.
 - Steady, not wavering.
-- On a tuner, the note **C** (C5, about 523 Hz). Now complete the tuner check from [L00 step 6](L00-day-0-your-flute.md).
+- On a tuner, the Sa note saved for your flute. For the default C5 setting this is C5, about 523 Hz. Complete the tuner check from [L00 step 6](L00-day-0-your-flute.md).
 
 If you get a high, piercing whistle instead, you are probably overblowing into the second register (the C one octave higher). Use slower air.
 
@@ -202,7 +202,7 @@ Listen back to the recording. If you mainly hear a **note** with some air around
 - [ ] Mirror check: centred opening, no puffed cheeks, relaxed corners (TON-01).
 - [ ] Sweet spot found within 10 s, 3 times from a fresh start (TON-02).
 - [ ] Sa clear on 4 of 5 attempts (TON-03).
-- [ ] Tuner reads C (C5) on a relaxed Sa (INS-02 completed).
+- [ ] Tuner reads the saved Sa note and octave on a relaxed Sa (INS-02 completed).
 
 Completing this lesson is part of milestone [M1 - First stable tone](../projects/M1-first-stable-tone.md).
 

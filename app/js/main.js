@@ -23,7 +23,7 @@ window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); window
 installErrorLog();
 // No Web Audio in this browser: say so once, instead of buttons that silently do nothing.
 let noAudioSaid = false;
-const noAudio = msg => { if (!noAudioSaid && /audio unavailable/.test(String(msg))) { noAudioSaid = true; toast("This browser cannot play sound. Open the app in Safari, Chrome or Edge to hear the flute.", 6000); } };
+const noAudio = msg => { if (!noAudioSaid && /audio unavailable|AudioContext was not allowed|NotAllowedError|Failed to decode audio|could not be decoded/i.test(String(msg))) { noAudioSaid = true; toast("This browser cannot play sound. Open the app in Safari, Chrome or Edge to hear the flute.", 6000); } };
 window.addEventListener("error", e => noAudio(e.message));
 window.addEventListener("unhandledrejection", e => noAudio(e.reason && e.reason.message));
 // The shared widgets speak through the app's natural voice (when "Talk to me" is on).
@@ -54,46 +54,58 @@ import { evaluate as evaluateBadges } from "./badges.js";
 
 const ROUTES = [
   // The five places and their sections (see docs/redesign/03-structure.md).
-  // Skills (redesign 2): a fix on its own screen (W50); the ornament trainer opened on one ornament (W44).
-  [/^\/skills\/fix\/(TS-\d\d)(?:\/(tone|notes|rhythm|ornaments|ear))?$/, "fix"], [/^\/skills\/(ornaments)\/(trainer)\/(meend|kan|murki|andolan)$/, "skilltool"],
+  // Teacher: fix a problem (was Skills > Fix, now Teacher > Fix).
+  [/^\/teacher\/fix\/(TS-\d\d)\/(tone|notes|rhythm|ornaments|ear)$/, "coach"], [/^\/teacher\/fix\/(TS-\d\d)$/, "fix"],
+  [/^\/teacher\/fix$/, "coach"],
+  // Skills (redesign 2): the ornament trainer opened on one ornament (W44).
+  [/^\/skills\/(ornaments)\/(trainer)\/(meend|kan|murki|andolan)$/, "skilltool"],
   // Screens inside Skills and Music: a training tool, a game, a fix opened from a skill, a song, a raga.
   // A friend's challenge link (was #/challenge/<payload>), before the game address it would match.
   [/^\/skills\/game\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"],
-  [/^\/skills\/(tone|rhythm|ornaments|ear)\/([a-z]+)$/, "skilltool"], [/^\/skills\/game\/([a-z]+)(?:\/([A-Za-z0-9._-]+))?$/, "play"], [/^\/skills\/fix\/(TS-\d\d)\/(tone|notes|rhythm|ornaments|ear)$/, "coach"],
+  [/^\/skills\/(tone|notes|rhythm|ornaments|ear)\/([a-z]+)$/, "skilltool"], [/^\/skills\/game\/([a-z]+)(?:\/([A-Za-z0-9._-]+))?$/, "play"],
   [/^\/music\/song\/([A-Za-z0-9._-]+)$/, "song"], [/^\/music\/raga\/([a-z-]+)$/, "raga"],
-  [/^\/course(?:\/path)?$/, "plan"], [/^\/course\/milestones$/, "milestones"], [/^\/course\/book$/, "library"],
-  [/^\/skills$/, "skills"], [/^\/skills\/(tone|notes|rhythm|ornaments|ear)$/, "skills"], [/^\/skills\/games$/, "play"], [/^\/skills\/fix$/, "coach"], [/^\/skills\/fix\/(TS-\d\d)$/, "coach"],
+  [/^\/rooms\/([a-z0-9-]+)\/(play)$/, "rooms2"], [/^\/rooms\/([a-z0-9-]+)$/, "rooms2"], [/^\/rooms$/, "rooms2"],
+  [/^\/course(?:\/path)?$/, "plan"], [/^\/course\/milestones$/, "milestones"],
+  [/^\/skills$/, "skills"], [/^\/skills\/(tone|notes|rhythm|ornaments|ear)$/, "skills"], [/^\/skills\/games$/, "play"],
   [/^\/music(?:\/songs)?$/, "songs"], [/^\/music\/ragas$/, "ragas"], [/^\/music\/mine$/, "mine"], [/^\/music\/listen$/, "listen"], [/^\/music\/transcribe$/, "transcribe"], [/^\/music\/compose$/, "compose"],
-  [/^\/me$/, "progress"], [/^\/me\/journal$/, "journal"], [/^\/me\/teacher$/, "review"], [/^\/me\/flute$/, "flute"], [/^\/me\/settings$/, "settings"],
-  // Me: level and badges, more charts, the Journal's and the Teacher's views (level 3), the settings groups, privacy.
-  [/^\/me\/(level|charts)$/, "progress"], [/^\/me\/journal\/(days|recordings|capsule)$/, "journal"], [/^\/me\/teacher\/(feedback|students|share)$/, "review"], [/^\/(students)$/, "review"],
+  // Teacher: its own top-level place.
+  [/^\/teacher$/, "review"], [/^\/teacher\/(feedback|students|share)$/, "review"], [/^\/teacher\/rates$/, "rates"],
+  [/^\/me$/, "progress"], [/^\/me\/journal$/, "journal"], [/^\/me\/flute$/, "flute"], [/^\/me\/settings$/, "settings"],
+  // Me: level and badges, more charts, the Journal's views, the settings groups, privacy.
+  [/^\/me\/(level|charts)$/, "progress"], [/^\/me\/journal\/(days|recordings|capsule)$/, "journal"],
   [/^\/me\/settings\/(voice|display|practice|data|help)$/, "settings"], [/^\/me\/privacy$/, "privacy"],
   // Me, screens of their own: Record, Check my flute (one note per screen), the microphone check and
-  // calibration, Move to another phone, what your teacher rates.
+  // calibration, Move to another phone.
   [/^\/me\/journal\/record$/, "record"], [/^\/me\/flute\/check(?:\/(\d+))?$/, "flutecheck"], [/^\/me\/flute\/(mic|calibrate)$/, "flutetool"],
-  [/^\/me\/settings\/move$/, "moveout"], [/^\/me\/teacher\/rates$/, "rates"],
+  [/^\/me\/settings\/move$/, "moveout"],
   [/^\/bench\/([a-z]+)$/, "bench"],
   [/^\/?$/, "today"], [/^\/today$/, "today"], [/^\/today\/quick$/, "quick"],[/^\/day\/(\d+)$/, "today"], [/^\/session\/(\d+)$/, "session"],
-  [/^\/plan$/, "plan"], [/^\/read\/(.+)$/, "reader"], [/^\/library$/, "library"], [/^\/milestone\/(M\d+)$/, "milestone"],
-  [/^\/journal$/, "journal"], [/^\/progress$/, "progress"], [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
-  [/^\/bench$/, "bench"], [/^\/settings$/, "settings"], [/^\/coach$/, "coach"], [/^\/coach\/(TS-\d\d)$/, "coach"], [/^\/songs$/, "songs"],
-  [/^\/play$/, "play"], [/^\/play\/([a-z]+)$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/compose$/, "compose"], [/^\/quick$/, "quick"], [/^\/listen$/, "listen"], [/^\/privacy$/, "privacy"], [/^\/transcribe$/, "transcribe"], [/^\/tone$/, "coach"], [/^\/lesson\/([a-z0-9]+)$/, "lesson"], [/^\/ornaments$/, "ornaments"], [/^\/review$/, "review"], [/^\/review\/([A-Za-z0-9_-]+)$/, "review"], [/^\/feedback\/([A-Za-z0-9_-]+)$/, "feedback"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
+  [/^\/read\/(.+)$/, "reader"], [/^\/milestone\/(M\d+)$/, "milestone"],
+  [/^\/share\/([A-Za-z0-9_-]+)$/, "share"],
+  [/^\/bench$/, "bench"], [/^\/coach\/(TS-\d\d)$/, "coach"],
+  [/^\/play\/([a-z]+)$/, "play"], [/^\/challenge\/([A-Za-z0-9_-]+)$/, "challenge"], [/^\/quick$/, "quick"], [/^\/privacy$/, "privacy"], [/^\/tone$/, "coach"], [/^\/lesson\/([a-z0-9]+)$/, "lesson"], [/^\/ornaments$/, "ornaments"], [/^\/review\/([A-Za-z0-9_-]+)$/, "review"], [/^\/feedback\/([A-Za-z0-9_-]+)$/, "feedback"], [/^\/students$/, "students"], [/^\/move\/([A-Za-z0-9_-]+)$/, "move"], [/^\/teacher(\/coach)?$/, "coach"],
   // Check my flute from a recording (the Bench's upload check), linked from Me > Flute > Check my flute.
   [/^\/me\/flute\/recording$/, "benchcheck"],
 ];
 // Old addresses and where they live now (the view is the same; only the address changes).
-const MOVED = { "/plan": "/course", "/library": "/course/book", "/journal": "/me/journal", "/progress": "/me", "/settings": "/me/settings",
-  "/coach": "/skills/fix", "/songs": "/music", "/play": "/skills/games", "/compose": "/music/compose", "/listen": "/music/listen",
-  "/transcribe": "/music/transcribe", "/review": "/me/teacher" };
+const MOVED = { "/plan": "/course", "/library": "/course", "/journal": "/me/journal", "/progress": "/me", "/settings": "/me/settings",
+  "/coach": "/teacher/fix", "/skills/fix": "/teacher/fix", "/songs": "/music", "/play": "/skills/games", "/compose": "/music/compose", "/listen": "/music/listen",
+  "/transcribe": "/music/transcribe", "/review": "/teacher",
+  "/me/teacher": "/teacher", "/me/teacher/feedback": "/teacher/feedback", "/me/teacher/students": "/teacher/students", "/me/teacher/share": "/teacher/share", "/me/teacher/rates": "/teacher/rates" };
+const LESSON_TO_ROOM = { m0: "meet-your-flute", m1: "body-breath-first-sound", m2: "first-sound-on-sa", m3: "first-sound-on-sa", m4: "long-tones-and-pitch", m8: "sa-re-ga-first-three", m9: "sa-re-ga-first-three", m12: "first-alankars", m15: "lower-ni", m43: "shuddha-ma-half-holing", m50: "upper-register-and-taal", m64: "shuddha-ma-half-holing", m85: "intonation", m99: "song-by-ear", m127: "what-is-a-raga", m141: "raga-bhupali", m177: "keys-and-transposition", m183: "meend-and-slides", m190: "bhatkhande-notation", m197: "raga-yaman-intro", m211: "kan-khatka-murki", m216: "improvise-and-compose", m281: "performing", m309: "komal-swaras", m372: "western-notation", m407: "bandish-taans-tihai", m408: "alap-and-vistar", m466: "accompaniment", m467: "style-adaptation", m498: "gamak-and-andolan", m617: "full-raga-presentation" };
 // Old addresses whose screen moved to another one (redesign 03, "Old links keep working"): the
 // address is replaced, and a Bench tab that became a Flute dock tab opens the dock there.
 const BENCH_TO = { "": ["/skills/notes", "fingers"], chart: ["/skills/notes", "fingers"], tones: ["/skills/tone/longtones"], echo: ["/skills/ear/playback"], ear: ["/skills/ear/quiz"],
   rhythm: ["/skills/rhythm", "taal"], play: ["/music"], check: ["/me/flute/check"], about: ["/me/settings/help"] };
 function forwardOf(path) {
   let m;
+  if ((m = /^\/lesson\/([a-z0-9]+)/.exec(path))) { const room = LESSON_TO_ROOM[m[1]]; if (room) return ["/rooms/" + room]; }
   if (path === "/quick") return ["/today/quick"];
   if (path === "/ornaments") return ["/skills/ornaments"];
   if (path === "/tone") return ["/skills/tone"];
+  if ((m = /^\/coach\/(TS-\d\d)\/([a-z]+)$/.exec(path))) return ["/teacher/fix/" + m[1] + "/" + m[2]];
+  if ((m = /^\/skills\/fix\/(TS-\d\d)\/([a-z]+)$/.exec(path))) return ["/teacher/fix/" + m[1] + "/" + m[2]];
+  if ((m = /^\/skills\/fix\/(TS-\d\d)$/.exec(path))) return ["/teacher/fix/" + m[1]];
   if ((m = /^\/play\/([a-z]+)$/.exec(path))) return ["/skills/game/" + m[1]];
   if ((m = /^\/challenge\/([A-Za-z0-9_-]+)$/.exec(path))) return ["/skills/game/challenge/" + m[1]];
   if ((m = /^\/bench(?:\/([a-z]+))?$/.exec(path))) return BENCH_TO[m[1] || ""] || BENCH_TO[""];
@@ -101,14 +113,14 @@ function forwardOf(path) {
 }
 // Two levels of navigation. Five places at the bottom (each kind of thing has one home); inside a
 // place, its sections as tabs at the top, swiped or tapped. Today has one job, so no sections.
-const NAV = [["today", "#/today", "Today"], ["course", "#/course", "Course"], ["skills", "#/skills", "Skills"], ["music", "#/music", "Music"], ["me", "#/me", "Me"]];
-const NAV_ICON = { today: "today", course: "plan", skills: "wave", music: "note", me: "me", play: "play", listen: "listen" };
+const NAV = [["today", "#/today", "Today"], ["course", "#/course", "Course"], ["skills", "#/skills", "Skills"], ["music", "#/music", "Music"], ["teacher", "#/teacher", "Teacher"], ["me", "#/me", "Me"]];
+const NAV_ICON = { today: "today", course: "plan", skills: "wave", music: "note", teacher: "coach", me: "me", play: "play", listen: "listen" };
 const SECTIONS = {
-  course: [["path", "#/course", "Path"], ["milestones", "#/course/milestones", "Milestones"], ["book", "#/course/book", "Book"]],
-  skills: [["foryou", "#/skills", "For you"], ["tone", "#/skills/tone", "Tone"], ["notes", "#/skills/notes", "Notes"], ["rhythm", "#/skills/rhythm", "Rhythm"],
-    ["ornaments", "#/skills/ornaments", "Ornaments"], ["ear", "#/skills/ear", "Ear"], ["games", "#/skills/games", "Games"], ["fix", "#/skills/fix", "Fix"]],
-  music: [["songs", "#/music", "Songs"], ["ragas", "#/music/ragas", "Ragas"], ["mine", "#/music/mine", "Mine"], ["listen", "#/music/listen", "Listen"]],
-  me: [["progress", "#/me", "Progress"], ["journal", "#/me/journal", "Journal"], ["teacher", "#/me/teacher", "Teacher"], ["flute", "#/me/flute", "Flute"], ["settings", "#/me/settings", "Settings"]],
+  course: [],
+  skills: [],
+  teacher: [],
+  music: [],
+  me: [],
 };
 // The Bench's tabs, by the place and section each one serves.
 const BENCH_HOME = { tones: ["skills", "tone"], echo: ["skills", "ear"], ear: ["skills", "ear"], rhythm: ["skills", "rhythm"], chart: ["skills", "notes"], check: ["me", "flute"], play: ["music", "songs"] };
@@ -116,31 +128,29 @@ const BENCH_HOME = { tones: ["skills", "tone"], echo: ["skills", "ear"], ear: ["
 function placeOf(view, params, path) {
   const p = params && params[0];
   switch (view) {
-    case "plan": return ["course", "path"];
-    case "milestones": case "milestone": return ["course", "milestones"];
-    case "library": case "reader": return ["course", "book"];
+    case "rooms2": case "plan": case "rooms": case "milestones": case "milestone": case "library": case "reader": case "lesson": case "session": return ["course", null];
     case "skills": return ["skills", p || "foryou"];
     case "play": case "challenge": return ["skills", "games"];
-    case "coach": return ["skills", /^\/tone/.test(path || "") ? "tone" : "fix"];
+    case "coach": return ["teacher", null];
     case "ornaments": return ["skills", "ornaments"];
     case "bench": return BENCH_HOME[p] || ["skills", null];
-    case "songs": case "transcribe": return ["music", "songs"];
-    case "compose": case "mine": return ["music", "mine"];
-    case "ragas": return ["music", "ragas"];
-    case "listen": return ["music", "listen"];
+    case "songs": case "transcribe": return ["music", null];
+    case "compose": case "mine": return ["music", null];
+    case "ragas": return ["music", null];
+    case "listen": return ["music", null];
     case "skilltool": return ["skills", p];
-    case "fix": return ["skills", "fix"];
-    case "song": return ["music", "songs"];
-    case "raga": return ["music", "ragas"];
-    case "progress": return ["me", "progress"];
-    case "journal": return ["me", "journal"];
-    case "review": case "feedback": case "students": case "share": return ["me", "teacher"];
-    case "flute": case "benchcheck": return ["me", "flute"];
-    case "settings": case "move": case "privacy": return ["me", "settings"];
-    case "record": return ["me", "journal"];
-    case "flutecheck": case "flutetool": return ["me", "flute"];
-    case "moveout": return ["me", "settings"];
-    case "rates": return ["me", "teacher"];
+    case "fix": return ["teacher", null];
+    case "song": return ["music", null];
+    case "raga": return ["music", null];
+    case "progress": return ["me", null];
+    case "journal": return ["me", null];
+    case "review": case "feedback": case "students": case "share": return ["teacher", null];
+    case "flute": case "benchcheck": return ["me", null];
+    case "settings": case "move": case "privacy": return ["me", null];
+    case "record": return ["me", null];
+    case "flutecheck": case "flutetool": return ["me", null];
+    case "moveout": return ["me", null];
+    case "rates": return ["teacher", null];
     default: return ["today", null];
   }
 }
@@ -157,8 +167,8 @@ Object.assign(MODULE, { record: "journal", flutetool: "settings", moveout: "move
 ["record", "flutecheck", "flutetool", "moveout", "rates"].forEach(v => INNER.add(v));
 // A fix on its own screen (redesign W50) is drawn by the Fix tab's module, with a back link instead of the tabs.
 MODULE.fix = "coach"; INNER.add("fix");
-// Also inside a section: a fix (#/skills/fix/TS-nn) and the Path's views of every phase or earlier unit.
-const isInner = (view, params, anchor) => INNER.has(view) || (view === "coach" && params.length > 0) || (view === "plan" && /^(phases|earlier)$/.test(anchor || ""));
+// Also inside a section: a fix (#/teacher/fix/TS-nn) and the Path's views of every phase or earlier unit.
+const isInner = (view, params, anchor) => INNER.has(view) || (view === "coach" && params.length > 0) || (view === "rooms" && params.length > 0) || (view === "rooms2" && params.length > 0) || (view === "plan" && /^(phases|earlier)$/.test(anchor || ""));
 // Music: Transcribe's six steps have their own header (W59-W64); Make a melody is full screen (W67).
 INNER.add("transcribe"); INNER.add("compose");
 // A saved melody opens in the composer (Music > Mine, W67a).
@@ -171,7 +181,7 @@ const lastSection = place => lastSeen[place] || null;
 const rememberSection = (place, href) => { lastSeen[place] = href; try { localStorage.setItem(LAST, JSON.stringify(lastSeen)); } catch (e) { /* remembered for this visit only */ } };
 let here = ["today", null];
 
-let mainEl, navEl, dayPill, placeName, cleanup = null, routeToken = 0, updateReady = false;
+let mainEl, navEl, placeName, cleanup = null, routeToken = 0, updateReady = false;
 
 // Clears the saved copies of the app and reloads from the network: the way out when an update left
 // mismatched files (an ES module importing something an older module does not have).
@@ -261,13 +271,12 @@ function shell() {
   dock = createDock();
   // Any screen can open the Flute dock on a tab (the Skills hubs' tuner, fingering and taal rows).
   document.addEventListener("bansuri:dock", e => dock.open(e.detail && e.detail.tab));
-  dayPill = h("a", { class: "daypill", href: "#/today" }, "");
   // The place you are in, named at the top left (redesign W1).
   placeName = h("b", { class: "placename" }, "Today");
   const top = h("header", { class: "topbar" },
     h("a", { class: "brand", href: "#/today", "aria-label": "Bansuri Mastery, today" }, h("img", { src: "app/icon.svg", alt: "" }), h("b", { class: "brandname" }, "Bansuri Mastery")), placeName,
     h("span", { class: "spacer" }),
-    h("span", { class: "statuspills" }, dayPill, dock.pill, micPill),
+    h("span", { class: "statuspills" }, dock.pill, micPill),
     h("button", { type: "button", class: "iconbtn", title: "Search (press /)", onclick: openPalette }, icon("search", "Search")),
     // Settings is a Me tab now (redesign 03), so the top bar has no gear.
     dock.button);
@@ -320,7 +329,6 @@ function railSections() {
 function updateChrome() {
   const n = current();
   const d = getDay(n);
-  dayPill.textContent = d ? (d.kind === "milestone" ? "Milestone " + d.milestone : "Day " + n) : "Day " + n;
   // Today's tab carries a ring for how much of today's session is done.
   const todayTab = navEl.querySelector('a[data-k="today"]');
   if (todayTab && d && d.blocks && d.blocks.length) {
@@ -335,7 +343,7 @@ function updateChrome() {
   if (placeName && nav) placeName.textContent = nav[2];
   for (const a of navEl.querySelectorAll("a[data-k]")) {
     // Simple mode's three tiles keep their own names (today, play, listen).
-    const on = getSettings().simple ? a.dataset.k === (here[0] === "today" ? "today" : here[1] === "games" ? "play" : here[1] === "listen" ? "listen" : "") : a.dataset.k === here[0];
+    const on = getSettings().simple ? a.dataset.k === (here[0] === "today" ? "today" : here[0] === "games" || here[1] === "games" ? "play" : here[1] === "listen" ? "listen" : "") : a.dataset.k === here[0];
     if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   }
 }
@@ -383,7 +391,7 @@ function backHeader(view, params) {
   const sec = from || list.find(s => s[0] === here[1]);
   if (!sec) return null;
   // The back link names where it leads (W35, W40, W50); beside it, the screen's short name.
-  const label = view === "milestone" ? "Course" : view === "reader" ? "Course book" : view === "coach" && !from ? "Fix a problem" : sec[2];
+  const label = view === "milestone" ? "Course" : view === "reader" ? "Course book" : view === "coach" && !from ? "Fix" : sec[2];
   const title = view === "milestone" || view === "coach" ? params[0] : view === "reader" ? document.title.replace(/\s+-\s+Bansuri Mastery$/, "") : "";
   return h("nav", { class: "framehead", "aria-label": "Back" }, h("a", { class: "backlink", href: sec[1] }, h("span", { class: "sr-only" }, "Back to"), " ", label),
     title && !/Bansuri Mastery/.test(title) ? h("span", { class: "frametitle" }, view === "milestone" ? [h("span", null, "Milestone"), " "] : null, h("span", { translate: view === "reader" ? null : "no" }, title)) : null);
@@ -416,10 +424,17 @@ async function route() {
   const token = ++routeToken;
   // A level reached during a lesson is celebrated once the lesson has closed.
   setTimeout(levelLater, 0);
-  const parsed = parseHash(), anchor = parsed.anchor;
+  const parsed = parseHash();
+  let anchor = parsed.anchor;
   // Old addresses still work, and the address bar shows the new one (redesign 03, old routes).
   let path = parsed.path;
-  const moved = MOVED[path] || (/^\/coach\/(TS-\d\d)$/.test(path) ? "/skills/fix/" + path.slice(7) : null);
+  // A first-time learner completes the guided baseline before entering the rest of the app.
+  const state = getState();
+  if (!state.startedAt && current() === 0 && !state.prefs.assessmentCompleted && path !== "/today") {
+    path = "/today"; anchor = "";
+    try { history.replaceState(history.state, "", "#/today"); } catch (e) { /* route still renders Today */ }
+  }
+  const moved = MOVED[path] || (/^\/coach\/(TS-\d\d)$/.test(path) ? "/teacher/fix/" + path.slice(7) : null);
   if (moved) { path = moved; try { history.replaceState(history.state, "", "#" + moved + (anchor ? "#" + anchor : "")); } catch (e) { /* the old address stays shown */ } }
   const fwd = forwardOf(path);
   if (fwd) {

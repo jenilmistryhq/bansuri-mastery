@@ -1,0 +1,284 @@
+{
+  "id": "tanpura-and-drone",
+  "title": "The Tanpura and the Drone",
+  "tasks": [
+    {
+      "id": "what-is-drone",
+      "title": "What Is a Drone?",
+      "content": [
+        "A drone is a continuous, sustained sound that provides a harmonic reference for the music. In Indian classical music, the drone is not background noise - it is the foundation. Every note, every phrase, every ornament is heard against and defined by the drone.",
+        "The tanpura (also called tambura) is the instrument traditionally used to provide this drone. It has four strings that are plucked in a continuous cycle, creating a rich, shimmering curtain of sound. The tanpura does not play melody - it only drones.",
+        "Why is the drone so important? Because Indian music is melodic, not harmonic. There are no chords. Instead, each note in a raga creates its own harmonic relationship with the drone. Sa against the drone feels stable. Ga feels warm. Tivra Ma feels restless. These feelings exist only because the drone is there to define them.",
+        "Without a drone, notes are just frequencies. With a drone, they become swaras - living musical entities with character, emotion, and direction. Always practice with a drone."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is the drone essential in Indian classical music?",
+          "options": [
+            { "text": "It provides a chord progression for the melody to follow", "why": "Indian classical music does not use chord progressions. The drone provides a single harmonic reference, not changing chords." },
+            { "text": "It defines the harmonic relationship of every note - each swara's character exists relative to the drone", "right": true, "yes": "Exactly. The drone transforms frequencies into swaras with character. Each note's emotional quality comes from its relationship to the drone." },
+            { "text": "It keeps the rhythm steady", "why": "Rhythm is provided by the tabla or other percussion. The drone provides pitch reference, not rhythmic pulse." }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand that practicing without a drone means missing the most important dimension of Indian music - the harmonic relationships between notes",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "four-strings",
+      "title": "The Tanpura's Four Strings",
+      "content": [
+        "A standard tanpura has four strings, tuned to create a rich harmonic field. The most common tuning is: Pa - Sa - Sa - Sa (from the lowest-pitched string to the highest). That is: the fifth, then three strings all tuned to Sa at different octaves.",
+        "The Pa string (the lowest) is tuned to the Pa below the middle Sa. The three Sa strings span the middle octave. Together, they create a wash of sound built on the most consonant interval in music - the perfect fifth (Sa to Pa).",
+        "Some ragas require a different tuning. Ragas that avoid Pa entirely (like Marwa) or emphasise Ma strongly (like Kedar) use Ma instead of Pa: Ma - Sa - Sa - Sa. This changes the entire harmonic field - everything sounds different because the foundation has shifted.",
+        "The Ni string tuning (Ni - Sa - Sa - Sa) is less common but used for specific ragas. Some performers also add a fifth string tuned to the low Sa for extra depth."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the standard tanpura tuning?",
+          "options": [
+            { "text": "Sa - Re - Ga - Pa", "why": "The tanpura does not play a scale. It drones on just two notes across its four strings." },
+            { "text": "Pa - Sa - Sa - Sa", "right": true, "yes": "Correct. One Pa string and three Sa strings create the fundamental Sa-Pa harmonic field." },
+            { "text": "Sa - Ma - Pa - Sa", "why": "The tanpura uses only two pitch classes, not three or four different notes." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When would you tune the tanpura to Ma instead of Pa?",
+          "options": [
+            { "text": "For any morning raga", "why": "The tuning depends on the raga's note usage, not the time of day." },
+            { "text": "For ragas that avoid Pa or emphasise Ma strongly", "right": true, "yes": "Correct. Ragas like Marwa (no Pa) and Kedar (Ma-centric) use Ma tuning to match their melodic character." },
+            { "text": "Only for Carnatic music", "why": "The Ma tuning is used in both Hindustani and Carnatic traditions when the raga requires it." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "harmonic-field",
+      "title": "The Harmonic Field",
+      "content": [
+        "When the tanpura drones, something magical happens. The four strings do not simply play their fundamental frequencies - they produce a cascade of overtones (harmonics) that fill the entire octave with subtle, shimmering resonances.",
+        "These overtones are what make the drone feel 'alive'. When you play a note on the bansuri and it matches one of the drone's overtones, the two sounds reinforce each other. The note seems to light up, to gain strength and clarity. This is called sympathetic resonance.",
+        "Different swaras resonate differently with the drone. Sa resonates perfectly - it is the drone itself. Pa resonates almost as strongly (the 3:2 ratio). Ga and Dha have warm, sweet resonances. Komal notes and tivra Ma create tension against the drone, which is why they feel unstable or yearning.",
+        "This is not mysticism - it is physics. But the emotional effect is real. The tanpura's overtone field is what gives each swara its characteristic feeling. Without it, a komal Ga is just 300 cents. With it, komal Ga becomes tenderness, longing, or devotion depending on the raga."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 10,
+          "prompt": "Hold Sa within 10 cents for 6 seconds - feel perfect resonance with the drone",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 6,
+          "cents": 10,
+          "prompt": "Hold Pa within 10 cents - feel the strong 3:2 consonance with Sa",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Sa resonate most strongly with the tanpura drone?",
+          "options": [
+            { "text": "Because Sa is played the loudest", "why": "Resonance is about frequency matching, not volume. Sa resonates because it is the drone's fundamental frequency." },
+            { "text": "Because Sa is the drone's own frequency - it matches perfectly", "right": true, "yes": "Correct. Sa is the drone itself. Playing Sa on any instrument perfectly matches the tanpura's fundamental, creating maximum resonance." },
+            { "text": "Because Sa is always the highest note", "why": "Sa is not necessarily the highest note. It resonates because it matches the drone's fundamental frequency." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sa-pa-vs-sa-ma",
+      "title": "Sa-Pa Drone vs Sa-Ma Drone",
+      "content": [
+        "The choice between Sa-Pa and Sa-Ma drone changes everything about how the music sounds and feels.",
+        "The Sa-Pa drone creates a bright, open harmonic field. Pa is the strongest consonance after the octave, so the field feels stable and clear. Most ragas use this drone. The brightness of the Sa-Pa fifth supports ragas with shuddha notes and creates a clear contrast for komal notes.",
+        "The Sa-Ma drone creates a warmer, more intimate harmonic field. Ma (shuddha, the perfect fourth) has a different quality - it is stable but enclosed, like a room with the curtains drawn. Ragas that emphasise Ma (like Kedar, Bageshree, and Malkauns) or that avoid Pa (like Marwa) often sound better with this drone.",
+        "Try this experiment: play a simple Sa-Re-Ga phrase against both drones. Against Sa-Pa, it sounds bright and outward. Against Sa-Ma, it sounds warmer and more inward. Same notes, different world."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which drone tuning creates a brighter, more open harmonic field?",
+          "options": [
+            { "text": "Sa-Ma drone", "why": "The Sa-Ma drone creates a warmer, more enclosed feeling. Brightness comes from the fifth." },
+            { "text": "Sa-Pa drone", "right": true, "yes": "Correct. The Sa-Pa fifth creates the brightest, most open harmonic field. It is the standard choice for most ragas." },
+            { "text": "Both are identical in brightness", "why": "Pa and Ma create very different harmonic environments. The fifth (Sa-Pa) is significantly brighter than the fourth (Sa-Ma)." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which raga would most benefit from a Sa-Ma drone?",
+          "options": [
+            { "text": "Yaman (uses tivra Ma and Pa prominently)", "why": "Yaman's tivra Ma and strong Pa make it well-suited to the standard Sa-Pa drone." },
+            { "text": "Marwa (avoids Pa entirely, emphasises Ma-region)", "right": true, "yes": "Correct. Marwa has no Pa at all, so the Sa-Pa drone would clash with its character. The Sa-Ma drone matches its Ma-centric world." },
+            { "text": "Bhupali (pentatonic with prominent Pa)", "why": "Bhupali's prominent Pa makes it ideal for the Sa-Pa drone." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "digital-vs-tanpura",
+      "title": "Digital Drones and Tanpura Apps",
+      "content": [
+        "Most students today practice with digital drone apps rather than a physical tanpura. This is practical and effective, but there are differences worth understanding.",
+        "A real tanpura produces a naturally rich, complex tone with organic overtones that shift subtly with each stroke. The sound has a living quality - no two cycles are exactly alike. This complexity trains your ear to listen deeply.",
+        "Digital drones come in two categories. Sample-based apps (like iTanpura or Tanpura Droid) use recordings of real tanpuras, preserving much of the natural richness. Synthesized drones generate the sound electronically - they are consistent and convenient but lack the organic complexity.",
+        "For daily practice, any drone is vastly better than no drone. A good tanpura app on your phone, played through decent speakers (not tiny phone speakers), provides an excellent practice companion. As you advance, you may want to invest in a physical tanpura or a high-quality electronic tanpura (like the Radel or similar) for the richer overtone experience."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What advantage does a real tanpura have over a digital drone?",
+          "options": [
+            { "text": "It plays louder", "why": "Volume is not the advantage. Digital drones can be amplified to any volume." },
+            { "text": "Its natural overtones are organically complex and subtly shifting", "right": true, "yes": "Correct. The tanpura's wooden body and metal strings create a living, breathing sound with natural complexity that trains the ear." },
+            { "text": "It plays more notes", "why": "Both play the same notes (Sa and Pa or Ma). The difference is in tonal quality, not note count." }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will always practice with a drone running - even a phone app is far better than no drone at all",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "active-listening",
+      "title": "Practicing with the Drone",
+      "content": [
+        "Simply having the drone on in the background is not enough. You need to listen actively to the relationship between your notes and the drone.",
+        "Here is a practice method: play a single note and hold it. Listen to the combined sound of your note plus the drone. Is it smooth and resonant? Or is there a wavering, beating quality? Adjust your pitch until the beating disappears and the note locks in.",
+        "Now try this with each of the seven shuddha swaras in sequence. Hold each one for at least 5 seconds. Notice which notes lock in easily (Sa, Pa) and which require more careful tuning (Ga, Ni). The harder notes are the ones where shruti awareness matters most.",
+        "Advanced exercise: play a phrase slowly and notice how the consonance changes from note to note. Some notes feel like arriving home. Others feel like leaning into the wind. This changing consonance is the drone's gift - it makes the melody three-dimensional."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 6,
+          "cents": 12,
+          "prompt": "Hold Re within 12 cents for 6 seconds - listen to its bright consonance with the drone",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 11,
+          "seconds": 6,
+          "cents": 12,
+          "prompt": "Hold Ni within 12 cents for 6 seconds - notice its sweet, intimate quality against the drone",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "rounds": 6,
+          "prompt": "Identify all seven shuddha swaras as they sound against the drone",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "tanpura-in-performance",
+      "title": "The Tanpura in Performance",
+      "content": [
+        "In a classical concert, the tanpura is not just a practice tool - it is an essential part of the ensemble. One or two tanpura players sit behind the soloist, maintaining the drone throughout the performance.",
+        "The tanpura player's role is subtle but critical. They maintain a steady, even cycle of plucking. The strings must ring cleanly without buzzing or dying too quickly. The tuning must be perfect - even a slightly off tanpura can undermine an entire performance.",
+        "For bansuri players, the tanpura's role is especially important because the bansuri's pitch is entirely relative. Unlike a piano or sitar (which has fixed frets), the bansuri has no built-in reference. The drone IS the reference. Without it, there is no anchor for the bansuri's floating pitch.",
+        "In modern performances, electronic tanpuras or tanpura apps often supplement or replace the live instrument. This is widely accepted - what matters is the quality and consistency of the drone, not the specific source."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is the drone especially important for bansuri players?",
+          "options": [
+            { "text": "The bansuri is very quiet and needs amplification", "why": "Volume is not the issue. The drone provides pitch reference, not volume support." },
+            { "text": "The bansuri has no fixed pitch reference - no frets, no keys - so the drone is its only anchor", "right": true, "yes": "Correct. The bansuri's pitch is entirely controlled by breath and fingers. The drone provides the external reference that makes accurate intonation possible." },
+            { "text": "The tanpura hides the bansuri's imperfections", "why": "The drone actually reveals imperfections by making pitch discrepancies audible through beating." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many strings does a standard tanpura have?",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "note-feelings",
+      "title": "Each Note's Feeling Against the Drone",
+      "content": [
+        "Here is a map of how each swara feels against the standard Sa-Pa drone. Use this as a guide for your listening practice.",
+        "Sa: perfect stability, home, rest. Pa: almost-perfect stability, a second anchor, openness. Re (shuddha): bright, clear, forward-looking. Ga (shuddha): warm, sweet, intimate. Ma (shuddha): grounded, solid, foundational. Dha (shuddha): bright and open, like Re but higher. Ni (shuddha): sweet and intimate, like Ga but higher.",
+        "Komal notes introduce tension and color. Komal Re: intense, close, slightly dark. Komal Ga: tender, vulnerable, yearning. Komal Dha: heavy, shadowed, subdued. Komal Ni: soft, warm, slightly melancholic. Tivra Ma: restless, aspiring, wanting to move upward.",
+        "These are not arbitrary associations. They arise from the physics of consonance and dissonance. Notes with simpler frequency ratios to Sa feel more stable. Notes with more complex ratios feel more tense. Practice holding each note and verifying these feelings for yourself."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold shuddha Ga - feel its warm, sweet quality",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 3,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold komal Ga - feel how it shifts to tender, yearning",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 6,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold tivra Ma - feel its restless, aspiring energy",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [3, 4, 5, 6],
+          "rounds": 5,
+          "prompt": "Distinguish komal Ga, shuddha Ga, shuddha Ma, and tivra Ma by their feeling",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "drone-habit",
+      "title": "Building the Drone Habit",
+      "content": [
+        "The simplest and most impactful change you can make to your practice is this: never pick up the bansuri without starting the drone first.",
+        "Make it a ritual. Open your drone app (or tune your tanpura). Let it ring for 10-15 seconds before you play your first note. Listen to the drone alone. Let it settle into your awareness. Then, when you play your first Sa, listen to how it merges with the drone.",
+        "Every practice session should start this way, whether it is 10 minutes or 2 hours. The drone is not an optional accessory - it is the foundation. Playing without it is like painting in the dark. You might produce something, but you cannot see the colors.",
+        "Over time, the drone will become second nature. You will feel incomplete without it. This is a sign of musical growth. When the drone becomes indispensable, your ears have learned to listen in the Indian way - relationally, not absolutely."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 9, 12],
+          "prompt": "Play this ascending phrase against the drone: Sa R G P D Sa' - feel each note's relationship to the drone",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I commit to always starting the drone before picking up my bansuri - making it a non-negotiable part of every practice session",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

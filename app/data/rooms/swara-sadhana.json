@@ -1,0 +1,260 @@
+{
+  "id": "swara-sadhana",
+  "title": "Swara Sadhana - Note Practice",
+  "tasks": [
+    {
+      "id": "t1-discipline",
+      "title": "The Discipline of Sound",
+      "content": [
+        "Swara sadhana means \"the spiritual practice of notes.\" It is the most foundational practice in Indian music - the disciplined, meditative exploration of each individual note. Before you play ragas, you must know each note intimately: its sound, its personality, its relationship to the drone, its emotional quality.",
+        "Great musicians do not simply play notes - they inhabit them. When a master holds a single Re against the drone, the note comes alive with intention and meaning. This intimacy comes only from dedicated swara sadhana. It is what separates correct playing from beautiful playing."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does 'sadhana' mean?",
+          "options": [
+            { "text": "Spiritual practice or discipline", "right": true, "yes": "Correct. Sadhana is a devoted, disciplined practice - applied here to the study of individual notes." },
+            { "text": "Musical scale", "why": "That would be 'saptak.' Sadhana means spiritual practice or discipline." },
+            { "text": "Rhythm pattern", "why": "Rhythm patterns relate to taal. Sadhana means spiritual practice or discipline." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does swara sadhana develop beyond technical ability?",
+          "options": [
+            { "text": "Intimate knowledge of each note's character and emotion", "right": true, "yes": "Exactly. Swara sadhana builds a deep, personal relationship with each note - its feeling, its personality, its expressive potential." },
+            { "text": "Faster finger speed", "why": "Speed comes from alankar practice. Swara sadhana develops intimate knowledge of each note's character." },
+            { "text": "Louder volume", "why": "Volume is about breath control. Swara sadhana develops intimate knowledge of each note's character and emotion." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-sa",
+      "title": "Sa Sadhana",
+      "content": [
+        "Begin with Sa. Play the drone. Hold Sa for a full breath. Listen to how your note merges with the drone. When perfectly in tune, you hear a \"locking\" effect - the two sounds seem to become one. The boundaries between your note and the drone dissolve.",
+        "Sa is home, stability, the foundation. Every other note is defined by its relationship to Sa. If your Sa is not solid, nothing else can be solid. Spend at least 5 minutes on Sa at the beginning of every practice session. This is not wasted time - it is the most important five minutes of your day."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 10,
+          "cents": 10,
+          "prompt": "Hold Sa with the tightest precision you can manage. Feel it merge with the drone.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What happens when your Sa perfectly merges with the drone?",
+          "options": [
+            { "text": "You hear a locking effect - the two sounds become one", "right": true, "yes": "Yes. When perfectly in tune, the note and drone seem to fuse. This 'locking' is the sound of perfect intonation." },
+            { "text": "The drone gets louder", "why": "The drone volume stays the same. What you hear is a merging or locking effect where the two sounds fuse." },
+            { "text": "Your note echoes", "why": "This is not about echo. When perfectly in tune, the note and drone merge into one unified sound." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-re",
+      "title": "Re Sadhana",
+      "content": [
+        "Re is the first step away from home. It represents gentle movement, curiosity, the beginning of a journey. Hold Re against the drone and listen - it has a different quality than Sa. It vibrates with a subtle tension, a gentle pull.",
+        "Re wants to either return to Sa or continue upward to Ga. This directional quality is what makes Re a note of movement and possibility. When you hold Re in swara sadhana, feel this pull. Notice how Re is never fully at rest the way Sa is - it always suggests the next step."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 8,
+          "cents": 15,
+          "prompt": "Hold Re and feel its gentle tension against the drone. Notice how it pulls toward Sa below or Ga above.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What quality does Re have when held against the drone?",
+          "options": [
+            { "text": "A gentle pull or tension - it suggests movement", "right": true, "yes": "Exactly. Re is a note of motion. It never fully rests - it always implies the next step, either back to Sa or forward to Ga." },
+            { "text": "Complete stability, like Sa", "why": "Sa is the stable home note. Re has a gentle tension that suggests movement rather than rest." },
+            { "text": "Dissonance and harshness", "why": "Shuddha Re is consonant and pleasant. Its quality is one of gentle pull, not harshness." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-ga",
+      "title": "Ga Sadhana",
+      "content": [
+        "Ga is the emotional center of the shuddha scale. It is warm, bright, and expressive. When you hold shuddha Ga against the drone, it creates a major-third interval - the interval of happiness and openness.",
+        "komal Ga creates a minor-third - the interval of tenderness and introspection. The difference is just 1 semitone, but the emotional shift is enormous. Knowing both versions of Ga deeply is essential for raga playing. Many ragas are defined by which Ga they use - and the best musicians make you feel the difference in every phrase."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 8,
+          "cents": 15,
+          "prompt": "Hold shuddha Ga and feel its brightness - the warmth of the major third against the drone.",
+          "points": 10
+        },
+        {
+          "type": "ear",
+          "notes": [3, 4],
+          "rounds": 4,
+          "prompt": "Distinguish komal Ga from shuddha Ga. One semitone, two completely different emotions.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What interval does shuddha Ga create with Sa?",
+          "options": [
+            { "text": "A major third", "right": true, "yes": "Correct. Shuddha Ga (4 semitones above Sa) creates a major third - the interval associated with brightness and openness." },
+            { "text": "A perfect fifth", "why": "The perfect fifth is Pa (7 semitones). Shuddha Ga creates a major third at 4 semitones." },
+            { "text": "A minor third", "why": "The minor third is komal Ga (3 semitones). Shuddha Ga at 4 semitones creates a major third." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t5-ma-pa",
+      "title": "Ma and Pa Sadhana",
+      "content": [
+        "Ma is the gateway - it sits at the center of the scale, balanced between the lower tetrachord (Sa Re Ga Ma) and the upper tetrachord (Pa Dha Ni Sa'). Pa is the structural pillar - the perfect fifth, the strongest consonance after the octave.",
+        "Together, Ma and Pa form the core of the scale. Practice each separately: hold Ma and feel its centrality, then hold Pa and feel its strength. Then practice the Ma-Pa movement - this 2-semitone step is one of the most important intervals in Indian music. It opens the door from the lower half of the scale into the upper."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Ma and feel its balanced centrality - the gateway between the two halves of the scale.",
+          "points": 8
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 6,
+          "cents": 10,
+          "prompt": "Hold Pa and feel its structural strength - the perfect fifth, solid and unwavering.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What does the perfect fifth interval (Sa to Pa) represent?",
+          "options": [
+            { "text": "The strongest consonance after the octave", "right": true, "yes": "Correct. The perfect fifth is the most stable interval besides the octave. Pa reinforces Sa and provides structural stability to the scale." },
+            { "text": "The most dissonant interval", "why": "The perfect fifth is one of the most consonant intervals, not dissonant. It reinforces Sa." },
+            { "text": "An emotional interval like Ga", "why": "Pa is structural rather than emotional. It provides stability rather than expressiveness." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-dha-ni",
+      "title": "Dha and Ni Sadhana",
+      "content": [
+        "Dha is the note of sweetness - gentle, warm, and evening-like. It has a settled quality, a sense of contentment. Ni is the note of aspiration - it reaches upward toward the upper Sa, creating anticipation and yearning.",
+        "These two notes complete the saptak and define its upper character. Hold each one and notice: Dha feels settled and content, while Ni feels like it is about to arrive somewhere. This directional quality of Ni is why many ragas use it to build toward upper Sa. The Ni-to-Sa' resolution is one of the most satisfying moments in music."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 9,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Dha and feel its sweetness - settled, warm, content.",
+          "points": 8
+        },
+        {
+          "type": "hold",
+          "target": 11,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Ni and feel its aspiration - reaching upward, almost home but not yet there.",
+          "points": 8
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Ni create a sense of anticipation?",
+          "options": [
+            { "text": "It is just 1 semitone below upper Sa, pulling strongly toward resolution", "right": true, "yes": "Yes. Ni sits so close to the upper Sa that it creates an almost magnetic pull toward home. This anticipation is what makes Ni such an expressive note." },
+            { "text": "It is the loudest note on the bansuri", "why": "Volume does not create anticipation. Ni's closeness to upper Sa (just 1 semitone away) creates the pull." },
+            { "text": "It is the lowest note in the scale", "why": "Ni is near the top of the scale. Its position just 1 semitone below upper Sa is what creates anticipation." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-session",
+      "title": "The Practice Session",
+      "content": [
+        "A complete swara sadhana session: (1) Sa - 5 minutes. Re-establish your foundation. (2) Re, Ga, Ma, Pa, Dha, Ni - 3 minutes each, 21 minutes total. Hold each note, explore it, feel it. (3) Connect - 5 minutes. Slowly ascend and descend through all seven notes, one breath per note.",
+        "Total: about 30 minutes. This practice, done daily, transforms your relationship with the instrument from mechanical to intimate. After a month of daily swara sadhana, you will notice a difference in everything you play. After a year, the transformation will be profound."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play each note of the ascending saptak with full awareness and intention. This is not a scale - it is a journey through seven distinct personalities.",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice swara sadhana for 30 minutes daily, giving each note my full attention."
+        }
+      ]
+    },
+    {
+      "id": "t8-overtones",
+      "title": "Listening to Overtones",
+      "content": [
+        "When a note is perfectly in tune with the drone, you hear overtones - faint, shimmering tones above the fundamental that create a sense of richness and depth. These overtones are not imaginary - they are real acoustic phenomena produced by the interaction of your note with the drone.",
+        "Training your ear to hear overtones is the advanced level of swara sadhana. As your ears become more sensitive, you will hear the drone \"open up\" when your note locks in. Additional tones shimmer into existence above the fundamental. This is the sound of perfect intonation - and once you hear it, you can never unhear it."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What are overtones?",
+          "options": [
+            { "text": "Additional tones that shimmer above the fundamental when notes are perfectly in tune", "right": true, "yes": "Correct. Overtones are real acoustic phenomena - higher-frequency tones that emerge when your played note perfectly aligns with the drone." },
+            { "text": "Echo effects from the room", "why": "Echoes are reflections of sound. Overtones are additional frequencies that emerge from the interaction of two perfectly tuned notes." },
+            { "text": "Mistakes in tuning", "why": "Overtones are the opposite of mistakes - they appear when tuning is perfect, as a sign of precise intonation." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When do overtones become most audible?",
+          "options": [
+            { "text": "When a note is perfectly in tune with the drone", "right": true, "yes": "Yes. The more precisely your note aligns with the drone, the more overtones become audible. Perfect intonation creates a rich, shimmering sound." },
+            { "text": "When playing very loudly", "why": "Volume does not produce overtones. They emerge from the precise alignment between your note and the drone." },
+            { "text": "When playing very quickly", "why": "Speed has nothing to do with overtones. They require sustained, perfectly tuned notes to become audible." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t9-to-music",
+      "title": "From Sadhana to Music",
+      "content": [
+        "Swara sadhana is not an end in itself - it is the foundation from which all music emerges. When you have deeply practiced each note, your playing gains an authority that listeners feel even if they cannot name it. Each note comes from knowledge, not guesswork. Each phrase is built on intimate familiarity.",
+        "The musician who does swara sadhana plays with the confidence of someone who knows every brick in the building they have constructed. Notes are not obstacles to navigate but friends to visit. This is the difference between a student who plays notes and a musician who speaks through them."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the full ascending and descending saptak with the awareness of swara sadhana. Each note is a friend, not a fingering.",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand that mastery begins with knowing each note deeply - not as a fingering pattern, but as a musical personality."
+        }
+      ]
+    }
+  ]
+}

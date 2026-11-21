@@ -1,0 +1,231 @@
+{
+  "id": "gamak-and-andolan",
+  "title": "Gamak and Andolan",
+  "tasks": [
+    {
+      "id": "what-is-gamak",
+      "title": "What Is Gamak?",
+      "content": ["Gamak is a rapid oscillation between two adjacent notes. Unlike vibrato (which stays near one pitch), gamak moves clearly between two distinct pitches - for example, between Ga and Ma, or between Re and Ga.", "On the bansuri, gamak is produced by rapidly varying air pressure while simultaneously rocking a finger over its hole. The finger does not fully lift off - it creates a partial opening that makes the pitch waver between two notes. The oscillation rate (how many cycles per second) and width (how far the pitch travels) define the character of the gamak.", "Gamak adds power and intensity. It is especially important in ragas like Darbari, Malkauns, and Todi where the notes need a heavy, weighty quality. A note with gamak feels grounded and serious. The same note without gamak feels bare and unfinished in these ragas."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is gamak?",
+          "options": [
+            {
+              "text": "A slow slide between two distant notes",
+              "why": "That would be meend. Gamak is a rapid oscillation, not a slow slide."
+            },
+            {
+              "text": "A rapid oscillation between two distinct notes",
+              "right": true,
+              "yes": "Correct. Gamak creates a powerful shaking effect by moving quickly between two pitches."
+            },
+            {
+              "text": "A single grace note before the main note",
+              "why": "That would be a kan. Gamak is a continuous oscillation."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gamak-technique",
+      "title": "How Gamak Works on Bansuri",
+      "content": ["On the bansuri, gamak comes from the coordination of two forces: steady breath support and rapid finger rocking.", "The physics: when you rock a finger over a tone hole, you are rapidly changing the effective length of the air column inside the flute. A fully covered hole gives one pitch; a partially open hole gives a higher pitch. Rocking between these two states produces the oscillation.", "The key points:", "Speed - the oscillation must be fast enough to blur the two notes together, typically 3-6 cycles per second.", "Evenness - both notes should be equally clear. If one note dominates, the gamak sounds lopsided.", "Weight - gamak should feel heavy and grounded, not light and fluttery. This comes from strong, steady breath pressure.", "Breath support - strong, steady air is essential. Without enough breath, gamak sounds weak and dies out.", "Start slowly - even two or three oscillations per second is enough at first. Speed comes with practice. The goal is control, not velocity."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is essential for a strong gamak on bansuri?",
+          "options": [
+            {
+              "text": "Fully lifting the finger off the hole each time",
+              "why": "The finger rocks over the hole rather than fully lifting off."
+            },
+            {
+              "text": "Strong, steady breath support with a rocking finger motion",
+              "right": true,
+              "yes": "Correct. The combination of steady air and rapid finger rocking creates the characteristic power of gamak."
+            },
+            {
+              "text": "Using tongue articulation to create the oscillation",
+              "why": "Gamak comes from finger movement and air pressure, not tongue."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gamak-vs-vibrato",
+      "title": "Gamak vs Vibrato",
+      "content": ["Gamak and vibrato are often confused. Here is the difference:", "Vibrato stays near one pitch. The oscillation is narrow - perhaps 20-30 cents above and below the note. The listener hears one note with a warm shimmer.", "Gamak moves clearly between two distinct pitches. The oscillation is wide - a full semitone or more. The listener hears both notes.", "In Western music, vibrato is the standard decoration. In Hindustani classical music, gamak fills that role in heavy, serious ragas. Using vibrato where gamak is expected (or the reverse) changes the raga's character.", "A useful way to remember: vibrato decorates one note. Gamak bridges two notes."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does gamak differ from vibrato?",
+          "options": [
+            {
+              "text": "Gamak is slower than vibrato",
+              "why": "Speed is not the main difference. The width of oscillation is."
+            },
+            {
+              "text": "Gamak oscillates between two distinct notes, while vibrato stays near one pitch",
+              "right": true,
+              "yes": "Correct. The width of the oscillation is what separates them."
+            },
+            {
+              "text": "They are the same technique with different names",
+              "why": "They are fundamentally different in width and character."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-steady-ga",
+      "title": "Practice: Steady Ga",
+      "content": "Before you can add gamak, you need a rock-steady note to start from. Hold Ga (shuddha Ga - open holes 2 and 3) as steadily as you can.\n\nFocus on:\n- Even breath pressure throughout\n- No wobble or drift in pitch\n- A clean, centred tone\n\nOnce you can hold Ga steady, adding a controlled shake later will be much easier. The contrast between a steady note and one with gamak is what gives the ornament its expressive power.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold Ga steady for 5 seconds within 30 cents",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "what-is-andolan",
+      "title": "Andolan - Slow Oscillation",
+      "content": ["Andolan is a slow, gentle oscillation on a note. While gamak is vigorous and powerful, andolan is subtle and meditative.", "The key distinction: andolan is SLOW and WIDE, gamak is FAST and NARROW in feel. Andolan can span a semitone or more in its sway, but it moves so slowly that you hear one note gently leaning toward its neighbour and coming back. Gamak moves rapidly and both notes are distinctly audible.", "On the bansuri, andolan is produced by very slowly rocking the finger over the hole - much more slowly than gamak. The pitch sways gently, like a flame in a breeze. The note does not fully change to the next pitch; it leans toward it and comes back.", "Andolan typically takes 1-2 seconds per oscillation cycle, compared to gamak's 3-6 cycles per second. This glacial pace gives andolan its hypnotic, meditative quality.", "Andolan is essential in ragas where specific notes need a 'swaying' quality. Without it, these ragas lose their identity."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does andolan differ from gamak?",
+          "options": [
+            {
+              "text": "Andolan is fast and vigorous",
+              "why": "That describes gamak. Andolan is slow and gentle."
+            },
+            {
+              "text": "Andolan is a slow, gentle sway while gamak is a rapid, powerful shake",
+              "right": true,
+              "yes": "Correct. Andolan is meditative and subtle; gamak is intense and powerful."
+            },
+            {
+              "text": "Andolan uses the tongue while gamak uses the fingers",
+              "why": "Both use finger movement over the holes. The difference is speed and intensity."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "andolan-in-ragas",
+      "title": "Andolan in Ragas",
+      "content": ["Andolan is not used randomly. Specific ragas demand andolan on specific notes:", "Raga Darbari Kanada - Komal Ga and komal Dha must have andolan. The andolan on komal Ga in Darbari is one of the most distinctive sounds in all of Hindustani music: a slow, wide oscillation that explores the entire space between komal Re and komal Ga. Without it, Darbari collapses into Kafi or Asavari. This is the most famous example.", "Raga Todi - Komal Re and komal Dha need andolan, giving Todi its characteristic yearning quality.", "Raga Marwa - Komal Re receives andolan, contributing to the tense, restless mood.", "Raga Yaman - Ga and Ni receive a gentle andolan, adding warmth and luminosity.", "Andolan on the wrong note, or in the wrong raga, sounds like a mistake. On the right note, it is the raga's soul."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In Raga Darbari Kanada, which note receives the most famous andolan?",
+          "options": [
+            {
+              "text": "Shuddha Ga",
+              "why": "Darbari uses komal Ga, not shuddha Ga. And it is komal Ga that receives the distinctive andolan."
+            },
+            {
+              "text": "Komal Ga - with a wide, slow oscillation",
+              "right": true,
+              "yes": "Correct. Darbari's komal Ga with andolan is one of the most distinctive sounds in Hindustani music."
+            },
+            {
+              "text": "Pa",
+              "why": "Pa is a stable note in Darbari and does not receive andolan."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zamzama",
+      "title": "Zamzama - The Rapid Trill",
+      "content": ["Zamzama is a rapid, continuous alternation between two specific adjacent notes - like a trill in Western music, but heavier and more deliberate. While gamak oscillates around one note with varying width, zamzama is a precise, controlled alternation between two defined pitches.", "Zamzama is especially important in dhrupad (the oldest form of Hindustani vocal music), where it adds gravity and intensity to phrases. On the bansuri, it is produced by rapidly and evenly lifting and lowering one finger while maintaining strong breath pressure.", "The difference from gamak: in gamak, the oscillation width can vary and the technique is a rocking motion. In zamzama, both notes are fully sounded with equal clarity and even timing. Think of gamak as a shake and zamzama as a strict alternation.", "Practice zamzama between Re and Ga first - these are adjacent notes controlled by one finger. Play Re, then rapidly alternate Re-Ga-Re-Ga-Re-Ga at an even speed."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [2, 4, 2, 4, 2, 4, 2],
+          "prompt": "Play a zamzama between Re and Ga - rapid, even alternation",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "How does zamzama differ from gamak?",
+          "options": [
+            {
+              "text": "Zamzama is slower than gamak",
+              "why": "Speed is not the distinction. Zamzama is a strict alternation between two defined notes; gamak is a rocking oscillation."
+            },
+            {
+              "text": "Zamzama is a precise alternation between two defined notes, while gamak is a rocking oscillation",
+              "right": true,
+              "yes": "Right. Zamzama gives both notes equal clarity. Gamak is a less defined shake."
+            },
+            {
+              "text": "They are the same technique",
+              "why": "They are related but distinct. Zamzama demands precise, even alternation; gamak is a looser oscillation."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raga-gamak-prescriptions",
+      "title": "Raga Gamak Prescriptions",
+      "content": ["Every raga has its own 'prescription' for which notes receive which ornament. Learning these prescriptions is essential for authentic raga performance.", "Raga Malkauns: Ma receives heavy gamak. This is the defining ornament of Malkauns - without gamak on Ma, the raga loses its gravity and power. The gamak on Ma gives each phrase a weighty, almost percussive quality.", "Raga Darbari Kanada: Komal Ga receives a distinctive slow andolan - a wide, deliberate oscillation that explores the space between Re and Ga. Komal Dha also receives andolan. These are non-negotiable; without them, Darbari is not Darbari.", "Raga Yaman: Ga and Ni receive gentle andolan - a subtle warmth, not the heavy treatment of Darbari. Yaman's ornaments are lighter and more luminous.", "Raga Bhairavi: Komal Re receives a subtle shaking, and komal Ga gets light gamak. The treatment is tender, not forceful - matching Bhairavi's devotional character.", "Raga Todi: Komal Re and komal Dha receive andolan. Shuddha Ga gets a slight push from komal Ga below.", "Think of these prescriptions as part of the raga's grammar. Getting the notes right but the ornaments wrong is like speaking with correct vocabulary but wrong intonation - the meaning is lost."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In Raga Malkauns, which note receives heavy gamak as its defining ornament?",
+          "options": [
+            {
+              "text": "Sa",
+              "why": "Sa is a stable anchor note and does not receive gamak."
+            },
+            {
+              "text": "Ma - heavy gamak is essential to Malkauns",
+              "right": true,
+              "yes": "Correct. Without gamak on Ma, Malkauns loses its gravity and power."
+            },
+            {
+              "text": "Pa",
+              "why": "Malkauns does not use Pa at all - it is a pentatonic raga without Re and Pa."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which raga requires a slow, wide andolan on komal Ga as its signature ornament?",
+          "answer": "Darbari",
+          "accept": ["Darbari", "darbari", "Darbari Kanada", "darbari kanada"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "ear-training-weight",
+      "title": "Ear Training: Notes with Weight",
+      "content": "Gamak and andolan are applied to specific notes - often komal (flat) swaras that carry emotional weight. Train your ear to quickly identify these notes.\n\nThis exercise mixes komal and shuddha notes. Listen carefully - the komal notes (g, d) are the ones that often receive gamak or andolan in serious ragas. Learning to identify them by ear is the first step toward knowing where ornaments belong.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [3, 4, 7, 8, 9],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note - komal and shuddha together. 4 of 6 to pass.",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

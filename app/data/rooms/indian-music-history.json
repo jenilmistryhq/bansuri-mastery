@@ -1,0 +1,346 @@
+{
+  "id": "indian-music-history",
+  "title": "Indian Music History",
+  "tasks": [
+    {
+      "id": "from-the-vedas",
+      "title": "From the Vedas",
+      "content": ["Indian music has one of the longest continuous traditions in the world, stretching back over 3,000 years. It begins with the Samaveda - the 'Veda of melodies' - where sacred Rigvedic verses were set to melodic patterns called saman. The Samaveda is essentially a musical instruction manual for Vedic rituals.", "The earliest chanting used three pitch levels: udatta (raised), anudatta (lowered), and svarita (a combination of both). These three pitch accents were the seed from which the full seven-swara system eventually grew. Music in this period was inseparable from ritual - it was not entertainment but a sacred technology, believed to maintain cosmic order.", "When you play Sa Re Ga on your bansuri, you are continuing a tradition that began in the Bronze Age. The names of the swaras - Shadja, Rishabha, Gandhara, Madhyama, Panchama, Dhaivata, Nishada - appear in texts over two millennia old. Each name originally described the sound's source: Shadja means 'born from six' (the other six notes), Rishabha imitates a bull's call, Panchama means 'the fifth.'"],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which Veda is considered the origin of Indian musical tradition?",
+          "options": [
+            {
+              "text": "Rigveda",
+              "why": "The Rigveda contains the original hymns, but it was the Samaveda that set them to melodies - making it the foundation of Indian music."
+            },
+            {
+              "text": "Samaveda",
+              "right": true,
+              "yes": "Correct. The Samaveda - the 'Veda of melodies' - took Rigvedic verses and set them to musical patterns, founding the Indian musical tradition."
+            },
+            {
+              "text": "Yajurveda",
+              "why": "The Yajurveda deals primarily with rituals and prose formulas, not musical melodies."
+            },
+            {
+              "text": "Atharvaveda",
+              "why": "The Atharvaveda contains hymns and spells but is not the source of the musical tradition."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many pitch levels did the earliest Vedic chanting use?",
+          "answer": "3",
+          "accept": ["3", "three"],
+          "hint": "Think of udatta, anudatta, and svarita."
+        }
+      ]
+    },
+    {
+      "id": "bharatas-natyashastra",
+      "title": "Bharata's Natyashastra",
+      "content": ["Around 200 BCE to 200 CE, the sage Bharata compiled one of the most important texts in human artistic history: the Natyashastra. This massive treatise - sometimes called the 'fifth Veda' - covers music, dance, drama, stagecraft, and aesthetics in extraordinary detail across 36 chapters.", "The Natyashastra defined 22 shrutis - micro-intervals within the octave that are finer than the 12 semitones used in Western music. It established the seven shuddha swaras (pure notes) and described how they relate to each other through precise shruti intervals. It also laid the groundwork for the raga system, though melodic modes were called 'jati' in this period, not yet 'raga.'", "Perhaps the Natyashastra's most profound contribution is the theory of rasa - the idea that the purpose of all performing arts is to create specific emotional experiences in the audience. Bharata defined eight rasas (later expanded to nine): shringara (love), hasya (laughter), karuna (compassion), raudra (fury), veera (heroism), bhayanaka (fear), bibhatsa (disgust), and adbhuta (wonder). Every raga, every performance, aims to evoke one or more of these rasas. When you play a night raga and feel melancholy settle over the room - that is rasa at work."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many shrutis (micro-intervals) did the Natyashastra define within the octave?",
+          "options": [
+            {
+              "text": "7 - one for each swara",
+              "why": "7 is the number of shuddha swaras. The Natyashastra defined 22 shrutis - finer divisions within the octave."
+            },
+            {
+              "text": "12 - like Western semitones",
+              "why": "12 semitones is the Western division. Indian theory recognises 22 micro-intervals (shrutis) within the octave."
+            },
+            {
+              "text": "22 - finer than Western semitones",
+              "right": true,
+              "yes": "Correct. The 22-shruti system is one of the defining features of Indian classical music, allowing for subtler pitch distinctions than the Western 12-tone system."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What were melodic modes called in the Natyashastra, before the word 'raga' came into use?",
+          "options": [
+            {
+              "text": "Thaat",
+              "why": "Thaat is Bhatkhande's much later classification system (early 20th century). In the Natyashastra, melodic modes were called jati."
+            },
+            {
+              "text": "Jati",
+              "right": true,
+              "yes": "Right. 'Jati' was the term Bharata used. The word 'raga' in its modern sense came centuries later, in Matanga's Brihaddeshi."
+            },
+            {
+              "text": "Murchhana",
+              "why": "Murchhana refers to modal shifts (starting a scale from different notes), not the melodic modes themselves."
+            },
+            {
+              "text": "Shruti",
+              "why": "Shruti refers to the micro-intervals, not the melodic modes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-word-raga",
+      "title": "The Word 'Raga'",
+      "content": ["The word 'raga' in its modern musical sense first appears in Matanga's Brihaddeshi, written around the 9th century CE. Before this, melodic modes had been called 'jati' (in the Natyashastra) or described through other terms. Matanga was the first to use 'raga' specifically to mean a melodic framework with defined ascending and descending patterns, characteristic phrases, and an emotional identity.", "The word 'raga' comes from the Sanskrit root 'ranj,' meaning 'to colour' or 'to delight.' A raga literally colours the mind of the listener with emotion. This etymology captures something essential: a raga is not just a scale or a set of rules. It is a living entity that creates a specific emotional atmosphere. Two ragas can use identical notes but feel completely different because of their characteristic phrases, emphasis notes, and movement patterns.", "By the 13th century, the tradition had grown enormously. Sarangadeva's Sangita Ratnakara (around 1230 CE) - often called the most comprehensive medieval treatise on Indian music - catalogued 264 ragas and covered rhythm, instruments, voice types, and dance in exhaustive detail. The Sangita Ratnakara is especially important because it was written just before the Hindustani-Carnatic split, so it represents a unified tradition. Both Northern and Southern musicians claim it as foundational."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What Sanskrit root does the word 'raga' come from, meaning 'to colour' or 'to delight'?",
+          "answer": "ranj",
+          "accept": ["ranj", "ranj-", "ranja"],
+          "hint": "It means 'to colour' or 'to delight' in Sanskrit."
+        },
+        {
+          "type": "choice",
+          "prompt": "Who first used the word 'raga' in its modern musical sense?",
+          "options": [
+            {
+              "text": "Bharata, in the Natyashastra",
+              "why": "Bharata used the term 'jati' for melodic modes. The word 'raga' in its modern sense came later."
+            },
+            {
+              "text": "Matanga, in the Brihaddeshi",
+              "right": true,
+              "yes": "Correct. Matanga's Brihaddeshi (around the 9th century CE) is where the word 'raga' first appears with its modern musical meaning."
+            },
+            {
+              "text": "Sarangadeva, in the Sangita Ratnakara",
+              "why": "Sarangadeva catalogued 264 ragas but the term was already established by Matanga centuries earlier."
+            },
+            {
+              "text": "Tansen, at the Mughal court",
+              "why": "Tansen was a great performer (16th century), not a theorist. The term 'raga' was in use long before his time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-great-split",
+      "title": "The Great Split",
+      "content": ["Around the 13th century, one of the most significant events in Indian music history occurred: the tradition split into two distinct systems. In the north, the arrival of Islamic rulers - the Delhi Sultanate and later the Mughal Empire - brought Persian, Central Asian, and Arabic musical influences. New instruments appeared (the sitar, sarod, and tabla evolved from or were inspired by Central Asian predecessors), new aesthetic priorities emerged (a greater emphasis on improvisation and individual expression), and the patronage of Muslim courts shaped how music was taught, performed, and preserved.", "In the south, music maintained closer ties to the ancient Sanskrit texts and Hindu temple traditions. The Carnatic system developed its own instruments (the veena, mridangam, violin adapted to floor playing), its own notation, and a greater emphasis on composed pieces over improvisation. The 'Trinity' of Carnatic music - Tyagaraja, Muthuswami Dikshitar, and Syama Sastri (all active around 1750-1850) - composed thousands of pieces that form the core Carnatic repertoire to this day.", "Both traditions share the same deep foundation: the seven swaras, the concept of raga, and the concept of tala (rhythmic cycle). A musician trained in one system can recognise the building blocks of the other. But the surface sounds are quite different - Hindustani music tends toward slow, meditative unfolding (especially in alap), while Carnatic music is often more rhythmically intricate and composition-driven. As bansuri players, we follow the Hindustani tradition."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What caused the split between Hindustani and Carnatic music?",
+          "options": [
+            {
+              "text": "A disagreement among ancient sages",
+              "why": "The split was not caused by a theoretical dispute. It happened gradually through cultural influence - Islamic rulers brought new musical ideas to the north."
+            },
+            {
+              "text": "The influence of Islamic rulers bringing Persian and Central Asian musical traditions to North India",
+              "right": true,
+              "yes": "Correct. The arrival of Islamic courts in North India introduced new instruments, aesthetics, and patronage systems that shaped Hindustani music into a distinct tradition."
+            },
+            {
+              "text": "A royal decree separating the two traditions",
+              "why": "There was no single decree. The split happened gradually over centuries as North and South Indian music evolved under different cultural influences."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which musical tradition do bansuri players primarily follow?",
+          "options": [
+            {
+              "text": "Carnatic (South Indian)",
+              "why": "While the bansuri exists in South India too, the classical bansuri tradition as we study it is rooted in the Hindustani system."
+            },
+            {
+              "text": "Hindustani (North Indian)",
+              "right": true,
+              "yes": "Right. The bansuri's development as a classical concert instrument happened within the Hindustani tradition, particularly through Pannalal Ghosh and Hariprasad Chaurasia."
+            },
+            {
+              "text": "Both equally",
+              "why": "While both traditions share foundations, the classical bansuri tradition is primarily Hindustani. South Indian flute playing (venu) is a related but distinct practice."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tansen-and-the-mughal-court",
+      "title": "Tansen and the Mughal Court",
+      "content": ["Tansen (c. 1500-1586) is the most legendary musician in Indian history. Born Ramtanu Pandey in Gwalior, he trained under the great master Swami Haridas and eventually became one of the nine 'jewels' (navaratna) of Emperor Akbar's court. His singing was so revered that legends grew around his musical powers - stories that have been told for over four centuries.", "The most famous legends say that Tansen could light oil lamps by singing Raga Deepak (the 'raga of fire') and bring rain by singing Raga Megh Malhar (the 'raga of clouds'). Whether literally true or not, these legends reveal how Indian culture understood music: not as mere entertainment but as a force that could move the natural world. The raga system was considered a science of emotional and even physical power, and Tansen embodied this belief.", "The Mughal period (roughly 1526-1857) was a golden age for Hindustani music. Many ragas we play today were either created or codified during this era. The dhrupad tradition - the oldest surviving form of classical vocal music, characterised by its meditative alap and strict rhythmic compositions - reached its peak under Mughal patronage. The instruments we associate with Hindustani music today - the sitar, sarod, tabla, and tanpura - all took their modern forms during this period. Court patronage gave musicians the financial security and social prestige to devote their lives entirely to musical mastery."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "At whose court did the legendary Tansen perform?",
+          "options": [
+            {
+              "text": "Emperor Shah Jahan",
+              "why": "Shah Jahan (builder of the Taj Mahal) ruled later, from 1628-1658. Tansen performed at Akbar's court."
+            },
+            {
+              "text": "Emperor Akbar",
+              "right": true,
+              "yes": "Correct. Tansen was one of the nine 'jewels' (navaratna) of Emperor Akbar's court, where he was the most celebrated musician."
+            },
+            {
+              "text": "Emperor Aurangzeb",
+              "why": "Aurangzeb (1658-1707) is actually remembered for discouraging music at court. Tansen performed at Akbar's court a century earlier."
+            },
+            {
+              "text": "Emperor Babur",
+              "why": "Babur founded the Mughal Empire but died in 1530. Tansen rose to fame under Akbar, Babur's grandson."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which raga is legendarily associated with bringing rain when Tansen sang it?",
+          "answer": "Megh Malhar",
+          "accept": ["megh malhar", "megh", "malhar", "meg malhar", "raga megh malhar", "raga megh"],
+          "hint": "Its name refers to clouds (megh) and a musical form associated with the monsoon."
+        }
+      ]
+    },
+    {
+      "id": "the-modern-reformers",
+      "title": "The Modern Reformers",
+      "content": ["By the late 19th century, Indian classical music faced a crisis. Knowledge was locked inside closed guru-shishya (teacher-student) lineages. There was no standardised notation, no systematic textbooks, and no consensus on how to classify the hundreds of ragas that existed. Music education depended entirely on finding a willing guru - an impossibility for most people. Two visionaries changed this.", "Vishnu Narayan Bhatkhande (1860-1936) was a musicologist who travelled across India collecting and comparing ragas from different gharanas (schools). He classified all Hindustani ragas into 10 thaats (parent scales) - a system we still use today. He created a practical notation system (the Bhatkhande notation you may have studied), wrote comprehensive textbooks (Kramik Pustak Malika), and compiled thousands of compositions. His work made it possible, for the first time, to learn Indian music from books - a revolutionary idea in a tradition built on oral transmission.", "Vishnu Digambar Paluskar (1872-1931) approached the same problem from a different angle. While Bhatkhande systematised knowledge, Paluskar democratised access. He established the Gandharva Mahavidyalaya - a chain of music schools open to all castes and classes. He organised public concerts (music had previously been confined to courts and private gatherings), created an examination system for music students, and effectively took classical music from the privileged few to the general public. Together, Bhatkhande and Paluskar built the foundations of modern music education in India."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Who created the 10-thaat classification system for Hindustani ragas?",
+          "answer": "Bhatkhande",
+          "accept": ["bhatkhande", "vishnu narayan bhatkhande", "v n bhatkhande", "v.n. bhatkhande"],
+          "hint": "His first name was Vishnu Narayan, and his notation system is named after him."
+        },
+        {
+          "type": "choice",
+          "prompt": "What was Vishnu Digambar Paluskar's main contribution to Indian music?",
+          "options": [
+            {
+              "text": "He classified ragas into 10 thaats",
+              "why": "That was Bhatkhande's contribution. Paluskar focused on making music education accessible to the public."
+            },
+            {
+              "text": "He established music schools and public concerts, making classical music accessible to all",
+              "right": true,
+              "yes": "Correct. Paluskar founded the Gandharva Mahavidyalaya schools and organised public concerts, taking music from courts to the common people."
+            },
+            {
+              "text": "He invented the sitar",
+              "why": "The sitar evolved over centuries and was not invented by any single person. Paluskar was focused on music education, not instruments."
+            },
+            {
+              "text": "He composed the most famous dhrupad pieces",
+              "why": "Great dhrupad compositions predate Paluskar by centuries. His contribution was democratising access to music education."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recording-and-radio",
+      "title": "Recording and Radio",
+      "content": ["The gramophone arrived in India in the early 1900s, and All India Radio began broadcasting in the 1930s. These technologies transformed Indian classical music as profoundly as the printing press transformed literature. For the first time in 3,000 years of musical tradition, sound could be captured, preserved, and replayed. The implications were enormous.", "Before recording, the only way to learn was to sit with a guru for years - sometimes decades - absorbing music through direct transmission. Recordings did not replace this tradition, but they supplemented it powerfully. A student in a remote village could now hear the great masters. Styles from different gharanas (schools), previously heard only by their own students, became available to everyone. Cross-pollination between traditions accelerated. The 'secret' ornaments and techniques of one gharana could be studied by outsiders.", "Recording technology also changed performance itself. Early 78 RPM records could hold only 3-4 minutes per side. This forced musicians to create condensed versions of ragas that traditionally unfolded over an hour or more. A new, shorter concert format emerged alongside the traditional mehfil (intimate gathering). All India Radio, broadcasting to millions, further popularised these shorter formats and introduced classical music to audiences who had never attended a live concert. The tension between preserving traditional depth and adapting to new media continues to this day - including in how we learn on digital platforms like this one."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How did recording technology change the guru-shishya (teacher-student) tradition?",
+          "options": [
+            {
+              "text": "It completely replaced the need for a guru",
+              "why": "Recording supplemented but never fully replaced the guru-shishya tradition. Live guidance remains central to Indian music education."
+            },
+            {
+              "text": "It had no effect - recordings were banned",
+              "why": "Many great musicians embraced recording. It became an important tool for preservation and education."
+            },
+            {
+              "text": "It allowed students to hear masters they could never meet in person, supplementing (not replacing) live learning",
+              "right": true,
+              "yes": "Correct. Recordings opened up access to great musicians across geographic and social barriers, while the guru-shishya relationship remained central."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How did the 78 RPM record format affect classical music performance?",
+          "options": [
+            {
+              "text": "It had no effect on performance style",
+              "why": "The 3-4 minute time limit significantly affected how ragas were presented on records."
+            },
+            {
+              "text": "It forced musicians to create shorter, condensed presentations of ragas",
+              "right": true,
+              "yes": "Right. The 3-4 minute time limit of 78 RPM records created a new, condensed format alongside the traditional hour-long raga presentations."
+            },
+            {
+              "text": "Musicians refused to record and only performed live",
+              "why": "Many great musicians embraced recording technology. Some of the most treasured performances in Indian music exist only as recordings."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-bansuris-revolution",
+      "title": "The Bansuri's Revolution",
+      "content": ["For centuries, the bansuri was considered a folk instrument - beautiful in the hands of village musicians and forever associated with Lord Krishna, but too quiet and too limited in range for the classical concert stage. The sitar, sarod, and sarangi dominated Hindustani instrumental music. The small bamboo flute, with its six holes and limited dynamic range, could not compete with these louder, more versatile instruments in a concert setting.", "Then Pannalal Ghosh (1911-1960) changed everything. Born in what is now Bangladesh, Pannalal was a visionary who saw the bansuri's potential for classical music. His key innovations were physical: he created a significantly longer bansuri (about 32 inches) with a deeper, more resonant tone that could fill a concert hall. He added a seventh finger hole, which allowed clean access to komal Ni without awkward cross-fingering. And he developed the playing techniques needed to execute the full range of classical ornaments - meend, gamak, murki - on this larger instrument.", "Hariprasad Chaurasia (born 1938) then took Pannalal Ghosh's legacy to the world. Training under masters including Annapurna Devi (daughter of Allauddin Khan, the founder of the Maihar gharana), Chaurasia developed a style of extraordinary beauty - warm, lyrical, and deeply emotional. He brought the bansuri to international audiences through concerts, recordings, collaborations with Western musicians, and Hindi film soundtracks (including the iconic 'Silsila' and 'Chandni'). Every bansuri player today stands on the shoulders of these two pioneers - Pannalal Ghosh who proved it was possible, and Chaurasia who showed how far it could go."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Who is credited with making the bansuri a classical concert instrument?",
+          "answer": "Pannalal Ghosh",
+          "accept": ["pannalal ghosh", "pannalal", "pannal lal ghosh", "panna lal ghosh", "pannalal gosh"],
+          "hint": "He lived from 1911 to 1960 and created a longer bansuri with a seventh finger hole."
+        },
+        {
+          "type": "choice",
+          "prompt": "What key modification did Pannalal Ghosh make to the traditional bansuri?",
+          "options": [
+            {
+              "text": "He made it from metal instead of bamboo",
+              "why": "Pannalal Ghosh kept bamboo - the material is essential to the bansuri's tone. His changes were about size and design."
+            },
+            {
+              "text": "He created a longer bansuri with a seventh finger hole for komal Ni",
+              "right": true,
+              "yes": "Correct. The longer body gave deeper, louder tone suitable for concerts, and the seventh hole provided clean access to komal Ni."
+            },
+            {
+              "text": "He added keys like a Western flute",
+              "why": "The bansuri remains a simple open-hole instrument. Pannalal Ghosh's innovations were making it longer and adding one more finger hole."
+            },
+            {
+              "text": "He reduced the number of holes to simplify fingering",
+              "why": "He actually added a hole - going from six to seven - to increase the instrument's range and versatility."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "you-in-the-tradition",
+      "title": "You in the Tradition",
+      "content": ["When you pick up your bansuri and play the ascending saptak - Sa Re Ga Ma Pa Dha Ni Sa - you are participating in a tradition that stretches back over three millennia. The swaras you play were first described in the Vedas. The raga system you explore was shaped by Bharata, Matanga, Sarangadeva, and generations of unnamed musicians. The instrument you hold was transformed from a folk flute into a concert instrument by Pannalal Ghosh. The playing style you are learning descends from masters like Hariprasad Chaurasia.", "This is not just history - it is a living, breathing tradition that continues to evolve. Each generation adds to it. Pannalal Ghosh did not merely copy what came before - he reimagined the bansuri. Chaurasia did not merely repeat Pannalal Ghosh's work - he developed his own voice. The great musicians of today are not simply preserving the past - they are extending it, finding new ragas, new techniques, new ways to express timeless emotions.", "And now you are part of this chain. You may be a beginner or an advanced player. You may play for yourself or for others. But the moment you produce a clear Sa on a bamboo tube and feel it resonate through your body, you have joined a conversation that has been going on for 3,000 years. Play the full saptak now - from Sa to Sa - and feel your connection to every musician who has played these same seven notes across the centuries."],
+      "questions": [
+        {
+          "type": "play",
+          "prompt": "Play the full ascending saptak - Sa Re Ga Ma Pa Dha Ni Sa - as your connection to 3,000 years of Indian music.",
+          "notes": [0, 2, 4, 5, 7, 9, 11, 12]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I am part of this living tradition - 3,000 years of musicians, from the Vedic chanters to Pannalal Ghosh to me."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,385 @@
+{
+  "id": "tihai-math",
+  "title": "Tihai Mathematics",
+  "tasks": [
+    {
+      "id": "what-is-tihai",
+      "title": "What is a Tihai?",
+      "content": [
+        "A tihai is a phrase repeated exactly three times that lands precisely on sam - beat 1 of the rhythmic cycle. It is the most dramatic rhythmic device in Indian classical music.",
+        "The power of a tihai comes from two forces working together: repetition creates expectation, and mathematical precision delivers resolution. The audience hears the phrase once, twice, and knows the third repetition will arrive home on sam. When it lands, the effect is electrifying.",
+        "Tihais appear everywhere in Indian music. A taan ends with a tihai. A tabla solo climaxes with a tihai. A bandish section closes with a tihai. Learning to calculate and play tihais is essential for any serious musician.",
+        "The word 'tihai' comes from 'teen' (three). Every tihai, no matter how complex, follows one rule: three repetitions, landing on sam."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many times is the phrase repeated in a tihai?",
+          "options": [
+            {
+              "text": "Two times",
+              "why": "Two repetitions would be a dohai, not a tihai. Tihai always means three."
+            },
+            {
+              "text": "Three times",
+              "right": true,
+              "yes": "Correct. Tihai comes from 'teen' meaning three. The phrase is always repeated exactly three times."
+            },
+            {
+              "text": "Four times",
+              "why": "Four repetitions would be a chauhai. Tihai specifically means three."
+            },
+            {
+              "text": "As many times as needed",
+              "why": "A tihai is precisely three repetitions - no more, no less. The number is fixed."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "master-formula",
+      "title": "The Master Formula",
+      "content": [
+        "Every tihai follows one formula: 3P + 2G = T",
+        "P is the phrase length in beats (or subdivisions). G is the gap (rest) between each repetition. T is the total number of beats you need to fill before landing on sam.",
+        "The pattern plays out like this: [phrase] [gap] [phrase] [gap] [phrase] = sam. Three phrases and two gaps fill T beats exactly.",
+        "There are two types of tihai based on this formula. A bedam tihai has no gaps (G = 0), so 3P = T. The phrase length must be exactly one-third of the total beats. A damdar tihai has gaps between repetitions (G > 0), giving the musician a breath and the audience a moment of suspense before the next repetition."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In the formula 3P + 2G = T, what does P represent?",
+          "options": [
+            {
+              "text": "The number of pauses",
+              "why": "P stands for the phrase length in beats, not pauses. The gaps (G) are the pauses."
+            },
+            {
+              "text": "The phrase length in beats",
+              "right": true,
+              "yes": "Right. P is the length of the phrase that gets repeated three times."
+            },
+            {
+              "text": "The pitch of the note",
+              "why": "P has nothing to do with pitch here. It is the phrase length measured in beats."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In a bedam (gapless) tihai where G = 0 and T = 12, what is P? (Just the number)",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "bedam-teentaal",
+      "title": "Bedam Tihai in Teentaal",
+      "content": [
+        "Teentaal has 16 beats divided into four vibhags of 4 beats each: 4+4+4+4. Sam falls on beat 1, khali on beat 9.",
+        "Can we make a bedam tihai that fills all 16 beats? For bedam, G = 0, so 3P = 16. But 16 divided by 3 is 5.33 - not a whole number. A bedam tihai cannot fill exactly 16 beats starting from beat 1.",
+        "The solution: start the tihai from a different beat. If P = 5, then 3P = 15. Starting from beat 2, the three repetitions of 5 beats each fill beats 2 through 16, and the landing note falls on beat 1 (sam) of the next cycle. This works perfectly.",
+        "Another option: P = 4, starting from beat 5. Three repetitions of 4 beats fill beats 5 through 16, landing on sam. The musician begins the tihai partway through the cycle and rides it home."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What is 3 times 5?",
+          "answer": "15",
+          "accept": ["15", "fifteen"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Can a bedam tihai with P = 5 fill exactly 16 beats if it starts on beat 1?",
+          "options": [
+            {
+              "text": "Yes, 3 x 5 = 16",
+              "why": "3 x 5 = 15, not 16. The math does not work for a full 16-beat cycle from beat 1."
+            },
+            {
+              "text": "No, because 3 x 5 = 15, one beat short",
+              "right": true,
+              "yes": "Correct. 15 beats is one short of 16, so the tihai must start from beat 2 to land on sam of the next cycle."
+            },
+            {
+              "text": "No, because 5 is an odd number",
+              "why": "Odd or even does not matter. The issue is that 3 x 5 = 15, which does not equal 16."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "damdar-tihai",
+      "title": "Damdar Tihai",
+      "content": [
+        "A damdar tihai includes gaps (rests) between the three repetitions. The gap creates suspense - the audience waits through the silence, anticipating the next repetition.",
+        "The gap formula: G = (T - 3P) / 2. You subtract the total phrase time (3P) from the beats to fill (T), then divide by 2 because there are two gaps.",
+        "Example in Teentaal (T = 16): Choose P = 4. Then G = (16 - 12) / 2 = 2. The pattern becomes: [4 beats of phrase] [2 beats of rest] [4 beats of phrase] [2 beats of rest] [4 beats of phrase] = sam. Total: 12 + 4 = 16 beats.",
+        "The gap must always be a whole number. If the formula gives a fraction, that combination of P and T does not work for a damdar tihai. Try a different phrase length."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "If P = 4 and T = 16, what is G? Use the formula G = (T - 3P) / 2",
+          "answer": "2",
+          "accept": ["2", "two"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What is a damdar tihai?",
+          "options": [
+            {
+              "text": "A tihai with no gaps between repetitions",
+              "why": "That is a bedam tihai (without dam/breath). Damdar means with gaps."
+            },
+            {
+              "text": "A tihai with gaps (rests) between the three repetitions",
+              "right": true,
+              "yes": "Correct. Damdar literally means 'with breath' - there are rests between each repetition of the phrase."
+            },
+            {
+              "text": "A tihai played at double speed",
+              "why": "Speed does not define the type. Damdar refers to having gaps between repetitions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tihai-jhaptaal",
+      "title": "Tihai in Jhaptaal",
+      "content": [
+        "Jhaptaal has 10 beats divided into four vibhags: 2+3+2+3. It is a popular taal for medium-tempo compositions.",
+        "Bedam attempt: 3P = 10. Since 10/3 = 3.33, a bedam tihai cannot fill a full Jhaptaal cycle evenly from beat 1.",
+        "Damdar with P = 2: G = (10 - 6) / 2 = 2. Pattern: [2 beats] [2 rest] [2 beats] [2 rest] [2 beats] = 10. This works perfectly, landing on sam.",
+        "Damdar with P = 3: G = (10 - 9) / 2 = 0.5. This gives a fractional gap, so it does not work. Not every combination is valid - the math must produce whole numbers."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many beats does Jhaptaal have?",
+          "answer": "10",
+          "accept": ["10", "ten"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Does a bedam tihai with P = 3 work in Jhaptaal (10 beats)?",
+          "options": [
+            {
+              "text": "Yes, 3 x 3 = 10 approximately",
+              "why": "3 x 3 = 9, not 10. Close does not count in tihai - the landing must be exact."
+            },
+            {
+              "text": "No, because 3 x 3 = 9, which is one beat short of 10",
+              "right": true,
+              "yes": "Correct. 9 is not 10, so this bedam tihai would land one beat before sam. In tihai, precision is everything."
+            },
+            {
+              "text": "Yes, the extra beat is absorbed by the landing",
+              "why": "There is no absorption in tihai math. The last note of the third repetition must BE sam, not arrive near it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tihai-rupak",
+      "title": "Tihai in Rupak Taal",
+      "content": [
+        "Rupak taal has 7 beats divided into three vibhags: 3+2+2. It is unique because sam and khali both fall on beat 1 - the first beat is unstressed, which gives Rupak its distinctive gentle character.",
+        "Bedam with P = 2: 3 x 2 = 6. We need 7. One beat short - does not work.",
+        "Damdar with P = 1: G = (7 - 3) / 2 = 2. Pattern: [1 beat] [2 rest] [1 beat] [2 rest] [1 beat] = 7. It works. A single note struck three times with two beats of silence between each - dramatic in its simplicity.",
+        "Damdar with P = 2: G = (7 - 6) / 2 = 0.5. Fractional gap - does not work. In 7-beat Rupak, the simplest damdar tihai uses a single-beat phrase."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many beats does Rupak taal have?",
+          "options": [
+            {
+              "text": "6 beats",
+              "why": "Rupak has 7 beats, divided 3+2+2."
+            },
+            {
+              "text": "7 beats",
+              "right": true,
+              "yes": "Correct. Rupak has 7 beats in three vibhags: 3+2+2."
+            },
+            {
+              "text": "8 beats",
+              "why": "That would be Keherwa. Rupak has 7 beats."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In Rupak (T = 7) with P = 1, what is G? Use the formula G = (T - 3P) / 2",
+          "answer": "2",
+          "accept": ["2", "two"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "play-simple-tihai",
+      "title": "Playing a Simple Tihai",
+      "content": [
+        "Now put the math into practice. Ektaal has 12 beats. A bedam tihai with P = 4: 3 x 4 = 12. Perfect.",
+        "The phrase: Sa Re Ga Ma - four ascending notes, one per beat. Play this phrase three times consecutively with no gaps. The third Ma should land exactly on sam.",
+        "When you play this, feel the momentum building through the three repetitions. The first time introduces the phrase. The second time confirms it. The third time resolves it. This build-and-release is what makes tihais so powerful in performance.",
+        "Start slowly. The precision of landing on sam matters more than speed. Once you can play it cleanly at a slow tempo, gradually increase speed."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 0, 2, 4, 5, 0, 2, 4, 5],
+          "prompt": "Play Sa Re Ga Ma three times (a bedam tihai in Ektaal)",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "Which taal has exactly 12 beats?",
+          "options": [
+            {
+              "text": "Teentaal (16 beats)",
+              "why": "Teentaal has 16 beats, not 12."
+            },
+            {
+              "text": "Jhaptaal (10 beats)",
+              "why": "Jhaptaal has 10 beats, not 12."
+            },
+            {
+              "text": "Ektaal (12 beats)",
+              "right": true,
+              "yes": "Correct. Ektaal has 12 beats divided 2+2+2+2+2+2, making it ideal for a bedam tihai with P = 4."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tihai-design",
+      "title": "Tihai Design Challenge",
+      "content": [
+        "You now have all the tools to design your own tihais. The process: choose a taal (T), choose a phrase length (P), calculate the gap (G), and verify the math.",
+        "Remember: 3P + 2G = T. For bedam: G = 0, so T must be divisible by 3. For damdar: G = (T - 3P) / 2, and G must be a positive whole number.",
+        "A well-designed tihai balances phrase length against gap length. Too short a phrase (P = 1) makes the tihai feel sparse. Too long a phrase with tiny gaps loses the dramatic pause. The best tihais have phrases of 3-5 beats with gaps of 1-2 beats.",
+        "Master musicians design compound tihais - a tihai within a tihai - where each repetition itself contains a smaller tihai pattern. But that is for another day. First, master the simple formula."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Calculate G for a damdar tihai where P = 3 and T = 15. G = (T - 3P) / 2",
+          "answer": "3",
+          "accept": ["3", "three"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "A musician proposes a damdar tihai: P = 5, G = 2, in Teentaal (16 beats). Does 3(5) + 2(2) = 16?",
+          "options": [
+            {
+              "text": "Yes, 15 + 4 = 16",
+              "why": "15 + 4 = 19, not 16. Check the arithmetic again."
+            },
+            {
+              "text": "No, 15 + 4 = 19, which overshoots sam",
+              "right": true,
+              "yes": "Correct. 3(5) + 2(2) = 15 + 4 = 19. This tihai would overshoot sam by 3 beats. The musician needs a shorter phrase or smaller gap."
+            },
+            {
+              "text": "Yes, the extra beats are absorbed",
+              "why": "Nothing is absorbed in tihai. The math must be exact or the tihai misses sam."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "If P = 5 and G = 1, what is the total T? Calculate 3P + 2G",
+          "answer": "17",
+          "accept": ["17", "seventeen"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "chakkardar-tihai",
+      "title": "Chakkardar Tihai",
+      "content": [
+        "A chakkardar tihai is a tihai within a tihai - each of the three repetitions itself contains a three-fold pattern. The word 'chakkar' means circle or rotation.",
+        "The simplest chakkardar works like this: take a small pattern (let us call it X) and play it three times to form one phrase P. Then play P three times as a standard tihai. The total is 3 x 3 = 9 repetitions of X, structured as three groups of three.",
+        "Example: X = 'Sa Re' (2 beats). P = 'Sa Re Sa Re Sa Re' (6 beats, X repeated three times). The tihai becomes: P [gap] P [gap] P. If the gap is 2 beats, the total is 3(6) + 2(2) = 22 beats.",
+        "The effect is mesmerizing. The listener hears the small pattern cycling three times within each larger repetition, and the larger repetition cycling three times toward sam. It creates layers of rhythmic expectation that resolve simultaneously on the final note.",
+        "Chakkardar tihais are advanced. They require precise counting and confident execution. But when they land correctly, they are the most thrilling rhythmic device in Indian music."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is a chakkardar tihai?",
+          "options": [
+            { "text": "A tihai played at triple speed", "why": "Speed does not define a chakkardar. It is about structure - a tihai within a tihai." },
+            { "text": "A tihai within a tihai - each repetition itself contains a three-fold pattern", "right": true, "yes": "Correct. Chakkardar means the three-fold structure is nested - three groups of three, totaling nine repetitions of the core pattern." },
+            { "text": "A tihai with no gap", "why": "A gapless tihai is called bedam. Chakkardar refers to nested three-fold repetition." },
+            { "text": "A tihai played backwards", "why": "Playing backwards is not a standard tihai concept. Chakkardar means nested repetition." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In a chakkardar tihai, the small pattern X repeats a total of how many times? (3 groups of 3)",
+          "answer": "9",
+          "accept": ["9", "nine"],
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2],
+          "prompt": "Play a simple chakkardar: Sa Re repeated 9 times (3 groups of 3)",
+          "points": 25
+        }
+      ]
+    },
+    {
+      "id": "tihai-in-performance",
+      "title": "Tihai in Live Performance",
+      "content": [
+        "In a real performance, tihais serve as structural punctuation marks. They signal the end of a section, create dramatic climaxes, and demonstrate the musician's mastery of rhythm.",
+        "A taan (fast melodic run) typically ends with a tihai. The taan builds speed and excitement, and the tihai brings it to a precise, satisfying conclusion on sam. The audience often breaks into applause at the moment the tihai lands.",
+        "The tabla player and melodic soloist sometimes play tihais simultaneously - the same tihai or complementary tihais that land on sam together. This kind of coordination requires years of practice between accompanist and soloist.",
+        "When designing tihais for performance, choose phrases that reflect the raga you are performing. A Yaman tihai might use the phrase 'G M D N' (four notes, P = 4). A Bhairavi tihai might use 'g m P D' (also P = 4, but with komal Ga for the Bhairavi character). The tihai should sound like it belongs in the raga, not like a mathematical exercise."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 6, 9, 11, 4, 6, 9, 11, 4, 6, 9, 11],
+          "prompt": "Play a Yaman tihai: G M D N - G M D N - G M D N (3 repetitions landing on sam)",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "In performance, when does a tihai typically appear?",
+          "options": [
+            { "text": "At the very beginning of a raga presentation", "why": "Tihais are climactic devices. They typically conclude sections, not open them." },
+            { "text": "At the end of a taan, section, or performance - as a dramatic conclusion", "right": true, "yes": "Correct. Tihais serve as punctuation marks that bring sections to a precise, dramatic conclusion on sam." },
+            { "text": "Only during tabla solos", "why": "Tihais appear in both melodic and percussive contexts. Any musician can play a tihai." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why should tihai phrases reflect the raga being performed?",
+          "options": [
+            { "text": "It is a strict rule that cannot be broken", "why": "While it is best practice, the reason is musical, not rule-based." },
+            { "text": "So the tihai sounds musical and integral to the performance, not just a mathematical exercise", "right": true, "yes": "Correct. A tihai should feel like a natural, musical conclusion. Using the raga's characteristic notes keeps it connected to the musical context." },
+            { "text": "Because different ragas require different rhythms", "why": "The rhythm of a tihai depends on the taal, not the raga. The raga determines the melodic content of the phrase." }
+          ]
+        }
+      ]
+    }
+  ]
+}

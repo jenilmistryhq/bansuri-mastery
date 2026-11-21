@@ -1,0 +1,328 @@
+{
+  "id": "concert-listening",
+  "title": "Concert Listening Guide",
+  "tasks": [
+    {
+      "id": "active-listening",
+      "title": "Active Listening",
+      "content": ["Indian classical music is not background music. It rewards active, focused listening. Once you understand the structure, a 60-minute raga performance becomes as compelling as a great film - with an arc, characters, tension, and resolution.", "A full raga presentation follows a clear sequence: alap (slow, unmetered exploration without tabla), jod (a pulse emerges, still no tabla), jhala (fast rhythmic energy), vilambit bandish (slow composition with tabla), madhya laya (medium tempo), and drut bandish (fast climax). Each section builds on the last, creating a journey from stillness to exhilaration.", "You do not need to understand every note to appreciate the performance. Start by recognising the large sections - when the tabla enters, you have crossed from alap into bandish. That single observation transforms your listening."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the first section of a full raga performance?",
+          "options": [
+            {
+              "text": "Drut bandish - the fast composition",
+              "why": "The drut bandish comes at the end, not the beginning. The performance starts with the alap."
+            },
+            {
+              "text": "Alap - slow, unmetered exploration without tabla",
+              "right": true,
+              "yes": "Correct. The alap opens the performance with quiet, meditative exploration of the raga."
+            },
+            {
+              "text": "A tabla solo",
+              "why": "The tabla does not even enter until after the alap, jod, and jhala sections."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Is the tabla present during the alap?",
+          "options": [
+            {
+              "text": "Yes - the tabla plays throughout the entire performance",
+              "why": "The tabla enters only after the alap, jod, and jhala. The unaccompanied sections belong to the soloist alone."
+            },
+            {
+              "text": "No - the alap is unaccompanied, with only the tanpura drone",
+              "right": true,
+              "yes": "Right. The alap is the soloist's time alone with the raga. The tabla enters later for the bandish."
+            },
+            {
+              "text": "Sometimes - it depends on the performer",
+              "why": "In Hindustani classical music, the alap is traditionally unaccompanied. The tabla enters with the bandish."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "following-the-alap",
+      "title": "Following the Alap",
+      "content": ["The alap is where the raga is born. The musician starts on Sa - a single, sustained note against the drone. Then, one by one, each note of the raga is introduced.", "Listen for three things during the alap:", "First, which note comes after Sa? In Raga Yaman, the first sound is often the lower Ni, rising to Sa and then Re. In Raga Bhairav, the komal Re appears early, creating immediate tension. The order in which notes appear tells you the raga's character.", "Second, how does the musician decorate each new note? A note might arrive with a meend (slide), a kan (grace note), or a gamak (oscillation). These ornaments are not decoration - they ARE the raga's personality.", "Third, how does the register expand? A good alap starts in the lower-middle range and gradually climbs upward, like dawn breaking across the sky. Each new register reached feels like a discovery."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does a musician typically begin an alap?",
+          "options": [
+            {
+              "text": "With a fast scale run to show the raga's notes",
+              "why": "Speed belongs to the drut section. The alap begins slowly and deliberately."
+            },
+            {
+              "text": "With a sustained Sa, then introducing notes one by one",
+              "right": true,
+              "yes": "Correct. The alap builds the raga note by note, starting from the foundation of Sa."
+            },
+            {
+              "text": "By playing the full composition immediately",
+              "why": "The composition (bandish) comes much later. The alap establishes the raga's mood first."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What should you listen for as new notes are introduced in the alap?",
+          "options": [
+            {
+              "text": "Whether the musician plays them loudly or softly",
+              "why": "Volume matters less than how each note is decorated and approached."
+            },
+            {
+              "text": "How each note is decorated with ornaments like meend, kan, and gamak",
+              "right": true,
+              "yes": "Right. The ornaments on each note are not decoration - they define the raga's personality."
+            },
+            {
+              "text": "How fast the musician can play them",
+              "why": "Speed is not the point of the alap. It is about the quality and character of each note."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finding-sam",
+      "title": "Finding Sam",
+      "content": ["Sam is beat 1 of the rhythmic cycle. Once the tabla enters, everything in the performance revolves around this single point. Finding sam is the key that unlocks your ability to follow the entire bandish section.", "How to find sam in a live performance:", "Watch the musicians. On sam, the soloist and tabla player often make eye contact, nod slightly, or raise a hand. It is the moment of agreement - 'we are here together.'", "Listen for the tabla's strongest stroke. In Teentaal, sam is marked by a resonant 'Dha' - the deepest, most emphatic sound in the cycle.", "Feel the pulse. Count along: once you find the cycle length (usually 16 beats in Teentaal), your body starts to feel sam approaching before it arrives.", "Once you can feel sam, every taan landing becomes exciting. Every tihai resolution becomes thrilling. You are no longer watching from outside - you are inside the music."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What physical cue helps identify sam in a live performance?",
+          "options": [
+            {
+              "text": "The musicians stand up",
+              "why": "Musicians typically remain seated throughout. Look for subtler cues like eye contact and head nods."
+            },
+            {
+              "text": "The musicians nod, make eye contact, or raise a hand on beat 1",
+              "right": true,
+              "yes": "Correct. These subtle physical cues mark sam - the moment of rhythmic agreement between musicians."
+            },
+            {
+              "text": "The tanpura gets louder",
+              "why": "The tanpura maintains a constant drone. Sam is marked by the musicians' physical gestures and the tabla's strong stroke."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What does 'sam' literally mean?",
+          "answer": "together",
+          "accept": ["together", "equal", "even", "same"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "tanpura-foundation",
+      "title": "The Tanpura Foundation",
+      "content": ["The tanpura is the instrument that drones continuously throughout the performance. It typically plays Sa and Pa (and sometimes Ma instead of Pa, depending on the raga). Its job is not melodic - it creates the harmonic foundation against which every other note is measured.", "The tanpura is not background noise. Listen carefully and you will hear overtones - higher harmonics that shimmer above the fundamental notes. These overtones create a rich, living sound that changes subtly over time.", "When the soloist's note matches the tanpura's natural overtones, something magical happens: the note seems to glow, to bloom, to become more than the sum of its parts. This is what musicians mean when they say a note is 'in tune' - not just matching a frequency, but resonating with the tanpura's harmonic series.", "When a note clashes with the tanpura, it sounds rough, thin, or unstable. The tanpura is the ultimate judge of intonation."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which notes does the tanpura typically drone?",
+          "options": [
+            {
+              "text": "All seven notes of the raga",
+              "why": "The tanpura plays only two or three notes as a continuous drone, not the full scale."
+            },
+            {
+              "text": "Sa and Pa (sometimes Ma instead of Pa)",
+              "right": true,
+              "yes": "Correct. Sa and Pa form the harmonic foundation. Some ragas use Ma instead of Pa in the drone."
+            },
+            {
+              "text": "Whatever notes the soloist is playing",
+              "why": "The tanpura's drone is fixed and constant - it does not follow the melody."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What happens when a soloist's note matches the tanpura's overtones?",
+          "options": [
+            {
+              "text": "Nothing - the tanpura is just background noise",
+              "why": "The tanpura is far more than background. It creates the harmonic reference for the entire performance."
+            },
+            {
+              "text": "The note seems to glow and bloom - it resonates with the harmonic series",
+              "right": true,
+              "yes": "Exactly. This resonance is the essence of good intonation in Indian classical music."
+            },
+            {
+              "text": "The tanpura gets louder",
+              "why": "The tanpura's volume stays constant. What changes is the quality of the interaction between the two sounds."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sthayi-returns",
+      "title": "Sthayi Returns",
+      "content": ["During the bandish (composition) section, listen for the sthayi - the main theme or refrain. The soloist states the sthayi, then departs into improvisation, then returns to the sthayi. This cycle repeats throughout the entire bandish section.", "Each return to the sthayi is a moment of recognition. After an improvisation that might have wandered through unexpected territory, the familiar melody comes back, and you think: 'Ah, there it is again.' This creates a deeply satisfying pattern of departure and return - like a traveller who keeps coming home.", "As the performance progresses, the improvisations between sthayi returns get longer, faster, and more adventurous. Early on, the soloist might improvise for half a cycle before returning. Later, they might improvise for several cycles, pushing further from home before the sthayi pulls them back.", "The mukhda - the opening phrase of the sthayi - is the bridge back. Listen for a short, recognisable phrase that leads into beat 1. That is the mukhda, and it signals: 'the sthayi is about to return.'"],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What happens between sthayi returns in a performance?",
+          "options": [
+            {
+              "text": "Silence - the musician takes a break",
+              "why": "There is no silence. Between sthayi returns, the soloist improvises within the raga."
+            },
+            {
+              "text": "The soloist improvises - exploring the raga with taans and elaborations",
+              "right": true,
+              "yes": "Right. The cycle of sthayi-improvisation-sthayi is the backbone of the bandish section."
+            },
+            {
+              "text": "The tabla plays a solo",
+              "why": "While tabla solos can happen, the space between sthayi returns is typically filled by the soloist's improvisation."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How do improvisations change as the performance progresses?",
+          "options": [
+            {
+              "text": "They get shorter and simpler",
+              "why": "The opposite - they grow longer and more complex as the performance builds energy."
+            },
+            {
+              "text": "They get longer, faster, and more adventurous",
+              "right": true,
+              "yes": "Correct. The building intensity of improvisations is what creates the performance's dramatic arc."
+            },
+            {
+              "text": "They stay exactly the same throughout",
+              "why": "A performance that never builds would be flat and unengaging. Growth is essential."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sawaal-jawaab",
+      "title": "Sawaal-Jawaab",
+      "content": ["Sawaal-jawaab means 'question and answer.' It is the musical conversation between the soloist and the tabla player, and it is one of the most thrilling elements of a live performance.", "Here is how it works: the soloist plays a rhythmic phrase. The tabla player echoes it, varies it, or responds with a contrasting pattern. The soloist then raises the stakes - a more complex phrase. The tabla responds in kind. This back-and-forth can escalate into an exhilarating exchange of increasing complexity.", "Watch for these moments: both musicians smile or laugh. They make eye contact. The audience becomes visibly excited. The energy in the room rises. This is not competition (though it can feel like it) - it is collaboration. Each musician pushes the other to greater heights.", "Sawaal-jawaab often happens in the madhya or drut sections, when the tempo is fast enough to create rhythmic excitement. The exchange typically ends with both musicians landing together on sam - a moment of shared triumph."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is sawaal-jawaab?",
+          "options": [
+            {
+              "text": "A type of raga",
+              "why": "Sawaal-jawaab is not a raga but a musical interaction - a question-and-answer exchange between musicians."
+            },
+            {
+              "text": "A musical conversation - question and answer between soloist and tabla",
+              "right": true,
+              "yes": "Correct. Sawaal-jawaab is one of the most exciting moments in a live performance."
+            },
+            {
+              "text": "The name of a composition",
+              "why": "It is not a specific composition but a type of musical interaction that can happen in any performance."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How does the sawaal-jawaab exchange typically end?",
+          "options": [
+            {
+              "text": "One musician stops playing",
+              "why": "Both musicians continue playing. The exchange ends with a shared resolution."
+            },
+            {
+              "text": "Both musicians land together on sam - a moment of shared triumph",
+              "right": true,
+              "yes": "Right. Landing together on sam after an intense exchange is one of the most satisfying moments in Indian music."
+            },
+            {
+              "text": "The audience claps to signal the end",
+              "why": "The musicians decide when to end the exchange, usually by converging on sam."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "taan-tihai-climax",
+      "title": "Taan and Tihai Climax",
+      "content": ["The drut (fast) section is the performance's climax. Everything the musician has built toward converges here: speed, range, rhythmic complexity, and emotional intensity.", "Listen for taans - fast runs of notes that sweep through the raga's scale. Early taans stay within one octave. As the climax builds, taans span two or even three octaves, covering the full range of the instrument in a single breath.", "Listen for tihais - a phrase repeated exactly three times, calculated to land precisely on sam. The audience can often feel a tihai coming: the repetition creates mounting tension, and the final landing on sam releases it in a burst of satisfaction.", "When a tihai lands perfectly on sam after a long, complex buildup, the audience responds with 'wah wah!' - the highest form of appreciation in Indian classical music. It acknowledges not just skill, but the mathematical precision and musical intelligence behind the moment."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the audience response when a tihai lands perfectly on sam?",
+          "options": [
+            {
+              "text": "Silence - the audience stays quiet throughout",
+              "why": "Indian classical audiences actively participate. A great moment earns vocal appreciation."
+            },
+            {
+              "text": "'Wah wah!' - an exclamation of appreciation and admiration",
+              "right": true,
+              "yes": "Correct. 'Wah wah!' is the highest compliment, acknowledging both skill and musical intelligence."
+            },
+            {
+              "text": "Standing ovation and clapping",
+              "why": "While applause happens at the end, the in-performance response is typically the vocal 'wah wah!'"
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many times is a tihai phrase repeated before landing on sam?",
+          "answer": "3",
+          "accept": ["3", "three", "teen"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "listening-assignment",
+      "title": "Your Listening Assignment",
+      "content": ["Now put everything into practice. Find a recording of a full bansuri raga performance. Search for Pandit Hariprasad Chaurasia - widely regarded as the greatest living bansuri master - or the legendary Pannalal Ghosh, who established the bansuri as a concert instrument in the mid-20th century.", "Listen with this checklist:", "1. Can you identify the alap? (The slow opening section with no tabla)", "2. When does the tabla enter? (This marks the beginning of the bandish)", "3. Can you hear the sthayi returning after improvisations?", "4. Can you feel sam? (Watch for the musicians' physical cues)", "5. Can you hear taans in the drut section? (Fast melodic runs)", "Even identifying one or two of these elements transforms the listening experience. You are no longer hearing 'nice Indian music' - you are following a musical story with structure, tension, and resolution.", "Return to this checklist as your understanding grows. Each time you listen, you will hear more."],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I will listen to a full raga performance with active ears and use this checklist",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which bansuri master is widely regarded as the instrument's greatest modern voice?",
+          "options": [
+            {
+              "text": "Ravi Shankar",
+              "why": "Ravi Shankar was a sitar master, not a bansuri player. He brought Indian music to the world stage."
+            },
+            {
+              "text": "Pandit Hariprasad Chaurasia",
+              "right": true,
+              "yes": "Correct. Hariprasad Chaurasia has been the leading voice of the bansuri for over five decades."
+            },
+            {
+              "text": "Zakir Hussain",
+              "why": "Zakir Hussain is a tabla master, not a bansuri player. He often accompanies bansuri concerts."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

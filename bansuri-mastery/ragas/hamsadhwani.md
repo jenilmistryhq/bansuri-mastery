@@ -23,7 +23,7 @@ century. Popular for opening pieces.
 - **Ni** to **Sa'** and **Pa** to **Ni** leaps are the identity of the raga.
 - No Ma, no Dha. Be careful not to slip into Bilawal or Yaman phrases.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 No half-holes. Main challenge: `P N S'` in register 2 must be clean and in tune. `N` (`XXX XOO`,
 register 2) tends to be weak if holes 1-4 leak.
@@ -88,7 +88,7 @@ S R G R | S R .N S | .N .P .N .N | S - - S |
 S - G R | G - G G | S' N P P | {G}R - - .N ||
 ```
 
-Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

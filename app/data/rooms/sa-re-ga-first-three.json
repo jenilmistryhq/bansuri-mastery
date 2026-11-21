@@ -1,0 +1,307 @@
+{
+  "id": "sa-re-ga-first-three",
+  "title": "Sa Re Ga - Your First Three Notes",
+  "description": "Open your first finger holes, hear the intervals, and play a short phrase with three notes.",
+  "difficulty": "easy",
+  "skills": ["notes", "ear", "melody"],
+  "minutes": 40,
+  "order": 2,
+  "prerequisites": ["sa-the-home-note"],
+  "tasks": [
+    {
+      "id": "t1-intervals",
+      "title": "Meet Re and Ga",
+      "content": [
+        "Re (Rishabh) is the second note - lift your bottom finger to play it. Ga (Gandhar) is the third - lift two bottom fingers.",
+        { "type": "list", "items": [
+          "Sa (all holes closed) - the home note",
+          "Re (lift bottom finger) - a calm, gentle step up",
+          "Ga (lift two bottom fingers) - bright and cheerful"
+        ] },
+        { "type": "note", "text": "Lift fingers cleanly and completely. A half-lifted finger makes a fuzzy, unclear note." },
+        "These three notes - Sa, Re, Ga - are the foundation of countless melodies in Indian music. Master them and everything else builds on top."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Which finger do you lift first to go from Sa to Re?",
+          "options": [
+            { "text": "The top finger (closest to the blowing hole)", "right": false, "why": "Notes go from bottom to top on a bansuri." },
+            { "text": "The bottom finger (farthest from the blowing hole)", "right": true, "yes": "Right! Bansuri notes go bottom-up." },
+            { "text": "Both bottom fingers at once", "right": false, "why": "That would give you Ga, not Re." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "confirm",
+          "prompt": "I understand the fingering for Sa, Re, and Ga",
+          "points": 0
+        }
+      ],
+      "hints": ["On the bansuri, notes ascend by lifting fingers from the bottom of the flute upward."]
+    },
+    {
+      "id": "t2-fingering-quiz",
+      "title": "Fingering quiz",
+      "content": [
+        "Before you pick up the flute, let's make sure you know exactly which holes to open for each note.",
+        "On a six-hole bansuri, the holes are numbered 1 (closest to the blowing hole) through 6 (farthest)."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "To play Sa, how many finger holes should be closed?",
+          "options": [
+            { "text": "All six holes closed", "right": true, "yes": "Correct! Sa is all holes closed - the lowest note in the middle octave." },
+            { "text": "Five holes closed, one open", "right": false, "why": "Opening one hole gives you Re, not Sa." },
+            { "text": "No holes closed", "right": false, "why": "All holes open gives you a much higher note." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "To play Re, which hole do you open?",
+          "options": [
+            { "text": "Hole 1 (closest to blowing hole)", "right": false, "why": "Opening hole 1 would give you a higher note, not Re." },
+            { "text": "Hole 6 (farthest from blowing hole)", "right": true, "yes": "Right! Open the bottom hole for Re." },
+            { "text": "Holes 5 and 6", "right": false, "why": "Opening two bottom holes gives you Ga." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "type",
+          "prompt": "How many finger holes do you open to play Ga? Type the number.",
+          "answer": "2",
+          "accept": ["2", "two", "do"],
+          "points": 10,
+          "yes": "Correct! Open holes 5 and 6 (the two bottom holes) for Ga.",
+          "no": "Open the two bottom holes (5 and 6) for Ga."
+        }
+      ],
+      "hints": [
+        "The pattern is simple: Sa = 0 holes open, Re = 1 hole open, Ga = 2 holes open.",
+        "Always count from the bottom of the flute."
+      ]
+    },
+    {
+      "id": "t3-ear-check",
+      "title": "Hear the difference",
+      "content": [
+        "Listen to each note and identify it. You will hear Sa, Re, or Ga played one at a time.",
+        "Close your eyes if it helps you concentrate. Focus on how each note feels - Sa is grounded, Re is a gentle step up, Ga is bright and open."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "prompt": "Identify the note you hear.",
+          "notes": [0, 2, 4],
+          "count": 7,
+          "pass": 5,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Sa is the lowest of the three - it sounds grounded and stable.",
+        "Re is one step above Sa - slightly brighter.",
+        "Ga is the highest of the three - it has an open, cheerful quality."
+      ]
+    },
+    {
+      "id": "t4-hold-re",
+      "title": "Hold Re steady",
+      "content": [
+        "Now pick up your flute. Lift only the bottom finger and blow a steady stream of air to play Re.",
+        "Your goal: hold Re for 3 seconds without the pitch wobbling. Keep the other five fingers firmly closed."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Re steady for 3 seconds.",
+          "target": 2,
+          "seconds": 3,
+          "cents": 35,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Make sure your bottom finger lifts completely clear of the hole.",
+        "Keep the other five fingers pressed flat - any leak will shift the pitch.",
+        "Blow gently and steadily. Too much air makes the note jump to the upper octave."
+      ]
+    },
+    {
+      "id": "t5-hold-ga",
+      "title": "Hold Ga steady",
+      "content": [
+        "Now lift two bottom fingers to play Ga. The more holes you open, the more precisely you need to seal the remaining ones.",
+        "Hold Ga for 3 seconds with a clear, steady tone."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Ga steady for 3 seconds.",
+          "target": 4,
+          "seconds": 3,
+          "cents": 35,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "With two holes open, air leaks from the remaining fingers matter more. Press firmly.",
+        "If the note sounds airy or weak, adjust your lip position slightly.",
+        "Ga should sound bright and clear - not breathy."
+      ]
+    },
+    {
+      "id": "t6-play-ascending",
+      "title": "Play Sa Re Ga",
+      "content": [
+        "Now play the ascending phrase: Sa, Re, Ga. Take your time between notes and make each one clear.",
+        "The key is clean transitions. Lift each finger decisively - don't let it hover halfway."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Sa Re Ga in order.",
+          "phrase": [0, 2, 4],
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Lift each finger cleanly - don't slide between positions.",
+        "Keep your breath steady as you change fingers.",
+        "If a note sounds unclear, pause, reset, and try that note alone first."
+      ]
+    },
+    {
+      "id": "t7-play-descending",
+      "title": "Come back down",
+      "content": [
+        "Going down is just as important. Play Ga, Re, Sa - descending back to your home note.",
+        "Descending requires you to place fingers back down. Each finger must land squarely on its hole to seal it."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Ga Re Sa (descending).",
+          "phrase": [4, 2, 0],
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Place each finger back firmly - a loose finger leaks air and muddies the note.",
+        "Descending is often harder than ascending. Take it slower if needed.",
+        "Think of your fingers 'finding home' on each hole."
+      ]
+    },
+    {
+      "id": "t8-up-and-down",
+      "title": "Ascending and descending",
+      "content": [
+        "Now combine both directions in one phrase: Sa Re Ga Re Sa.",
+        "This is called an alankar - a melodic exercise pattern. Alankars build fluency the same way scales do in Western music.",
+        { "type": "note", "text": "Take your time at the top (Ga) before descending. Rushing the turn is the most common beginner mistake." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Sa Re Ga Re Sa.",
+          "phrase": [0, 2, 4, 2, 0],
+          "points": 20
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What is the name for a melodic exercise pattern in Indian music?",
+          "answer": "alankar",
+          "accept": ["alankar", "alankaar", "alankaara", "alankara"],
+          "points": 10,
+          "yes": "Correct! Alankars are the backbone of Indian music practice.",
+          "no": "It's called an alankar - a melodic exercise pattern."
+        }
+      ],
+      "hints": [
+        "Break it into two halves if it helps: Sa Re Ga (pause) Re Sa.",
+        "Keep your breath continuous through the whole phrase.",
+        "An alankar is a practice pattern - like playing scales but with musical shapes."
+      ]
+    },
+    {
+      "id": "t9-simple-melody",
+      "title": "Your first melody",
+      "content": [
+        "Now let's make music. Play this simple melody: Sa Re Ga Ga Re Sa.",
+        "Notice how repeating Ga at the top gives the phrase a shape - it lingers at the peak before returning home. This is how melodies work: not just going up and down, but pausing and emphasising certain notes."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Sa Re Ga Ga Re Sa.",
+          "phrase": [0, 2, 4, 4, 2, 0],
+          "points": 20
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Why does repeating Ga make the melody more musical?",
+          "options": [
+            { "text": "It makes the phrase longer", "right": false, "why": "Length alone does not make something musical." },
+            { "text": "It creates emphasis and shape - the melody dwells on the high point", "right": true, "yes": "Exactly! Lingering on a note gives the phrase direction and emotion." },
+            { "text": "It is a rule you must always follow", "right": false, "why": "There are no such rules - it is a musical choice." },
+            { "text": "It is easier to play than other patterns", "right": false, "why": "Difficulty is not the reason - it is about musical expression." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Think of the two Ga notes as the top of an arch.",
+        "Let the second Ga ring a moment longer before descending.",
+        "If you lose the phrase, hum it to yourself first."
+      ]
+    },
+    {
+      "id": "t10-final-challenge",
+      "title": "Final challenge",
+      "content": [
+        "One last test. Play this five-note phrase from memory: Ga Re Sa Re Ga.",
+        "This phrase starts and ends on Ga, with Sa as the low point in the middle. It is a common shape in Indian melodies - descending to the home note and rising back up.",
+        { "type": "note", "text": "If you can play this cleanly, you have solid command of your first three notes. Well done!" }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Ga Re Sa Re Ga.",
+          "phrase": [4, 2, 0, 2, 4],
+          "points": 20
+        },
+        {
+          "id": "q2",
+          "type": "ear",
+          "prompt": "Final ear check: identify these notes.",
+          "notes": [0, 2, 4],
+          "count": 7,
+          "pass": 5,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Start with all fingers up for Ga, then walk them down and back up.",
+        "The pattern is a V-shape: start high, go low, come back high.",
+        "Take a breath before you begin - this is the longest phrase yet."
+      ]
+    }
+  ]
+}

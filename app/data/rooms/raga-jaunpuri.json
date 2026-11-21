@@ -1,0 +1,250 @@
+{
+  "id": "raga-jaunpuri",
+  "title": "Raga Jaunpuri - The Late Morning Raga",
+  "tasks": [
+    {
+      "id": "t1-city-of-music",
+      "title": "The City of Music",
+      "content": [
+        "Jaunpuri takes its name from Jaunpur, a city in Uttar Pradesh known as the 'Shiraz of India' for its cultural heritage. This late-morning raga belongs to the Asavari thaat and is one of the most frequently performed morning ragas.",
+        "Its character is gentle and contemplative - like the settled peace of mid-morning, when the intensity of dawn has passed and the day stretches ahead with quiet purpose. Jaunpuri is a favorite among bansuri players for its smooth, flowing phrases that suit the bamboo flute's natural voice."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which thaat does Jaunpuri belong to?",
+          "options": [
+            {"text": "Asavari", "right": true, "yes": "Correct. Jaunpuri belongs to the Asavari thaat, which is defined by komal Ga, komal Dha, and komal Ni - though Jaunpuri uses shuddha Ni instead."},
+            {"text": "Bhairavi", "why": "Bhairavi is a different thaat with four komal notes. Jaunpuri belongs to Asavari."},
+            {"text": "Kafi", "why": "Kafi uses komal Ga and komal Ni. Jaunpuri uses komal Ga and komal Dha, belonging to the Asavari thaat."},
+            {"text": "Bilawal", "why": "Bilawal uses all shuddha notes. Jaunpuri has two komal notes and belongs to Asavari."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When is Jaunpuri traditionally performed?",
+          "options": [
+            {"text": "Late morning (9 AM to noon)", "right": true, "yes": "Correct. Jaunpuri is a late-morning raga, performed in the second prahar of the day when the morning has settled into calm."},
+            {"text": "Early dawn (4-6 AM)", "why": "Early dawn ragas include Bhairav and Lalit. Jaunpuri is later - late morning."},
+            {"text": "Late evening (6-9 PM)", "why": "Evening ragas include Yaman and Marwa. Jaunpuri is a morning raga."},
+            {"text": "Midnight", "why": "Midnight ragas include Malkauns and Bihag. Jaunpuri is performed in the late morning."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-two-komal",
+      "title": "Two Komal Notes",
+      "content": [
+        "Jaunpuri uses seven notes with two komal: Sa(0), Re(2), komal Ga(3), Ma(5), Pa(7), komal Dha(8), Ni(11). The two komal notes (Ga and Dha) are the emotional centers of the raga.",
+        "komal Ga(3) sits just 1 semitone above Re(2), creating a tender interval. komal Dha(8) sits just 1 semitone above Pa(7), creating a parallel tenderness in the upper part of the scale. The remaining notes are all shuddha, providing stability around these two points of emotion."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many komal (flat) notes does Jaunpuri use?",
+          "answer": "2",
+          "accept": ["two", "Two"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two notes are komal in Jaunpuri?",
+          "options": [
+            {"text": "Ga and Dha", "right": true, "yes": "Correct. komal Ga(3) and komal Dha(8) are the two komal notes, each sitting just 1 semitone above its neighbor (Re and Pa respectively)."},
+            {"text": "Re and Dha", "why": "Re is shuddha in Jaunpuri. The two komal notes are Ga and Dha."},
+            {"text": "Ga and Ni", "why": "Ni is shuddha in Jaunpuri - this is what distinguishes it from pure Asavari. The komal notes are Ga and Dha."},
+            {"text": "Re and Ni", "why": "Both Re and Ni are shuddha in Jaunpuri. The komal notes are Ga and Dha."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-ascending",
+      "title": "The Ascending Path",
+      "content": [
+        "The aroha: Sa Re ga Ma Pa dha Ni Sa'. The movement from Re(2) to komal Ga(3) is intimate - just 1 semitone. Then komal Ga(3) to Ma(5) opens up with a 2-semitone step.",
+        "Similarly, Pa(7) to komal Dha(8) is intimate (1 semitone), then komal Dha(8) to Ni(11) opens wide (3 semitones). This pattern of intimacy followed by openness gives Jaunpuri its distinctive breathing quality - a gentle squeeze followed by a release, repeated twice in the ascent."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 5, 7, 8, 11, 12],
+          "prompt": "Play the ascending scale of Jaunpuri: Sa Re ga Ma Pa dha Ni Sa'. Feel the intimate 1-semitone steps at komal Ga and komal Dha, followed by wider openings.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What creates Jaunpuri's distinctive 'breathing' quality in the ascent?",
+          "options": [
+            {"text": "Alternating intimate 1-semitone steps with wider intervals", "right": true, "yes": "Exactly. The Re-to-komal Ga and Pa-to-komal Dha steps (1 semitone each) are followed by wider openings (2 and 3 semitones), creating a squeeze-and-release pattern."},
+            {"text": "Using all shuddha notes", "why": "Jaunpuri has two komal notes. The breathing quality comes from the alternation between tight and wide intervals."},
+            {"text": "Skipping notes in the ascent", "why": "Jaunpuri uses all seven notes in the ascent. The breathing quality comes from the interval pattern, not from skipped notes."},
+            {"text": "Playing very slowly", "why": "The breathing quality is built into the interval structure itself, not the tempo."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-descending",
+      "title": "The Descending Flow",
+      "content": [
+        "The avaroha: Sa' Ni dha Pa Ma ga Re Sa. The descent is smooth and flowing. The phrase Ni-dha-Pa (11-8-7) drops beautifully, with komal Dha acting as a brief, tender landing before resolving to Pa.",
+        "The phrase Ma-ga-Re-Sa (5-3-2-0) completes the descent with gentle steps. Jaunpuri's descending phrases suit the bansuri perfectly - they flow like water, each note melting into the next without effort."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 8, 7, 5, 3, 2, 0],
+          "prompt": "Play the descending scale of Jaunpuri: Sa' Ni dha Pa Ma ga Re Sa. Let each note flow into the next like water.",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 3, 5, 7, 8, 11],
+          "rounds": 4,
+          "prompt": "Identify the notes of Jaunpuri. Listen carefully for komal Ga(3) and komal Dha(8) - they sit just 1 semitone above Re and Pa.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t5-signature-phrase",
+      "title": "The Ma-Pa-Dha Phrase",
+      "content": [
+        "The phrase Ma Pa dha Pa (5-7-8-7) is Jaunpuri's signature. It touches komal Dha from Pa and returns - a brief, tender excursion. This 'reaching and retreating' gesture is characteristic of the raga.",
+        "komal Dha is never hammered or sustained too long in simple phrases - it is approached gently, touched, and released back to Pa. This delicacy is what gives Jaunpuri its contemplative quality. Think of it as glancing at something beautiful and then looking away, carrying the impression with you."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [5, 7, 8, 7],
+          "prompt": "Play Jaunpuri's signature phrase: Ma Pa dha Pa. Touch komal Dha gently and return to Pa.",
+          "points": 10
+        },
+        {
+          "type": "hold",
+          "target": 8,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Dha(8) for 5 seconds. Feel how this note sits just 1 semitone above Pa, creating a tender, gravitational pull.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How is komal Dha typically treated in Jaunpuri?",
+          "options": [
+            {"text": "Touched gently and released back to Pa", "right": true, "yes": "Correct. komal Dha is approached with delicacy - touched briefly and released, creating Jaunpuri's characteristic contemplative quality."},
+            {"text": "Held for long durations with heavy emphasis", "why": "In simple phrases, komal Dha is treated with delicacy, not heaviness. It is touched and released."},
+            {"text": "Skipped entirely in most phrases", "why": "komal Dha is the vadi of Jaunpuri - it is essential to the raga, but treated with delicacy."},
+            {"text": "Oscillated rapidly like a gamak", "why": "Jaunpuri's character is gentle and contemplative, not intense. komal Dha is touched softly, not oscillated."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-vadi",
+      "title": "Komal Dha - The Vadi",
+      "content": [
+        "komal Dha(8) is the vadi of Jaunpuri. Despite being treated with delicacy, it is the note that gives the raga its soul. When you hold komal Dha and let it resonate against the drone, you hear Jaunpuri's essence - a gentle gravity, a quiet weight.",
+        "komal Ga(3) is the samvadi. The Dha-Ga axis spans 7 semitones downward (or 5 semitones upward), providing structural balance. These two komal notes mirror each other in the lower and upper halves of the scale, giving Jaunpuri a symmetrical emotional architecture."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 8,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold komal Dha(8) for 6 seconds with precision. This is the vadi - the soul note of Jaunpuri. Let it resonate against the drone and feel the raga's gentle gravity.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the relationship between komal Dha and komal Ga in Jaunpuri?",
+          "options": [
+            {"text": "They are vadi and samvadi, mirroring each other in the scale", "right": true, "yes": "Correct. komal Dha is the vadi and komal Ga is the samvadi. They mirror each other - both sit 1 semitone above a shuddha neighbor (Pa and Re), creating Jaunpuri's symmetrical emotional architecture."},
+            {"text": "They are both avoided in most phrases", "why": "They are the two most important notes in Jaunpuri - the vadi and samvadi."},
+            {"text": "They are always played together as a pair", "why": "They appear in different parts of the scale and are played independently, though they share a structural relationship."},
+            {"text": "komal Ga is the vadi and komal Dha is the samvadi", "why": "It is the reverse: komal Dha is the vadi (more prominent) and komal Ga is the samvadi."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-shuddha-ni",
+      "title": "Shuddha Ni - The Distinction",
+      "content": [
+        "Jaunpuri uses shuddha Ni(11), not komal Ni(10). This single note distinguishes Jaunpuri from the parent Asavari thaat, which uses komal Ni. Shuddha Ni provides brightness in the upper register, preventing the raga from becoming too heavy.",
+        "The phrase dha Ni Sa' (8-11-12) has a wide, bright leap from komal Dha to shuddha Ni - 3 semitones - that lifts the melody upward. This leap is one of Jaunpuri's most beautiful moments, like sunlight breaking through a gentle mist."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [8, 11, 12],
+          "prompt": "Play the phrase dha Ni Sa': komal Dha to shuddha Ni to upper Sa. Feel the wide, bright leap from komal Dha to shuddha Ni (3 semitones).",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How does shuddha Ni distinguish Jaunpuri from the parent Asavari thaat?",
+          "options": [
+            {"text": "Asavari uses komal Ni while Jaunpuri uses shuddha Ni, adding brightness", "right": true, "yes": "Correct. This single note difference gives Jaunpuri a lighter, brighter character compared to pure Asavari. Shuddha Ni prevents the upper register from becoming too heavy."},
+            {"text": "Asavari uses shuddha Ni while Jaunpuri uses komal Ni", "why": "It is the opposite: Jaunpuri brightens the Asavari scale by using shuddha Ni instead of komal Ni."},
+            {"text": "They use the same Ni but differ in Re", "why": "Both use shuddha Re. The key difference is in Ni: shuddha in Jaunpuri, komal in Asavari."},
+            {"text": "Jaunpuri adds tivra Ma while Asavari does not", "why": "Neither uses tivra Ma. The distinction is in Ni: shuddha in Jaunpuri, komal in Asavari."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-vs-bhairavi",
+      "title": "Jaunpuri vs Bhairavi",
+      "content": [
+        "Both Jaunpuri and Bhairavi use komal Ga and komal Dha. But Bhairavi also uses komal Re and komal Ni - four komal notes total. Jaunpuri uses shuddha Re and shuddha Ni - only two komal notes.",
+        "The result: Bhairavi is intensely emotional and heavy, with four komal notes pulling the melody downward. Jaunpuri is gently contemplative and lighter, with its two shuddha notes (Re and Ni) providing brightness and balance. Same komal Ga and Dha, but the surrounding notes transform the character entirely."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many komal notes does Bhairavi have compared to Jaunpuri's two?",
+          "options": [
+            {"text": "Four komal notes", "right": true, "yes": "Correct. Bhairavi uses komal Re, komal Ga, komal Dha, AND komal Ni - all four possible komal notes. Jaunpuri uses only komal Ga and komal Dha."},
+            {"text": "Two komal notes (the same ones)", "why": "Bhairavi uses four komal notes, not two. It has komal Re and komal Ni in addition to komal Ga and komal Dha."},
+            {"text": "Three komal notes", "why": "Bhairavi uses all four komal notes: Re, Ga, Dha, and Ni."},
+            {"text": "One komal note", "why": "Bhairavi uses the most komal notes of any common raga - all four: Re, Ga, Dha, and Ni."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How does having fewer komal notes affect Jaunpuri's character compared to Bhairavi?",
+          "options": [
+            {"text": "Jaunpuri sounds lighter and more contemplative", "right": true, "yes": "Correct. With only two komal notes (vs. Bhairavi's four), Jaunpuri has more shuddha notes providing brightness and balance, giving it a lighter, more contemplative character."},
+            {"text": "Jaunpuri sounds more intense and dramatic", "why": "More komal notes create more intensity. Jaunpuri's fewer komal notes make it lighter, not more intense."},
+            {"text": "There is no difference in character", "why": "The number and placement of komal notes strongly affects a raga's emotional character."},
+            {"text": "Jaunpuri sounds more like a night raga", "why": "Jaunpuri is a morning raga. Its fewer komal notes give it a lighter character suited to the settled peace of late morning."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t9-playing",
+      "title": "Playing Jaunpuri",
+      "content": [
+        "Play the full arc: ascend with gentle steps through the two komal notes, let komal Dha breathe, then descend with the smooth flowing phrases that make this raga perfect for the bansuri.",
+        "Jaunpuri does not need drama - it needs the quiet confidence of a settled morning. Let each phrase flow naturally, with the komal notes adding just enough emotional depth without overwhelming the raga's peaceful character."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 5, 7, 8, 11, 12, 11, 8, 7, 5, 3, 2, 0],
+          "prompt": "Play the full ascending and descending Jaunpuri: Sa Re ga Ma Pa dha Ni Sa' Ni dha Pa Ma ga Re Sa. Let it flow with the quiet confidence of a settled morning.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will explore Jaunpuri's contemplative morning mood and practice its gentle phrases."
+        }
+      ]
+    }
+  ]
+}

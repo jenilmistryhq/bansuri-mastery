@@ -1,0 +1,266 @@
+{
+  "id": "kan-khatka-murki",
+  "title": "Kan, Khatka and Murki",
+  "tasks": [
+    {
+      "id": "bansuri-ornaments",
+      "title": "Bansuri Ornaments",
+      "content": ["Ornaments (alankar) are decorations added to notes. They are not optional extras - they are essential to how Indian music sounds. A raga played without ornaments sounds flat and lifeless, like speech without intonation.", "The three most common ornaments on bansuri: Kan (grace note) - a brief touch on a neighbouring note. Khatka - a quick flick up to a note and back. Murki - a rapid cluster of notes around the main note.", "Every phrase in Indian classical music is shaped by these ornaments. They are what make the bansuri sing. Learning them transforms your playing from 'playing notes' to 'making music.'"],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why are ornaments important in Indian classical music?",
+          "options": [
+            {
+              "text": "They are optional decorations for advanced players only",
+              "why": "Ornaments are essential to the music's character, not optional."
+            },
+            {
+              "text": "They are essential to a raga's character and expression",
+              "right": true,
+              "yes": "Correct. Without ornaments, a raga loses its identity and life."
+            },
+            {
+              "text": "They make the music faster",
+              "why": "Speed is not the purpose. Expression and character are."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kan-grace-note",
+      "title": "Kan - The Grace Note",
+      "content": ["A kan (grace note) is a very brief touch on a neighbouring note before or after the main note. It is so quick that you barely hear it as a separate note - it just colours the main note.", "Example: When playing Ga, briefly touch Re before landing on Ga. Written as: (Re)Ga. On the bansuri, a kan is done by quickly lifting and replacing a finger. The movement must be fast and light - if the grace note lasts too long, it becomes a separate note and the effect is lost.", "Kan can come from above or below. A kan from below (touching the note below before landing) is more common in ascending phrases. A kan from above (touching the note above) adds a falling, sighing quality. In Raga Yaman, the characteristic kan from Ga before tivra Ma gives the raga its distinctive approach to the raised fourth."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How long does a kan (grace note) last?",
+          "options": [
+            {
+              "text": "Half a beat - clearly audible as a separate note",
+              "why": "A kan is much shorter than half a beat - it is barely heard as a separate note."
+            },
+            {
+              "text": "A very brief touch - almost not heard as a separate note",
+              "right": true,
+              "yes": "Right. A kan colours the main note without being heard independently."
+            },
+            {
+              "text": "One full beat - as long as any other note",
+              "why": "One beat would make it a full note, not a grace note."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-kan",
+      "title": "Practice: Kan from Re to Ga",
+      "content": ["Let us practice a simple kan. Play Re briefly, then immediately land on Ga and hold it. The Re should be a quick touch - almost a flick - before Ga rings out clearly.", "Think of it like this: your finger lifts off hole 2 for just a moment (sounding Re), then immediately lifts off hole 3 as well to land on Ga. The key to a clean kan is finger independence - each finger must move precisely without disturbing the others.", "Practice tip: start by playing Re and Ga as two separate, equal notes. Then gradually shorten the Re until it becomes a brief flash before Ga. This gradual approach trains your fingers without frustration."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [2, 4],
+          "prompt": "Play Re then Ga (a quick kan from Re into Ga)",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [4, 2, 4],
+          "prompt": "Now try a kan from above: Ga-Re-Ga (touch Re briefly, return to Ga)",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "khatka-flick",
+      "title": "Khatka - The Flick",
+      "content": ["A khatka is a quick flick from the main note up to a higher note and back. It adds energy and brightness to a phrase.", "Example: On Pa, quickly flick up to Dha and back to Pa. The whole khatka happens in the space of about half a beat. On the bansuri, khatkas are very natural because the fingering makes them easy - just a quick lift and replace of one finger.", "The movement is upward, never downward. A downward flick would be a different ornament. Khatkas are especially common in lighter ragas and in the faster sections of a performance. They add sparkle and liveliness, like a splash of light on water."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the direction of a khatka?",
+          "options": [
+            {
+              "text": "Down to a lower note and back",
+              "why": "A khatka goes up, not down."
+            },
+            {
+              "text": "Up to a higher note and quickly back to the main note",
+              "right": true,
+              "yes": "Correct. The upward flick and quick return gives it its characteristic sparkle."
+            },
+            {
+              "text": "A slow slide between two notes",
+              "why": "That would be a meend. A khatka is quick and percussive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-khatka",
+      "title": "Practice: Khatka on Pa",
+      "content": ["Now try a khatka. Start on Pa, flick up to Dha, then come back to Pa. The movement should be quick and crisp - Pa, then a brief Dha, then back to Pa. The Dha is not a full note; it is a flash of brightness before you settle back.", "On the bansuri, this means: lift hole 5 briefly (sounding Dha), then close it again to return to Pa. Keep your finger relaxed and close to the hole so the movement is minimal and fast.", "Practice tip: try khatkas on different notes too. Ga with a flick to Ma and back. Re with a flick to Ga and back. Each khatka should have the same crisp, quick character regardless of which notes are involved."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [7, 9, 7],
+          "prompt": "Play Pa - Dha - Pa (a khatka flick on Pa)",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [4, 5, 4],
+          "prompt": "Now try a khatka on Ga: Ga - Ma - Ga",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "murki-cluster",
+      "title": "Murki - The Cluster",
+      "content": ["A murki is a rapid cluster of notes around the main note. Think of it as several kan notes played in quick succession, creating a ripple effect.", "Example: On Ga, a murki might be Re-Ga-Ma-Ga or Sa-Re-Ga, all played very rapidly before landing on Ga. Murkis require fast, precise finger movement. They are harder than kan or khatka because multiple fingers must move in quick sequence.", "The result is a beautiful, shimmering decoration that is a hallmark of the gayaki (vocal) style of bansuri playing. Hariprasad Chaurasia is famous for his extensive use of murkis - listen to his recordings and you will hear how murkis make each note blossom with life."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does a murki differ from a single kan?",
+          "options": [
+            {
+              "text": "A murki is slower and more deliberate",
+              "why": "A murki is fast - it is multiple notes played rapidly."
+            },
+            {
+              "text": "A murki involves multiple rapid notes, not just one touch",
+              "right": true,
+              "yes": "Right. A murki is a cluster of quick notes, while a kan is a single touch."
+            },
+            {
+              "text": "They are the same thing with different names",
+              "why": "A kan is one grace note; a murki is a rapid cluster of several."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "combining-ornaments",
+      "title": "Combining Ornaments in Phrases",
+      "content": ["In actual playing, ornaments rarely appear alone. A single phrase might use a kan to approach a note, a khatka in passing, and a murki on a resting note - all within two or three seconds. The key is that each ornament serves a purpose: kan adds emphasis or direction, khatka adds energy and sparkle, murki adds beauty and elaboration.", "The danger of over-ornamenting: too many ornaments make the music sound busy and cluttered. The raga's melody should remain clear underneath, like a river whose current is visible despite the ripples on its surface. If a listener cannot follow the melody because of excessive decoration, you have over-ornamented.", "The danger of under-ornamenting: too few ornaments make the bansuri sound plain and mechanical. These ornaments are what give the bansuri its singing, human quality. The balance is to ornament where it enhances the phrase and leave notes plain where they speak for themselves. A sustained, unornamented Ga can be more powerful than a decorated one - if that is what the musical moment calls for."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [2, 4, 5, 4, 7, 9, 7],
+          "prompt": "Play this phrase: Re Ga Ma Ga Pa Dha Pa - imagine adding a kan before Ga, a khatka on Pa",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What happens when you use too many ornaments in a phrase?",
+          "options": [
+            {
+              "text": "The music sounds more professional and impressive",
+              "why": "Excessive ornamentation sounds cluttered, not professional."
+            },
+            {
+              "text": "The raga's melody becomes unclear and the music sounds busy",
+              "right": true,
+              "yes": "Correct. The melody must remain clear underneath the ornaments."
+            },
+            {
+              "text": "The tempo automatically increases",
+              "why": "Tempo is independent of ornamentation. The issue is clarity, not speed."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raga-specific-ornaments",
+      "title": "Raga-Specific Ornament Usage",
+      "content": ["Different ragas prescribe different ornamental styles. A raga's character determines which ornaments suit it - this is not arbitrary but deeply connected to the raga's emotional world.", "Light, bright ragas get quick, sparkling ornaments. Yaman uses frequent kan from below (approaching notes from the note below) and gentle murkis on Ga and Ni. Bhupali uses clean, sweet ornaments - gentle kan, brief murkis, no heavy gamak. The lightness of these ragas calls for lightness in ornamentation.", "Heavy, serious ragas get deep, slow ornaments. Bhairavi uses heavy andolan (slow oscillation) on komal Re and komal Dha, with frequent khatkas on Ga adding brightness. Malkauns uses deep andolan on komal Ga and komal Dha but sparing khatkas - the raga is too weighty for excessive brightness. Todi uses intensely slow andolan on all three komal notes (Re, Ga, Dha), each oscillating with gravitational weight.", "Learning which ornaments suit which raga is a lifelong study. The rule of thumb: listen to master recordings and notice which ornaments they use on which notes. The masters have absorbed centuries of tradition about raga-appropriate ornamentation."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does ornament style differ between heavy and light ragas?",
+          "options": [
+            {
+              "text": "Heavy ragas use more ornaments overall",
+              "why": "It is not about quantity but type. Heavy ragas use slow, deep ornaments; light ragas use quick, sparkling ones."
+            },
+            {
+              "text": "Heavy ragas use deep, slow ornaments; light ragas use quick, sparkling ones",
+              "right": true,
+              "yes": "Correct. The ornamental style matches the raga's emotional weight."
+            },
+            {
+              "text": "All ragas use the same ornaments in the same way",
+              "why": "Each raga has its own ornamental personality. Using the wrong type destroys the raga's character."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which raga would use the lightest, sweetest ornaments?",
+          "options": [
+            {
+              "text": "Todi - with its three komal notes",
+              "why": "Todi is a heavy, serious raga requiring deep andolan, not light ornaments."
+            },
+            {
+              "text": "Malkauns - the midnight pentatonic",
+              "why": "Malkauns is deep and meditative, requiring slow, weighty ornamentation."
+            },
+            {
+              "text": "Bhupali - the sweet pentatonic",
+              "right": true,
+              "yes": "Correct. Bhupali's sweet, clean character calls for gentle kan and brief murkis - no heavy gamak."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ornaments-in-ragas",
+      "title": "Ornaments in Raga Context",
+      "content": ["Now that you know the individual ornaments and the principle of raga-appropriate usage, see how ornaments define a raga's personality in practice.", "Raga Yaman uses kan and khatka freely. It is bright and ornate. The tivra Ma gets a characteristic kan from Ga - this tiny gesture is so distinctive that experienced listeners recognize Yaman from the kan alone. Raga Bhairavi is rich in murkis and meend. The komal notes are heavily decorated, each one given life through oscillation and clusters.", "Raga Darbari (Kanada) uses andolan (slow oscillation) rather than fast ornaments. Fast khatkas would destroy the mood entirely - Darbari's gravity demands weight, not sparkle. Raga Bhupali is clean and simple. Fewer ornaments, more sustained notes with gentle kan. The ornament must serve the raga's mood, never fight it."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which raga would suffer if you added many fast khatkas?",
+          "options": [
+            {
+              "text": "Raga Yaman - it loves bright ornaments",
+              "why": "Yaman welcomes khatkas. It is a bright, ornate raga."
+            },
+            {
+              "text": "Raga Darbari - its mood demands slow, heavy movement",
+              "right": true,
+              "yes": "Correct. Darbari's serious, weighty mood needs andolan, not fast flicks."
+            },
+            {
+              "text": "Raga Bhupali - it uses all ornament types",
+              "why": "Bhupali is relatively simple, but fast khatkas would not ruin it the way they would ruin Darbari."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-training-ornaments",
+      "title": "Ear Training: Know Your Notes",
+      "content": ["Ornaments move between notes at speed, so your ear needs to track pitches quickly. This exercise trains you to identify the notes that ornaments connect.", "Listen to each note and name it. As your ear sharpens, you will begin to hear the individual notes within ornaments - even at speed, you will recognize the kan touching Re before Ga, or the murki rippling through Sa-Re-Ga. This ability to hear individual notes within fast passages is what separates a musician who uses ornaments from one who merely executes them."],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note - these are the notes your ornaments will connect",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

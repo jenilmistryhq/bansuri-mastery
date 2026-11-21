@@ -23,7 +23,7 @@ Yearning, tender, warm. Ma is the centre of gravity. A favourite of bansuri play
 - **Ma** is the resting note (vadi). Phrases often land on `m`.
 - `.n S` (from mandra komal Ni to Sa) is a typical start.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Register |
 |---|---|---|
@@ -107,7 +107,7 @@ Check what you hear against this card: the aroh/avroh, the pakad and the notes t
 P - m - | g m P m | g m g R | S - - - ||
 ```
 
-It starts with `.n S m`, skips Re and Dha going up (`g m P n S'`), uses Dha only in descent (`S' n D P`) and keeps returning to Ma. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+It starts with `.n S m`, skips Re and Dha going up (`g m P n S'`), uses Dha only in descent (`S' n D P`) and keeps returning to Ma. Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 **Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
 

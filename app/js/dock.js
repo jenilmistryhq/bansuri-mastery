@@ -21,7 +21,7 @@ const NOTE_KEY = "bansuri.dock.note";
 // W3: "Sa [ C5 v ]", the flute's Sa and octave in one select (the same settings as Me > Flute).
 function saSelect() {
   const sel = h("select", { class: "input dock-sa", "aria-label": "Your flute's Sa" });
-  for (const oct of [4, 5]) for (let i = 0; i < 12; i++) sel.append(h("option", { value: i + ":" + oct }, WEST[i] + oct));
+  for (const oct of [3, 4, 5, 6]) for (let i = 0; i < 12; i++) sel.append(h("option", { value: i + ":" + oct }, WEST[i] + oct));
   const fill = () => { const s = getSettings(); sel.value = s.saNote + ":" + s.saOct; };
   fill();
   sel.addEventListener("change", () => { const [n, o] = sel.value.split(":").map(Number); setSettings({ saNote: n, saOct: o }); });

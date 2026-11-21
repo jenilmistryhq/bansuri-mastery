@@ -1,0 +1,270 @@
+{
+  "id": "accompaniment",
+  "title": "Accompaniment - Playing with Others",
+  "tasks": [
+    {
+      "id": "the-ensemble",
+      "title": "The Indian Classical Ensemble",
+      "content": "A typical Indian classical ensemble:\n\n- **Soloist** (you, the bansuri player) - presents the raga\n- **Tabla** - provides the rhythmic cycle (taal)\n- **Tanpura** - holds the drone (Sa and Pa)\n- **Harmonium** (sometimes) - supports the melody\n\nThe soloist leads. The tabla player follows, supports, and challenges. The tanpura holds everything together. It is a conversation, not a battle - each musician listens and responds to the others.\n\nThe deepest principle of ensemble playing is taalim - the mutual understanding between musicians. Good accompaniment is not about playing loudly or showing off. The best tabla players are those who make the soloist sound better. The best soloists are those who leave room for the tabla to breathe.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Who leads in a typical Indian classical ensemble?",
+          "options": [
+            {
+              "text": "The tabla player sets the tempo and everyone follows",
+              "why": "The tabla supports. The soloist leads and the tabla follows."
+            },
+            {
+              "text": "The soloist (melodic instrument) leads the performance",
+              "right": true,
+              "yes": "Correct. The soloist presents the raga and the tabla follows and supports."
+            },
+            {
+              "text": "Everyone plays independently with no leader",
+              "why": "It is a conversation led by the soloist, not independent playing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "role-of-tanpura",
+      "title": "The Role of Tanpura",
+      "content": "The tanpura is the foundation of the ensemble. It plays a continuous drone - typically Sa and Pa (and sometimes Ma) - throughout the entire performance.\n\nThe tanpura does three things:\n1. **Provides pitch reference** - Every note you play is heard against the drone. If you drift from the correct pitch, the drone makes it obvious.\n2. **Creates harmonic richness** - The tanpura's overtones fill the sonic space with a shimmering bed of sound.\n3. **Defines the tonal centre** - Sa is always present, so the listener always knows where 'home' is.\n\nIn modern practice, electronic tanpuras or apps often replace the physical instrument, but the function is the same: a constant, unwavering Sa.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What notes does a tanpura typically drone on?",
+          "options": [
+            {
+              "text": "All seven notes of the raga",
+              "why": "The tanpura plays only the fundamental tones, not the whole raga."
+            },
+            {
+              "text": "Sa and Pa (the tonic and fifth)",
+              "right": true,
+              "yes": "Correct. Sa and Pa form the bedrock. Sometimes Ma replaces Pa for certain ragas."
+            },
+            {
+              "text": "Whatever the soloist is playing",
+              "why": "The tanpura does not follow the melody. It holds a constant drone."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tanpura-tuning-function",
+      "title": "Tanpura Tuning and Overtones",
+      "content": ["A tanpura typically has four strings, tuned in a specific pattern:", "The standard tuning is Pa (low octave) - Sa - Sa - Sa. For ragas that do not use Pa (like Malkauns), the first string is tuned to Ma instead: Ma - Sa - Sa - Sa. Some tanpuras add a fifth string for a lower Sa.", "The strings are plucked in a slow, continuous cycle - one after another, with no pause. This cycling creates a wash of overtones that is the tanpura's real contribution.", "The key to the tanpura's sound is the jawari - a carefully shaped curve on the bridge that causes each string to buzz slightly against it. This controlled buzz is what produces the rich overtone series. A well-set jawari makes the tanpura seem to 'sing' all the swaras faintly within its drone. When your bansuri note matches one of these overtones, the note seems to blossom and glow. That blossoming is your true pitch reference - more reliable than any electronic tuner."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the standard tuning of a four-string tanpura?",
+          "options": [
+            {
+              "text": "Sa Re Ga Ma",
+              "why": "The tanpura does not play a scale. It drones on Pa and Sa."
+            },
+            {
+              "text": "Pa (low) - Sa - Sa - Sa",
+              "right": true,
+              "yes": "Correct. One low Pa and three Sa strings, creating a drone rich in overtones."
+            },
+            {
+              "text": "Sa Sa Sa Sa - all the same note",
+              "why": "The first string is usually tuned to Pa (or Ma for certain ragas), not Sa."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the name of the bridge curve that gives the tanpura its characteristic buzzing overtones?",
+          "answer": "jawari",
+          "accept": ["jawari", "javari", "jivari", "javhari"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "understanding-tabla",
+      "title": "Understanding the Tabla",
+      "content": "The tabla provides the rhythmic framework (taal). A tabla player does much more than keep time:\n\n- **Thekedaar** - The basic rhythmic pattern of the taal (like a groove)\n- **Accompaniment** - Echoing and complementing the soloist's rhythmic ideas\n- **Laykari** - Playing with tempo, doubling or tripling the speed within the taal cycle\n- **Solo passages** - Taking brief solos during the soloist's rest\n- **Tihais** - Ending sections with triple-repeat cadences that land on sam\n\nA great tabla player makes you sound better. They anticipate where your phrases will go and support them with the right rhythmic texture.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the thekedaar?",
+          "options": [
+            {
+              "text": "A fast solo passage on the tabla",
+              "why": "A thekedaar is the basic pattern, not a solo."
+            },
+            {
+              "text": "The basic rhythmic pattern of the taal",
+              "right": true,
+              "yes": "Correct. The thekedaar is the foundation groove that defines the taal's character."
+            },
+            {
+              "text": "The name of the tabla's tuning",
+              "why": "The thekedaar is a rhythmic pattern, not a tuning."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tabla-interaction",
+      "title": "Tabla Interaction Patterns",
+      "content": ["Playing with a tabla player is a conversation with specific patterns of exchange:", "**Sawaal-jawaab (question-answer):** The soloist plays a rhythmic melodic pattern. The tabla player echoes its rhythm or responds with a complementary pattern. The phrases get shorter and faster as intensity builds. Both musicians aim to land on sam together at the end.", "**Tihai exchange:** The soloist plays a tihai (a phrase repeated three times landing on sam). The tabla player may join in, playing the same rhythmic pattern simultaneously. When both instruments lock into the same tihai and land on sam together, the audience feels it viscerally.", "**Upaj (spontaneous creation):** During free improvisation, the tabla adapts in real time. If the soloist plays a syncopated phrase, the tabla fills the gaps. If the soloist plays long notes, the tabla adds rhythmic texture underneath. This requires deep listening from both musicians.", "**Laggi:** A section where the tabla plays rapid, driving patterns and the soloist joins in rhythmically, almost like a duet of pure energy. Common in lighter forms like thumri and dhun.", "**Communication signals:** The soloist returns to the mukhda (the composition's opening phrase) to signal 'I am coming back to the composition.' The tabla player watches for this and immediately shifts from accompaniment mode back to the theka."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does it signal when the soloist returns to the mukhda?",
+          "options": [
+            {
+              "text": "The performance is ending",
+              "why": "It signals a return to the composition, not necessarily the end of the performance."
+            },
+            {
+              "text": "The soloist is returning to the composition - the tabla should shift back to the theka",
+              "right": true,
+              "yes": "Correct. The mukhda return is a musical signal that the improvisation section is wrapping up and the composition resumes."
+            },
+            {
+              "text": "The tabla player should start a solo",
+              "why": "A tabla solo may happen later, but the mukhda return means the soloist is re-entering the bandish."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "In sawaal-jawaab, what happens as the exchange progresses?",
+          "options": [
+            {
+              "text": "The phrases get longer and slower",
+              "why": "The opposite - phrases get shorter and faster, building intensity."
+            },
+            {
+              "text": "The phrases get shorter and faster, building toward a climactic landing on sam",
+              "right": true,
+              "yes": "Right. The escalation from long phrases to rapid-fire exchanges creates one of the most exciting moments in a performance."
+            },
+            {
+              "text": "The soloist stops playing and only listens",
+              "why": "Both musicians participate throughout. The soloist plays questions, the tabla answers."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knowing-sam",
+      "title": "Knowing Where Sam Is",
+      "content": "Sam (beat 1) is the most important beat in the taal cycle. Everything revolves around it.\n\nWhen playing with tabla:\n- **Always know where sam is** - Count internally or feel the cycle\n- **Important phrases land on sam** - Tihais, the mukhda (opening phrase), and climactic moments all resolve on sam\n- **Sam is the meeting point** - The soloist and tabla both aim for sam. When they meet cleanly, it creates a powerful sense of arrival\n\nLosing track of sam while improvising is the most common mistake in ensemble playing. If you lose it, listen to the tabla's thekedaar - sam is where the cycle restarts with its strongest bol.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is sam (beat 1) so important in ensemble playing?",
+          "options": [
+            {
+              "text": "It is the loudest beat",
+              "why": "Volume is not the point. Sam is where the cycle resolves and musicians meet."
+            },
+            {
+              "text": "It is where important phrases resolve and musicians align",
+              "right": true,
+              "yes": "Correct. Sam is the anchor of the entire taal cycle - the point of musical gravity."
+            },
+            {
+              "text": "It is the only beat where the soloist plays",
+              "why": "The soloist plays throughout the cycle, but sam is where key phrases resolve."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "leaving-space",
+      "title": "Leaving Space",
+      "content": "Ensemble playing is a conversation. Like any good conversation, it needs silence and space.\n\nRules for leaving space:\n- **Do not fill every beat** - Constant playing exhausts the listener and gives the tabla player nothing to respond to\n- **Breathe between phrases** - Natural pauses let the music breathe and give the tabla room to comment\n- **Listen to the tabla's response** - After your phrase, the tabla may echo its rhythm. Hear it before playing the next phrase\n- **Silence creates tension** - A well-placed pause makes the next phrase more powerful\n\nThe gap between your phrases is where the tabla player lives. If you fill every moment, you silence your partner.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why should you leave gaps between your phrases when playing with tabla?",
+          "options": [
+            {
+              "text": "Because the bansuri player must rest frequently",
+              "why": "It is not about physical rest - it is about musical dialogue."
+            },
+            {
+              "text": "To give the tabla room to respond and create a musical conversation",
+              "right": true,
+              "yes": "Correct. Space is where the conversation happens. Without it, the tabla player has nothing to say."
+            },
+            {
+              "text": "Because gaps make the audience clap",
+              "why": "Audience response may come, but the reason is musical dialogue, not applause."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sawaal-jawaab",
+      "title": "Sawaal-Jawaab in Practice",
+      "content": "Sawaal-jawaab means 'question and answer'. It is a thrilling section in a performance where the soloist and tabla player trade phrases.\n\nHow it works:\n1. The soloist plays a rhythmic phrase (the question)\n2. The tabla player echoes or answers it (the answer)\n3. The phrases get shorter and faster as intensity builds\n4. Both aim to land together on sam at the end\n\nSawaal-jawaab often happens near the end of a performance, in the drut (fast) section. It is where the competitive spirit of Indian music shows itself - but it is friendly competition, not hostility. Both musicians are showing off for each other and for the audience.\n\nThe best sawaal-jawaab ends with a tihai that both musicians play together, landing on sam in perfect unison.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What happens during sawaal-jawaab?",
+          "options": [
+            {
+              "text": "The soloist plays a long alap alone",
+              "why": "Alap is a solo section. Sawaal-jawaab is a duet."
+            },
+            {
+              "text": "The soloist and tabla trade increasingly fast phrases",
+              "right": true,
+              "yes": "Correct. The musical conversation gets faster and more intense, building to a climactic landing on sam."
+            },
+            {
+              "text": "The audience asks the musicians to play specific ragas",
+              "why": "Sawaal-jawaab is between the musicians, not the audience."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-drone-match",
+      "title": "Practice: Hold Sa with the Drone",
+      "content": "Playing with others starts with matching the drone precisely. Hold Sa as steadily as you can - in an ensemble, any drift from Sa is immediately audible against the tanpura.\n\nThis exercise uses a tight tolerance (15 cents). In a real ensemble, even this much drift would be noticeable. Aim for the centre of the note - listen for the moment when your Sa and the drone blend into one seamless sound.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 8,
+          "cents": 15,
+          "prompt": "Hold Sa within 15 cents for 8 seconds - as steady as a tanpura",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ear-training-saptak",
+      "title": "Ear Training: Full Saptak",
+      "content": "When playing with others, you need to instantly recognise every note in the saptak. The tabla player's bols land on specific beats; the tanpura drones on Sa and Pa. Your melodic lines weave through all seven shuddha notes.\n\nIdentify each note as quickly as you can. In an ensemble, there is no time to think - your ear must know immediately.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Name each note of the saptak - quick and confident",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

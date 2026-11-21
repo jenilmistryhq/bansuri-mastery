@@ -79,7 +79,7 @@ Fast clusters of repeated neighbour notes, a virtuoso decoration. Optional.
 
 ### Step 1. Andolan (2-3 weeks)
 
-1. Drone on C. Play komal Re (`r`, `XXH OOO`) and hold it in tune for 6 s.
+1. Drone on your flute's Sa. Play komal Re (`r`, `XXH OOO`) and hold it in tune for 6 s.
 2. Now very slowly cover a little *more* of hole 3, so the pitch sinks slightly (just a few
    cents), then return. One full wave should take about 1-2 seconds.
 3. Keep the waves **slow, even and narrow**. The listener should still hear `r`, not two notes.

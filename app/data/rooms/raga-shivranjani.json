@@ -1,0 +1,244 @@
+{
+  "id": "raga-shivranjani",
+  "title": "Raga Shivranjani - The Beloved Pentatonic",
+  "tasks": [
+    {
+      "id": "t1-pleases-shiva",
+      "title": "That Which Pleases Shiva",
+      "content": [
+        "Shivranjani means 'that which delights Lord Shiva' - from 'Shiva' (the deity of transformation) and 'ranjani' (that which pleases or colors the mind). It is one of the most beloved ragas in all of Indian music, not for its complexity but for its emotional depth.",
+        "With only five notes, Shivranjani achieves something remarkable: a gentle, slightly melancholic character that touches the heart of every listener. Its tender quality has made it one of the most used ragas in Indian film music. If you have listened to Hindi film songs, you have almost certainly heard Shivranjani without knowing its name."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does Shivranjani mean?",
+          "options": [
+            { "text": "That which delights Lord Shiva", "right": true, "yes": "Correct - 'Shiva' refers to Lord Shiva and 'ranjani' means that which pleases or delights." },
+            { "text": "The dance of Shiva", "why": "While it references Shiva, 'ranjani' means 'that which pleases,' not dance." },
+            { "text": "Shiva's anger", "why": "Shivranjani is a gentle, tender raga. 'Ranjani' means 'that which pleases,' not anger." },
+            { "text": "The moonlit night", "why": "The name directly references Lord Shiva. 'Shivranjani' = 'that which delights Shiva.'" }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How many notes does Shivranjani use?",
+          "options": [
+            { "text": "Five", "right": true, "yes": "Correct - Shivranjani is a pentatonic raga using Sa, Re, komal Ga, Pa, and Dha." },
+            { "text": "Seven", "why": "Shivranjani uses only five notes (Sa, Re, komal Ga, Pa, Dha), omitting Ma and Ni." },
+            { "text": "Six", "why": "Shivranjani uses five notes, not six. Both Ma and Ni are absent." },
+            { "text": "Four", "why": "Shivranjani uses five notes: Sa, Re, komal Ga, Pa, and Dha." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-five-notes-one-emotion",
+      "title": "Five Notes, One Emotion",
+      "content": [
+        "Shivranjani's notes: Sa(0), Re(2), komal Ga(3), Pa(7), Dha(9). Both Ma and Ni are absent. The raga belongs to the Kafi thaat because of its use of komal Ga.",
+        "The key note is komal Ga(3). It sits just 1 semitone above Re(2), creating an intimate, tender interval. This close proximity between Re and komal Ga is what gives Shivranjani its characteristic 'sighing' quality - a gentle yearning that touches the heart without being dramatic. Where shuddha Ga(4) sounds bright and open, komal Ga(3) sounds inward and emotional."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Which note gives Shivranjani its distinctive emotional quality?",
+          "answer": "komal Ga",
+          "accept": ["komal ga", "Komal Ga", "komal G", "flat Ga", "ga", "komal Re... no, komal Ga"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How far apart are Re and komal Ga in semitones?",
+          "options": [
+            { "text": "1 semitone", "right": true, "yes": "Correct - this tiny interval creates the intimate, tender quality that defines Shivranjani." },
+            { "text": "2 semitones", "why": "Re(2) to komal Ga(3) is only 1 semitone. This closeness creates the sighing quality." },
+            { "text": "3 semitones", "why": "The interval is just 1 semitone (Re at 2, komal Ga at 3). It is this proximity that creates tenderness." },
+            { "text": "Half a semitone", "why": "In the 12-semitone system, the smallest step is 1 semitone. Re(2) to komal Ga(3) = 1 semitone." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-tender-ascent",
+      "title": "The Tender Ascent",
+      "content": [
+        "The aroha: Sa Re ga Pa Dha Sa'. Clean and simple, with no vakra movement. But notice the contrast in interval sizes: after Re(2), komal Ga(3) is just 1 semitone higher - a tiny, intimate step. Then from komal Ga(3) to Pa(7) is 4 semitones - a big, open leap.",
+        "This contrast between the intimate Re-ga step and the wide ga-Pa leap creates Shivranjani's distinctive emotional contour. The small step feels like a whispered confession; the wide leap that follows feels like opening your arms to the sky. Tenderness followed by openness - that is the ascending character of Shivranjani."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 7, 9, 12],
+          "prompt": "Play the ascending scale of Shivranjani: Sa Re ga Pa Dha Sa'. Feel the tiny step from Re to komal Ga, then the wide leap to Pa.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What creates the distinctive emotional contour in Shivranjani's ascent?",
+          "options": [
+            { "text": "The contrast between the tiny Re-ga step (1 semitone) and the wide ga-Pa leap (4 semitones)", "right": true, "yes": "Correct - this contrast between intimacy and openness is Shivranjani's signature." },
+            { "text": "The speed of the ascending notes", "why": "Speed is a performance choice. The emotional contour comes from the contrasting interval sizes." },
+            { "text": "The use of tivra Ma", "why": "Shivranjani does not use Ma at all. The contour comes from the Re-ga and ga-Pa interval contrast." },
+            { "text": "The number of notes used", "why": "The contour is about interval sizes, not note count. The 1-semitone step followed by a 4-semitone leap is the key." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-descending-grace",
+      "title": "Descending with Grace",
+      "content": [
+        "The avaroha: Sa' Dha Pa ga Re Sa. The descent is where Shivranjani's beauty truly shines. As you come down from the upper Sa, through Dha and Pa, the arrival at komal Ga feels like arriving at the emotional heart of the raga.",
+        "The phrase Pa-ga-Re-Sa (7-3-2-0) flows like tears of gentle emotion - not grief, but the kind of tender feeling you get watching a beautiful sunset or remembering a cherished moment. The komal Ga lingers just briefly before resolving down through Re to Sa, leaving a bittersweet warmth."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 9, 7, 3, 2, 0],
+          "prompt": "Play the descending scale: Sa' Dha Pa ga Re Sa. Let the komal Ga linger with gentle emotion.",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 3, 7, 9],
+          "rounds": 5,
+          "prompt": "Identify the notes of Shivranjani by ear. Pay special attention to komal Ga - it sits very close to Re.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t5-re-anchor",
+      "title": "Re - The Anchor",
+      "content": [
+        "Re(2) is the vadi (king note) of Shivranjani. It provides the stable foundation from which the emotional komal Ga can express itself. Without Re's steadiness, komal Ga would have nothing to lean against. The phrase Re-ga-Re (2-3-2) - touching komal Ga and returning to Re - is Shivranjani's most intimate gesture, like a sigh.",
+        "Pa(7) is the samvadi (queen note), providing the raga's structural spine. The Re-Pa axis spans a perfect fourth (5 semitones), the same stable interval found in many ragas. Together, Re and Pa frame the emotional space in which komal Ga does its expressive work."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Re (the vadi) with a clear, steady tone. Feel it as the stable anchor of Shivranjani.",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 3,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Now hold komal Ga. Notice how close it sits to Re - just 1 semitone above. This proximity creates the raga's tender quality.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t6-vs-bhupali",
+      "title": "Shivranjani vs Bhupali",
+      "content": [
+        "Bhupali: Sa Re Ga Pa Dha - all shuddha notes. Shivranjani: Sa Re ga Pa Dha - komal Ga replaces shuddha Ga. One note lowered by just 1 semitone (from Ga at 4 to komal Ga at 3) transforms the entire emotional character.",
+        "Bhupali is bright, sweet, and uncomplicated - like a clear sky. Shivranjani is tender, emotional, and introspective - like that same sky at twilight when the colors soften. This demonstrates one of the most important lessons in Indian music: a single swara change can alter the entire rasa of a raga. The same musical skeleton can carry completely different emotions."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the only difference between Bhupali and Shivranjani?",
+          "options": [
+            { "text": "Bhupali uses shuddha Ga, Shivranjani uses komal Ga", "right": true, "yes": "Correct - this single-note change transforms the raga from bright and sweet to tender and emotional." },
+            { "text": "Bhupali has more notes", "why": "Both ragas use exactly five notes. The difference is Ga vs komal Ga." },
+            { "text": "They use completely different scales", "why": "They share four of five notes (Sa, Re, Pa, Dha). Only Ga differs: shuddha in Bhupali, komal in Shivranjani." },
+            { "text": "Shivranjani is played faster", "why": "Speed is a performance choice. The fundamental difference is shuddha Ga (Bhupali) vs komal Ga (Shivranjani)." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How does komal Ga change the emotional character compared to shuddha Ga?",
+          "options": [
+            { "text": "It makes the raga more tender and introspective", "right": true, "yes": "Correct - lowering Ga by 1 semitone shifts the raga from bright sweetness to gentle emotion." },
+            { "text": "It makes the raga more energetic", "why": "Komal Ga actually creates a more subdued, tender quality, not more energy." },
+            { "text": "It has no effect on emotion", "why": "The change is profound - komal Ga transforms Bhupali's brightness into Shivranjani's tenderness." },
+            { "text": "It makes the raga sound angry", "why": "Komal Ga creates tenderness and gentle sadness, not anger. Shivranjani's rasa is karuna (compassion)." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-vs-durga",
+      "title": "Shivranjani vs Durga",
+      "content": [
+        "Here is another illuminating comparison. Both Shivranjani and Durga are pentatonic ragas that share Sa, Re, Pa, and Dha. Durga uses Ma(5) where Shivranjani uses komal Ga(3). Despite sharing four notes, they sound entirely different.",
+        "Durga sounds strong and resolute (veera rasa - heroism). Shivranjani sounds tender and emotional (karuna rasa - compassion). The reason lies in where the distinctive note sits relative to its neighbors. Ma(5) sits close to Pa(7) - only 2 semitones apart - creating a stable, grounded pair. Komal Ga(3) sits close to Re(2) - only 1 semitone apart - creating an intimate, yearning pair. Same skeleton, different soul."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How do Durga and Shivranjani differ in their note sets?",
+          "options": [
+            { "text": "Durga has Ma, Shivranjani has komal Ga", "right": true, "yes": "Correct - Ma gives Durga its strength, while komal Ga gives Shivranjani its tenderness." },
+            { "text": "Durga has Ni, Shivranjani has komal Ga", "why": "Neither raga uses Ni. The difference is Ma (Durga) vs komal Ga (Shivranjani)." },
+            { "text": "They use the same notes", "why": "They share four notes (Sa, Re, Pa, Dha) but differ in the fifth: Ma (Durga) vs komal Ga (Shivranjani)." },
+            { "text": "Durga has more notes", "why": "Both are pentatonic with five notes each. The difference is which five notes they use." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Ma create a different emotional feeling than komal Ga?",
+          "options": [
+            { "text": "Ma sits close to Pa (stability), while komal Ga sits close to Re (intimacy)", "right": true, "yes": "Correct - the relationship between the distinctive note and its neighbor defines the raga's emotional quality." },
+            { "text": "Ma is louder than komal Ga", "why": "Volume depends on the player, not the note. The difference is in the intervallic relationships." },
+            { "text": "Komal Ga is harder to play", "why": "Difficulty is not the reason. The emotional difference comes from the interval relationships: Ma-Pa vs ga-Re." },
+            { "text": "They create the same feeling", "why": "They create very different feelings - Ma brings strength (veera), komal Ga brings tenderness (karuna)." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-film",
+      "title": "Shivranjani in Film",
+      "content": [
+        "Shivranjani may be the most-used raga in Hindi film music. Its emotional quality is perfect for romantic longing, nostalgia, and gentle sadness - the emotions that drive the most memorable film scenes. Countless beloved Bollywood melodies are built on Shivranjani's five tender notes.",
+        "Learning Shivranjani gives you access to hundreds of beautiful film melodies that you can play by ear. When you hear a Hindi song that makes your heart ache gently, listen for the komal Ga - chances are good that you are hearing Shivranjani. The raga's accessibility (only five notes, straightforward movement) makes it ideal for film composers who need melodies that connect instantly with audiences."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 2, 0, 2, 3, 7, 9, 7],
+          "prompt": "Play this film-style Shivranjani phrase: Sa Re ga Re Sa Re ga Pa Dha Pa. Let it flow with gentle emotion.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is Shivranjani so popular in Hindi film music?",
+          "options": [
+            { "text": "Its tender emotional quality perfectly suits romantic and nostalgic scenes", "right": true, "yes": "Correct - Shivranjani's gentle yearning is exactly what film composers need for emotional moments." },
+            { "text": "It is the only raga film composers know", "why": "Film composers use many ragas. Shivranjani is popular because its emotional quality perfectly suits film storytelling." },
+            { "text": "It is required by Indian film regulations", "why": "There are no such regulations. Shivranjani is chosen because its emotional quality suits romantic and nostalgic film scenes." },
+            { "text": "It is the fastest raga to play", "why": "Speed is not the reason. Shivranjani's gentle, emotional quality makes it ideal for film's romantic and nostalgic moments." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t9-playing",
+      "title": "Playing Shivranjani",
+      "content": [
+        "Play the full arc: ascend with tenderness, let the komal Ga sing, and descend with gentle emotion. Shivranjani does not need virtuosity - it needs feeling. Play slowly, let each note breathe, and let the komal Ga touch the listener's heart.",
+        "Remember: the beauty of Shivranjani lies not in what you add but in what you feel. Five notes, one emotion, infinite depth. When you play Shivranjani well, the listener does not think about technique or theory - they simply feel something stir in their chest. That is the power of this raga."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 7, 9, 12, 9, 7, 3, 2, 0],
+          "prompt": "Play the complete Shivranjani journey: Sa Re ga Pa Dha Sa' Dha Pa ga Re Sa. Let every note carry emotion.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will let Shivranjani's emotion guide my playing, focusing on feeling over speed."
+        }
+      ]
+    }
+  ]
+}

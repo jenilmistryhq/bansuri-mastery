@@ -12,7 +12,7 @@
 
 ## 1. Learning objectives
 
-1. State the exact range of your C flute in sargam, in Western note names and roughly in Hz.
+1. State your own flute's comfortable range in sargam, Western note names and roughly in Hz.
 2. Decide quickly whether a song fits your flute.
 3. Play a melody with a **different note acting as Sa** on the same flute ("moving Sa").
 4. Transpose (rewrite) a notation into a new key.
@@ -28,22 +28,24 @@
 
 ## 3. Simple explanation
 
-**Key** means "which pitch is home". A song "in D" has D as its Sa. Your flute gives C on
-`XXX OOO`, so C is its **natural Sa**, and the seven shuddha notes are C D E F G A B (the
-white keys of a piano).
+**Key** means "which pitch is home". A song "in D" has D as its Sa. The course uses a C5
+medium flute as a **worked pitch reference**: with that setting, `XXX OOO` sounds C5 and the
+shuddha scale is C D E F G A B. Your flute's natural Sa can be another pitch; the app sounds
+and note labels follow the setting in Me > Flute.
 
 Two problems happen all the time:
 
-1. **The song is in another key.** If a song's Sa is D and you play with Sa = C, every note is
-   a whole step too low. It sounds fine alone but clashes with the recording.
-2. **The song goes too low or too high.** Nothing exists below mandra Pa (G4), so a melody
+1. **The song is in another key.** If a song's Sa is a whole step above your flute's selected Sa,
+   every note you play is a whole step too low. It sounds fine alone but clashes with the recording.
+2. **The song goes too low or too high.** On a standard 6-hole bansuri, nothing exists below
+   mandra Pa (G4 on the C5 reference profile), so a melody
    that dips more than a fifth below Sa cannot be played as written.
 
 Bansuri players use four solutions:
 
 | Solution | What you do | Cost |
 |---|---|---|
-| Change the recording | Pitch-shift the track to C (software) | Easy; the original singer sounds slightly altered |
+| Change the recording | Pitch-shift the track to your flute's selected Sa (software) | Easy; the original singer sounds slightly altered |
 | Move Sa on your flute | Treat a different hole as Sa | Some notes become half-holes |
 | Change octave | Play the song an octave higher or lower | Only works if the whole melody fits |
 | Change flute | Use a flute whose natural Sa matches the song | Costs money; each flute feels different |
@@ -52,8 +54,9 @@ Bansuri players use four solutions:
 
 ### Part A: Know your range (TRN-01, TRN-05)
 
-**Step 1.** Learn the range chart in section 5 by heart: the lowest note (`.P` = G4), Sa (C5),
-taar Sa (C6), your comfortable top (about `G'` = E6) and the practical ceiling (`M'` = F#6).
+**Step 1.** Learn the relative range chart in section 5. Its Western pitches use the C5
+reference profile. Then play the lowest and highest comfortable notes on your own flute and
+write down their sargam, Western pitches and approximate Hz.
 
 **Step 2. The song-fit check.** For any song you want to learn:
 
@@ -62,7 +65,7 @@ taar Sa (C6), your comfortable top (about `G'` = E6) and the practical ceiling (
    sargam relative to the song's Sa*.
 3. Look at the table:
 
-| Lowest note in the song | Highest note in the song | Fits with Sa = C? |
+| Lowest note in the song | Highest note in the song | Fits on a standard 6-hole bansuri? |
 |---|---|---|
 | `.P` or higher | `M'` or lower | Yes, comfortably |
 | `.P` or higher | `P'` to `S''` | Yes, but the top needs register-3 notes (hard) |
@@ -71,7 +74,7 @@ taar Sa (C6), your comfortable top (about `G'` = E6) and the practical ceiling (
 If the whole melody lies between `S` and `S'`, it may also work an octave higher: check that
 the new top note is still at or below `M'`.
 
-**Step 3. Know the hard spots (TRN-05).** Plan around these on a C medium flute:
+**Step 3. Know the hard spots (TRN-05).** Plan around these on a standard 6-hole bansuri; check the response on your own flute:
 
 | Hard area | Why | Workaround |
 |---|---|---|
@@ -83,8 +86,9 @@ the new top note is still at or below `M'`.
 
 ### Part B: Moving Sa (TRN-02, TRN-04)
 
-**Step 4. Pa as Sa (song in G).** The Western G major scale is G A B C D E F#. On your flute
-those pitches are already available with **no half-holes**:
+**Step 4. Worked example: Pa as Sa (song in G).** The Western G major scale is G A B C D E F#.
+On the C5 reference profile those pitches are available with **no half-holes**. The relative
+fingerings in the table are the lesson; the Western note names shift with your flute:
 
 | New sargam (Sa = G) | Pitch | Old sargam (Sa = C) | Fingering |
 |---|---|---|---|
@@ -104,17 +108,17 @@ Two choices for where the new Sa sits:
 - **New Sa = mandra `.P` (G4).** No lower octave at all, but a low, dark sound for melodies
   that stay above Sa.
 
-> **Fact:** Pa-as-Sa is the most useful "second key" on a C flute. A major-scale (Bilawal)
+> **Fact:** Pa-as-Sa is a useful "second key" on the C5 reference profile. A major-scale (Bilawal)
 > melody is even *easier* this way: the new Ma is old Sa (no half-hole) and the new Ni is the
 > all-open tivra Ma. Practise `S R G m P D N S'` with this mapping until your fingers stop
 > thinking in the old names.
 
-**Step 5. Ma as Sa (song in F).** F major is F G A Bb C D E. On your flute that is
+**Step 5. Worked example: Ma as Sa (song in F).** F major is F G A Bb C D E. On the C5 reference profile that is
 `m P D n S' R' G'` in the old names. You need **two half-holes**: the new Sa itself (`m` =
 `HOO OOO`) and the new Ma (`n` = `XXX XHO`). It is possible, but every Sa is a half-hole, so
 it is harder. Use it only when needed.
 
-**Step 6. Re as Sa (song in D).** D major is D E F# G A B C#. In old names: `R G M P D N r'`.
+**Step 6. Worked example: Re as Sa (song in D).** D major is D E F# G A B C#. In old names: `R G M P D N r'`.
 Only the new Ni (`r'`, a half-hole) is difficult. Fairly practical.
 
 **Step 7. Transposing notation (TRN-04).** To rewrite a notation from Sa = C to Sa = G on
@@ -210,7 +214,7 @@ one-paragraph verdict.
 
 ## 5. Diagrams and charts
 
-### Range of your C natural medium flute (A = 440 Hz)
+### Reference range: C natural medium flute (A = 440 Hz)
 
 Lowest note `.P` (G4), Sa `S` (C5), taar Sa `S'` (C6), comfortable top `G'` (E6), practical
 ceiling `M'` (F#6). The full chart with frequencies is in the reference below.
@@ -250,7 +254,7 @@ ceiling `M'` (F#6). The full chart with frequencies is in the reference below.
 ### Moving Sa summary
 
 <details markdown="1">
-<summary>Reference: moving Sa on a C flute</summary>
+<summary>Worked example: moving Sa on a C flute</summary>
 
 | Song's Sa | Use on C flute | New Sa fingering | Half-holes needed in the major scale |
 |---|---|---|---|
@@ -277,7 +281,7 @@ main teaching material; check every fingering with a tuner.
 |---|---|---|
 | 1 | 5 | Range check: play `.P` to `M'` slowly at 60 BPM, tuner on, note any weak notes |
 | 2 | 10 | Pa-as-Sa scale `S R G m P D N S'` (new names) up and down at 60 BPM, 5 times. Say the **new** names aloud |
-| 3 | 10 | Play "Mary had a little lamb" (`G R S R G G G - R R R - G P P -`) with Sa = C, then with Sa = G (Pa as Sa). Same tune, different fingers |
+| 3 | 10 | Play "Mary had a little lamb" (`G R S R G G G - R R R - G P P -`) with your flute's natural Sa, then with Pa as Sa. Same tune, different swaras and pitch |
 | 4 | 5 | Pitch-shift one song recording and play its first phrase along with it |
 
 Repeat block 2-3 daily for one week, then add Re-as-Sa.
@@ -285,7 +289,7 @@ Repeat block 2-3 daily for one week, then add Re-as-Sa.
 ## 8. Independent exercises
 
 1. Take three melodies from [EX-MEL](../exercises/EX-MEL-practice-melodies.md) and play each with Sa = G.
-2. Transpose one 8-bar notation from Sa = C to Sa = G **on paper**, then play it. (See [EX-NOT](../exercises/EX-NOT-notation-drills.md).)
+2. Transpose one 8-bar notation from your flute's natural Sa to Pa-as-Sa **on paper**, then play it. (See [EX-NOT](../exercises/EX-NOT-notation-drills.md).)
 3. List 5 songs you want to play. For each, record the song's Sa, its lowest and highest sargam notes, and your decision (normal, moved Sa, pitch-shift, octave change, other flute).
 4. Rewrite one passage that goes below `.P` so that it fits, keeping the shape (TRN-05).
 
@@ -303,8 +307,8 @@ Repeat block 2-3 daily for one week, then add Re-as-Sa.
 
 1. What is the lowest note on your flute in sargam and Western names?
 2. A song's Sa is A. Which is easier: shifting the recording up or down to C, and by how much?
-3. On a C flute with Pa as Sa, which fingering is the new Ni?
-4. A melody's lowest note is `.m`. Does it fit with Sa = C?
+3. With Pa as Sa, which fingering is the new Ni?
+4. A melody's lowest note is `.m`. Does it fit within the standard six-hole range?
 5. Name two things that change when you move to a longer flute.
 
 <details markdown="1"><summary>Answer key</summary>
@@ -320,7 +324,7 @@ Repeat block 2-3 daily for one week, then add Re-as-Sa.
 ## 11. Mastery criteria
 
 - [ ] TRN-01: Given a song's lowest/highest notes, you say correctly whether it fits (5/5 cases).
-- [ ] TRN-02: Play a simple melody with Sa = C and with Sa = G, both recorded, pitch rubric 3+.
+- [ ] TRN-02: Play a simple melody with your natural Sa and with Pa as Sa, both recorded, pitch rubric 3+.
 - [ ] TRN-03: For 5 song keys, choose a flute and Sa position and justify.
 - [ ] TRN-04: Transpose an 8-bar notation correctly (checked by playing).
 - [ ] TRN-05: Rewrite a passage to avoid an impossible note while keeping its character.

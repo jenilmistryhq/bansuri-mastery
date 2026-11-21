@@ -1,0 +1,336 @@
+{
+  "id": "common-mistakes",
+  "title": "Common Mistakes Clinic",
+  "tasks": [
+    {
+      "id": "six-mistakes",
+      "title": "The Six Most Common Mistakes",
+      "content": [
+        "Nearly every beginner on bansuri struggles with the same six problems. Understanding what they are is the first step to fixing them.",
+        "1. Blowing into the hole instead of across it. 2. Wrong lip coverage on the blowing hole. 3. Using fingertips instead of finger pads. 4. Lifting fingers too high off the holes. 5. Incomplete hole coverage causing buzzy or airy notes. 6. Tensing the shoulders, jaw, and throat.",
+        "These six issues account for about 90% of beginner frustration. The good news: each one has a clear, physical fix. In this room, you will learn to diagnose and correct each one systematically.",
+        "The key principle: when something sounds wrong, it is almost always a physical issue, not a musical one. Fix the body mechanics first, and the music follows."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What causes most beginner frustration on bansuri?",
+          "options": [
+            {
+              "text": "Not understanding music theory",
+              "why": "Theory helps, but the main struggles are physical - how you hold, blow, and cover the holes."
+            },
+            {
+              "text": "Physical mechanics - embouchure, finger placement, breath support",
+              "right": true,
+              "yes": "Correct. The six most common problems are all physical. Fix the mechanics and the sound improves immediately."
+            },
+            {
+              "text": "Having a low-quality flute",
+              "why": "While flute quality matters, beginners with excellent flutes still face the same six problems. The issues are in technique, not the instrument."
+            },
+            {
+              "text": "Not practising enough",
+              "why": "Practice time matters, but practising with bad mechanics reinforces bad habits. Fixing the physical issues first makes practice far more productive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "embouchure",
+      "title": "Embouchure - Blowing Across, Not Into",
+      "content": [
+        "The most common beginner mistake: directing the air stream straight down into the blowing hole. This produces a breathy, weak, or no sound at all.",
+        "The correct technique: direct a focused, narrow air stream ACROSS the far edge of the blowing hole. The air splits on the edge - half goes into the flute, half goes over it. This splitting is what creates the vibration that produces sound.",
+        "Shape your lips as if saying 'poo' or blowing out a candle at arm's length. The opening between your lips should be small and focused - about the size of a grain of rice. The stream should feel cool and concentrated.",
+        "Test without the flute: hold your hand about 15 cm from your lips and blow. You should feel a thin, focused stream hitting one spot on your palm, not a wide, warm breath spread across your hand. If you can feel a narrow, cool jet of air, your embouchure is on the right track."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In which direction should the air stream travel relative to the blowing hole?",
+          "options": [
+            {
+              "text": "Straight down into the hole",
+              "why": "This is the most common mistake. Blowing straight in produces weak or no sound."
+            },
+            {
+              "text": "Across the far edge of the hole",
+              "right": true,
+              "yes": "Correct. The air must split on the far edge of the hole - this splitting action creates the vibration that produces the flute's tone."
+            },
+            {
+              "text": "Upward, away from the hole",
+              "why": "Blowing away from the hole would produce no sound at all. The air needs to interact with the edge."
+            }
+          ]
+        },
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 4,
+          "cents": 25,
+          "prompt": "Produce a clean Sa using the correct across-the-edge embouchure. Hold for 4 seconds.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "lip-coverage",
+      "title": "Lip Coverage - The 25% Rule",
+      "content": [
+        "Your lower lip rests against the blowing hole, partially covering it. The amount of coverage dramatically affects your tone.",
+        "Too much coverage (50% or more) chokes the sound. The air cannot split properly on the far edge, producing a muffled, strained tone that requires excessive blowing force. If you feel like you are working hard but getting little volume, you are probably covering too much.",
+        "Too little coverage (less than 15%) lets too much air escape. The tone becomes airy and unfocused, and you run out of breath quickly because most of your air is wasted.",
+        "The sweet spot: about 25-30% coverage. Your lower lip covers roughly one quarter of the hole. Adjust by rolling the flute slightly toward you (more coverage) or away from you (less coverage). Small adjustments make a big difference - move in millimeters, not centimeters."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Approximately what percentage of the blowing hole should your lower lip cover?",
+          "options": [
+            {
+              "text": "50% or more",
+              "why": "50% coverage chokes the sound. The air cannot split properly on the far edge."
+            },
+            {
+              "text": "25-30%",
+              "right": true,
+              "yes": "Correct. About one quarter coverage gives the best balance of tone quality and breath efficiency."
+            },
+            {
+              "text": "Less than 10%",
+              "why": "Too little coverage wastes air and produces an unfocused, breathy tone."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A student's tone sounds muffled and strained despite blowing hard. What is the most likely cause?",
+          "options": [
+            {
+              "text": "Too little lip coverage - air is escaping",
+              "why": "Too little coverage causes airy tone, not muffled tone. Muffled + strained points to the opposite problem."
+            },
+            {
+              "text": "Too much lip coverage - the hole is choked",
+              "right": true,
+              "yes": "Correct. Excessive lip coverage restricts the air from splitting on the edge. The fix: roll the flute slightly away to reduce coverage."
+            },
+            {
+              "text": "The flute has a manufacturing defect",
+              "why": "Possible but unlikely. Muffled tone with excessive effort is the classic symptom of too much lip coverage."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finger-pads",
+      "title": "Finger Pads, Not Tips",
+      "content": [
+        "Look at how you place your fingers on the holes. Are you using the very tips of your fingers (the part with the fingernail) or the flat pads (the fleshy part of the first segment)?",
+        "Fingertips are the wrong choice for three reasons. First, the contact area is small and round, making it hard to fully seal a hole. Second, using tips forces your fingers into a tense, curved position that fatigues the forearm. Third, the angle required to reach the holes with tips pulls your wrist into an unnatural position.",
+        "Finger pads are correct. The flat, fleshy surface creates a wide, soft seal that covers the entire hole easily. Your fingers rest in a relaxed, slightly curved position. Your wrist stays neutral. You can play for hours without forearm pain.",
+        "Test: press a finger onto a table with the pad (not the tip) and look at the print it leaves. That full, oval contact area is what should cover each hole on your bansuri."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why are finger pads better than fingertips for covering holes?",
+          "options": [
+            {
+              "text": "Fingertips are too hard",
+              "why": "Hardness is not the issue. The problem is contact area - tips are small and round, making it hard to seal the hole completely."
+            },
+            {
+              "text": "Pads create a wider, softer seal with less tension",
+              "right": true,
+              "yes": "Correct. The larger contact area of the pad seals the hole completely, and the relaxed finger position prevents tension and fatigue."
+            },
+            {
+              "text": "It does not matter - either technique works",
+              "why": "It matters a great deal. Fingertips cause air leaks, tension, and forearm fatigue. Pads solve all three problems."
+            }
+          ]
+        },
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 4,
+          "cents": 25,
+          "prompt": "Using finger pads (not tips), produce a clean Re and hold for 4 seconds.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "lifting-problem",
+      "title": "The Lifting Problem",
+      "content": [
+        "Watch a beginner play and you will see their fingers flying 1-2 centimeters off the holes. This looks dramatic but creates three problems.",
+        "First, the finger has further to travel back down, slowing transitions between notes. Fast passages become impossible. Second, the high lift engages muscles in the forearm that should be relaxed, causing fatigue and tension. Third, the returning finger often misses the center of the hole, causing the air leak problem from the previous lesson.",
+        "The fix: roll the finger pad slightly to uncover the hole rather than lifting the whole finger. The finger barely leaves the surface - maximum 5-8 mm of clearance. Think of opening a hole, not lifting a finger.",
+        "Practice: play Sa Re Sa Re slowly and watch your index finger. It should rock gently on its pad, not bounce up and down. The movement is a roll, not a lift."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the maximum recommended finger lift above the hole?",
+          "options": [
+            {
+              "text": "1-2 centimeters",
+              "why": "1-2 cm is the common beginner mistake. This is too high and causes slow transitions and tension."
+            },
+            {
+              "text": "5-8 millimeters",
+              "right": true,
+              "yes": "Correct. Keep the lift minimal - 5 to 8 mm at most. The finger should roll off the hole, not fly away from it."
+            },
+            {
+              "text": "As high as possible for a clear sound",
+              "why": "Height does not improve clarity. What matters is complete coverage when closed and minimal movement when opening."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A student can play individual notes cleanly but struggles with fast note transitions. What is the most likely cause?",
+          "options": [
+            {
+              "text": "Not enough breath support",
+              "why": "Breath support affects tone quality, not transition speed. Speed problems usually come from finger mechanics."
+            },
+            {
+              "text": "Lifting fingers too high, increasing travel distance",
+              "right": true,
+              "yes": "Correct. Excessive finger lift means the finger has to travel further, slowing every transition. The fix: roll instead of lift, keep fingers close to the surface."
+            },
+            {
+              "text": "The flute is too large for their hands",
+              "why": "Flute size can cause reach issues but not speed issues. High finger lift is the classic cause of slow transitions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "buzzy-note",
+      "title": "Incomplete Coverage - The Buzzy Note",
+      "content": [
+        "If a note sounds buzzy, airy, or unstable, the first thing to check is whether the finger is fully covering the hole. Even a tiny air leak changes the pitch and tone quality of the note.",
+        "The most common culprits are the third and fourth holes (covered by the ring finger and pinky). These fingers are naturally weaker and less dexterous, so they tend to leave small gaps at the edge of the hole.",
+        "The diagnosis is simple: play the problem note and press down harder on each finger one at a time. If pressing one finger fixes the buzz, that finger was not sealing properly. The long-term fix is not to press harder (which causes tension) but to reposition the finger pad so it covers the full hole with normal pressure.",
+        "Another common cause: holes that are slightly too large for your fingers. On some flutes, the lower holes are wider. If your finger pad is not large enough to cover the hole, angle your finger slightly so the widest part of the pad aligns with the widest part of the hole."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the most likely cause of a buzzy, unstable note?",
+          "options": [
+            {
+              "text": "Blowing too hard",
+              "why": "Excessive blowing can cause overblowing (jumping to the upper octave) but not a buzzy quality. Buzz comes from air leaks."
+            },
+            {
+              "text": "An air leak from incomplete hole coverage",
+              "right": true,
+              "yes": "Correct. Even a tiny gap lets air escape, disrupting the air column inside the flute and causing the characteristic buzz."
+            },
+            {
+              "text": "A crack in the bamboo",
+              "why": "Possible but rare. The far more common cause is a finger not fully covering the hole."
+            }
+          ]
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 4,
+          "cents": 25,
+          "prompt": "Play a clean Pa (4 holes covered) and hold for 4 seconds. Focus on sealing each hole completely.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "tension-breathing",
+      "title": "Tension and Breathing",
+      "content": [
+        "Beginners often unconsciously tense their shoulders, clench their jaw, and tighten their throat while playing. This restricts airflow, wastes energy, and causes rapid fatigue.",
+        "The shoulder check: before you play, raise your shoulders to your ears, hold for two seconds, then drop them completely. Feel the difference. Your shoulders should stay in this dropped position while playing. If you catch them creeping up, stop and reset.",
+        "The jaw check: your jaw should be relaxed, not clenched. The only tension in your face should be a gentle firmness at the corners of your lips to maintain the embouchure opening. Everything else - cheeks, jaw, forehead - stays soft.",
+        "The breath check: place one hand on your chest and one on your belly. When you breathe in, your belly should expand first and more than your chest. This is diaphragmatic breathing. Chest-only breathing is shallow and runs out quickly. Belly breathing gives you the deep, sustained airflow that bansuri demands."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Where should your breath come from for optimal bansuri playing?",
+          "options": [
+            {
+              "text": "The chest only",
+              "why": "Chest breathing is shallow and runs out quickly. Bansuri requires deep, sustained airflow from the diaphragm."
+            },
+            {
+              "text": "The diaphragm (belly breathing)",
+              "right": true,
+              "yes": "Correct. Diaphragmatic breathing gives you the deep, controlled airflow that sustains long phrases. Your belly should expand when you inhale."
+            },
+            {
+              "text": "The throat",
+              "why": "Throat tension actually restricts airflow. The throat should be open and relaxed, as if yawning."
+            }
+          ]
+        },
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Using relaxed, diaphragmatic breathing with dropped shoulders, hold Sa for 6 seconds at tight pitch tolerance.",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "self-diagnosis",
+      "title": "Self-Diagnosis Checklist",
+      "content": [
+        "When a note sounds wrong, resist the urge to just blow harder or try random adjustments. Instead, work through this diagnostic checklist in order:",
+        "1. FINGER COVERAGE - Are all the right holes fully sealed? Press each finger down firmly one at a time and listen for improvement. This is the most common issue, so check it first.",
+        "2. LIP POSITION - Is your lower lip covering about 25% of the blowing hole? Not too much (muffled) or too little (airy).",
+        "3. AIR DIRECTION - Is your air stream going across the far edge, not into the hole? Adjust the angle of the flute slightly.",
+        "4. BREATH SUPPORT - Are you breathing from your diaphragm with steady, controlled pressure? Not forced bursts.",
+        "5. TENSION - Drop your shoulders. Relax your jaw. Open your throat. Unclench everything.",
+        "Fix ONE thing at a time. If you change two things simultaneously, you will not know which one helped. Systematic diagnosis is faster than random experimentation."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When a note sounds wrong, what should you check first?",
+          "options": [
+            {
+              "text": "Whether you are blowing hard enough",
+              "why": "Blowing harder is rarely the fix and often makes things worse. Check the physical mechanics first."
+            },
+            {
+              "text": "Finger coverage - are all holes fully sealed?",
+              "right": true,
+              "yes": "Correct. Incomplete hole coverage is the most common cause of sound problems. Always check it first before adjusting anything else."
+            },
+            {
+              "text": "Whether the flute is in tune",
+              "why": "If individual notes are problematic, the issue is almost always technique, not the instrument. Check finger coverage first."
+            }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will use the 5-step diagnostic checklist (fingers, lips, air, breath, tension) the next time a note sounds wrong.",
+          "points": 5
+        }
+      ]
+    }
+  ]
+}

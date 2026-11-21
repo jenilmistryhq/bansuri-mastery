@@ -1,7 +1,7 @@
 // Today (#/today) and any single day (#/day/<n>).
 import { h, fmtDate, today } from "../util.js";
 import { getState, update } from "../state.js";
-import { getDay, current, dayState, phaseOf, lessonInfo, milestoneInfo, milestoneState, lastIndex, streaks } from "../course.js";
+import { getDay, current, dayState, phaseOf, lessonInfo, milestoneInfo, milestoneState, lastIndex, totals } from "../course.js";
 import { holdGrowth } from "../livestats.js";
 import { listRecordings } from "../recorder.js";
 import { nameOf } from "../core/theory.js";
@@ -13,6 +13,8 @@ import { questGame } from "../skillmap.js";
 import { GAME_FROM } from "./skills.js";
 import { levelBar } from "../levelui.js";
 import { makePlayable } from "../playable.js";
+import { loadRoomIndex } from "../rooms/loader.js";
+import { recommendedCards } from "../rooms/catalog.js";
 import { icon } from "../util.js";
 import { getSettings, setSettings } from "../core/settings.js";
 import { speak, sayButton } from "../voice.js";
@@ -25,24 +27,7 @@ import { dayHref } from "../lessons/days.js";
 import { lessonRecord, flatSteps } from "../lesson/player.js";
 import { adaptiveCard, fixToday, messageToast, mondayCard, progressCard, realBansuriCard, reviewsCard, teacherTaskCard, unitStrip, welcomeBackCard } from "./today-cards.js";
 
-// How the learner likes to learn, in pictures, so it works without reading English. Each choice can
-// be changed later in Settings. then(): after a choice that does not reload the app.
-function howCard(then) {
-  const tile = (ic, label, sub, onClick) => h("button", { type: "button", class: "howtile", onclick: onClick }, icon(ic), h("b", null, label), sub ? h("span", { class: "small" }, sub) : null);
-  const done = patch => { setSettings(patch); update(st => { st.prefs.howChosen = true; }); };
-  const next = () => (then ? then() : location.reload());
-  return h("section", { class: "card howcard", "aria-label": "How do you like to learn?" },
-    h("div", { class: "row between" }, h("h2", null, "How do you like to learn?"), sayButton(["welcome"], "Hear this")),
-    h("div", { class: "howtiles" },
-      tile("read", "I like to read", "Lessons and steps as text", () => { done({ talk: false }); next(); }),
-      tile("speaker", "Talk to me", "The app says each step and how each note went", () => { done({ talk: true }); speak("welcome"); next(); }),
-      tile("hand", "Simple mode", "Three big buttons; the app talks you through everything", () => done({ talk: true, simple: true, notesAs: "pictures" }))),
-    h("p", { class: "small muted" }, "You can change this in Settings."));
-}
-
-// First run (redesign F1): one choice per screen. The language, then how you like to learn, then
-// whether you already play; then Day 0, with Start Day 0 as the one big button. Each answer is
-// remembered, so a reload (a new language reloads the app) carries on at the next screen.
+// First run: choose a language, complete a baseline assessment, then enter the self-paced dashboard.
 function firstRunFlow(day, cleanups) {
   const host = h("div", { class: "firstflow" });
   let placer = null;
@@ -50,48 +35,52 @@ function firstRunFlow(day, cleanups) {
   const draw = () => {
     if (placer) { placer.destroy(); placer = null; }
     const p = getState().prefs;
-    host.replaceChildren(...(!p.langChosen ? [langStep()] : !p.howChosen ? [howCard(draw)] : !p.playAsked ? [playStep()] : [firstRun(day), realBansuriCard(), welcome()]));
+    host.replaceChildren(...(!p.langChosen ? [langStep()] : !p.assessmentCompleted ? [assessmentStep()] : [assessmentDone()]));
     window.scrollTo(0, 0);
   };
   // The language first, in both scripts.
   const langStep = () => {
     const pick = lang => { mark("langChosen"); if (getSettings().lang === lang) draw(); else setSettings(lang === "hi" ? { lang, deva: true } : { lang }); };
     return h("section", { class: "hero firstrun" },
-      h("h1", null, "Learn the bansuri, one day at a time"),
-      h("p", { class: "muted" }, "A short guided session each day. The app listens to your flute and tells you how it went."),
+      h("h1", null, "Learn the bansuri at your own pace"),
+      h("p", { class: "muted" }, "Choose a starting point that fits your instrument and experience. You can practise whenever you like."),
       h("div", { class: "firstchoice", translate: "no" },
         h("button", { type: "button", class: "btn big", lang: "en", onclick: () => pick("en") }, "English"),
         h("button", { type: "button", class: "btn big", lang: "hi", onclick: () => pick("hi") }, "हिन्दी")));
   };
-  // Already play? The playing test places the learner; a beginner goes on to Day 0.
-  const playStep = () => {
+  const assessmentStep = () => {
     const testHost = h("div", { class: "toolhost", hidden: true });
-    const choices = h("div", { class: "firstchoice" },
-      h("button", { type: "button", class: "btn big", onclick: () => { mark("playAsked"); draw(); } }, "No, I am new to the bansuri"),
-      h("button", { type: "button", class: "btn big", onclick: () => {
-        choices.hidden = true; testHost.hidden = false;
-        placer = placementTest({ onResult: phase => {
-          testHost.append(h("div", { class: "row" },
-            phase > 0 ? h("button", { type: "button", class: "btn primary big", onclick: () => { mark("playAsked"); if (startAtPhase(phase) !== null) location.reload(); } }, "Start from this phase") : null,
-            h("button", { type: "button", class: phase > 0 ? "btn" : "btn primary big", onclick: () => { mark("playAsked"); draw(); } }, "Start at Day 0")));
-        } });
-        testHost.replaceChildren(placer.el);
-      } }, "Yes: take the playing test"));
-    return h("section", { class: "card firstplay" }, h("h2", null, "Already play?"),
-      h("p", { class: "muted" }, "If you can already do what earlier phases teach, start later. The playing test takes about five minutes: play a few items into the microphone and it recommends a phase."),
-      choices, testHost);
+    const start = h("button", { type: "button", class: "btn primary big" }, "Start baseline assessment");
+    start.addEventListener("click", () => {
+      start.hidden = true; testHost.hidden = false;
+      placer = placementTest({ onResult: (phase, profile) => {
+        update(st => { st.prefs.assessmentCompleted = true; st.prefs.assessment = profile; st.prefs.recommendedPhase = phase; });
+        startAtPhase(phase);
+        setTimeout(() => { location.hash = "#/today#ready"; }, 0);
+      } });
+      testHost.replaceChildren(placer.el);
+    });
+    return h("section", { class: "card baseline-intro" }, h("span", { class: "eyebrow" }, "YOUR STARTING POINT"),
+      h("h1", null, "Let's find your current level"),
+      h("p", { class: "muted" }, "A guided check of tone, notes, range, ear and rhythm will help shape your path. It is not an exam: mark anything unfamiliar as Not yet and keep going."),
+      h("p", { class: "small muted" }, "Have your flute ready for the playing checks. The ear and rhythm checks work on their own."), start, testHost);
+  };
+  const assessmentDone = () => {
+    const phase = getState().prefs.recommendedPhase || 0;
+    const go = h("button", { type: "button", class: "btn primary big" }, "Build my path from this level");
+    go.addEventListener("click", () => { startAtPhase(phase); location.hash = "#/today"; });
+    return h("section", { class: "hero firstrun" }, h("span", { class: "eyebrow" }, "BASELINE SAVED"),
+      h("h1", null, "Your learning dashboard is ready"), h("p", { class: "muted" }, "Your starting snapshot is saved to your profile. Your path is self-paced, and you can retake checks whenever your playing changes."),
+      go, h("a", { class: "btn ghost", href: "#/me" }, "View my profile"));
   };
   cleanups.push(() => { if (placer) placer.destroy(); });
   draw();
   return host;
 }
 
-// The interactive lesson of a day, while it is not finished (Day 0: "Meet your flute").
+// Legacy interactive lessons are now rooms; this always returns null.
 function lessonDue(n) {
-  const l = lessonForDay(n);
-  if (!l) return null;
-  const r = lessonRecord(l.id);
-  return r && r.done ? null : l;
+  return null;
 }
 
 // Simple mode (W11): the other language one tap away, big choices (Start practice names the day),
@@ -104,7 +93,7 @@ function simpleToday(page, cur, day) {
   page.append(
     h("div", { class: "row between simpletop" }, sayButton(["welcome"], "Listen"), langBtn),
     h("div", { class: "simpletiles" },
-      big(lessonDue(cur) ? "#/lesson/" + lessonDue(cur).id : day && day.kind === "milestone" ? "#/milestone/" + day.milestone : practiceLesson("p" + cur) ? "#/lesson/p" + cur : "#/session/" + cur, "play", "Start practice", "session_start", "primary", "Day " + cur),
+      big(day && day.kind === "milestone" ? "#/milestone/" + day.milestone : practiceLesson("p" + cur) ? "#/lesson/p" + cur + "#start" : "#/session/" + cur, "play", "Start practice", "session_start", "primary", day && day.title || "Your next skill"),
       big("#/play", "star", "Play a game", "steer_intro"),
       big("#/listen", "listen", "Listen", "listen_intro"),
       big("#/quick", "today", "5 minutes", "quick_intro")));
@@ -115,7 +104,7 @@ function simpleToday(page, cur, day) {
   page.append(h("div", { class: "row simpleleave" }, h("button", { type: "button", class: "btn", onclick: () => setSettings({ simple: false }) }, "Leave Simple mode")));
 }
 
-const KIND_LABEL = { setup: "Setup day", review: "Review day", milestone: "Milestone", practice: "Practice day" };
+const KIND_LABEL = { setup: "Setup", review: "Review", milestone: "Milestone", practice: "Practice" };
 
 // The session at a glance: one row per step (icon, name, minutes), with the instruction in plain
 // words and the readings one tap away.
@@ -135,27 +124,29 @@ export function blockLines(day) {
 // The first screen a new learner sees: what this is, one big button, and the language.
 function firstRun(day) {
   return h("section", { class: "hero firstrun" },
-    h("h1", null, "Learn the bansuri, one day at a time"),
-    h("p", { class: "muted" }, "A short guided session each day. The app listens to your flute and tells you how it went."),
-    h("a", { class: "btn primary big", href: lessonForDay(0) ? "#/lesson/" + lessonForDay(0).id : "#/session/0" }, "Start Day 0"),
-    h("p", { class: "small muted" }, "About " + (lessonForDay(0) ? oneDay(lessonForDay(0), day).minutes : day.minutes || 45) + " minutes: get to know your flute and find its Sa."));
+    h("h1", null, "Start with your flute"),
+    h("p", { class: "muted" }, "Set up your instrument, find its Sa, and choose your first interactive room."),
+    h("a", { class: "btn primary big", href: "#/rooms/meet-your-flute" }, "Set up my flute"),
+    h("p", { class: "small muted" }, "The path moves when you are ready. Practise on your schedule."));
 }
 
 function welcome() {
   return h("details", { class: "card" },
     h("summary", null, h("b", null, "How the course works")),
     h("ol", { class: "welcome-steps" },
-      h("li", null, h("span", null, h("b", null, "Day 0 sets you up: "), "check your flute, find Sa, and get the tanpura, metronome and tuner ready.")),
-      h("li", null, h("span", null, h("b", null, "Each day is a guided session "), "of about 45-60 minutes: warm-up, tone, technique, music, ear training and a short log. Timers and tools are built in.")),
+      h("li", null, h("span", null, h("b", null, "Your first activity sets you up: "), "check your flute, find Sa, and get the tanpura, metronome and tuner ready.")),
+      h("li", null, h("span", null, h("b", null, "Every activity is guided "), "with warm-up, tone, technique, music, ear training and a short log. Timers and tools are built in.")),
       h("li", null, h("span", null, h("b", null, "Milestones prove progress. "), "You move on by passing practical tests, not by the calendar. A failed test tells you exactly what to practise.")),
       h("li", null, h("span", null, h("b", null, "Your progress stays on this device. "), "Export a backup in Settings to move it to another device."))),
-    h("p", { class: "small muted" }, "Built for a 6-hole C natural medium bansuri (Sa = C5). Another flute? Day 0 finds its Sa for you. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), " to start at the right phase."));
+    h("p", { class: "small muted" }, "For a 6-hole bansuri. Set or detect your flute's Sa in Me > Flute; the app tunes its notes and drone to match. Already play? ", h("a", { href: "#/settings#already-play" }, "Take the playing test"), " to start at the right phase."));
 }
 
 // The lesson that carries day n (its interactive lesson, or the practice or review day as a lesson),
 // with the day's session folded in as the lesson page plays it; null when the day has none.
 function playedLesson(n) {
   const raw = lessonDue(n) || practiceLesson("p" + n);
+  // M0 is now a standalone setup room; do not merge the legacy 58-minute day plan into its 20-minute lesson.
+  if (!raw || raw.id === "m0") return raw;
   return raw && raw.day !== undefined ? oneDay(raw, getDay(raw.day)) : raw;
 }
 
@@ -186,11 +177,7 @@ function practiceTime() {
   return h("p", { class: "small todaytime" }, h("span", { class: "muted" }, "Your time:"), ...parts.flatMap((p, i) => [i ? ", " : " ", h("span", null, p)]));
 }
 
-const streakChip = () => {
-  const st = streaks();
-  return h("a", { class: "streakchip" + (st.current ? " lit" : ""), href: "#/me", title: "Practice streak" }, icon("flame"), h("b", null, String(st.current)), h("span", { class: "small" }, st.current === 1 ? " day" : " days"));
-};
-const todayLine = (...bits) => h("span", { class: "row resume-top" }, h("span", { class: "eyebrow todayline" }, bits.filter(Boolean).map(b => h("span", null, b))), streakChip());
+const todayLine = (...bits) => h("span", { class: "row resume-top" }, h("span", { class: "eyebrow todayline" }, bits.filter(Boolean).map(b => h("span", null, b))));
 
 // Part way through (W13): how far the day has come, as a bar and "7 of 12" (the lesson's steps, or
 // the blocks ticked in the step list). Null before the day starts.
@@ -216,17 +203,18 @@ function beforeCard(n, day, ds, action) {
   // learner's language, to its first sentence.
   const main = day.blocks.filter(b => b.id !== "W" && b.id !== "R").sort((a, b) => (b.minutes || 0) - (a.minutes || 0))[0];
   const first = s => (String(s).match(/^.*?[.।](?=\s|$)/) || [String(s)])[0];
-  const goal = h("span", null, first(day.pass ? t(day.pass) : main ? plainBlock(main.text) : ""));
-  if (!day.pass && main) plainText(main).then(x => { if (x) goal.textContent = first(x); });
-  const kind = lessonDue(n) ? "Lesson" : KIND_LABEL[day.kind] || "Practice day";
+  const goal = h("span", null, first(lesson && lesson.goal ? lesson.goal : day.pass ? t(day.pass) : main ? plainBlock(main.text) : ""));
+  if (!(lesson && lesson.goal) && !day.pass && main) plainText(main).then(x => { if (x) goal.textContent = first(x); });
+  const kind = lessonDue(n) ? "Lesson" : KIND_LABEL[day.kind] || "Practice";
+  const title = String((lesson && lesson.title) || day.title || "Continue learning").replace(/^Day\s*\d+\s*:\s*/i, "");
   return h("section", { class: "resume todayhero" },
     h("div", { class: "resume-body" },
-      todayLine("Today", kind, total ? total + " min" : null),
-      h("h1", { class: "title" }, "Day " + n + ": " + (day.title || (lesson && lesson.title) || "")),
+      todayLine("UP NEXT", kind, total ? total + " min" : null),
+      h("h1", { class: "title" }, title),
       goal.textContent ? h("p", { class: "todaygoal" }, h("b", null, "Goal:"), " ", goal) : null,
       partWay(at, day, ticked),
       action,
-      h("p", { class: "small muted row todaysub" }, left ? h("span", null, "About " + left + " min left") : null, h("a", { href: "#/session/" + n }, "Step list")),
+      h("p", { class: "small muted row todaysub" }, left ? h("span", null, "About " + left + " min left") : null, lesson && lesson.id === "m0" ? null : h("a", { href: "#/session/" + n }, "Step list")),
       practiceTime()));
 }
 
@@ -253,10 +241,10 @@ function doneCard(d, cur, cleanups) {
   return h("section", { class: "resume todayhero todaydone" },
     h("div", { class: "resume-body" },
       todayLine("Today", "Done"),
-      h("h1", { class: "title donetitle" }, h("span", { class: "donetick", "aria-hidden": "true" }, icon("check")), h("span", null, "Day " + d + " practised")),
+      h("h1", { class: "title donetitle" }, h("span", { class: "donetick", "aria-hidden": "true" }, icon("check")), h("span", null, "Practice session complete")),
       g ? h("p", null, "Longest steady " + (g.key === "any" ? "note" : nameOf(Number(g.key))) + ": ", g.then !== null ? h("span", { class: "muted" }, g.then.toFixed(1) + " s a few weeks ago, ") : null, h("b", null, g.now.toFixed(1) + " s today")) : null,
       rec,
-      h("div", { class: "row todaynext" }, h("span", null, "Day " + cur + " is open"), h("a", { class: "btn", href: dayHref(cur) }, "Go on")),
+      h("div", { class: "row todaynext" }, h("span", null, "Your next step is ready"), h("a", { class: "btn", href: dayHref(cur) }, "Keep learning")),
       h("div", { class: "row todayor" }, h("span", { class: "muted" }, "Or:"), h("a", { class: "btn", href: "#/today/quick" }, "5 minutes"),
         getSettings().focus ? null : questGameLink())));
 }
@@ -277,10 +265,27 @@ function todayHome(page, { n, day, ds, action, cleanups }) {
   // Back after a gap (W17): the welcome is the main card, in place of the day's card.
   const back = d === null ? welcomeBackCard(n) : null;
   if (back) page.lastElementChild.replaceWith(back);
+  const s = getState(), stats = totals();
+  const hour = new Date().getHours(), greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  page.prepend(h("section", { class: "dashwelcome" }, h("div", null,
+    h("span", { class: "eyebrow" }, "YOUR LEARNING DASHBOARD"),
+    h("h1", null, greeting + (s.prefs.displayName ? ", " + s.prefs.displayName : ", bansuri learner")),
+    h("p", { class: "muted" }, "Your path, your pace. Pick up a skill, practise it, and move on when you are ready.")),
+    h("a", { class: "btn ghost", href: "#/me" }, "View profile")));
   const mainCol = h("div", { class: "todaymain" }), side = h("aside", { class: "todayside", "aria-label": "Your progress and extras" });
   page.append(h("div", { class: "todaygrid" }, mainCol, side));
   const unit = unitStrip(n);
   if (unit) mainCol.append(unit);
+  const assessment = s.prefs.assessment;
+  if (assessment && assessment.skills) {
+    const labels = { tone: "Tone", notes: "Note control", range: "Range", intonation: "Intonation", ear: "Ear", rhythm: "Rhythm" };
+    const entries = Object.entries(assessment.skills), focus = entries.find(([, v]) => v.passed < v.total) || null;
+    const routes = { tone: "#/skills/tone", notes: "#/skills/notes", range: "#/skills/notes", intonation: "#/skills/tone", ear: "#/skills/ear", rhythm: "#/skills/rhythm" };
+    mainCol.append(h("section", { class: "card assessment-focus" }, h("div", { class: "row between" }, h("div", null, h("span", { class: "eyebrow" }, "YOUR LATEST CHECK-IN"), h("h2", null, focus ? "Build your " + (labels[focus[0]] || focus[0]) : "Ready for a new challenge?")), h("a", { class: "small", href: "#/me" }, "Full profile")),
+      h("p", { class: "small muted" }, "Retake skill checks as your flute playing changes; your Path stays self-paced."),
+      h("div", { class: "assessment-chips" }, entries.map(([key, v]) => h("span", { class: "chip " + (v.passed === v.total ? "good" : "mutedc") }, (labels[key] || key) + " " + v.passed + "/" + v.total))),
+      h("div", { class: "row" }, focus ? h("a", { class: "btn primary", href: routes[focus[0]] || "#/skills" }, "Practise " + (labels[focus[0]] || focus[0])) : h("a", { class: "btn primary", href: "#/course" }, "Explore learning paths"), h("a", { class: "btn ghost", href: "#/me" }, "Retake assessment"))));
+  }
   // Two messages at most, the most important first (05 L1): the teacher's task; coming back or
   // being stuck; pieces due for review (not on a review day, which plays them); today's fix; last
   // week, on Mondays. The day stays the first thing on the screen.
@@ -288,8 +293,34 @@ function todayHome(page, { n, day, ds, action, cleanups }) {
   const cards = [];
   for (const make of picks) { if (cards.length >= 2) break; const c = make(); if (c) cards.push(c); }
   cards.forEach(c => { if (/notice/.test(c.className)) c.classList.add("notice-one"); mainCol.append(c); });
+  if (!getSettings().focus) {
+    const roomsSection = h("section", { class: "card dashboard-rooms today-rooms-section" },
+      h("div", { class: "row between" },
+        h("div", null, h("span", { class: "eyebrow" }, "LEARN BY PLAYING"), h("h2", null, "Rooms")),
+        h("a", { class: "btn small", href: "#/rooms" }, "All rooms")),
+      h("p", { class: "small muted" }, "Interactive challenges on your learning path."));
+    mainCol.append(roomsSection);
+    loadRoomIndex().then(index => {
+      if (!index.length) return;
+      let records = {};
+      try { records = JSON.parse(localStorage.getItem("bansuri.rooms") || "{}"); } catch (e) { /* empty */ }
+      const grid = recommendedCards(index, records);
+      if (grid) { grid.classList.add("today-rooms-grid"); roomsSection.append(grid); }
+      roomsSection.append(h("div", { class: "row", style: { marginTop: "10px", gap: "8px" } },
+        h("a", { class: "btn primary small", href: "#/course" }, "Learning paths"),
+        h("a", { class: "btn ghost small", href: "#/rooms" }, "Browse all")));
+    });
+  }
   if (d === null && !back) mainCol.append(h("p", { class: "row between quickline" }, h("span", { class: "muted" }, "Short on time?"), h("a", { class: "btn", href: "#/today/quick" }, "5 minutes")));
   side.append(progressCard());
+  side.append(h("section", { class: "card dashstats" }, h("h2", null, "Your stats"), h("div", { class: "dashstatgrid" },
+    h("div", null, h("b", null, String(stats.sessions)), h("span", { class: "small muted" }, "practice sessions")),
+    h("div", null, h("b", null, String(stats.msPassed)), h("span", { class: "small muted" }, "milestones passed")),
+    h("div", null, h("b", null, Math.round(stats.minutes / 60 * 10) / 10 + "h"), h("span", { class: "small muted" }, "total practice")))));
+  const recent = s.log.slice(-3).reverse();
+  side.append(h("section", { class: "card dashfeed" }, h("div", { class: "row between" }, h("h2", null, "Recent practice"), h("a", { class: "small", href: "#/me/journal" }, "Journal")),
+    recent.length ? h("ul", null, recent.map(e => h("li", null, h("b", null, e.label || "Practice"), h("span", { class: "small muted" }, (e.minutes || 0) + " min · " + e.date))))
+      : h("p", { class: "small muted" }, "Your practice activity will show up here.")));
   if (n <= 7) side.append(realBansuriCard());
   messageToast(cleanups);
 }
@@ -302,20 +333,20 @@ export async function render(main, { params, view }) {
   const cleanups = [];
   // One way into a day: #/day/N opens the day's lesson cover (at the step, when part done) or its
   // milestone, so a day has a single cover (redesign L3).
-  if (!isToday && day) { const to = dayHref(n); if (to) { location.replace(to); return undefined; } }
+  if (!isToday && day) { location.replace(dayHref(n) || "#/session/" + n); return undefined; }
   if (!day) { main.append(h("div", { class: "page" }, h("p", null, "That day does not exist."))); return; }
   const ds = dayState(n) || {};
   const phase = phaseOf(day);
   const s = getState();
   const page = h("div", { class: "page" });
 
-  if (isToday && getSettings().simple) { simpleToday(page, cur, day); main.append(page); return; }
-  const firstTime = isToday && !s.startedAt && cur === 0;
+  const firstTime = isToday && !s.startedAt && cur === 0 && !s.prefs.assessmentCompleted;
   if (firstTime) {
     page.append(firstRunFlow(day, cleanups));
     main.append(page);
     return () => cleanups.forEach(f => f());
-  } else if (isToday && !s.prefs.howChosen) page.append(howCard());
+  }
+  if (isToday && getSettings().simple) { simpleToday(page, cur, day); main.append(page); return; }
 
   // Status and primary action.
   let statusChip, action;
@@ -323,16 +354,8 @@ export async function render(main, { params, view }) {
   if (n === cur) {
     statusChip = null; // the page itself says this is today
     const msOpen = day.milestone && milestoneState(day.milestone).status !== "passed";
-    const sessionLabel = blocksDone ? (blocksDone === day.blocks.length ? "Finish today's session" : "Resume") : (n === 0 ? "Start Day 0" : "Start today's session");
-    const lesson = lessonDue(n);
-    if (lesson) {
-      // A day taught by an interactive lesson: the lesson is the day (and passes its milestone).
-      const r = lessonRecord(lesson.id), at = lessonAt(n);
-      action = isToday ? h("a", { class: "btn primary big", href: "#/lesson/" + lesson.id }, at ? "Continue: step " + at.step + " of " + at.of : "Start the lesson: " + lesson.title)
-        : h("div", { class: "row" },
-          h("a", { class: "btn primary big", href: "#/lesson/" + lesson.id }, r && r.at > 0 ? "Continue the lesson" : "Start the lesson: " + lesson.title),
-          h("a", { class: "btn ghost", href: "#/session/" + n }, "The reading version"));
-    } else if (msOpen && day.kind === "milestone") {
+    const sessionLabel = blocksDone ? (blocksDone === day.blocks.length ? "Finish this session" : "Resume learning") : (n === 0 ? "Set up my flute" : "Start practising");
+    if (msOpen && day.kind === "milestone") {
       // A test day: the test is the main action, the session is rehearsal.
       const ms = milestoneState(day.milestone);
       action = h("div", { class: "row" },
@@ -349,8 +372,8 @@ export async function render(main, { params, view }) {
       // day opens with a quiz); the step list stays one tap away.
       const r = lessonRecord("p" + n), started = (r && r.at > 0) || blocksDone, at = lessonAt(n);
       const label = at ? "Continue: step " + at.step + " of " + at.of : day.kind === "review" ? (started ? "Continue today's review" : "Start today's review") : started ? "Continue today's practice" : "Start today's practice";
-      action = isToday ? h("a", { class: "btn primary big", href: "#/lesson/p" + n }, label)
-        : h("div", { class: "row" }, h("a", { class: "btn primary big", href: "#/lesson/p" + n }, label), h("a", { class: "btn ghost", href: "#/session/" + n }, "The step list"));
+      action = isToday ? h("a", { class: "btn primary big", href: "#/lesson/p" + n + "#start" }, label)
+        : h("div", { class: "row" }, h("a", { class: "btn primary big", href: "#/lesson/p" + n + "#start" }, label), h("a", { class: "btn ghost", href: "#/session/" + n }, "The step list"));
     } else {
       action = h("a", { class: "btn primary big", href: "#/session/" + n }, sessionLabel);
     }

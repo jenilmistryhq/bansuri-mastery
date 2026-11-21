@@ -19,7 +19,7 @@ export function cleanSettings(s) {
   const n = (v, lo, hi, d) => { v = Number(v); return Number.isFinite(v) && v >= lo && v <= hi ? v : d; };
   return {
     saNote: Math.round(n(s.saNote, 0, 11, SETTINGS_DEFAULTS.saNote)),
-    saOct: Number(s.saOct) === 4 ? 4 : 5,
+    saOct: [3, 4, 5, 6].includes(Number(s.saOct)) ? Number(s.saOct) : SETTINGS_DEFAULTS.saOct,
     a4: n(s.a4, 400, 480, SETTINGS_DEFAULTS.a4),
     volume: n(s.volume, 0, 1, SETTINGS_DEFAULTS.volume),
     deva: s.deva === true,
@@ -74,6 +74,8 @@ export function setSettings(patch) {
   settingsListeners.forEach(fn => { try { fn(s); } catch (e) { /* ignore listener errors */ } });
   return s;
 }
+
+export function invalidateSettings() { settingsCache = null; }
 
 export function onSettings(fn) {
   settingsListeners.add(fn);

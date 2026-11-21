@@ -40,8 +40,8 @@ at first and then speed up.
 
 ### Fix A: Sing everything (5 minutes daily)
 
-With the drone on C: sing `S`, then `S R G R S`, then the alankar you are practising, **before**
-playing it. If singing on C5 is too high, sing an octave lower; that is fine
+With the drone matched to your flute's Sa: sing `S`, then `S R G R S`, then the alankar you are practising, **before**
+playing it. If singing at your flute's pitch is too high, sing an octave lower; that is fine
 ([PIT-05](../knowledge-tree/D06-PIT-pitch.md)). A tuner app on your voice helps at first.
 
 ### Fix B: Higher/lower and pitch matching (5 minutes)

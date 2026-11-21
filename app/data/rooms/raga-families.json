@@ -1,0 +1,310 @@
+{
+  "id": "raga-families",
+  "title": "Raga Families and Lookalikes",
+  "tasks": [
+    {
+      "id": "same-notes-different-ragas",
+      "title": "Same Notes, Different Ragas",
+      "content": [
+        "A raga is not a scale. This is the single most important idea in Indian classical music theory.",
+        "Two ragas can use the exact same set of notes and sound completely different. The difference lies in which notes are emphasised, how phrases are shaped, which ornaments are used on which notes, and even the time of day the raga is associated with.",
+        "In Western music, a scale with the same notes is the same scale. In Indian music, the notes are just the raw material. The raga is what the musician builds from them - the personality, the mood, the story.",
+        "Consider an analogy: English and French share many of the same letters, but the languages are completely different. Similarly, ragas share notes but speak different musical languages. Understanding raga families - groups of ragas that share notes but differ in treatment - trains your ear to hear beyond the notes themselves, into the architecture of melody."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What besides its notes defines a raga's identity?",
+          "options": [
+            { "text": "Only the speed at which it is played", "why": "Speed (laya) affects performance but does not define the raga itself. Two ragas with the same notes played at the same speed still sound different." },
+            { "text": "Emphasis, phrasing, ornamentation, and characteristic movements", "right": true, "yes": "Exactly. The raga lives in how the notes are treated - which are stressed, how phrases are shaped, which ornaments decorate which notes." },
+            { "text": "The instrument it is played on", "why": "A raga is the same raga regardless of instrument. Yaman on sitar is the same raga as Yaman on bansuri." },
+            { "text": "The lyrics of the composition", "why": "Lyrics belong to the bandish (composition), not the raga. The same raga can have countless different compositions." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bhupali-vs-deshkar",
+      "title": "Bhupali vs Deshkar",
+      "content": [
+        "Here is the classic example: Raga Bhupali and Raga Deshkar use the exact same five notes - Sa, R, G, P, D (semitones 0, 2, 4, 7, 9). Same pentatonic scale. Completely different ragas.",
+        "Bhupali's vadi (king note) is Ga. Phrases in Bhupali linger on Ga, approach it lovingly, and use it as a resting point. The feeling is warm, tender, and serene. Bhupali is an evening raga of quiet beauty.",
+        "Deshkar's vadi is Dha. Phrases in Deshkar emphasise Dha and move more briskly. The feeling is lighter, more playful, almost devotional in a joyful way. Deshkar is a morning raga.",
+        "Listen carefully to where phrases pause and settle. In Bhupali, they settle on Ga. In Deshkar, they settle on Dha. That single shift in emphasis transforms everything - the mood, the time, the character. The lesson: vadi placement is the strongest tool for creating identity from the same set of notes."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the vadi (king note) of Raga Bhupali?",
+          "options": [
+            { "text": "Sa", "why": "Sa is the home note for all ragas. Bhupali's specific vadi is a different note." },
+            { "text": "Ga", "right": true, "yes": "Correct. Ga (semitone 4) is Bhupali's vadi. Phrases linger on it, giving Bhupali its warm, serene character." },
+            { "text": "Dha", "why": "Dha is the vadi of Deshkar, not Bhupali. This is exactly the difference between the two ragas." },
+            { "text": "Pa", "why": "Pa is an important note in Bhupali but not the vadi. The vadi determines where phrases settle." }
+          ]
+        },
+        {
+          "type": "play",
+          "phrase": [4, 2, 0, 2, 4, 7],
+          "prompt": "Play this Bhupali phrase that emphasises Ga: G R Sa R G P",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 7, 9],
+          "rounds": 5,
+          "prompt": "Identify the five notes shared by both Bhupali and Deshkar",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "yaman-vs-yaman-kalyan",
+      "title": "Yaman vs Yaman Kalyan",
+      "content": [
+        "Raga Yaman and Raga Yaman Kalyan share the same seven notes: Sa, R, G, M (tivra), P, D, N. But there is one critical difference.",
+        "Yaman uses ONLY tivra Ma (semitone 6). The natural fourth (shuddha Ma, semitone 5) never appears. This gives Yaman its pure, luminous, unambiguous character.",
+        "Yaman Kalyan uses BOTH shuddha Ma (semitone 5) and tivra Ma (semitone 6). Shuddha Ma appears as a brief, delicate touch in descent - a fleeting shadow that adds depth and complexity. The phrase might descend as N D P m (touch) G R Sa, with shuddha Ma appearing for just a moment.",
+        "This tiny addition changes the raga's personality. Yaman feels bright and certain. Yaman Kalyan feels richer, slightly more complex, with a hint of Bilawal (the thaat that uses shuddha Ma) woven into its Kalyan fabric. This pairing teaches a vital lesson: even a note that appears briefly and rarely can alter an entire raga's character."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What distinguishes Yaman Kalyan from Yaman?",
+          "options": [
+            { "text": "Yaman Kalyan uses komal Ni", "why": "Both ragas use shuddha Ni. The difference is in the Ma, not the Ni." },
+            { "text": "Yaman Kalyan uses both shuddha and tivra Ma", "right": true, "yes": "Correct. Yaman Kalyan adds a brief touch of shuddha Ma in descent, while Yaman uses only tivra Ma throughout." },
+            { "text": "Yaman Kalyan is a morning raga", "why": "Both are evening ragas. The difference is melodic, not temporal." },
+            { "text": "Yaman Kalyan uses a different vadi", "why": "Both ragas share the same vadi (Ga). The distinguishing feature is the use of shuddha Ma." }
+          ]
+        },
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 7, 6, 4, 2, 0],
+          "prompt": "Play the Yaman descending scale: Sa' N D P M G R Sa (all tivra Ma, no shuddha Ma)",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "kafi-vs-bhimpalasi",
+      "title": "Kafi vs Bhimpalasi",
+      "content": [
+        "Raga Kafi and Raga Bhimpalasi both belong to the Kafi thaat: Sa, R, g, m, P, D, n (semitones 0, 2, 3, 5, 7, 9, 10). Same seven notes. Very different ragas.",
+        "Kafi's vadi is Pa (semitone 7). Phrases in Kafi orbit around Pa, creating a feeling of romance, playfulness, and bittersweet longing. Kafi is a late-night raga, associated with Holi (the festival of colours) and the monsoon. Its characteristic phrase moves as g m P - rising to Pa and resting there.",
+        "Bhimpalasi's vadi is Ma (semitone 5), and its phrases emphasise the Ma-Pa pair. Bhimpalasi is an afternoon raga (prahar 3-4), creating a yearning, pining quality. Its signature phrase is m P D n D P - touching the upper register before falling back. Where Kafi is romantic, Bhimpalasi aches.",
+        "The time difference reinforces the mood difference. Kafi in the late night feels intimate and playful. Bhimpalasi in the afternoon feels like longing under a hot sun. Same notes, different emotional worlds."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which of these is the afternoon raga?",
+          "options": [
+            { "text": "Kafi", "why": "Kafi is a late-night raga. It carries the romance of the deep hours." },
+            { "text": "Bhimpalasi", "right": true, "yes": "Correct. Bhimpalasi is performed in the afternoon (prahar 3-4). Its yearning quality matches the warm afternoon hours." },
+            { "text": "Both are morning ragas", "why": "Neither is a morning raga. Kafi is late night, Bhimpalasi is afternoon." },
+            { "text": "They are performed at the same time", "why": "Despite sharing notes, they belong to completely different times - one of the ways we distinguish them." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the vadi (king note) of Raga Kafi?",
+          "answer": "Pa",
+          "accept": ["Pa", "pa", "P"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "ang-concept",
+      "title": "The Ang Concept",
+      "content": [
+        "When musicians say a raga has 'Kalyan ang', they mean it shows the influence or character of the Kalyan thaat - typically a prominent tivra Ma and phrases that move in the Kalyan way.",
+        "'Ang' literally means 'limb' or 'part'. When a raga shows the ang of another raga or thaat, it borrows some of that raga's characteristic movements or feeling, even if its own scale is different.",
+        "For example, Raga Kedar belongs to the Kalyan thaat but shows Khamaj ang in its descent. Raga Bageshree belongs to the Kafi thaat but shows a unique treatment that distinguishes it from Kafi itself. Raga Ahir Bhairav blends the ang of both Bhairav (komal Re phrases) and Kafi (komal Ni warmth) to create something neither parent raga possesses.",
+        "Understanding ang helps explain why ragas that belong to one thaat can sound like they belong to another. The thaat classifies the notes. The ang describes the personality."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does 'ang' mean in the context of raga theory?",
+          "options": [
+            { "text": "The speed of the raga", "why": "Speed is 'laya'. Ang refers to the influence or character of another raga or thaat." },
+            { "text": "The influence or character borrowed from another raga or thaat", "right": true, "yes": "Correct. Ang (literally 'limb') describes how a raga borrows the characteristic movements or feeling of another musical entity." },
+            { "text": "The number of notes in the scale", "why": "The number of notes is described by terms like audav (5) or shadav (6). Ang is about character, not note count." },
+            { "text": "The ornaments used", "why": "While ang can influence ornamentation, it refers more broadly to the overall melodic influence from another raga or thaat." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A raga described as having 'Kalyan ang' would most likely feature which characteristic?",
+          "options": [
+            { "text": "Komal Ga and komal Ni", "why": "Komal Ga and Ni are characteristics of the Kafi thaat, not Kalyan." },
+            { "text": "Prominent tivra Ma and bright, ascending phrases", "right": true, "yes": "Right. Kalyan ang means the raga shows Kalyan characteristics - prominent tivra Ma and the bright, expansive quality of Kalyan-family ragas." },
+            { "text": "Avoidance of Pa", "why": "Avoiding Pa is specific to certain ragas like Marwa. It is not a general Kalyan characteristic." },
+            { "text": "Only pentatonic notes", "why": "While some Kalyan ragas are pentatonic (like Bhupali), Kalyan ang refers to the character, not the note count." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poorvang-uttarang",
+      "title": "Poorvang and Uttarang",
+      "content": [
+        "Every raga's scale has two halves. The poorvang (first limb) spans Sa to Ma or Pa - the lower half. The uttarang (second limb) spans Pa or Ma to upper Sa - the upper half. Most ragas lean more heavily on one half than the other.",
+        "Ragas that are poorvang pradhan (lower-half dominant) draw their main character from the Sa-to-Pa region. The music gravitates downward, feeling grounded, stable, and sometimes meditative. Morning ragas tend to be poorvang pradhan: Bhairav, Todi, and Ahir Bhairav all centre their most important phrases in the lower register.",
+        "Ragas that are uttarang pradhan (upper-half dominant) draw their main character from Pa to upper Sa. The music gravitates upward, feeling expansive, soaring, and sometimes restless. Evening ragas tend to be uttarang pradhan: Yaman's signature phrase N R G (starting from lower Ni, climbing up) and Marwa's emphasis on Dha and Ni both live in the upper register.",
+        "This distinction connects to raga time theory: the morning-evening divide often maps onto poorvang-uttarang dominance. Knowing which half a raga favours helps you place your phrases correctly and reinforces the raga's natural character."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What does 'ang' literally mean in Sanskrit?",
+          "answer": "limb",
+          "accept": ["limb", "part", "limb or part"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which ragas tend to be poorvang pradhan (lower-half dominant)?",
+          "options": [
+            { "text": "Evening ragas like Yaman and Marwa", "why": "Evening ragas tend to be uttarang pradhan (upper-half dominant), not poorvang pradhan." },
+            { "text": "Morning ragas like Bhairav and Todi", "right": true, "yes": "Correct. Morning ragas tend to centre their important phrases in the lower register (poorvang), while evening ragas favour the upper register (uttarang)." },
+            { "text": "Pentatonic ragas only", "why": "Poorvang/uttarang dominance is not related to the number of notes. Any raga, pentatonic or not, can lean toward either half." },
+            { "text": "Light classical ragas", "why": "Light classical genres like thumri are not defined by poorvang/uttarang preference. This concept applies to all ragas regardless of genre." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bhupali-inside-yaman",
+      "title": "Bhupali Inside Yaman",
+      "content": [
+        "Here is a beautiful relationship: Raga Bhupali (Sa R G P D) is a subset of Raga Yaman (Sa R G M P D N). Every note in Bhupali exists in Yaman. Every Bhupali phrase is valid in Yaman.",
+        "This means that when you play Yaman, you can dip into Bhupali-like phrases by simply avoiding Ma and Ni for a while. The music shifts - it becomes simpler, warmer, more grounded - before Ma and Ni return and the full Yaman landscape opens up again.",
+        "The reverse is also instructive. If you are playing Bhupali and accidentally touch Ma (tivra) or Ni, you have not made a random error - you have stepped into Yaman territory. Understanding these relationships turns errors into opportunities.",
+        "Many ragas contain other ragas within them. Recognising these nested relationships is a sign of musical maturity. It allows you to create contrast within a single raga performance by temporarily evoking the simpler raga hiding inside. Similarly, Malkauns (Sa g m d n) lives inside Bhairavi (Sa r g m P d n N) - an advanced player can hint at Malkauns within a Bhairavi performance for dramatic effect."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 9],
+          "prompt": "Play this ascending phrase that works in both Bhupali and Yaman: Sa R G P D",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two notes does Yaman add to Bhupali's five-note scale?",
+          "options": [
+            { "text": "Shuddha Ma and komal Ni", "why": "Yaman never uses shuddha Ma. It uses tivra Ma. And Ni is shuddha, not komal." },
+            { "text": "Tivra Ma and shuddha Ni", "right": true, "yes": "Correct. Yaman adds M (tivra Ma, semitone 6) and N (shuddha Ni, semitone 11) to Bhupali's Sa R G P D." },
+            { "text": "Komal Re and komal Dha", "why": "Neither Bhupali nor Yaman uses komal swaras. Both use all shuddha notes (plus tivra Ma in Yaman)." },
+            { "text": "Shuddha Ma and shuddha Ni", "why": "Yaman uses tivra Ma, not shuddha Ma. The tivra Ma is what gives Yaman its characteristic brightness." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "five-factors",
+      "title": "What Makes Ragas Different",
+      "content": [
+        "When two ragas share notes, five factors distinguish them:",
+        "1. Vadi and samvadi - Which notes are king and minister. This shifts the centre of gravity. Bhupali (vadi Ga) and Deshkar (vadi Dha) are the textbook example.",
+        "2. Aroha and avaroha - The ascending and descending paths. Some ragas ascend straight (Sa Re Ga Ma Pa). Others are vakra (zigzag) - they skip notes or double back. Bageshree's aroha skips Ga and Dha going up, only using them in descent.",
+        "3. Pakad (characteristic phrase) - The short melodic signature that immediately identifies the raga. If you hear 'Ni Re Ga', you are almost certainly in Yaman. If you hear 'ga Ma Dha ni Dha Ma', you are in Bageshree.",
+        "4. Ornamentation - Which notes receive meend, gamak, kan, or andolan. Darbari's komal Ga gets a distinctive slow oscillation (andolan) that no other raga uses in the same way. Marwa's komal Re gets special treatment that differs from Bhairav's komal Re.",
+        "5. Time association - Different time assignments reinforce different moods. Even if two ragas share notes, their different times frame the listening experience differently."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Among the five distinguishing factors, which one is often called the raga's 'musical signature' or 'catch phrase'?",
+          "options": [
+            { "text": "Vadi", "why": "The vadi is the king note, not a phrase. The musical signature is a short melodic phrase." },
+            { "text": "Aroha", "why": "The aroha is the ascending path, which can help identify a raga but is not the specific 'catch phrase'." },
+            { "text": "Pakad", "right": true, "yes": "Correct. The pakad is the characteristic phrase - a short melodic signature that immediately identifies the raga to a knowledgeable listener." },
+            { "text": "Thaat", "why": "The thaat is the parent scale, not a distinguishing feature between ragas that share the same notes." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is a raga's characteristic signature phrase called?",
+          "answer": "pakad",
+          "accept": ["pakad", "pakar", "pakad phrase", "chalan"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "quick-family-identification",
+      "title": "Quick Family Identification",
+      "content": [
+        "When you hear a raga for the first time, its notes offer a quick first clue about which family it belongs to. These are starting points, not definitive answers - treatment and phrasing ultimately determine the raga - but they narrow the possibilities quickly.",
+        "If you hear all shuddha notes plus tivra Ma, you are likely in the Kalyan (Yaman) family. If all notes are shuddha with no tivra Ma, you are in Bilawal family territory. Komal Re with shuddha everything else suggests the Bhairav family. Komal Ga with komal Ni points toward Kafi or Asavari family.",
+        "More complex signatures: komal Re combined with tivra Ma suggests Todi family (if komal Ga is also present) or Marwa family (if shuddha Ga is present). Three or four komal notes together points toward Bhairavi (which uses komal Re, komal Ga, komal Dha, and komal Ni).",
+        "Think of this as a musical triage: the notes tell you the neighbourhood, but you need the phrasing, vadi, and characteristic movements to identify the specific resident. A doctor's first question narrows the diagnosis; these note-based rules narrow the raga."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "You hear a raga with komal Re and tivra Ma. Which family is it most likely from?",
+          "options": [
+            { "text": "Bilawal family", "why": "Bilawal uses all shuddha notes with shuddha Ma. Komal Re and tivra Ma point elsewhere." },
+            { "text": "Todi or Marwa family", "right": true, "yes": "Correct. komal Re + tivra Ma is the signature combination of the Todi and Marwa families. Check for komal Ga (Todi) or shuddha Ga (Marwa) to distinguish them." },
+            { "text": "Kafi family", "why": "Kafi uses shuddha Re and shuddha Ma. It features komal Ga and komal Ni instead." },
+            { "text": "Kalyan family", "why": "Kalyan uses all shuddha notes plus tivra Ma. It never has komal Re." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "You hear a raga with all shuddha notes and tivra Ma (no komal notes). Which family?",
+          "options": [
+            { "text": "Bhairav family", "why": "Bhairav requires komal Re. All-shuddha notes with tivra Ma is a different family." },
+            { "text": "Kalyan (Yaman) family", "right": true, "yes": "Correct. All shuddha notes with tivra Ma is the hallmark of the Kalyan family, home to ragas like Yaman, Bhupali, and Kedar." },
+            { "text": "Asavari family", "why": "Asavari uses komal Ga, komal Dha, and komal Ni. All-shuddha notes rules it out." },
+            { "text": "Purvi family", "why": "Purvi uses komal Re and komal Dha alongside tivra Ma. All-shuddha notes rules it out." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raga-detective-challenge",
+      "title": "Raga Detective Challenge",
+      "content": [
+        "Put your knowledge to the test. Can you identify ragas from their descriptions?",
+        "A skilled musician can identify a raga within the first few notes of a performance. They are not just hearing which notes are played - they are hearing how those notes are treated, where the emphasis falls, what ornaments are used. They are hearing the ang, the poorvang or uttarang emphasis, the pakad, the vadi - all at once, intuitively.",
+        "This is the ultimate ear training: hearing not just pitch, but personality. It is the difference between recognising individual letters and reading a language."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "A pentatonic raga (Sa R G P D) where phrases linger on Dha and move briskly. Which raga is this?",
+          "options": [
+            { "text": "Bhupali", "why": "Bhupali uses the same notes but lingers on Ga, not Dha. Its movement is warm and tender, not brisk." },
+            { "text": "Deshkar", "right": true, "yes": "Correct. Deshkar emphasises Dha and moves briskly - the opposite of Bhupali's warm Ga-centric lingering." },
+            { "text": "Yaman", "why": "Yaman has seven notes, not five. It includes Ma (tivra) and Ni." },
+            { "text": "Durga", "why": "Durga uses Sa R m P D (with shuddha Ma instead of Ga). Different note set entirely." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A raga in the Kafi thaat (Sa R g m P D n) performed in the late afternoon, with phrases centred on the Ma-Pa pair and a yearning quality. Which raga?",
+          "options": [
+            { "text": "Kafi", "why": "Kafi uses these notes but is a late-night raga centred on Pa, not the Ma-Pa pair." },
+            { "text": "Bhimpalasi", "right": true, "yes": "Correct. Bhimpalasi is the afternoon raga of the Kafi family, known for its Ma-Pa emphasis and yearning quality." },
+            { "text": "Bageshree", "why": "Bageshree is also from the Kafi family but has a different emphasis and is a late-night raga." },
+            { "text": "Pilu", "why": "Pilu uses Kafi notes but is a light, semi-classical raga with a very different treatment." }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 6, 7, 9, 11],
+          "rounds": 5,
+          "prompt": "Identify the notes of the Kalyan thaat - the parent scale of Yaman, Bhupali, and many evening ragas",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

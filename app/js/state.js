@@ -1,6 +1,6 @@
 // Learner progress, stored in this browser only (localStorage). Versioned, with backup export/import.
 import { today } from "./util.js";
-import { cleanSettings } from "./core/settings.js";
+import { cleanSettings, invalidateSettings } from "./core/settings.js";
 
 const KEY = "bansuri.progress";
 const listeners = new Set();
@@ -106,7 +106,10 @@ export function addLog(entry) {
   update(s => { s.log.push(Object.assign({ date: today() }, entry)); });
 }
 
-export function resetAll() { state = fresh(); save(); }
+export function resetAll() {
+  state = fresh(); save();
+  for (const k of STORES) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+}
 
 // Backup: a JSON document. Recordings are added by the caller (backup.js) when requested.
 // Besides progress and settings it carries what the learner made: My songs, saved notations,
@@ -139,6 +142,7 @@ export function restoreFrom(obj) {
   state = clean.progress;
   if (clean.settings) {
     try { localStorage.setItem("bansuri.settings", JSON.stringify(clean.settings)); } catch (e) { /* ignore */ }
+    invalidateSettings();
   }
   // Only the known keys, and only values that are valid JSON of the right kind and size.
   if (obj.stores && typeof obj.stores === "object") for (const k of STORES) {

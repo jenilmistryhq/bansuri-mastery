@@ -1,0 +1,255 @@
+{
+  "id": "raga-bihag",
+  "title": "Raga Bihag - The Late Night Jewel",
+  "tasks": [
+    {
+      "id": "late-night-beauty",
+      "title": "The Late Night Beauty",
+      "content": [
+        "Bihag is performed in the third prahar of night - roughly midnight to 3 AM. It is one of the most melodious and accessible of the late-night ragas: sweet without being simple, deep without being austere.",
+        "Bihag is often the second raga students learn after Yaman because it introduces an important concept: using BOTH versions of Ma (shuddha and tivra) in the same raga. Where Yaman uses only tivra Ma, Bihag switches between both depending on whether the melody is ascending or descending.",
+        "Classified under the Bilawal thaat (though some place it under Kalyan due to its prominent use of tivra Ma), Bihag has a sweet, romantic quality that makes it one of the most beloved ragas for bansuri performance. Its flowing melodies suit the bamboo flute perfectly."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When is Raga Bihag traditionally performed?",
+          "options": [
+            { "text": "Late night (midnight to 3 AM)", "right": true, "yes": "Correct. Bihag belongs to the third prahar of night - the deep, quiet hours when its sweet melodies feel most intimate." },
+            { "text": "Early evening (sunset)", "why": "Sunset is the time for ragas like Marwa and Puriya. Bihag is a late-night raga." },
+            { "text": "Morning (sunrise)", "why": "Morning belongs to ragas like Bhairav and Todi. Bihag's sweetness is meant for the deep night hours." },
+            { "text": "Afternoon", "why": "Afternoon ragas have a different character. Bihag's intimate mood is suited to late night performance." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What important concept does Bihag introduce that Yaman does not use?",
+          "options": [
+            { "text": "Using BOTH shuddha Ma and tivra Ma in the same raga", "right": true, "yes": "Correct. While Yaman uses only tivra Ma, Bihag uses tivra Ma in ascent and shuddha Ma in descent - the dual-Ma concept." },
+            { "text": "Using komal notes", "why": "Bihag uses all shuddha notes (plus both Ma). Komal notes are introduced in ragas like Kafi and Bhairavi." },
+            { "text": "Skipping notes in both directions", "why": "Bihag skips notes only in ascent (vakra aroha), not in descent. And Yaman also has characteristic phrasing patterns." },
+            { "text": "Playing in the mandra saptak", "why": "Playing in the lower octave is not specific to Bihag. Its distinctive feature is the dual-Ma concept." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "two-ma-one-raga",
+      "title": "Two Ma in One Raga",
+      "content": [
+        "Bihag's most distinctive feature is its use of both shuddha Ma (semitone 5) AND tivra Ma (semitone 6). This is similar to how Desh uses both shuddha Ni and komal Ni - a concept called 'dwi-swara' (dual note).",
+        "The rule is elegant: tivra Ma appears in ASCENT. The phrase G-tivra Ma-P (semitones 4-6-7) is Bihag's signature ascending phrase. It gives the ascent a bright, Kalyan-like sparkle.",
+        "Shuddha Ma appears in DESCENT. The phrase P-shuddha Ma-G (semitones 7-5-4) defines the descending character. The shuddha Ma makes the descent feel softer and more gentle compared to the ascending brightness. This one-note switch between ascent and descent gives Bihag its unique dual personality - bright going up, warm coming down."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which version of Ma appears in Bihag's ascending phrases?",
+          "options": [
+            { "text": "Tivra Ma (semitone 6)", "right": true, "yes": "Correct. Tivra Ma in ascent gives Bihag its bright, Kalyan-flavored upward movement. The phrase G-tivra Ma-P is the raga's signature." },
+            { "text": "Shuddha Ma (semitone 5)", "why": "Shuddha Ma appears in Bihag's descending phrases, not ascending. The ascending signature uses tivra Ma." },
+            { "text": "Both Ma at the same time", "why": "They alternate by direction: tivra Ma going up, shuddha Ma coming down. They do not sound simultaneously." },
+            { "text": "Neither - Ma is omitted in ascent", "why": "Ma is prominently featured in Bihag's ascent as tivra Ma. The G-tivra Ma-P phrase is the raga's most recognizable pattern." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which version of Ma appears in Bihag's descending phrases? (Type 'shuddha' or 'tivra'.)",
+          "answer": "shuddha",
+          "accept": ["Shuddha", "shuddha Ma", "Shuddha Ma", "shuddha ma"],
+          "points": 1
+        }
+      ]
+    },
+    {
+      "id": "vakra-ascent",
+      "title": "The Vakra Ascent",
+      "content": [
+        "Like Bageshree, Bihag has a vakra (crooked) ascent: Sa G M' P N Sa'. Two notes are skipped going up - Re and Dha are omitted entirely in the ascending movement.",
+        "This creates distinctive leaps: Sa to Ga (4 semitones) and Pa to Ni (4 semitones). The resulting melody has a soaring, expansive quality - it bounds upward in graceful arcs rather than climbing step by step.",
+        "In descent, all seven notes appear: Sa' N D P m G R Sa. The descent is complete and stepwise, filling in the gaps that the ascent left open. This contrast between a leaping ascent and a flowing descent is part of what makes Bihag so satisfying to play and hear."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 6, 7, 11, 12],
+          "prompt": "Play Bihag's vakra ascending scale: Sa, Ga, tivra Ma, Pa, Ni, upper Sa. Feel the leaps where Re and Dha are skipped.",
+          "points": 3
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two notes are skipped in Bihag's ascending scale?",
+          "options": [
+            { "text": "Re and Dha", "right": true, "yes": "Correct. Re and Dha are omitted in ascent, creating the leaps that give Bihag its soaring quality. Both notes appear freely in descent." },
+            { "text": "Ga and Ni", "why": "Ga and Ni are the vadi and samvadi of Bihag - the most important notes. They are never skipped." },
+            { "text": "Ma and Pa", "why": "The G-tivra Ma-P phrase is Bihag's signature. These notes are essential to the ascending movement." },
+            { "text": "Sa and Pa", "why": "Sa is the starting point and Pa is a key structural note. Both appear in Bihag's ascent." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "signature-phrase",
+      "title": "The Signature Phrase",
+      "content": [
+        "G M' P - Ga to tivra Ma to Pa. This three-note ascending phrase IS Bihag. When you hear it, you know the raga instantly. It is as distinctive as a fingerprint.",
+        "The tivra Ma here gives a momentary Kalyan (Yaman-like) brightness before resolving to Pa. It is like a flash of light in the melody - brief but unmistakable.",
+        "In descent, the phrase reverses with shuddha Ma: P m G (Pa to shuddha Ma to Ga). Feel the difference when you play both. The ascent is bright and reaching, like looking up at the stars. The descent is softer and settling, like sinking into a warm blanket. This one-note difference between tivra and shuddha Ma transforms the entire character of the phrase."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 6, 7],
+          "prompt": "Play Bihag's ascending signature: Ga, tivra Ma, Pa. This three-note phrase defines the raga. Listen for the bright, Kalyan-like sparkle of tivra Ma.",
+          "points": 2
+        },
+        {
+          "type": "play",
+          "phrase": [7, 5, 4],
+          "prompt": "Now play the descending version: Pa, shuddha Ma, Ga. Notice how the shuddha Ma makes the descent softer and warmer compared to the bright ascent.",
+          "points": 2
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does the ascending phrase (G-tivra Ma-P) sound different from the descending phrase (P-shuddha Ma-G)?",
+          "options": [
+            { "text": "Tivra Ma in ascent is bright; shuddha Ma in descent is soft and warm", "right": true, "yes": "Correct. The switch between tivra Ma (ascending) and shuddha Ma (descending) gives each direction its own distinct emotional color." },
+            { "text": "The ascending phrase is played faster", "why": "Speed is not the difference. Both can be played at any tempo. The difference is the type of Ma used in each direction." },
+            { "text": "The descending phrase uses different notes entirely", "why": "Both phrases use Ga, Ma, and Pa. The difference is which VERSION of Ma is used: tivra going up, shuddha coming down." },
+            { "text": "They sound the same, just reversed", "why": "They would sound the same reversed only if they used the same Ma. The switch from tivra to shuddha Ma gives each direction a different character." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full-ascending",
+      "title": "Full Ascending Bihag",
+      "content": [
+        "The full ascending movement of Bihag: Sa G M' P, N D P. Note the leap from Sa directly to Ga, skipping Re. Then the G-tivra Ma-Pa signature phrase provides the upward momentum.",
+        "After reaching Ni, Bihag often includes a characteristic touch of Dha from above: N D P. This phrase briefly introduces Dha (which was skipped in the main ascent) by approaching it from Ni and then returning to Pa. It is a graceful detour that adds depth to the ascending movement.",
+        "This N D P pattern is important to learn because it is one of the ways Bihag introduces Dha into its ascending passages without breaking the vakra rule. Dha enters from above, as a visitor rather than a resident of the ascending scale."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 6, 7, 11, 9, 7],
+          "prompt": "Play the full ascending Bihag movement with the characteristic N D P touch: Sa, Ga, tivra Ma, Pa, Ni, Dha, Pa. Notice how Dha enters from above.",
+          "points": 3
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 6, 7, 9, 11],
+          "rounds": 4,
+          "prompt": "Identify Bihag's notes by ear. The set includes both shuddha Ma (5) and tivra Ma (6), plus Re and Dha which appear in descent.",
+          "points": 2
+        }
+      ]
+    },
+    {
+      "id": "full-descending",
+      "title": "Full Descending Bihag",
+      "content": [
+        "The avaroha (descending scale) of Bihag: Sa' N D P m G R Sa. All seven notes appear in descent, but with shuddha Ma replacing tivra Ma. No notes are skipped coming down.",
+        "The P-shuddha Ma-G (7-5-4) descent is gentle and warm - a contrast to the bright G-tivra Ma-P ascent. This is the moment where Bihag settles and relaxes, letting the melody flow smoothly downward.",
+        "The final G-R-Sa (4-2-0) settles beautifully to home. Here Re appears for the first time (it was skipped in the ascent), and its presence in the descent adds a completeness that the leaping ascent deliberately withheld. The full descent feels like a satisfying resolution after the soaring ascent."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the complete descending Bihag scale: upper Sa, Ni, Dha, Pa, shuddha Ma, Ga, Re, Sa. Feel the flowing, stepwise descent with no gaps.",
+          "points": 3
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Ga steadily - the vadi (king note) of Bihag. This is where the raga feels most at home. Let it ring with warmth.",
+          "points": 3
+        }
+      ]
+    },
+    {
+      "id": "ga-ni-axis",
+      "title": "Ga and Ni - The Axis",
+      "content": [
+        "Ga (semitone 4) is the vadi and Ni (semitone 11) is the samvadi of Bihag. These two notes define the raga's emotional center and should be given special attention in performance.",
+        "Ga should be held, explored, and returned to frequently. It is where Bihag feels most at home - more so than Sa in many phrases. When you linger on Ga, you feel the raga's sweetness and depth. It is the note that listeners remember.",
+        "Ni in the upper register provides a soaring quality that balances Ga's warmth. The Ga-Ni axis spans 7 semitones (a perfect fifth), giving the raga a stable, consonant foundation despite its vakra movement and dual-Ma complexity. This perfect-fifth relationship between vadi and samvadi is one of the reasons Bihag sounds so naturally balanced."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 11,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Ni steadily - the samvadi of Bihag. Feel the soaring quality of this upper note and how it balances the warmth of Ga below.",
+          "points": 3
+        },
+        {
+          "type": "choice",
+          "prompt": "What interval separates Bihag's vadi (Ga) and samvadi (Ni)?",
+          "options": [
+            { "text": "A perfect fifth (7 semitones)", "right": true, "yes": "Correct. Ga (4) to Ni (11) spans 7 semitones - a perfect fifth. This consonant interval gives Bihag its naturally balanced sound." },
+            { "text": "A perfect fourth (5 semitones)", "why": "Count from Ga (4) to Ni (11): that is 7 semitones, a perfect fifth, not a fourth." },
+            { "text": "An octave (12 semitones)", "why": "Ga to Ni is only 7 semitones apart, not 12. An octave would be Sa to upper Sa." },
+            { "text": "A minor third (3 semitones)", "why": "The distance from Ga (4) to Ni (11) is 7 semitones, much wider than a minor third." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bihag-vs-yaman",
+      "title": "Bihag vs Yaman",
+      "content": [
+        "Both Bihag and Yaman use tivra Ma prominently, so they share a certain brightness. But the similarities end there.",
+        "Yaman uses ONLY tivra Ma and uses all seven notes in both ascending and descending scales. Its mood is grand, majestic, and expansive - an early evening raga with a sense of confidence and openness.",
+        "Bihag uses BOTH shuddha and tivra Ma, and has a vakra ascent that skips Re and Dha. Its mood is sweet and intimate - a late night raga with tenderness and romance. Where Yaman soars with confidence across the full sky, Bihag flows with gentleness in the quiet hours. Yaman is the first raga most students learn; Bihag is often the natural second step, building on the familiarity of tivra Ma while introducing the dual-Ma concept."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does Bihag differ from Yaman in its use of Ma?",
+          "options": [
+            { "text": "Bihag uses both shuddha and tivra Ma; Yaman uses only tivra Ma", "right": true, "yes": "Correct. This dual-Ma feature is Bihag's key distinction from Yaman, which uses tivra Ma exclusively." },
+            { "text": "Bihag uses only shuddha Ma; Yaman uses only tivra Ma", "why": "Bihag uses BOTH versions of Ma - tivra in ascent and shuddha in descent. It does not limit itself to just one." },
+            { "text": "Both ragas use the same notes identically", "why": "Their note usage differs significantly. Yaman uses all seven notes in both directions; Bihag has a vakra ascent and uses dual Ma." },
+            { "text": "Yaman uses both Ma; Bihag uses only tivra Ma", "why": "It is the reverse. Bihag is the one with dual Ma. Yaman uses only tivra Ma throughout." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which raga uses only tivra Ma (never shuddha Ma)?",
+          "options": [
+            { "text": "Yaman", "right": true, "yes": "Correct. Yaman uses tivra Ma exclusively. Bihag introduces the dual-Ma concept, using tivra Ma in ascent and shuddha Ma in descent." },
+            { "text": "Bihag", "why": "Bihag uses both shuddha Ma (descent) and tivra Ma (ascent). It is Yaman that uses only tivra Ma." },
+            { "text": "Both use only tivra Ma", "why": "Only Yaman uses tivra Ma exclusively. Bihag switches between both versions depending on melodic direction." },
+            { "text": "Neither - both use dual Ma", "why": "Yaman is a pure tivra Ma raga. Only Bihag uses the dual-Ma approach." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "playing-bihag",
+      "title": "Playing Bihag",
+      "content": [
+        "Now put it all together: ascend with the vakra movement and tivra Ma, then descend with the full scale and shuddha Ma. The phrase Sa G M' P N D P m G R Sa captures the entire raga in one breath.",
+        "Going up: brightness, leaps, the sparkle of tivra Ma. Coming down: warmth, completeness, the softness of shuddha Ma. Up with the stars, down with a gentle landing.",
+        "Bihag is a raga that rewards patience and subtlety. Its beauty lies not in dramatic gestures but in the gentle interplay between its two Ma, the graceful leaps of its ascent, and the flowing completeness of its descent. On the bansuri especially, Bihag's melodies have a singing quality that few other ragas can match."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 6, 7, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play a complete Bihag phrase: ascend with the vakra movement and tivra Ma, then descend with the full scale and shuddha Ma. Feel the contrast between the bright ascent and the warm descent.",
+          "points": 4
+        },
+        {
+          "type": "confirm",
+          "prompt": "I appreciate how Bihag uses dual Ma to create two distinct personalities within one raga - bright ascending, warm descending - making it one of the most beautiful ragas for bansuri."
+        }
+      ]
+    }
+  ]
+}

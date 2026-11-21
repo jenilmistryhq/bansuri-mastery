@@ -94,7 +94,7 @@ schools); the version above is the commonly taught one ([R-T09](../02-RESOURCE-L
 
 ### 4.6 Playing over a tabla loop
 
-1. Open a tabla app or loop (see section 6). Set **Sa = C** for any tanpura, and set the taal and tempo.
+1. Open a tabla app or loop (see section 6). Set its tanpura to your flute's Sa, and set the taal and tempo.
 2. Listen for 2 cycles without playing. Clap along and find sam (the loop usually has a bass "Dha" there).
 3. Play a long Sa from sam to sam (16 beats of teentaal). Then two notes per cycle, then one per beat.
 4. Play alankar 1 ([EX-ALK](../exercises/EX-ALK-alankar-book.md)) starting exactly on sam.

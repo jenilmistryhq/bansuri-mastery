@@ -1,0 +1,268 @@
+{
+  "id": "bhatkhande-notation",
+  "title": "Bhatkhande Notation",
+  "tasks": [
+    {
+      "id": "who-was-bhatkhande",
+      "title": "The Bhatkhande System",
+      "content": ["Vishnu Narayan Bhatkhande (1860-1936) created the most widely used notation system for Hindustani music. Before him, music was transmitted purely by ear from teacher to student across generations.", "Bhatkhande notation uses Devanagari letters for the seven swaras. It was revolutionary because it allowed compositions and ragas to be written down, studied, and preserved in textbooks for the first time.", "His system is still the standard in Indian music education today. Every music school, university, and published composition book in North India uses it. Learning to read Bhatkhande notation opens the door to thousands of published compositions."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why was Bhatkhande's notation system revolutionary?",
+          "options": [
+            {
+              "text": "It used Western staff notation for Indian music",
+              "why": "Bhatkhande created an Indian system using Devanagari, not Western staff notation."
+            },
+            {
+              "text": "It allowed oral tradition music to be written, studied, and preserved",
+              "right": true,
+              "yes": "Correct. Before Bhatkhande, Hindustani music was transmitted entirely by ear."
+            },
+            {
+              "text": "It replaced all earlier Indian notation systems",
+              "why": "Carnatic (South Indian) music already had notation. Bhatkhande's system is for Hindustani music."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-seven-notes",
+      "title": "Reading the Seven Notes",
+      "content": ["In Bhatkhande notation, the seven swaras are written as abbreviated Devanagari letters: Sa Re Ga Ma Pa Dha Ni.", "In the text-based form used in this app and many modern books: capital letters = shuddha (natural) swaras: S R G M P D N. Lowercase = komal (flat) swaras: r g d n. Tivra Ma is written as M (capitalized) or M# to distinguish it from shuddha Ma (m). Sa and Pa never change - they have no komal or tivra form.", "Practice reading this sequence: S R G m P D N S'. That is the shuddha scale (Bilawal thaat) ascending to upper Sa. Now try: S R g m P d n S'. That is the Kafi thaat scale - notice the lowercase g and n marking komal Ga and komal Ni."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In text-based sargam notation, what does a lowercase letter mean?",
+          "options": [
+            {
+              "text": "The note is in the lower octave",
+              "why": "Octave is shown by dots, not case. Lowercase means komal (flat)."
+            },
+            {
+              "text": "The note is komal (flat)",
+              "right": true,
+              "yes": "Correct. Lowercase = komal. For example, 'g' is komal Ga."
+            },
+            {
+              "text": "The note is played softly",
+              "why": "Volume is not shown in sargam notation. Lowercase means komal."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two swaras have no komal or tivra variant?",
+          "options": [
+            {
+              "text": "Sa and Pa",
+              "right": true,
+              "yes": "Right. Sa (the tonic) and Pa (the fifth) are always fixed."
+            },
+            {
+              "text": "Re and Dha",
+              "why": "Both Re and Dha have komal forms."
+            },
+            {
+              "text": "Ga and Ni",
+              "why": "Both Ga and Ni have komal forms."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "octave-marks",
+      "title": "Octave Marks",
+      "content": ["Bhatkhande notation marks three octaves:", "Mandra saptak (lower octave) - a dot below the note. Madhya saptak (middle octave) - no mark (the default). Taar saptak (upper octave) - a dot above the note.", "In text notation: lower octave uses a dot prefix like .S or .N (lower Sa, lower Ni). Upper octave uses a tick suffix like S' or R' (upper Sa, upper Re). Middle octave uses plain letters with no mark.", "Most melodies stay in the middle octave, dipping to lower Ni or Pa and rising to upper Sa or Re. Raga Yaman's characteristic opening phrase, for example, starts from lower Ni: .N R G - rising from the lower octave into the middle."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does a dot below a note mean in Bhatkhande notation?",
+          "options": [
+            {
+              "text": "The note is komal (flat)",
+              "why": "Komal is shown by a line under the letter, not a dot below."
+            },
+            {
+              "text": "The note is in the lower octave (mandra saptak)",
+              "right": true,
+              "yes": "Correct. Dot below = lower octave. Dot above = upper octave."
+            },
+            {
+              "text": "The note is silent",
+              "why": "Silence is shown by a zero (0) or dash, not a dot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "timing-notation",
+      "title": "Timing - Holds, Rests, and Subdivisions",
+      "content": ["Bhatkhande notation uses simple symbols for timing:", "A dash (-) means hold the previous note for one more beat. A zero (0) means rest (silence) for one beat. A vertical bar (|) separates beats or groups of beats. Two notes written together share one beat (subdivision).", "Example: Sa Re Ga - | Ma Pa 0 0. This means: Sa for 1 beat, Re for 1 beat, Ga held for 2 beats, then Ma for 1 beat, Pa for 1 beat, silence for 2 beats.", "When two notes share one beat, they are written side by side: 'SR' means Sa and Re in one beat (each gets half a beat). Three notes under a bracket share one beat (triplet feel). This is how fast passages like taans are notated - many notes squeezed into few beats."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "In Bhatkhande notation, what symbol means 'hold the previous note'?",
+          "answer": "-",
+          "accept": ["-", "dash", "a dash"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What does the vertical bar | represent?",
+          "options": [
+            {
+              "text": "A rest (silence)",
+              "why": "Rest is shown by 0, not a bar."
+            },
+            {
+              "text": "A beat boundary or section divider",
+              "right": true,
+              "yes": "Correct. The bar separates rhythmic groups."
+            },
+            {
+              "text": "An accent on the next note",
+              "why": "Bars divide time, they do not mark accents."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "komal-tivra-marks",
+      "title": "Komal and Tivra Marks",
+      "content": ["In handwritten Bhatkhande notation: komal notes get a horizontal line under the Devanagari letter. Tivra Ma gets a vertical tick or line above the letter.", "In text-based notation (like this app): lowercase for komal (r, g, d, n), uppercase for shuddha (R, G, D, N), M or M# for tivra Ma, m for shuddha Ma.", "This makes it easy to see at a glance which variant of each note is used. For example, Raga Yaman uses: .N R G M P D N S' (all shuddha except tivra Ma = M). Raga Bhairavi uses: S r g m P d n S' (four komal notes). Raga Todi uses: S r g M d P (three komal plus tivra Ma - notice how the case changes signal the raga's unique character)."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In text notation, 'g' (lowercase) means:",
+          "options": [
+            {
+              "text": "Shuddha Ga",
+              "why": "Shuddha Ga is written as 'G' (uppercase). Lowercase 'g' is komal."
+            },
+            {
+              "text": "Komal Ga (flat Ga)",
+              "right": true,
+              "yes": "Right. Lowercase = komal in text notation."
+            },
+            {
+              "text": "Upper octave Ga",
+              "why": "Upper octave is shown by a tick (G'), not by case."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "notation-symbols",
+      "title": "Special Symbols and Shorthand",
+      "content": ["Beyond the basic swaras and timing marks, Bhatkhande notation uses several special symbols to represent ornaments and performance details:", "A dash (-) sustains the previous note for one more beat. A comma (,) or semicolon indicates a brief rest shorter than a full beat. Notes grouped under a bracket or beam are played within one beat - this is how fast taans are written.", "A dot above a note means taar saptak (upper octave). A dot below means mandra saptak (lower octave). Two dots below is ati-mandra (the octave below the lower octave), though this is rare on bansuri.", "For ornaments: meend (glide) is shown with a curved line connecting two notes. Kan swar (grace note) is written as a small note before the main note. Murki is shown with a group of small notes in parentheses. Gamak is sometimes shown with a wavy line above the note.", "Understanding these symbols lets you decode any composition from a textbook. When you see a published bandish with all its markings, you can now read not just the notes but the ornamentation the composer intended."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does a dash (-) mean in Bhatkhande notation?",
+          "options": [
+            {
+              "text": "Play the note softly",
+              "why": "Volume is not notated with dashes. A dash sustains the previous note."
+            },
+            {
+              "text": "Sustain the previous note for one more beat",
+              "right": true,
+              "yes": "Correct. Each dash extends the previous note by one additional beat."
+            },
+            {
+              "text": "Skip to the next section",
+              "why": "Section breaks use double bars, not dashes."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What does a dot ABOVE a note indicate in Bhatkhande notation?",
+          "answer": "upper octave",
+          "accept": ["upper octave", "taar saptak", "taar", "upper", "high octave"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "reading-bandish",
+      "title": "Reading a Bandish",
+      "content": ["A bandish (composition) in Bhatkhande notation has specific structural elements that you should recognize:", "Every bandish begins with a header: the raga name and its parent thaat, the taal (rhythmic cycle), and the tempo (vilambit, madhya, or drut). Below the header, the composition is divided into two main sections: the sthayi (refrain, the main melody that keeps returning) and the antara (the second section, usually moving into the upper register).", "The rhythmic structure is marked above the notation: X marks the sam (the first beat - the most important moment in the cycle), 0 marks the khali (the empty beat), and numbers (2, 3, 4) mark the tali divisions. For Teentaal (16 beats in 4 groups of 4): X marks beats 1-4, 2 marks beats 5-8, 0 marks beats 9-12 (khali), and 3 marks beats 13-16.", "If the bandish has lyrics (for vocal compositions), the text is written below the notes, aligned beat by beat. As a bansuri player, you play the notes but knowing the lyrics helps you understand the phrasing and emotional intent of the melody."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What are the two main sections of a bandish?",
+          "options": [
+            {
+              "text": "Alap and jhala",
+              "why": "Alap and jhala are parts of a raga presentation, not a bandish. A bandish has sthayi and antara."
+            },
+            {
+              "text": "Sthayi and antara",
+              "right": true,
+              "yes": "Correct. The sthayi is the main refrain and the antara is the second section in the upper register."
+            },
+            {
+              "text": "Aroha and avaroha",
+              "why": "Aroha and avaroha are ascending and descending scales. A bandish has sthayi and antara."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In Bhatkhande notation, what letter marks the sam (first beat of the taal cycle)?",
+          "answer": "X",
+          "accept": ["X", "x"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "read-a-phrase",
+      "title": "Read and Play a Phrase",
+      "content": ["Let us read a notated phrase step by step:", "Sa Re Ga - | Pa - - -", "Breaking it down beat by beat: Beat 1: Sa. Beat 2: Re. Beat 3: Ga. Beat 4: Ga (held from beat 3, shown by the dash). Beat 5: Pa. Beat 6: Pa (held). Beat 7: Pa (held). Beat 8: Pa (held).", "So Ga lasts 2 beats and Pa lasts 4 beats. Count the dashes - each one extends the previous note by one beat.", "Now try a more complex phrase: .N R G M | P - D N | S' - - -. This is a Yaman-like ascending phrase starting from lower Ni, climbing through tivra Ma (M) up to upper Sa, which is held for 3 extra beats. Notice the dot prefix on .N (lower octave) and the tick on S' (upper octave)."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "In 'Sa Re Ga - | Pa - - -', how many total beats does Pa last?",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7],
+          "prompt": "Play this phrase on your flute: Sa Re Ga Pa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ear-training-full",
+      "title": "Ear Training - Full Saptak",
+      "content": ["Being able to hear a note and name it instantly is the bridge between reading notation and playing music. When you see 'Pa' on the page, you should hear Pa in your mind before your fingers move.", "This connection between the written symbol and the sound it represents is what makes notation truly useful. Without it, notation is just an abstract exercise. With it, you can look at a page of Bhatkhande notation and hear the music before you play a single note.", "This exercise plays notes from the full saptak. Listen and identify each one."],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "count": 5,
+          "pass": 3,
+          "prompt": "Identify each note from the full saptak. Get 3 out of 5 to pass.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "Done!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

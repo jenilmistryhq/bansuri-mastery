@@ -87,7 +87,7 @@ Murki (GRSR) landing on R, at slow, medium, final speed
  Final:   (GRSR)R - - - - - - -
 ```
 
-**Common patterns to learn** (Sa = C, middle octave):
+**Common patterns to learn** (relative to Sa, middle octave; Western note examples use C):
 
 | Ornament | Written | Notes in order |
 |---|---|---|

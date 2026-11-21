@@ -13,17 +13,17 @@
 - Hum and sing **Sa** with the drone, then sing simple sargam in tune (PIT-05).
 - Name the seven swaras and their full names; recite sargam forwards and backwards (THY-01).
 - Understand the three **saptaks** (octaves): mandra, madhya, taar (THY-02).
-- Understand that **Sa is movable** (sargam is relative), while Western note names (C, D, E) are fixed pitches; on your flute, Sa = C (THY-03).
+- Understand that **Sa is movable** (sargam is relative), while Western note names (C, D, E) are fixed pitches; C is one worked example (THY-03).
 
 ## 2. Prerequisites
 
-The drone from [L00](L00-day-0-your-flute.md), set to C.
+The drone from [L00](L00-day-0-your-flute.md), set to your flute's Sa.
 
 ## 3. Simple explanation
 
 ### Pitch
 
-Every sound vibrates. Faster vibration sounds **higher**; slower vibration sounds **lower**. A bird chirps high; a big drum booms low. **Pitch** just means how high or low a sound is. Your flute's Sa vibrates about 523 times per second (523 Hz).
+Every sound vibrates. Faster vibration sounds **higher**; slower vibration sounds **lower**. A bird chirps high; a big drum booms low. **Pitch** just means how high or low a sound is. The reference C5 Sa vibrates about 523 times per second (523 Hz); your flute's Sa may be another frequency.
 
 ### Notes and Sa
 
@@ -59,10 +59,10 @@ Your flute plays from mandra Pa (`.P`) up into the taar saptak.
 
 Western music names notes by **fixed pitch**: C, D, E, F, G, A, B (plus sharps and flats). C is always the same pitch.
 
-Sargam is **relative**: Sa is whatever note the music treats as home. A singer may set Sa at C, at D or anywhere else. So:
+Sargam is **relative**: Sa is whatever note the music treats as home. A singer may set Sa at C, at D or anywhere else. For example, if Sa is C:
 
-- On **your flute**, Sa = **C**. Then Re = D, Ga = E, Ma = F, Pa = G, Dha = A, Ni = B.
-- On a G flute, Sa = G and Re = A, and so on.
+- Re = D, Ga = E, Ma = F, Pa = G, Dha = A, Ni = B.
+- If Sa is G instead, Re = A, and so on.
 
 This is why one sargam notation works on every flute: you read the same `S R G`, and your flute produces the right pitches for its key. (The full 12 notes, including the sharps and flats, come in [L16](L16-shuddha-ma-and-half-holing.md) and [L25](L25-komal-swaras-and-12-notes.md).)
 
@@ -74,17 +74,17 @@ Play the drone and play Sa on the flute. Then ask a friend or family member to p
 
 ### Step 2: Hum Sa (PIT-05), 3 min
 
-1. Start the C drone. Listen for 20 seconds.
+1. Start the app's tanpura with your flute's Sa selected. Listen for 20 seconds.
 2. Hum softly ("mmm") on the drone's lowest steady pitch. Slide your voice slowly up and down until the hum "merges" with the drone and the sound becomes smooth instead of rough or wavy.
 3. That merged pitch is Sa. Hum it for 10 seconds, stop, then find it again.
 
-**Voice note:** your voice may sit an octave (or two) below the flute's C5. That is completely fine. Sa in any octave is still Sa. Men in particular usually sing Sa an octave or two below the flute.
+**Voice note:** your voice may sit an octave (or two) below your flute's Sa. That is completely fine. Sa in any octave is still Sa.
 
 **Looking after your voice (Recommendation):** in this curriculum you sing every day for ear
 training, not for performance, so keep it gentle:
 
 - Sing softly, at a speaking-level volume, in a comfortable part of your range. If the drone's
-  C feels high or low, sing Sa in whichever octave is easy.
+  Sa feels high or low, sing it in whichever octave is easy.
 - Never push for high notes. If a note strains, sing it an octave lower. The ear exercise
   works just as well.
 - Drink water during practice. Keep singing blocks to a few minutes at a time.
@@ -97,7 +97,7 @@ With the drone on, sing slowly, one note per second:
 
 `S R G m P D N S'` then back `S' N D P m G R S`
 
-Don't worry about being perfectly in tune yet. Then check one note with a tuner app on your voice: Sa should read C (any octave).
+Don't worry about being perfectly in tune yet. Then check one note with a tuner app on your voice: it should match the drone's Sa (any octave).
 
 ### Step 4: Connect to the flute
 
@@ -106,7 +106,7 @@ Play Sa (`XXX OOO`), then sing Sa. Then sing Sa first and play it after. The goa
 ## 5. Diagrams
 
 ```
- Pitch ladder (on your flute, Sa = C)
+ Pitch ladder (worked example: Sa = C; your sargam is relative)
 
  higher ^   S'  (taar Sa)     C6
         |   N                 B5
@@ -115,7 +115,7 @@ Play Sa (`XXX OOO`), then sing Sa. Then sing Sa first and play it after. The goa
         |   M / m             F#5 / F5   (tivra / shuddha Ma)
         |   G                 E5
         |   R                 D5
-        |   S   (madhya Sa)   C5  <- your flute: XXX OOO
+        |   S   (madhya Sa)   your flute's Sa  <- XXX OOO
         |  .N                 B4
         |  .D                 A4
  lower  |  .P  (lowest note)  G4  <- all holes closed
@@ -127,7 +127,7 @@ Play Sa (`XXX OOO`), then sing Sa. Then sing Sa first and play it after. The goa
 
 - [R-T03](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) Raag Hindustani: read "The Notes". It is written for absolute beginners and shows Indian and Western names side by side.
 - [R-V18](../02-RESOURCE-LIBRARY.md#32-single-technique-demonstrations) (matching Sa with a tanpura, Hindi): watch how the player listens for the moment Sa merges with the drone.
-- Listen: play the C drone for 2 minutes with your eyes closed. Notice it has a low Sa, a Pa and a higher Sa inside it. Listen for the different layers.
+- Listen: play the tanpura set to your Sa for 2 minutes with your eyes closed. Notice it has a low Sa, a Pa and a higher Sa inside it. Listen for the different layers.
 
 ## 7. Guided practice (Days 1-10, 6-8 min daily, can be in block E)
 
@@ -146,7 +146,7 @@ Play Sa (`XXX OOO`), then sing Sa. Then sing Sa first and play it after. The goa
 
 | Mistake | How you notice | Fix |
 |---|---|---|
-| Thinking "Sa = C always" | Confusion with other flutes and singers | Sa is home, wherever it is placed. Your flute's Sa happens to be C |
+| Thinking "Sa = C always" | Confusion with other flutes and singers | Sa is home, wherever it is placed. C is only this page's pitch example |
 | Singing too loud | Pitch wobbles; you can't hear the drone | Hum softly; the drone should be louder than you |
 | Expecting your voice to match the flute's octave | Strain singing high | Sing Sa in your comfortable octave |
 | Mixing up mandra and taar marks | Notation errors | Dot **before** = lower; apostrophe **after** = upper |
@@ -159,7 +159,7 @@ Ear problems: [TS-10](../troubleshooting/TS-10-ear-and-memory.md).
 2. What is the full name of Pa?
 3. How many times faster does taar Sa vibrate than madhya Sa?
 4. Write the mandra Ni and the taar Re in this curriculum's notation.
-5. On your flute Sa = C. What letter is Ga? What is Dha?
+5. In the worked example Sa = C. What letter is Ga? What is Dha?
 6. A singer uses Sa = D. What letter is their Pa?
 
 <details markdown="1">

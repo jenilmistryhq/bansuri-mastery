@@ -89,6 +89,42 @@ const MAKE = {
     if (go) { const after = go.parentElement; go.classList.add("toolstart"); echo.querySelector(".lv-row").after(go); after.classList.add("toolafter"); }
     return () => bench.destroy();
   },
+  async breath(host) {
+    const { breathTimer } = await import("../tools/breathtimer.js");
+    const tool = breathTimer();
+    host.append(tool.el);
+    return () => tool.destroy();
+  },
+  async scale(host) {
+    const { scalePractice } = await import("../tools/scalepractice.js");
+    const tool = scalePractice();
+    host.append(tool.el);
+    return () => tool.destroy();
+  },
+  async subdivisions(host) {
+    const { subdivisions: subDiv } = await import("../tools/subdivisions.js");
+    const tool = subDiv();
+    host.append(tool.el);
+    return () => tool.destroy();
+  },
+  async interval(host) {
+    const { intervalTrainer } = await import("../tools/interval.js");
+    const tool = intervalTrainer();
+    host.append(tool.el);
+    return () => tool.destroy();
+  },
+  async raga(host) {
+    const { ragaPractice } = await import("../tools/ragapractice.js");
+    const tool = ragaPractice();
+    host.append(tool.el);
+    return () => tool.destroy();
+  },
+  async compare(host) {
+    const { compareTool } = await import("../tools/compare.js");
+    const tool = compareTool();
+    host.append(tool.el);
+    return () => tool.destroy();
+  },
 };
 
 export async function render(main, { params }) {

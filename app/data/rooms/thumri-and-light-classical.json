@@ -1,0 +1,348 @@
+{
+  "id": "thumri-and-light-classical",
+  "title": "Thumri and Light Classical",
+  "tasks": [
+    {
+      "id": "beyond-pure-classical",
+      "title": "Beyond Pure Classical",
+      "content": [
+        "Not all Indian music follows the strict rules of khayal or dhrupad. A rich world of light classical genres exists alongside them: thumri, dadra, bhajan, and ghazal. These forms offer more emotional freedom, a closer connection to poetry and devotion, and a directness that classical formality sometimes masks.",
+        "Light classical is not 'lesser' music. It demands a different kind of mastery. Where classical demands raga purity and technical command, light classical demands emotional authenticity - the ability to make a listener feel something deeply with simple means.",
+        "Many of the most beloved bansuri recordings are in light classical style. These genres are often the bridge that first draws listeners into the world of Indian music."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What do light classical genres prioritise over strict raga rules?",
+          "options": [
+            {
+              "text": "Technical speed and complexity",
+              "why": "That is more a khayal value. Light classical prioritises feeling over technique."
+            },
+            {
+              "text": "Emotional expression and authenticity",
+              "right": true,
+              "yes": "Correct. Light classical genres value bhava (emotion) above strict raga grammar."
+            },
+            {
+              "text": "Western harmony",
+              "why": "Light classical remains rooted in Indian melodic traditions, not Western harmony."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Are light classical genres easier than classical?",
+          "options": [
+            {
+              "text": "Yes - they are simpler versions of classical music",
+              "why": "They are different, not simpler. Conveying deep emotion with simple means is its own mastery."
+            },
+            {
+              "text": "No - they require a different kind of mastery focused on emotional depth",
+              "right": true,
+              "yes": "Right. Technical simplicity does not mean artistic simplicity. Great thumri singing is profoundly difficult."
+            },
+            {
+              "text": "They are exactly the same difficulty",
+              "why": "The challenges differ. Classical tests technical command; light classical tests emotional communication."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thumri-art-of-emotion",
+      "title": "Thumri - The Art of Emotion",
+      "content": [
+        "Thumri is the queen of light classical music. The word may come from 'thumakna' (to walk with a dancing gait), reflecting the genre's connection to Kathak dance. It emerged in the courts of Lucknow and Benaras in the 18th-19th centuries.",
+        "The themes of thumri are almost always romantic and devotional - often the love between Radha and Krishna, expressed through longing, playfulness, teasing, and tenderness. The text paints a scene: Krishna playing his flute by the river, Radha waiting in the moonlight, the joy and pain of separation and reunion.",
+        "The key technique of thumri is bol-banao: the art of elaborating the meaning of the text through melody. Each important word is stretched, decorated, repeated with different melodic treatments, and given its full emotional weight. A single word like 'piya' (beloved) might be rendered ten different ways, each revealing a different shade of longing.",
+        "Lucknow (Purab ang) and Benaras (Poorab ang) are the two main thumri gharanas. Lucknow style is more refined and delicate; Benaras style is more intense and powerful."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What is the technique of elaborating a text's meaning through melody called?",
+          "answer": "bol-banao",
+          "accept": ["bol-banao", "bol banao", "bolbanao"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What are the typical themes of thumri?",
+          "options": [
+            {
+              "text": "Heroic tales and battle songs",
+              "why": "Those themes belong to other traditions. Thumri is about love and devotion."
+            },
+            {
+              "text": "Romantic and devotional - often the love between Radha and Krishna",
+              "right": true,
+              "yes": "Correct. Thumri expresses the many moods of love - longing, joy, playfulness, and devotion."
+            },
+            {
+              "text": "Abstract philosophical concepts",
+              "why": "Thumri is emotionally direct, not abstract. It tells stories of love and devotion."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thumri-ragas",
+      "title": "Thumri Ragas",
+      "content": [
+        "Thumri does not use every raga - it favours ragas that naturally lend themselves to emotional expression. The most common thumri ragas are:",
+        "Khamaj - bright, romantic, and versatile. Uses both Ni (shuddha ascending, komal descending). The most popular thumri raga.",
+        "Kafi - warm and longing, with its komal Ga and komal Ni creating a bittersweet mood.",
+        "Bhairavi - intense devotion and surrender. Often used for the final piece of a concert.",
+        "Pilu - playful and sweet, with great freedom to mix notes from related ragas.",
+        "Desh - patriotic and monsoon-associated, with its distinctive dual-Ni treatment.",
+        "In thumri, these ragas are treated with more freedom than in pure classical performance. A thumri singer might borrow a note from a related raga for emotional effect - for instance, touching a shuddha Ga briefly in Kafi to create a moment of brightness. This mixing is called 'mishra' (mixed), and what would be an error in classical performance becomes an expressive tool in thumri."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does 'mishra' mean in the context of thumri?",
+          "options": [
+            {
+              "text": "Mixed - borrowing notes from related ragas for emotional effect",
+              "right": true,
+              "yes": "Correct. Mishra means mixed. Thumri allows this blending that strict classical performance does not."
+            },
+            {
+              "text": "Fast - playing at high speed",
+              "why": "Mishra means mixed, referring to the mixing of notes from different ragas."
+            },
+            {
+              "text": "Sacred - only for temple performance",
+              "why": "Mishra simply means mixed. It describes the freedom to blend raga elements."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which raga is NOT commonly used for thumri?",
+          "options": [
+            {
+              "text": "Khamaj",
+              "why": "Khamaj is the most popular thumri raga."
+            },
+            {
+              "text": "Todi",
+              "right": true,
+              "yes": "Correct. Todi is a serious, austere raga suited to classical performance, not the emotional world of thumri."
+            },
+            {
+              "text": "Bhairavi",
+              "why": "Bhairavi is very commonly used in thumri, especially for concluding pieces."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thumri-taals",
+      "title": "Thumri Taals",
+      "content": [
+        "Thumri favours lighter, simpler taals that keep the focus on melody and emotion rather than complex rhythmic interplay.",
+        "Dadra taal (6 beats, grouped 3+3) is the most common choice. Its gentle, lilting rhythm creates a natural sway - like a boat rocking gently on a river. Clap on beat 1, wave on beat 4.",
+        "Keherwa taal (8 beats, grouped 4+4) is the other popular option. Its steady, dance-like pulse provides a comfortable framework for melodic elaboration. Clap on beat 1, wave on beat 5.",
+        "These simpler rhythmic frameworks serve the music well. In khayal, complex taals like Ektaal (12 beats) or Jhaptaal (10 beats) create intricate rhythmic puzzles. In thumri, the rhythm should feel natural and unforced - a gentle heartbeat that the melody rides upon.",
+        "The tempo is usually medium - not too slow (that would drift into vilambit khayal territory) and not too fast (speed would sacrifice the emotional nuance that is thumri's purpose)."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which taal is most commonly associated with thumri?",
+          "options": [
+            {
+              "text": "Teentaal (16 beats)",
+              "why": "Teentaal is the main khayal taal. Thumri uses lighter taals like Dadra."
+            },
+            {
+              "text": "Dadra (6 beats)",
+              "right": true,
+              "yes": "Correct. Dadra's gentle 3+3 rhythm is the natural home of thumri."
+            },
+            {
+              "text": "Ektaal (12 beats)",
+              "why": "Ektaal is used for vilambit khayal. Thumri needs simpler, lighter rhythms."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many beats does Dadra taal have?",
+          "answer": "6",
+          "accept": ["6", "six"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "dadra-lighter-companion",
+      "title": "Dadra - The Lighter Companion",
+      "content": [
+        "Dadra is a genre as well as a taal. As a genre, it is lighter and more playful than thumri - a musical smile where thumri might be a sigh.",
+        "In concert, a dadra is often performed after a thumri as a contrast and conclusion. Where the thumri might have been slow, intense, and deeply emotional, the dadra lifts the mood with a simpler, catchier melody and a faster, more buoyant rhythm.",
+        "Dadra draws from folk music traditions more directly than thumri. Its melodies are often simple enough to sing along with, and its appeal is immediate and universal. Many popular melodies in Indian cinema - especially from the golden era of the 1950s-60s - draw from the dadra tradition.",
+        "For a bansuri player, dadra is a wonderful genre for connecting with an audience. Its directness and charm make it accessible even to listeners unfamiliar with classical music."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does dadra differ from thumri?",
+          "options": [
+            {
+              "text": "Dadra is lighter, more playful, and closer to folk music",
+              "right": true,
+              "yes": "Correct. Dadra is thumri's cheerful companion - simpler, catchier, and more directly appealing."
+            },
+            {
+              "text": "Dadra is more serious and austere",
+              "why": "That would describe dhrupad. Dadra is lighter and more playful than thumri."
+            },
+            {
+              "text": "Dadra uses complex rhythmic patterns",
+              "why": "Dadra is simpler than thumri, not more complex. Its charm is in its directness."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the dadra genre named after?",
+          "options": [
+            {
+              "text": "A region in India",
+              "why": "Dadra is named after the taal (rhythm cycle) it uses."
+            },
+            {
+              "text": "The Dadra taal (6-beat rhythm cycle) it uses",
+              "right": true,
+              "yes": "Right. The genre takes its name from the 6-beat taal that defines its rhythmic character."
+            },
+            {
+              "text": "A famous musician",
+              "why": "Dadra is named after its taal, not a person."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bhajan-music-as-prayer",
+      "title": "Bhajan - Music as Prayer",
+      "content": [
+        "Bhajan is the devotional song tradition of India. The word comes from 'bhaj' (to worship, to adore). These are songs of prayer - addressed to deities, expressing devotion, surrender, gratitude, and spiritual longing.",
+        "The great bhajan poets include Meera Bai (devotion to Krishna, 16th century), Kabir (mystical poetry transcending Hindu-Muslim boundaries, 15th century), Surdas (songs of Krishna's childhood), and Tulsidas (devotion to Rama). Their verses have been set to music in countless ragas over the centuries.",
+        "Bhajans use various ragas, but Bhairavi, Khamaj, and Yaman are favourites. The taals are simple - Keherwa and Dadra are most common. The emphasis is entirely on devotion rather than technical display. A bhajan that shows off the singer's skill has missed the point.",
+        "On the bansuri, bhajans hold special significance. Krishna is traditionally depicted playing the flute, and the bansuri is called 'Murli' or 'Venu' - Krishna's own instrument. When you play a bhajan on the bansuri, you are playing the instrument of the deity the bhajan addresses."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is a bhajan?",
+          "options": [
+            {
+              "text": "A fast rhythmic composition for dance",
+              "why": "That would describe a tukda or tihai. Bhajans are devotional songs."
+            },
+            {
+              "text": "A devotional song expressing worship and spiritual longing",
+              "right": true,
+              "yes": "Correct. Bhajans are prayers in musical form - songs of devotion and surrender."
+            },
+            {
+              "text": "A type of rhythmic exercise",
+              "why": "Bhajans are devotional songs, not technical exercises."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is the bansuri particularly suited to bhajans?",
+          "options": [
+            {
+              "text": "Because it is the loudest instrument",
+              "why": "Volume is not the reason. The connection is to Krishna."
+            },
+            {
+              "text": "Because Krishna is traditionally depicted playing the flute - the bansuri is his instrument",
+              "right": true,
+              "yes": "Right. The bansuri is Krishna's instrument. Playing a bhajan on it carries a deep symbolic resonance."
+            },
+            {
+              "text": "Because bhajans require complex fingering",
+              "why": "Bhajans are typically simple. The bansuri's connection is to Krishna, the divine flute player."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ghazal-poetry-and-music",
+      "title": "Ghazal - Poetry and Music",
+      "content": [
+        "The ghazal is a poetic form that originated in Arabic literature and flourished in Persian and Urdu traditions. Each ghazal consists of a series of couplets called 'sher', linked by a strict rhyme and metre scheme. The form demands both literary craft and emotional depth.",
+        "Musically, ghazals are set in a light classical style. The ragas are simple and accessible - Khamaj, Kafi, Bhairavi, and Yaman are favourites. The rhythm is gentle, usually in Keherwa or Dadra. Everything serves the poetry - the music must enhance the meaning of the words without overwhelming them.",
+        "Artists like Mehdi Hassan (the 'King of Ghazal'), Jagjit Singh, and Begum Akhtar elevated the ghazal to high art. Their recordings demonstrate how music and poetry can merge so completely that neither can be imagined without the other.",
+        "On the bansuri, ghazal-style playing means melody that tells a story. Each phrase has a beginning, a middle, and an end - like a line of poetry. The spaces between phrases matter as much as the phrases themselves, like the silence between verses."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What two art forms does the ghazal combine?",
+          "options": [
+            {
+              "text": "Dance and percussion",
+              "why": "Ghazal combines poetry and music, not dance."
+            },
+            {
+              "text": "Poetry and music",
+              "right": true,
+              "yes": "Correct. The ghazal is poetry set to music, with both elements given equal importance."
+            },
+            {
+              "text": "Painting and sculpture",
+              "why": "Ghazal is a musical-poetic form, not a visual art."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is each couplet in a ghazal called?",
+          "answer": "sher",
+          "accept": ["sher", "she'r", "shair"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "light-classical-on-bansuri",
+      "title": "Light Classical on Bansuri",
+      "content": [
+        "For the bansuri player, light classical genres teach skills that pure classical performance sometimes overlooks:",
+        "1. Emotional phrasing - making a melody tell a story. Each phrase should have a feeling, not just correct notes.",
+        "2. Breathing with the song - taking breaths at poetically meaningful moments, so the pauses enhance the music rather than interrupting it.",
+        "3. Simplicity - saying more with fewer notes. A single, perfectly placed Sa can move a listener more than a hundred-note taan.",
+        "4. Audience connection - playing music that people feel immediately, without needing years of theoretical training to appreciate.",
+        "Many of the most beloved bansuri recordings are light classical. Hariprasad Chaurasia's film music and crossover recordings, Pannalal Ghosh's thumri renditions, and countless bhajan recordings demonstrate that the bansuri's voice is naturally suited to emotional, accessible music.",
+        "Play a simple phrase in Raga Kafi - Sa Re komal-Ga Ma Pa Ma komal-Ga Re Sa. Feel the warmth of the komal Ga, the gentle rise and fall. This is the heart of light classical playing: beauty in simplicity."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 5, 7, 5, 3, 2, 0],
+          "prompt": "Play a simple Kafi phrase: Sa Re ga Ma Pa Ma ga Re Sa - feel the warmth",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will listen to thumri and bhajan recordings on bansuri to hear light classical style in action."
+        }
+      ]
+    }
+  ]
+}

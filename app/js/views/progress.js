@@ -14,6 +14,7 @@ import { ICON_PATHS } from "../util.js";
 import { xpState, levelOf } from "../xp.js";
 import { ring } from "../ui.js";
 import { weakSpots, weekSummary } from "./today-cards.js";
+import { placementTest } from "../placement.js";
 
 const fmtDateLong = d => parseDate(d).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
 
@@ -54,8 +55,11 @@ export function sharePayload(name, forTeacher) {
   return out;
 }
 
-function heatmap() {
+function heatmap(showEmptyAction = true) {
   const dates = practiceDates();
+  if (![...dates.values()].some(minutes => minutes > 0)) return showEmptyAction ? h("div", { class: "heat-empty emptystate" },
+    h("p", null, "Your practice activity will appear here after your first session."),
+    h("a", { class: "btn", href: "#/course" }, "Start with a room")) : null;
   const t = today();
   // 26 columns of weeks; each column runs Sunday to Saturday, ending with this week.
   const start = addDays(t, -(7 * 25 + parseDate(t).getDay()));
@@ -173,9 +177,10 @@ function byEarCard(s) {
   const echoBest = Math.max(0, ...Object.values((s.live || {}).echo || {}).map(e => e.best || 0));
   const ear = Object.values(s.ear || {}).reduce((a, e) => ({ right: a.right + e.right, total: a.total + e.total }), { right: 0, total: 0 });
   return h("section", { class: "card headline" }, h("h3", null, "By ear"),
-    h("div", { class: "bigstats" },
-      h("div", { class: "stat" }, h("b", null, echoBest ? String(echoBest) : "-"), h("span", null, "notes in your longest phrase played back")),
-      ear.total ? h("div", { class: "stat" }, h("b", null, Math.round(ear.right / ear.total * 100) + "%"), h("span", null, "ear quiz right (" + ear.total + " answers)")) : null));
+    echoBest || ear.total ? h("div", { class: "bigstats" },
+      echoBest ? h("div", { class: "stat" }, h("b", null, String(echoBest)), h("span", null, "notes in your longest phrase played back")) : null,
+      ear.total ? h("div", { class: "stat" }, h("b", null, Math.round(ear.right / ear.total * 100) + "%"), h("span", null, "ear quiz right (" + ear.total + " answers)")) : null)
+      : h("p", { class: "emptystate" }, "Your playback and ear quiz results will appear here when you try those activities."));
 }
 
 // More charts (#/me/charts, redesign W69): the charts Progress leaves out, one per card: minutes per
@@ -250,7 +255,7 @@ function milestonePath() {
     const st = milestoneState(m.id).status;
     const cls = st === "passed" ? "done" : m === next ? "next" : "ahead";
     return h("li", { class: cls }, h("a", { href: "#/milestone/" + m.id, title: m.title }, h("span", { class: "msdot" }, m.id),
-      h("span", { class: "small" }, st === "passed" ? "passed" : m === next ? (m.day <= cur ? "ready" : "in " + (m.day - cur) + " d") : "Day " + m.day)));
+      h("span", { class: "small" }, st === "passed" ? "passed" : m === next ? (m.day <= cur ? "ready" : "up next") : "to come")));
   }));
 }
 
@@ -259,29 +264,90 @@ export async function render(main, { params, anchor } = {}) {
   if ((params && params[0] === "level") || anchor === "level" || anchor === "badges") { levelView(main); return; }
   if (params && params[0] === "charts") { chartsView(main); return; }
   // Teacher reviews moved to Me > Teacher > Feedback.
-  if (anchor === "reviews") { location.replace("#/me/teacher/feedback"); return; }
+  if (anchor === "reviews") { location.replace("#/teacher/feedback"); return; }
   const s = getState(), tt = totals(), st = streaks();
-  const page = h("div", { class: "page" });
+  const page = h("div", { class: "page profile-page" });
   const stat = (v, l) => h("div", { class: "stat" }, h("b", null, String(v)), h("span", null, l));
-  page.append(h("section", { class: "hero" }, h("h1", null, "Your progress"),
-    s.startedAt ? h("p", { class: "muted" }, "Learning since " + fmtDateLong(s.startedAt) + ": Day " + current() + " of the course.") : h("p", { class: "muted" }, "Start Day 0 to begin tracking.")));
+  const displayName = h("input", { class: "input profile-name", maxlength: "40", value: s.prefs.displayName || "", placeholder: "Add your name", "aria-label": "Your profile name" });
+  const saveName = h("button", { type: "button", class: "btn small" }, s.prefs.displayName ? "Save name" : "Add name");
+  saveName.addEventListener("click", () => {
+    const value = displayName.value.trim().slice(0, 40);
+    update(st => { st.prefs.displayName = value; });
+    profileTitle.textContent = value || "Bansuri learner";
+    saveName.textContent = value ? "Saved" : "Add name";
+  });
+  const lvProfile = levelOf(xpState().total), earnedProfile = rules().filter(r => s.badges[r.id]);
+  const profileTitle = h("h1", null, s.prefs.displayName || "Bansuri learner");
+  let tester = null;
+  const testHost = h("div", { class: "assessment-host", hidden: true });
+  const testBtn = h("button", { type: "button", class: "btn" }, s.prefs.assessment ? "Retake skill assessment" : "Take skill assessment");
+  testBtn.addEventListener("click", () => {
+    if (tester) { tester.destroy(); tester = null; testHost.hidden = true; testHost.replaceChildren(); testBtn.textContent = "Retake skill assessment"; return; }
+    testHost.hidden = false; testBtn.textContent = "Close assessment";
+    tester = placementTest({ onResult: (phase, profile) => {
+      update(st => { st.prefs.assessment = profile; st.prefs.recommendedPhase = phase; st.prefs.assessmentCompleted = true; });
+      testHost.append(h("p", { class: "small muted" }, "Updated " + fmtDateLong(profile.at) + ". Your dashboard will use this new snapshot."));
+      testBtn.textContent = "Assessment updated";
+    } });
+    testHost.replaceChildren(tester.el);
+  });
+  page.append(h("section", { class: "profilehead card" },
+    h("div", { class: "profileidentity" }, h("span", { class: "profileavatar", "aria-hidden": "true" }, icon("me")),
+      h("div", null, h("span", { class: "eyebrow" }, "YOUR BANSURI PROFILE"), profileTitle,
+        h("p", { class: "small muted" }, s.startedAt ? "Learning since " + fmtDateLong(s.startedAt) : "Your learning journey starts with your first flute session.")),
+      h("span", { class: "levelpill" }, "Level " + lvProfile.level + " · " + lvProfile.name)),
+    h("div", { class: "profile-edit" }, displayName, saveName, testBtn),
+    h("div", { class: "profile-quickstats" }, stat(tt.practiceDays, "practice sessions"), stat(fmtMinutes(tt.minutes), "practice time"), stat(earnedProfile.length, "badges earned"))));
+  // Navigation cards for Me sub-views (no sidebar tabs)
+  const meCards = h("div", { class: "mecards" });
+  meCards.append(h("a", { class: "teachercard teachercard-journal", href: "#/me/journal" },
+    h("span", { class: "teachercard-icon" }, icon("journal")),
+    h("b", null, "Journal"), h("span", { class: "small muted" }, "Practice log and recordings")));
+  meCards.append(h("a", { class: "teachercard teachercard-flute", href: "#/me/flute" },
+    h("span", { class: "teachercard-icon" }, icon("hand")),
+    h("b", null, "Your flute"), h("span", { class: "small muted" }, "Setup, tuning and checks")));
+  meCards.append(h("a", { class: "teachercard teachercard-settings", href: "#/me/settings" },
+    h("span", { class: "teachercard-icon" }, icon("settings")),
+    h("b", null, "Settings"), h("span", { class: "small muted" }, "Voice, display, practice and data")));
+  page.append(meCards);
+
+  const earPractice = Object.values(s.ear).reduce((a, e) => ({ right: a.right + e.right, total: a.total + e.total }), { right: 0, total: 0 });
+  const skillRows = [
+    ["Tone", Math.min(100, Math.round(Math.max(0, ...Object.values(s.live.holds).flat().map(x => x.s)) / 12 * 100)), "Longest steady note"],
+    ["Notes", s.live.plays.length ? Math.round(s.live.plays.slice(-5).reduce((a, x) => a + x.ok, 0) / Math.max(1, s.live.plays.slice(-5).reduce((a, x) => a + x.n, 0)) * 100) : null, "Recent play-along accuracy"],
+    ["Rhythm", s.live.taps.length ? Math.round(s.live.taps.slice(-5).reduce((a, x) => a + x.within, 0) / Math.min(5, s.live.taps.length) * 100) : null, "Recent taps on the beat"],
+    ["Ear", earPractice.total ? earPractice.right / earPractice.total * 100 : null, "Ear quiz accuracy"],
+  ];
+  page.append(h("div", { class: "profileoverview" },
+    h("section", { class: "card profileactivity" }, h("div", { class: "row between" }, h("h2", null, "Practice activity"), h("a", { class: "small", href: "#/me/journal" }, "Open journal")),
+      heatmap(), h("p", { class: "small muted" }, "Your practice activity over the last six months.")),
+    h("section", { class: "card profilematrix" }, h("h2", null, "Skill snapshot"), h("p", { class: "small muted" }, "Measured from your recent app practice; more practice fills in the picture."),
+      s.prefs.assessment ? h("div", { class: "assessment-saved" }, h("b", null, "Latest baseline · " + fmtDateLong(s.prefs.assessment.at)),
+        h("div", { class: "assessment-chips" }, Object.entries(s.prefs.assessment.skills || {}).map(([key, v]) => h("span", { class: "chip " + (v.passed === v.total ? "good" : "mutedc") }, key + " " + v.passed + "/" + v.total)))) : null,
+      h("div", { class: "matrixrows" }, skillRows.map(([label, value, detail]) => h("div", { class: "matrixrow" }, h("div", { class: "row between" }, h("b", null, label), h("span", { class: "small muted" }, value === null ? "No data yet" : Math.round(value) + "%")),
+        h("span", { class: "matrixbar" }, h("i", { style: { width: (value === null ? 0 : Math.max(3, value)) + "%" } })), h("span", { class: "small muted" }, detail))))),
+    h("section", { class: "card profileachievements" }, h("div", { class: "row between" }, h("h2", null, "Achievements"), h("a", { class: "small", href: "#/me/level" }, "All badges")),
+      h("p", { class: "small muted" }, tt.msPassed + " milestones passed · " + earnedProfile.length + " badges earned"), milestonePath()),
+    h("section", { class: "card profile-rooms" }, h("span", { class: "eyebrow" }, "KEEP EXPLORING"), h("h2", null, "Rooms and labs"),
+      h("p", { class: "small muted" }, "Pick a musical goal, play through it, then keep practising the skill in a lab."),
+      h("div", { class: "row" }, h("a", { class: "btn", href: "#/course" }, "Browse learning paths"), h("a", { class: "btn ghost", href: "#/skills" }, "Open labs")))));
+  page.append(testHost);
   const q = (n, title) => h("h2", { class: "grouphead dashq" }, h("span", { class: "dashn", "aria-hidden": "true" }, String(n)), title);
 
   // 1. Am I improving? (what the microphone measured, over time), and the Day 0 time capsule beside a
   // recent recording.
-  page.append(q(1, "Am I improving?"), improving(s), h("div", { class: "row" }, h("a", { class: "btn", href: "#/me/journal/capsule" }, icon("play"), " Day 0 vs today")));
+  page.append(q(1, "Am I improving?"), improving(s), h("div", { class: "row" }, h("a", { class: "btn", href: "#/me/journal/capsule" }, icon("play"), " First recording vs today")));
 
   // 2. Am I practising regularly?
-  const lastWeek = weekSummary();
+  const lastWeek = weekSummary(), hasPracticeHistory = [...practiceDates().values()].some(minutes => minutes > 0);
   page.append(q(2, "Am I practising regularly?"), lastWeek || "", h("div", { class: "dashgrid" },
     h("section", { class: "card headline" },
       h("div", { class: "bigstats" },
         stat(st.current + (st.current === 1 ? " day" : " days"), "current streak" + (st.restThisWeek ? " (rest day used)" : "")),
         stat(tt.practiceDays, "days practised"),
         stat(fmtMinutes(tt.minutes), "total practice")),
-      h("p", { class: "small muted" }, "Best streak " + st.best + " days. One missed day a week does not break a streak."),
-      heatmap(), h("p", { class: "small muted" }, "Darker = longer practice (under 20, under 45, 45+ minutes).")),
-    h("section", { class: "card" }, h("h3", null, "Minutes per week"), weeksChart(weeklyMinutes(practiceDates(), today(), 12)))),
+      h("p", { class: "small muted" }, "Best streak " + st.best + " days. One missed day a week does not break a streak.")),
+    h("section", { class: "card" }, h("h3", null, "Minutes per week"), hasPracticeHistory ? weeksChart(weeklyMinutes(practiceDates(), today(), 12)) : h("p", { class: "emptystate" }, "Weekly practice totals will appear after your first session."))),
     // The other charts (by ear, play back, play along, tap the beat, XP) open from one row (W69).
     h("section", { class: "card" }, h("div", { class: "hublist" },
       meRow("#/me/charts", "More charts", ["By ear", "Play back", "Play along", "Tap the beat", getSettings().focus ? null : "XP"]))));
@@ -293,13 +359,13 @@ export async function render(main, { params, anchor } = {}) {
   page.append(q(3, "Where am I in the course?"), h("section", { class: "card coursecard" },
     // The phase opens Course > Path, where the course map lives.
     ph ? h("a", { class: "row coursehead courselink", href: "#/course" }, ring(phDays.length ? phDone / phDays.length * 100 : 0, undefined, { size: 64, stroke: 7 }),
-      h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, "Phase " + ph.id + ": " + ph.title), h("span", { class: "small muted" }, phDone + " of " + phDays.length + " days" + (nextMs ? " - next milestone " + nextMs.id + " " + nextMs.title + (nextMs.day > current() ? " in " + (nextMs.day - current()) + " days" : ", ready now") : ""))),
+      h("div", { class: "stack", style: { gap: "2px" } }, h("b", null, "Phase " + ph.id + ": " + ph.title), h("span", { class: "small muted" }, phDone + " of " + phDays.length + " learning activities" + (nextMs ? " · next checkpoint " + nextMs.id + " " + nextMs.title + (nextMs.day > current() ? " ahead" : ", ready now") : ""))),
       h("span", { class: "chev", "aria-hidden": "true" }, ">")) : null,
     milestonePath(), h("p", { class: "small muted" }, tt.msPassed + " of " + plan.milestones.length + " milestones passed.")));
 
   // 4. What should I work on?
   const weak = weakSpots();
-  page.append(q(4, "What should I work on?"), weak || h("section", { class: "card" }, h("p", { class: "emptystate" }, "Nothing stands out yet. After a few days with the microphone, your weakest notes and pieces show here.")));
+  page.append(q(4, "What should I work on?"), weak || h("section", { class: "card" }, h("p", { class: "emptystate" }, "Nothing stands out yet. As you use the microphone in lessons and labs, your developing skills will show here.")));
 
   // What the microphone measured: long tones, play back, play-along, tapping.
   const holds = holdSummary(), L = s.live;
@@ -335,6 +401,7 @@ export async function render(main, { params, anchor } = {}) {
   page.append(h("section", { class: "card" }, h("div", { class: "hublist" },
     meRow("#/me/flute", "Your flute", [/#/.test(west) ? west : "{x} natural".replace("{x}", west), "Sa {x}".replace("{x}", west + set.saOct)]))));
   main.append(page);
+  return () => { if (tester) tester.destroy(); };
 }
 
 // A row that opens a screen: its name, what it shows now (each part its own phrase), a chevron.

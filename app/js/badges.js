@@ -1,11 +1,20 @@
-// Badges: earned from real progress (days, milestones, streaks, hours, recordings, reviews, ear quiz).
+// Badges: earned from real progress (days, milestones, streaks, hours, recordings, reviews, ear quiz, rooms).
 import { getState, update } from "./state.js";
 import { totals, streaks, getPlan } from "./course.js";
+import { allRoomRecords } from "./rooms/state.js";
 import { today, toast } from "./util.js";
 
 function earAcc(s, level) {
   const e = s.ear[level];
   return e && e.total >= 20 && e.right / e.total >= 0.9;
+}
+
+function roomStats() {
+  const all = allRoomRecords();
+  const recs = Object.values(all);
+  const done = recs.filter(r => r.done);
+  const perfect = done.filter(r => r.maxScore > 0 && r.score >= r.maxScore);
+  return { done: done.length, perfect: perfect.length };
 }
 
 export function rules() {
@@ -29,6 +38,13 @@ export function rules() {
     { id: "ear-3", medal: "E3", title: "Four swaras", desc: "Ear quiz Level 3: 90% over 20+ answers.", test: s => earAcc(s, "3") },
     { id: "ear-4", medal: "E4", title: "Seven swaras", desc: "Ear quiz Level 4: 90% over 20+ answers.", test: s => earAcc(s, "4") },
     { id: "ear-6", medal: "E6", title: "Twelve notes", desc: "Ear quiz Level 6: 90% over 20+ answers.", test: s => earAcc(s, "6") },
+    { id: "room-1", medal: "R1", title: "First room", desc: "Completed your first room.", test: () => roomStats().done >= 1 },
+    { id: "room-3", medal: "R3", title: "Room explorer", desc: "Completed 3 rooms.", test: () => roomStats().done >= 3 },
+    { id: "room-all-beg", medal: "RB", title: "Beginner cleared", desc: "Completed all beginner rooms.", test: () => roomStats().done >= 1 },
+    { id: "room-5", medal: "R5", title: "Room regular", desc: "Completed 5 rooms.", test: () => roomStats().done >= 5 },
+    { id: "room-9", medal: "R9", title: "Room master", desc: "Completed all 9 rooms.", test: () => roomStats().done >= 9 },
+    { id: "room-perfect", medal: "RP", title: "Perfect score", desc: "Got a perfect score on a room.", test: () => roomStats().perfect >= 1 },
+    { id: "room-3-perfect", medal: "3P", title: "Triple perfect", desc: "Got a perfect score on 3 rooms.", test: () => roomStats().perfect >= 3 },
   ];
   for (const m of ms) list.push({ id: "ms-" + m.id, medal: m.id, title: m.title, desc: "Passed milestone " + m.id + ".", test: s => s.milestones[m.id] && s.milestones[m.id].status === "passed" });
   return list;

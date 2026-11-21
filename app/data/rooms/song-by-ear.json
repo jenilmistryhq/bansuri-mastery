@@ -1,0 +1,216 @@
+{
+  "id": "song-by-ear",
+  "title": "Learning a Song by Ear",
+  "tasks": [
+    {
+      "id": "why-by-ear",
+      "title": "Why Learn by Ear?",
+      "content": ["In the Indian classical tradition, music is passed from teacher to student by listening and imitating, not by reading notation. This oral tradition (guru-shishya parampara) has carried ragas and compositions across centuries.", "Learning by ear develops:\n- Deep listening skills that notation cannot teach\n- Musical memory that holds phrases and their feeling, not just note names\n- Understanding of the mood and expression of a melody, not just the notes\n- The ability to pick up music anywhere - from a recording, a concert, another musician", "Even when notation exists, learning by ear first gives you a more natural, musical result. Notation tells you what to play. Listening tells you how it should feel. Advanced musicians develop what is called antar naad - inner hearing. They can hear the entire phrase in their mind before their fingers move. This inner ear is what separates a musician who reads notes from one who truly knows the music."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the traditional method of learning Indian classical music?",
+          "options": [
+            {
+              "text": "Reading notation from books",
+              "why": "Notation is a relatively recent addition. The tradition is oral."
+            },
+            {
+              "text": "Listening to and imitating the teacher",
+              "right": true,
+              "yes": "Correct. The guru-shishya parampara is based on listening and imitation."
+            },
+            {
+              "text": "Self-study from recordings only",
+              "why": "While recordings help, the tradition centres on direct teacher-student transmission."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "guru-shishya",
+      "title": "The Guru-Shishya Tradition",
+      "content": ["For centuries, Indian music had no written notation at all. Everything - every raga, every composition, every ornament - was transmitted orally from guru (teacher) to shishya (disciple). The student would live with the guru in a gurukul (residential school), sometimes for 10 or 20 years, absorbing music through constant listening and imitation.", "The principle was simple: suno aur seekho - listen and learn. The guru would sing or play a phrase. The student would repeat it. Over thousands of repetitions across months and years, the music entered the student's being at a level deeper than intellectual understanding. The student did not just learn the notes - they absorbed the feeling, the timing, the weight of each note.", "This is why ear training is so central to Indian music. It was not a supplementary skill - it was literally the only way to learn. Even today, the greatest musicians credit their ears, not their eyes, as the source of their art. Hariprasad Chaurasia spent years listening to and imitating his guru Annapurna Devi before she was satisfied.", "Modern tools - recordings, apps, notation - are valuable supplements. But they cannot replace the deep, repeated, attentive listening that the oral tradition demands. When you train your ear, you are participating in a tradition thousands of years old."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is ear training so central to Indian classical music?",
+          "options": [
+            {
+              "text": "Because notation systems are too complicated",
+              "why": "Indian notation systems exist and are not especially complicated. The centrality of ear training comes from the oral tradition itself."
+            },
+            {
+              "text": "Because the oral tradition transmitted everything through listening - it was the only way to learn",
+              "right": true,
+              "yes": "Exactly. For centuries, listening and imitation were the sole method of transmission. Ear training is not supplementary - it is foundational."
+            },
+            {
+              "text": "Because bansuri players cannot read notation while playing",
+              "why": "While this is practically true, the reason goes deeper - the entire tradition is built on oral transmission."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the traditional residential school where a student lives with the guru called?",
+          "answer": "gurukul",
+          "accept": ["gurukul", "guru kul", "gurukula"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "three-step-method",
+      "title": "Listen, Sing, Play",
+      "content": "When you hear a melody you want to learn, follow these three steps:\n\n1. LISTEN - Hear the whole melody 2-3 times without touching your flute. Let it settle in your mind.\n\n2. SING - Hum or sing the melody. If you can sing it accurately, your brain has absorbed the intervals and rhythm. If you cannot sing it, listen again.\n\n3. PLAY - Now pick up your flute and find the notes. Work phrase by phrase, not the whole melody at once.\n\nThe singing step is the key. It bridges your ear and your fingers. Many teachers say: 'If you cannot sing it, you do not know it yet.'",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What should you do BEFORE picking up your flute to learn a new melody?",
+          "options": [
+            {
+              "text": "Start playing along immediately",
+              "why": "Playing immediately leads to guessing. Listen first."
+            },
+            {
+              "text": "Look up the notation",
+              "why": "Notation is a crutch. Try listening first."
+            },
+            {
+              "text": "Listen completely 2-3 times and try to sing it",
+              "right": true,
+              "yes": "Right. If you can sing it, your ear has absorbed it and your fingers will follow."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "picking-out-notes",
+      "title": "Picking Out Notes",
+      "content": ["When you start finding notes on your flute, work in small chunks:\n\n1. Start with just the first phrase (3-5 notes)\n2. Find the first note by trying different fingerings\n3. Ask: does the next note go up or down? By a step or a jump?\n4. Try the next note and check against the original\n5. Repeat until you have the phrase", "Tips:\n- Always play with the drone running. The drone is your anchor - it tells you exactly where Sa is, and every other note is defined by its relationship to Sa. When you hear a note in a melody, compare it mentally to the drone. Is it Sa? Is it the fifth above (Pa)? Is it the bright third (Ga)? The drone makes identification faster and more accurate.\n- Most Indian melodies centre around Sa - try starting there\n- If a note sounds 'almost right', adjust by a half-hole up or down\n- Trust your ear over your fingers - if it does not sound right, it is not right"],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When picking out notes, what is the best approach?",
+          "options": [
+            {
+              "text": "Try to learn the whole melody at once",
+              "why": "Working in small phrases is much more effective than tackling everything at once."
+            },
+            {
+              "text": "Work in small phrases of 3-5 notes",
+              "right": true,
+              "yes": "Exactly. Small chunks are manageable and you can verify each one before moving on."
+            },
+            {
+              "text": "Only learn melodies that start on Sa",
+              "why": "Many melodies start on other notes. The technique works for any starting note."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "play-simple-ascending",
+      "title": "Play a Simple Melody",
+      "content": "Let us try learning a phrase by playing it. This is a common ascending figure that appears in many melodies and bhajans:\n\nSa Re Ga\n\nSimple - but play it musically. Give each note its full value. Let each one ring before moving to the next.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4],
+          "prompt": "Play the ascending phrase: Sa Re Ga",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "play-arch-phrase",
+      "title": "Play an Arch Phrase",
+      "content": "Many melodies have an arch shape - they rise to a peak and come back down. This is one of the most common melodic shapes in all music.\n\nPlay: Sa Pa Ga Re Sa\n\nNotice how the melody jumps up to Pa and then steps back down to Sa. The jump creates interest, and the stepwise descent creates resolution. This shape appears in countless film songs and bhajans.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 7, 4, 2, 0],
+          "prompt": "Play the arch phrase: Sa Pa Ga Re Sa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "recognizing-intervals",
+      "title": "Recognizing Intervals",
+      "content": ["An interval is the distance between two notes. Learning to hear intervals is the core skill for learning by ear.", "The most important intervals to recognise:\n- Sa to Re (whole step) - a small, gentle step up\n- Sa to Ga (two whole steps) - a bright, open jump\n- Sa to Pa (perfect fifth) - strong, stable, like the drone\n- Sa to upper Sa (octave) - the same note, but higher", "When you hear a melody jump, ask: how far did it jump? One step? Two? To Pa? Training this skill makes learning by ear dramatically faster. Use the drone as your constant reference point. Every note in a melody exists in relation to Sa. When you hear an unfamiliar note, do not try to identify it in isolation - hear it against the drone. The drone transforms note identification from guesswork into recognition."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which interval sounds like the drone relationship between Sa and Pa?",
+          "options": [
+            {
+              "text": "Sa to Re",
+              "why": "Sa to Re is a whole step - much smaller than the drone relationship."
+            },
+            {
+              "text": "Sa to Ga",
+              "why": "Sa to Ga is a third - closer but not the drone's interval."
+            },
+            {
+              "text": "Sa to Pa (the perfect fifth)",
+              "right": true,
+              "yes": "Correct. The tanpura drone sounds Sa and Pa together - this strong, stable interval is easy to recognise."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transcribing-by-ear",
+      "title": "Transcribing by Ear",
+      "content": ["Transcription is the practical application of everything in this room: listening to a recording and writing down what notes are being played. It is one of the most powerful exercises for developing your musical ear.", "The process:\n1. Identify the Sa pitch. The drone gives you this - match your Sa to the drone.\n2. Hum along with the melody. Do not touch your flute yet.\n3. Find each note on your bansuri by matching pitch. Work phrase by phrase.\n4. Write down the sargam (Sa Re Ga etc.) as you go.\n5. Play back your transcription and compare with the original. Fix any mismatches.", "Start with simple melodies - bhajans, folk songs, or film songs you know well. Familiar melodies are easier because your memory fills in gaps your ear might miss. Work up to unfamiliar melodies, and eventually to classical phrases - try transcribing a short alap phrase from a recording of a master.", "This single exercise trains your ear, your musical memory, your bansuri technique, and your sargam knowledge simultaneously. Even five minutes of transcription practice daily produces visible improvement within weeks."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 4, 2, 0],
+          "prompt": "Transcribe and play back this phrase: Sa Re Ga Pa Ga Re Sa",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the first step when transcribing a melody from a recording?",
+          "options": [
+            {
+              "text": "Start playing notes on the flute immediately",
+              "why": "Playing immediately leads to guessing. Identify the Sa pitch first so you have your reference point."
+            },
+            {
+              "text": "Identify the Sa pitch from the drone and match it",
+              "right": true,
+              "yes": "Correct. Sa is your anchor. Once you know where Sa is, every other note is defined by its distance from Sa."
+            },
+            {
+              "text": "Look up the song title to find notation online",
+              "why": "That defeats the purpose. The goal is to train your ear, not to find shortcuts."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-exercise",
+      "title": "Ear Training Challenge",
+      "content": "Put your ear to the test. Can you recognise the five notes from Sa to Pa?\n\nThis is the same skill you use when learning a melody by ear - hearing a note and knowing which one it is. The more accurately you can identify notes, the faster you can learn any melody.\n\nListen to each note and name it.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7],
+          "count": 8,
+          "pass": 6,
+          "prompt": "Identify each note: Sa, Re, Ga, Ma, or Pa",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

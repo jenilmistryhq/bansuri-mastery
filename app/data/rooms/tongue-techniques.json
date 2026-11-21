@@ -1,0 +1,308 @@
+{
+  "id": "tongue-techniques",
+  "title": "Tongue Techniques",
+  "tasks": [
+    {
+      "id": "why-tonguing-matters",
+      "title": "Why Tongue Technique Matters",
+      "content": ["On the bansuri, notes can be separated in two ways: by tonguing (using the tongue to interrupt the air stream) or by fingering alone (legato, where the air flows continuously while fingers change position).", "Without tonguing, fast passages become blurry and indistinct. The notes smear into each other, and the listener cannot tell where one ends and the next begins. With good tonguing, each note sounds crisp and defined even at high speed.", "Tonguing is the bansuri player's tool for articulation - the equivalent of consonants in speech. Just as the words 'ta,' 'da,' and 'na' have different qualities because of how the tongue starts each sound, different tonguing techniques give bansuri notes different characters.", "In this room, you will learn single tonguing, double tonguing, triple tonguing, and the advanced gitkiri (flutter tongue). Each technique has its place in the music, from slow alap to blazing fast taans."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does tonguing do to the air stream on the bansuri?",
+          "options": [
+            {
+              "text": "It makes the air flow faster",
+              "why": "Tonguing does not change air speed. It briefly interrupts the air stream to create a clean note start."
+            },
+            {
+              "text": "It briefly interrupts the air stream to create distinct note beginnings",
+              "right": true,
+              "yes": "Correct. The tongue acts like a valve, briefly stopping and restarting the air to separate notes."
+            },
+            {
+              "text": "It changes the pitch of the note",
+              "why": "Pitch is controlled by fingering and embouchure. Tonguing controls articulation, not pitch."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What happens to fast passages played without any tonguing?",
+          "options": [
+            {
+              "text": "They sound cleaner and more precise",
+              "why": "Without tonguing, fast passages actually become blurry because notes are not cleanly separated."
+            },
+            {
+              "text": "They become blurry and indistinct - notes smear together",
+              "right": true,
+              "yes": "Right. Tonguing provides the clarity that lets each note stand out, even at speed."
+            },
+            {
+              "text": "They sound exactly the same as with tonguing",
+              "why": "There is a clear audible difference. Tongued passages have crisp, defined note beginnings."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "single-tonguing-tu",
+      "title": "Single Tonguing: Tu",
+      "content": ["Single tonguing is the foundation of all bansuri articulation. The syllable 'tu' describes the motion: the tip of your tongue touches the alveolar ridge (the bumpy area just behind your upper front teeth) and releases, creating a clean burst of air that starts the note.", "Think of it like saying the word 'too' into the flute. The tongue acts as a gate: closed, it blocks the air. Opening it releases a crisp attack.", "Practice on Sa first. Play four clean Sa notes, each started with a distinct 'tu.' Each note should begin crisply, not with a breathy slide or a soft fade-in. The difference between a tongued note and an un-tongued note should be obvious.", "Common mistakes: pressing the tongue too hard against the roof of the mouth (creates a harsh, explosive attack) or not pressing firmly enough (the articulation is too soft to hear). Aim for a light, quick touch - like flicking a crumb off a surface."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 4,
+          "cents": 25,
+          "prompt": "Play Sa with a clean 'tu' attack and hold it steady for 4 seconds",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 0, 0, 0],
+          "prompt": "Play four separate Sa notes, each with a clean 'tu' tonguing",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Where does the tongue touch for the 'tu' articulation?",
+          "options": [
+            {
+              "text": "The back of the throat",
+              "why": "The back of the throat is used for 'ku' in double tonguing. 'Tu' uses the front of the mouth."
+            },
+            {
+              "text": "The alveolar ridge - the bumpy area behind the upper front teeth",
+              "right": true,
+              "yes": "Correct. The tongue tip touches this ridge and releases to create the 'tu' articulation."
+            },
+            {
+              "text": "The lower lip",
+              "why": "The lower lip is part of the embouchure. Tonguing happens inside the mouth."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "single-tonguing-scale",
+      "title": "Single Tonguing on a Scale",
+      "content": ["Now apply single tonguing to multiple notes. Play each note of an ascending scale with a clean 'tu' at the start: tu-Sa, tu-Re, tu-Ga, tu-Ma, tu-Pa.", "The challenge here is coordination. Your tongue must articulate at the exact moment your fingers change position. If the tongue fires too early, you hear a brief silence between notes. Too late, and the notes blur together.", "Start slowly. Evenness matters more than speed. Each note should have the same attack quality, the same duration, and the same volume. Listen for consistency.", "A common mistake is tonguing too hard, which creates a harsh, percussive attack on every note. The tongue should be light and quick. Think of the difference between tapping a drum with your whole hand versus a light finger tap. You want the finger tap - just enough to start the note cleanly."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play ascending Sa Re Ga Ma Pa - each note cleanly tongued",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [7, 5, 4, 2, 0],
+          "prompt": "Play descending Pa Ma Ga Re Sa - each note cleanly tongued",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the most common single-tonguing mistake for beginners?",
+          "options": [
+            {
+              "text": "Tonguing too lightly - the articulation is inaudible",
+              "why": "While this can happen, the more common mistake is the opposite."
+            },
+            {
+              "text": "Tonguing too hard - creating a harsh, explosive attack on each note",
+              "right": true,
+              "yes": "Right. The tongue should be light and quick. A heavy tongue creates percussive harshness instead of musical clarity."
+            },
+            {
+              "text": "Moving the tongue too slowly between notes",
+              "why": "Speed is less of an issue than force. The tongue naturally moves fast enough for single tonguing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "double-tonguing-tuku",
+      "title": "Double Tonguing: Tu-Ku",
+      "content": ["Single tonguing has a speed limit. The tongue tip can only travel back and forth so fast before the motion becomes uneven. Double tonguing breaks through that limit by using two different parts of the tongue.", "'Tu' uses the tongue tip against the alveolar ridge (front of the mouth). 'Ku' uses the back of the tongue against the soft palate (back of the mouth). By alternating tu-ku-tu-ku, you engage two separate muscle groups, effectively doubling your maximum articulation speed.", "Practice slowly on a single note first. Play eight Sa notes: tu-ku-tu-ku-tu-ku-tu-ku. The 'ku' will feel awkward and weak at first - that is normal. The back-of-tongue motion is not something most people use consciously, so it needs training.", "The goal is to make 'tu' and 'ku' sound equally clean and equally strong. When a listener cannot tell which syllable is which, your double tonguing is ready for musical use.", "Start at a comfortable speed where both syllables are clear. Only increase speed when the slow version is perfectly even."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 0, 0, 0, 0, 0, 0, 0],
+          "prompt": "Play eight Sa notes rapidly using tu-ku-tu-ku-tu-ku-tu-ku pattern",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What makes double tonguing faster than single tonguing?",
+          "options": [
+            {
+              "text": "You blow harder",
+              "why": "Air pressure does not affect tonguing speed. The advantage is in using two tongue positions."
+            },
+            {
+              "text": "It uses two different parts of the tongue, alternating front and back",
+              "right": true,
+              "yes": "Correct. By alternating the tongue tip (tu) and the back of the tongue (ku), two muscle groups share the work."
+            },
+            {
+              "text": "You move your fingers faster",
+              "why": "Double tonguing is about the tongue, not the fingers. It is an articulation technique."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In double tonguing, which syllable uses the back of the tongue?",
+          "answer": "ku",
+          "accept": ["ku", "Ku", "KU"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "triple-tonguing",
+      "title": "Triple Tonguing",
+      "content": ["Triple tonguing handles patterns grouped in threes. When the music naturally falls into triplets - three notes per beat - single or double tonguing feels uneven because they group in twos or fours.", "There are two common patterns: tu-tu-ku and tu-ku-tu. Both alternate front and back tongue positions, but the grouping of three creates a different rhythmic feel.", "Example using tu-tu-ku: Sa-Re-Ga (tu-tu-ku), Ma-Pa-Dha (tu-tu-ku). Each group of three notes gets one complete triple-tonguing cycle.", "The challenge is making all three syllables equally clear and equally timed. The 'ku' naturally wants to be softer than the 'tu' because the back-tongue motion is weaker. Focus on strengthening the 'ku' until it matches.", "Triple tonguing is less common than single or double, but when the musical context calls for triplets - certain alankar patterns, tihai phrases, or tigun (triple speed) layakari - it is indispensable."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9],
+          "prompt": "Play Sa Re Ga Ma Pa Dha in two groups of three (tu-tu-ku, tu-tu-ku)",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "When is triple tonguing used?",
+          "options": [
+            {
+              "text": "For all fast passages",
+              "why": "Most fast passages use double tonguing. Triple tonguing is specifically for triplet groupings."
+            },
+            {
+              "text": "When notes are grouped in threes - triplet patterns and tigun layakari",
+              "right": true,
+              "yes": "Correct. Triple tonguing matches the natural grouping of three, making triplet patterns even and clear."
+            },
+            {
+              "text": "Only during the alap section",
+              "why": "The alap is slow and uses mostly legato. Triple tonguing appears in faster, rhythmic sections."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legato-vs-tongued",
+      "title": "Legato vs Tongued",
+      "content": ["Most bansuri music uses a mix of legato (slurred, no tonguing) and tongued passages. The artistic choice of when to use each is what gives a phrase its character.", "Legato means the air flows continuously while your fingers change position. Notes blend smoothly into each other with no gap or interruption. This creates a singing, vocal quality - as if the flute is speaking in long, flowing sentences. Legato is the natural language of slow alap and meend.", "Tongued playing means each note starts with a distinct 'tu' (or tu-ku). Notes are clearly separated with a brief interruption of air between them. This creates a crisper, more defined sound - like speaking in distinct words rather than flowing sentences. Tongued playing is natural for alankars, taans, and rhythmic passages.", "The same phrase can sound completely different depending on the articulation. Sa Re Ga Ma Pa played legato sounds like a gentle song. The same notes played with strong tonguing sound like a declaration. Neither is 'better' - they are different tools for different musical moments."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play Sa Re Ga Ma Pa with legato (slurred) style - smooth and connected",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Now play the same Sa Re Ga Ma Pa with tonguing - each note distinctly articulated",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which articulation style is more appropriate for slow alap?",
+          "options": [
+            {
+              "text": "Strong tonguing on every note",
+              "why": "Strong tonguing would break the meditative flow of alap. Alap needs smooth, connected phrasing."
+            },
+            {
+              "text": "Legato - smooth and connected, like a singing voice",
+              "right": true,
+              "yes": "Correct. The alap's beauty comes from its flowing, vocal quality, which requires legato phrasing."
+            },
+            {
+              "text": "Double tonguing for maximum speed",
+              "why": "Speed is not the purpose of alap. The alap is slow, contemplative, and benefits from legato smoothness."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gitkiri-flutter",
+      "title": "Gitkiri - Flutter Tongue",
+      "content": ["Gitkiri is an advanced tongue technique that creates a dramatic tremolo effect. The tongue rolls rapidly (like pronouncing a trilled 'R' in Spanish, Italian, or Hindi) while air flows into the flute. The result is a buzzing, vibrating sound that adds intensity and drama.", "Gitkiri is not used for articulating individual notes - it is an effect applied to a sustained note. Imagine holding a long Ga and then adding gitkiri: the note transforms from a smooth, steady tone into a shimmering, vibrating sound that demands attention.", "In performance, gitkiri is used sparingly for maximum impact: a climactic moment in the alap, the peak of a phrase, or a dramatic pause before resolving to sam. Overusing it dulls its effect.", "Not everyone can produce gitkiri. The ability to roll your tongue (like a rolled 'R') depends partly on tongue anatomy and partly on practice. If you cannot roll your R's in speech, gitkiri may be difficult but not necessarily impossible - some players develop it through persistent practice."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What effect does gitkiri create?",
+          "options": [
+            {
+              "text": "A clean, sharp note attack",
+              "why": "Clean attacks use single tonguing. Gitkiri creates a tremolo or vibrating effect."
+            },
+            {
+              "text": "A tremolo or buzzing vibration that adds intensity to a sustained note",
+              "right": true,
+              "yes": "Correct. Gitkiri transforms a steady note into a shimmering, dramatic sound."
+            },
+            {
+              "text": "A quieter, softer tone",
+              "why": "Gitkiri actually makes the sound more intense and dramatic, not softer."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When is gitkiri typically used in a performance?",
+          "options": [
+            {
+              "text": "Throughout the entire performance for every note",
+              "why": "Overusing gitkiri dulls its dramatic impact. It is used sparingly for maximum effect."
+            },
+            {
+              "text": "Sparingly - for climactic moments, phrase peaks, or dramatic pauses",
+              "right": true,
+              "yes": "Right. Gitkiri is a special effect, not a default articulation. Its power comes from restraint."
+            },
+            {
+              "text": "Only during the tabla solo",
+              "why": "Gitkiri is a bansuri technique used during the soloist's own playing, not during tabla solos."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tonguing-in-context",
+      "title": "Tonguing in Context",
+      "content": ["In a real performance, the different tonguing techniques map to different sections:", "Alap: mostly legato, with occasional single tonguing for emphasis on key notes. The smooth, connected phrasing creates the meditative quality the alap needs.", "Jod: rhythmic single tonguing begins to emerge. The tongue creates a pulse, giving the music forward momentum even without tabla.", "Bandish (compositions): a mix of legato phrases and tongued passages. Melodic phrases may flow legato, while rhythmic patterns use single tonguing. The contrast between the two creates musical interest.", "Fast taans: double tonguing for clarity. Without it, the notes at drut speed would smear into each other.", "Jhala: strong, rhythmic single tonguing at high speed. Each note is emphatically articulated, creating a wall of rhythmic energy.", "The key principle: your tonguing style should serve the music, not show off technique. The best articulation is the one the listener does not consciously notice because it feels natural to the musical moment."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play a full ascending scale - choose your own mix of legato and tongued articulation",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "rounds": 5,
+          "prompt": "Identify each note - ear training reinforces the connection between hearing and playing",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice single and double tonguing exercises as part of my daily routine",
+          "points": 5
+        }
+      ]
+    }
+  ]
+}

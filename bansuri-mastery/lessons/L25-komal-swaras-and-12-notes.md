@@ -123,7 +123,7 @@ the passage. Ask a teacher to check ([PRA-05](../knowledge-tree/D19-PRA-practice
 - [R-W02](../02-RESOURCE-LIBRARY.md#2-written-lessons-and-fingering-charts) half-holing section.
 - Not assessed: videos not watched. Their flutes may be in other keys: the fingering is the same, the pitch differs.
 
-**What you should hear:** against a C drone, `g` and `n` sound dark and tender; `r` sounds
+**What you should hear:** against a drone set to your flute's Sa, `g` and `n` sound dark and tender; `r` sounds
 tense and serious (as in morning ragas like Bhairav). If a komal note sounds "sour" rather
 than "dark", it is out of tune.
 

@@ -1,0 +1,244 @@
+{
+  "id": "keys-and-transposition",
+  "title": "Keys and Transposition",
+  "tasks": [
+    {
+      "id": "bansuri-sizes",
+      "title": "Bansuri Sizes and Keys",
+      "content": "The bansuri comes in many sizes. Each size has a different Sa:\n\n- A small flute (around 13-14 inches) has Sa near E or F\n- A medium flute (around 18-20 inches) has Sa near C or D\n- A large bass flute (around 24+ inches) has Sa near A or Bb\n\nWhen musicians say 'E-scale bansuri', they mean a flute whose Sa sounds at the pitch E. The fingering is always the same across every size - only the sounding pitch changes.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What determines a bansuri's key (which note Sa sounds at)?",
+          "options": [
+            {
+              "text": "The number of holes",
+              "why": "All standard bansuris have 6 holes. The key depends on the length of the bamboo."
+            },
+            {
+              "text": "The length of the bamboo tube",
+              "right": true,
+              "yes": "Correct. Longer tube = lower Sa. Shorter tube = higher Sa."
+            },
+            {
+              "text": "How hard you blow",
+              "why": "Blowing harder overblows to the upper octave, not a different key."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "length-and-pitch",
+      "title": "How Length Determines Pitch",
+      "content": ["The physics is simple: a longer tube holds a longer column of vibrating air. Longer columns vibrate more slowly, producing a lower pitch.", "Doubling the length drops the pitch by one octave. That is why a bass bansuri in A (about 27 inches) is roughly twice the length of a small flute in A (about 13 inches).", "The hole positions also scale with the length. That is why the finger stretch on a large bansuri can be demanding - the holes are farther apart. A bass C flute may require spreading your fingers 2-3 centimetres wider than a G flute, which is why hand size matters when choosing your instrument.", "Most students start on a medium flute (C or D scale, 18-20 inches) because the stretch is comfortable and the pitch sits in a singing range."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why does a longer bansuri produce a lower Sa?",
+          "options": [
+            {
+              "text": "The bamboo walls are thicker",
+              "why": "Wall thickness affects tone colour slightly, not the fundamental pitch."
+            },
+            {
+              "text": "The longer air column vibrates more slowly",
+              "right": true,
+              "yes": "Correct. Longer air column = slower vibration = lower pitch."
+            },
+            {
+              "text": "It has more holes",
+              "why": "All standard bansuris have six holes. Length determines pitch."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why do most students start on a medium (C or D) flute?",
+          "options": [
+            {
+              "text": "It is the loudest size",
+              "why": "Volume depends on technique, not size. The medium flute has a comfortable stretch."
+            },
+            {
+              "text": "The finger stretch is comfortable and the pitch sits in a singing range",
+              "right": true,
+              "yes": "Right. It balances playability with a warm, resonant tone."
+            },
+            {
+              "text": "Professional musicians only play C or D flutes",
+              "why": "Professionals use many sizes. But the medium is the best starting point."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sargam-advantage",
+      "title": "The Sargam Advantage",
+      "content": ["The sargam system is pitch-relative: Sa is always Sa, whether it sounds at C, D, E, or any other pitch.", "This means: the same fingering produces Sa Re Ga on every flute. A raga learned on one flute works on every other flute. You do not need to 'transpose' in your head the way a Western musician does.", "A Western flutist switching from C to Bb must rethink every note name. A bansuri player just picks up the other flute and plays - Sa is still Sa.", "This is why Indian musicians rarely think in terms of C, D, E. They think Sa, Re, Ga - and the flute handles the rest. It is one of the great advantages of the relative pitch system."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "If you learn Raga Yaman on a D-scale flute, what changes on an E-scale flute?",
+          "options": [
+            {
+              "text": "The fingering is completely different",
+              "why": "The fingering is exactly the same. Only the sounding pitch changes."
+            },
+            {
+              "text": "Nothing except the sounding pitch - same fingering, same raga",
+              "right": true,
+              "yes": "Exactly. That is the beauty of the sargam system - it is relative."
+            },
+            {
+              "text": "You need to learn a new raga",
+              "why": "The raga is the same. Only the absolute pitch changes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "match-sa-drone",
+      "title": "Match Your Sa",
+      "content": ["Whatever flute you play, the first step is always the same: match your Sa to the drone.", "Play Sa and listen to how it blends with the drone. When the two are perfectly in tune, you hear a smooth, steady tone with no wavering. When they are slightly off, you hear a pulsing or beating effect.", "This beating is caused by the two frequencies being close but not identical. The closer they are, the slower the beating - when it disappears, you are locked in.", "Adjust your embouchure (lip position) and air angle until Sa locks in with the drone. This skill of matching pitch to a reference is fundamental to playing in any key."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Sa within 20 cents of the drone for 6 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "upper-sa-on-your-flute",
+      "title": "Upper Sa on Your Flute",
+      "content": "Upper Sa (taar saptak Sa) is the same note one octave higher. On the bansuri, you reach it by overblowing - increasing your air speed while keeping holes 1, 2, and 3 closed.\n\nUpper Sa should sound clear and steady, not squeaky or airy. If it squeaks, you are blowing too hard. If it does not come, focus the air more narrowly across the edge of the blowing hole.\n\nPlay upper Sa and try to hold it steady.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 12,
+          "seconds": 4,
+          "cents": 35,
+          "prompt": "Hold upper Sa steady for 4 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "building-a-collection",
+      "title": "Building a Bansuri Collection",
+      "content": ["Serious bansuri players typically own multiple flutes in different keys. Each key brings a different character and suits different musical situations.", "The essential collection: E natural (medium size, the most common concert pitch - good all-round flute), G natural (smaller, brighter, good for sweet ragas like Bhupali), D natural (longer, deeper, more resonant, good for meditative ragas), and C natural (bass - very long, deep and powerful, requires strong breath and wide finger stretch).", "When choosing which flute to play a raga on, consider: the raga's mood (dark ragas suit lower-pitched flutes, bright ragas suit higher ones), the audience and venue size (larger venues need the projection of longer flutes), the tanpura pitch (your Sa must match the tanpura), and your personal voice (some players gravitate toward specific keys).", "You do not need every key at once. Start with one good medium flute, then add others as your interests and abilities grow. Many players eventually settle on 2-3 favourites that become their primary instruments."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which key is the most common concert pitch for bansuri?",
+          "options": [
+            {
+              "text": "C natural",
+              "why": "C natural is a bass flute - powerful but demanding. E natural is the most common concert key."
+            },
+            {
+              "text": "E natural",
+              "right": true,
+              "yes": "Correct. E natural is the standard concert key - a good balance of depth, volume, and playability."
+            },
+            {
+              "text": "G natural",
+              "why": "G natural is a bright, smaller flute. E natural is the most common concert key."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does a larger (lower-pitched) bansuri sound deeper?",
+          "options": [
+            {
+              "text": "It has thicker bamboo walls",
+              "why": "Wall thickness affects tone quality slightly, not the fundamental pitch."
+            },
+            {
+              "text": "Its longer air column vibrates at a lower frequency",
+              "right": true,
+              "yes": "Right. A longer tube produces slower vibrations, which we hear as a deeper pitch."
+            },
+            {
+              "text": "It uses more breath",
+              "why": "More breath is needed but that is a consequence, not the cause, of the lower pitch."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practical-transposition",
+      "title": "Practical Transposition Between Flutes",
+      "content": ["When you switch from an E flute to a G flute, the fingerings stay the same but the pitches change. Sa on the E flute sounds at E natural. Sa on the G flute sounds at G natural. Same finger position, completely different sound.", "This means: if someone asks you to play 'in the key of G', you simply pick up your G flute and play normally. No mental transposition needed. This is the sargam system at work.", "But there is a practical constraint: when playing with a tabla player whose Sa is E, you must use your E flute. If their tanpura is set to C#, you need a C# flute. The ensemble determines your key.", "The one situation where you need to transpose mentally is when reading Western sheet music. Western notation uses absolute pitch (C, D, E...) not relative pitch (Sa, Re, Ga...). So a melody written as 'C D E' on a D flute means you need to figure out which swaras correspond to those Western notes on your instrument."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "If a tabla player's tanpura is tuned to E, which flute must you use?",
+          "options": [
+            {
+              "text": "Any flute - just adjust your embouchure",
+              "why": "You cannot change the fundamental key of a flute with embouchure. You need a flute whose Sa matches the tanpura."
+            },
+            {
+              "text": "The E-scale flute, so your Sa matches their Sa",
+              "right": true,
+              "yes": "Correct. Your Sa must match the ensemble's Sa. Use the E flute."
+            },
+            {
+              "text": "The longest flute for best volume",
+              "why": "Volume does not matter here. Pitch matching is what determines flute choice."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "If you play Sa on a G-scale flute, what Western note sounds?",
+          "answer": "G",
+          "accept": ["G", "g"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "transposition-exercise",
+      "title": "Transposition in Practice",
+      "content": ["Even though sargam is relative, it helps to know the Western note equivalents for playing with other musicians or reading sheet music.", "The rule is simple: start with your flute's Sa pitch, then count up through the Western chromatic scale for each swara.", "For a D-scale flute: Sa = D, Re = E, Ga = F#, Ma = G, Pa = A, Dha = B, Ni = C#", "For an E-scale flute: Sa = E, Re = F#, Ga = G#, Ma = A, Pa = B, Dha = C#, Ni = D#", "Notice that Pa is always a perfect fifth above Sa. If Sa = D, Pa = A (7 semitones up). If Sa = E, Pa = B. This interval is constant regardless of key - another benefit of the relative system."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "If your flute is in D and you play Pa, what Western note sounds?",
+          "answer": "A",
+          "accept": ["A", "a"],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "If your flute is in E and you play Ma, what Western note sounds?",
+          "answer": "A",
+          "accept": ["A", "a"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "keys-complete",
+      "title": "Keys and Transposition Complete",
+      "content": ["You now understand how bansuri length determines its key, why the sargam system makes transposition effortless, how to match Sa to the drone on any flute, how to build a collection, and how to calculate the Western note name for any swara on any key.", "Most players build a collection of 2-3 flutes over time. A medium E flute for concerts, a D or C flute for deeper ragas, and perhaps a G flute for bright, sweet pieces. Each flute opens a different sound world while your fingering stays the same.", "When in doubt about which flute to use: match your Sa to whatever drone is playing. That simple rule covers every ensemble situation."],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "Done!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

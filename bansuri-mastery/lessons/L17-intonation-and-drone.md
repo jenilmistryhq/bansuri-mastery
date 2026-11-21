@@ -61,7 +61,7 @@ a tuner reading of exactly 0. You will learn more about **shruti** in [L19](L19-
 
 ### 4.1 Hearing beats
 
-1. Start a drone on C (Sa and Pa) at a moderate volume ([R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)).
+1. Start a drone on your flute's Sa (and Pa, if available) at a moderate volume ([R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)).
 2. Play Sa and deliberately roll the flute toward you so it goes about 20 cents flat (check
    tuner). Listen for the "wah-wah".
 3. Slowly roll back. The beats slow down, then stop. That is the lock.

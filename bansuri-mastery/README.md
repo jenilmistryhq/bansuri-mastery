@@ -3,9 +3,11 @@
 A practical, research-based learning system for the Indian bamboo flute, taking you from
 zero musical knowledge toward advanced, independent musicianship.
 
-**Built for:** a 6-hole **C natural medium** bansuri (Sa = C5, about 523 Hz), 45-60 minutes a
-day, with classical training mixed with bhajans and film songs. If your flute is different,
-see [Conventions, section 7](05-CONVENTIONS-AND-NOTATION-KEY.md#7-if-your-flute-is-different).
+**Reference profile:** a 6-hole **C natural medium** bansuri (Sa = C5, about 523 Hz), 45-60
+minutes a day, with classical training mixed with bhajans and film songs. C pitch names and Hz
+values are worked examples, not a requirement: sargam and fingerings are relative to Sa. In the
+app, set or detect your flute's own note and octave in Me > Flute. See
+[Conventions, section 7](05-CONVENTIONS-AND-NOTATION-KEY.md#7-if-your-flute-is-different).
 
 ## Start here
 

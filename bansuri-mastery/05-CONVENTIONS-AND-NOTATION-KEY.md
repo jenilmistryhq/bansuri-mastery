@@ -3,18 +3,26 @@
 Read this once on Day 0, then come back whenever a symbol confuses you. Every file in this
 curriculum uses these conventions.
 
-## 1. Your instrument (assumed)
+## 1. Reference instrument (for pitch examples)
+
+The course uses a 6-hole C natural medium bansuri as its reference profile so its Western note
+names, octave labels and Hz examples are concrete. You do **not** need a C flute. Sargam, interval
+patterns and standard fingerings are relative to your Sa. In the app, set or detect your flute's
+note and octave in **Me > Flute**; the tuner, drone and played examples follow that setting. A
+different flute can have a different comfortable range, hole spacing and half-hole sweet spots,
+so check those on the instrument itself.
 
 | Item | Value | Status |
 |---|---|---|
-| Flute | 6-hole bansuri, "C natural medium" | Stated by you |
-| Sa (home note) | C, played with the top 3 holes closed | Standard bansuri naming convention |
-| Octave of Sa | C5 (about 523 Hz), flute about 19 in / 48 cm long | Stated by a maker for this flute type ([Resource Library sec. 1](02-RESOURCE-LIBRARY.md#1-your-instrument-verified-facts)); **confirm with a tuner on Day 0** ([L00](lessons/L00-day-0-your-flute.md)) |
-| Lowest normal note | Mandra Pa (G), all six holes closed | Follows from the fingering system |
+| Flute | Reference: 6-hole C natural medium | Pitch example, not a requirement |
+| Sa (home note) | Reference: C, top 3 holes closed | The learner's actual Sa may be any pitch |
+| Octave of Sa | Reference: C5 (about 523 Hz), about 19 in / 48 cm long | Confirm your own flute on Day 0 ([L00](lessons/L00-day-0-your-flute.md)) |
+| Lowest normal note | Relative reference: mandra Pa, all six holes closed | Check your flute's real low and high range |
 | Practice time | 45-60 minutes per day | Stated by you |
 | Repertoire focus | Balanced: classical foundation with songs and bhajans mixed in | Stated by you |
 
-If any of these turn out to be wrong, see section 7 ("If your flute is different").
+The Western note columns below assume this C reference unless their heading says otherwise. If
+your flute differs, see section 7 ("If your flute is different").
 
 ## 2. Hole numbering and finger map
 
@@ -46,7 +54,7 @@ hole**.
 A fingering is written as holes 1-2-3 then 4-5-6, for example `XXX OOO` = holes 1, 2, 3 closed,
 4, 5, 6 open.
 
-### 3.1 Master fingering chart for a 6-hole bansuri (Sa = C)
+### 3.1 Master fingering chart for a 6-hole bansuri (Western column uses Sa = C)
 
 > **Status:** This is the standard fingering system taught for the 6-hole bansuri. Every flute
 > is hand-made, so individual notes, especially half-holes and the top octave, may need small
@@ -210,9 +218,10 @@ Other ID types:
 
 ## 7. If your flute is different
 
-- **Different key** (for example E or G): the fingering, the sargam and every exercise stay
-  the same, because sargam is relative to Sa. Only the "Western note" column changes. See
-  [L26](lessons/L26-keys-transposition-and-limits.md).
+- **Different key or octave:** keep the relative sargam and fingerings. The Western note names,
+  octave and Hz change with your flute. In the app, set or detect these in **Me > Flute**; use
+  the tuner and drone there. Check your own low/high range and half-hole notes, since flutes are
+  not identical. See [L26](lessons/L26-keys-transposition-and-limits.md).
 - **7-hole flute:** the extra (little-finger) hole is normally kept closed for the standard
   fingerings above. It adds a lower note and alternative fingerings. Ask a teacher or check
   your maker's chart.

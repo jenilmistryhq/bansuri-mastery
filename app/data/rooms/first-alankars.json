@@ -1,0 +1,143 @@
+{
+  "id": "first-alankars",
+  "title": "First Alankars",
+  "tasks": [
+    {
+      "id": "what-is-an-alankar",
+      "title": "What Is an Alankar?",
+      "content": "An alankar is a melodic pattern repeated across the scale. The word means 'ornament' or 'decoration', but in practice alankars are the core exercises of Indian music.\n\nThey build:\n- Finger coordination and speed\n- Clean transitions between notes (no sliding, no gaps)\n- Musical patterns that reappear in real ragas and compositions\n- Evenness - each note gets equal time and volume\n\nThe simplest alankar is the ascending scale itself: Sa Re Ga Ma Pa. But alankars can be any repeating pattern: Sa Re, Re Ga, Ga Ma... or Sa Re Ga, Re Ga Ma...\n\nEvery practice session should include alankars, the same way a runner stretches before a race.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the main purpose of practising alankars?",
+          "options": [
+            {
+              "text": "To memorise every possible melody",
+              "why": "Alankars are building blocks, not complete melodies."
+            },
+            {
+              "text": "To build finger coordination, clean transitions, and musical patterns",
+              "right": true,
+              "yes": "Correct. They train the mechanics and the musical ear together."
+            },
+            {
+              "text": "To play as fast as possible",
+              "why": "Speed is a side effect. The goal is clean, even transitions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alankar-ascending",
+      "title": "Ascending: Sa Re Ga Ma Pa",
+      "content": "Start with the most fundamental pattern: ascending through five notes.\n\nPlay: Sa - Re - Ga - Ma - Pa\n\nKeep each note the same length. The transition between notes should be clean - no sliding, no gaps. Lift and place fingers precisely. Listen for each note to speak clearly before moving to the next.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play Sa Re Ga Ma Pa ascending",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "alankar-descending",
+      "title": "Descending: Pa Ma Ga Re Sa",
+      "content": "Now descend: Pa - Ma - Ga - Re - Sa\n\nDescending is often harder than ascending because you are closing holes instead of opening them. The finger must land squarely on the hole to seal it - any leak causes the note to go sharp or produce a breathy sound.\n\nTip: think of placing each finger down rather than slapping it. Precision matters more than speed.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [7, 5, 4, 2, 0],
+          "prompt": "Play Pa Ma Ga Re Sa descending",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "alankar-pairs",
+      "title": "Pair Pattern",
+      "content": "The pair alankar steps through the scale two notes at a time:\n\nSa Re, Re Ga, Ga Ma, Ma Pa\n\nEach pair overlaps with the next by one note. This pattern trains your ear to hear intervals (the distance between two notes) and builds the finger memory for quick two-note movements.\n\nPlay the first two pairs: Sa Re, Re Ga.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 2, 4],
+          "prompt": "Play the pair pattern: Sa Re, Re Ga",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "alankar-triplet",
+      "title": "Triplet Pattern",
+      "content": "The triplet alankar groups three notes:\n\nSa Re Ga, Re Ga Ma, Ga Ma Pa...\n\nThis is one of the most important alankar patterns. Three-note groups appear constantly in real ragas and taans (fast melodic runs). The pattern trains your fingers and your ear to think in groups.\n\nPlay an ascending then descending triplet: Sa Re Ga, Ga Re Sa.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 4, 2, 0],
+          "prompt": "Play ascending then descending: Sa Re Ga, Ga Re Sa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "alankar-skip",
+      "title": "Skip Pattern",
+      "content": "Skip patterns jump over a note instead of moving stepwise. They sound more angular and challenging.\n\nSa Ga Pa - skipping Re and Ma\n\nThis trains wider finger movements and interval recognition. Skips are harder than steps because the fingers must move further, and the ear must judge a larger jump.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 7],
+          "prompt": "Play the skip pattern: Sa Ga Pa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "speed-and-evenness",
+      "title": "Speed and Evenness",
+      "content": "The goal of alankar practice is not speed - it is evenness. Every note should be:\n- The same volume (no accent on one note)\n- The same duration (no rushing through transitions)\n- The same tone quality (no breathy notes from poor finger sealing)\n\nStart slow. Only speed up when you can play the pattern perfectly at the current tempo. A metronome or the app's taal feature helps keep you honest.\n\nThe classic rule: if you cannot play it slowly, you cannot play it fast. Speed built on sloppy technique always sounds sloppy.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When should you increase the speed of an alankar?",
+          "options": [
+            {
+              "text": "As soon as possible - speed is the goal",
+              "why": "Speed without evenness sounds rushed and sloppy."
+            },
+            {
+              "text": "Only after you can play it perfectly at the current tempo",
+              "right": true,
+              "yes": "Exactly. Clean technique at a slow speed is the foundation for clean fast playing."
+            },
+            {
+              "text": "Never - always play slowly",
+              "why": "Eventually you should speed up, but only after the foundation is solid."
+            }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note: Sa, Re, Ga, Ma, or Pa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "alankars-complete",
+      "title": "First Alankars Complete",
+      "content": "You now have five alankar patterns to practice:\n1. Ascending and descending scale\n2. Pair pattern (Sa Re, Re Ga...)\n3. Triplet pattern (Sa Re Ga, Re Ga Ma...)\n4. Skip pattern (Sa Ga Pa)\n5. Any combination you invent\n\nAs you learn more notes, extend these same patterns across the full saptak and beyond. Alankars are a lifelong practice tool - even master musicians play them daily.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "Done!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

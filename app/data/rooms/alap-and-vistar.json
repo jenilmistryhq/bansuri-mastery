@@ -1,0 +1,249 @@
+{
+  "id": "alap-and-vistar",
+  "title": "Alap and Swar Vistar",
+  "tasks": [
+    {
+      "id": "what-is-alap",
+      "title": "What Is Alap?",
+      "content": ["Alap is the opening section of a raga presentation. It is:", "Slow and unmetered - no fixed rhythm, no tabla.", "Note by note - the raga is introduced one swara at a time.", "Meditative - each note is explored, decorated, and given time to resonate.", "Alap begins from Sa and gradually expands upward through the raga's notes. It is considered the highest form of musicianship because there is nowhere to hide - just the musician, the raga, and the notes.", "No rhythm to lean on. No speed to impress with. Just your understanding of the raga, laid bare."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What makes alap unique compared to other sections?",
+          "options": [
+            {
+              "text": "It is the fastest section with complex rhythm",
+              "why": "Alap is the slowest section - unmetered and meditative."
+            },
+            {
+              "text": "It is slow, unmetered, and explores the raga note by note",
+              "right": true,
+              "yes": "Correct. Alap is pure raga exploration without rhythmic framework."
+            },
+            {
+              "text": "It uses notes from outside the raga for colour",
+              "why": "Alap is the purest expression of the raga - only its notes are used."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "swar-vistar",
+      "title": "Swar Vistar - Note Expansion",
+      "content": ["Swar vistar means 'expansion of notes'. It is the technique used in alap:", "1. Start with Sa alone - hold it, feel it, let it settle.", "2. Introduce Re - play phrases using only Sa and Re.", "3. Add Ga - now explore Sa, Re, Ga together.", "4. Continue adding one note at a time up through the raga.", "5. Each new note is approached from below, touched gently, then explored.", "The key principle: never rush to the next note. Each note is a world to explore. Spend time with Sa and Re before even thinking about Ga. The audience should feel each new note as a revelation, not a checkbox."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In swar vistar, how are new notes introduced?",
+          "options": [
+            {
+              "text": "All at once in the first phrase",
+              "why": "Notes are introduced one at a time, gradually."
+            },
+            {
+              "text": "One at a time, each explored before adding the next",
+              "right": true,
+              "yes": "Exactly. Gradual expansion is the essence of swar vistar."
+            },
+            {
+              "text": "Starting from the highest note downward",
+              "why": "Vistar typically starts from Sa and expands upward."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vistar-stages",
+      "title": "The Four Stages of Swar Vistar",
+      "content": ["Swar vistar follows a systematic path through the raga's range. Understanding the four stages helps you structure an alap with intention:", "Stage 1 - Establish Sa. Play only Sa against the drone. Hold it, feel it merge with the tanpura. This is not a formality - Sa is the reference that everything else relates to. A shaky Sa means a shaky alap.", "Stage 2 - Introduce one note. Usually Re (or in ragas like Yaman, lower Ni from below). Play Sa-Re-Sa. Explore only the relationship between these two notes. How does Re feel when approached from Sa? How does the return to Sa feel? Spend real time here.", "Stage 3 - Add the next note. Now play phrases using Sa-Re-Ga. Each new note is introduced by approaching it from the notes already established. Touch Ga gently, explore it, then descend back through Re to Sa.", "Stage 4 - Continue the expansion. Add Ma, then Pa, then Dha, then Ni, one at a time. Each addition expands the raga's world. By the time you reach upper Sa, the audience has experienced the entire raga unfolding like a flower.", "This gradual revelation is what makes alap so powerful - each new note is an event, not just another step on a scale."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 0],
+          "prompt": "Play the simplest vistar phrase: Sa Re Sa",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 2, 0],
+          "prompt": "Now expand: Sa Re Ga Re Sa - adding one new note",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "alap-structure",
+      "title": "Alap Structure",
+      "content": ["A full alap has three stages of increasing energy:", "1. Vilambit alap (slow) - Very slow, contemplative. Each note is held and explored. The Sa drone is the only accompaniment. Phrases are short, with long pauses between them.", "2. Madhya alap (medium) - Slightly more rhythmic, broader phrases. Still no tabla, but a subtle pulse begins to emerge. The musician starts to connect phrases more fluidly.", "3. Drut alap / Jod - Faster, with a clear pulse. The energy builds as phrases become longer and more confident. The transition from alap to jod is one of the most beautiful moments in a performance: the music seems to find its own heartbeat, emerging naturally from the contemplative stillness of the vilambit phase.", "In jod, the musician often uses a repeated Sa or Pa as a rhythmic anchor - almost like an internal metronome. This pulse is not imposed by a taal cycle; it grows organically from the music itself.", "Not every performance includes all three stages. Even a brief vilambit alap sets the raga's mood powerfully."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What is the slowest stage of alap called?",
+          "answer": "vilambit",
+          "accept": ["vilambit", "vilambit alap", "Vilambit", "Vilambit alap"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How does the transition from alap to jod happen?",
+          "options": [
+            {
+              "text": "The tabla player suddenly starts playing",
+              "why": "The tabla does not enter until the bandish. The jod pulse emerges from the alap organically."
+            },
+            {
+              "text": "A rhythmic pulse emerges naturally from the music itself",
+              "right": true,
+              "yes": "Right. The jod's pulse grows out of the alap - the music finds its own heartbeat."
+            },
+            {
+              "text": "The musician stops and starts a new section",
+              "why": "The transition is seamless, not abrupt. The pulse emerges gradually."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-sa-re",
+      "title": "Practice: Sa and Re Exploration",
+      "content": ["Let us begin an alap with just two notes: Sa and Re.", "First, hold Sa for a long, steady breath. Feel the note settle. Let the drone support it.", "Then hold Re. Notice how it sounds against the drone - Re has a bright, slightly restless quality. It wants to move, either back to Sa or forward to Ga.", "This is the beginning of swar vistar: getting to know each note's personality. Sa is home - stable and grounding. Re is the first step away from home - curious and slightly unsettled. The relationship between these two notes is the seed from which the entire alap grows."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Sa steady for 6 seconds - your foundation",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Now hold Re for 5 seconds - feel its character",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "practice-adding-ga",
+      "title": "Practice: Adding Ga",
+      "content": ["Now add Ga to your alap. Play this simple phrase:", "Sa - Re - Ga - Re - Sa", "This is a classic alap shape: rise from Sa through Re to Ga, then descend back home. Each note should be held briefly - this is not a taan. Take your time between notes.", "Notice how Ga adds warmth and depth. In many ragas, Ga is the vadi (most important note), so reaching it in your alap is a significant moment.", "In a real alap, you would explore Ga thoroughly before moving on. You might play Sa-Re-Ga and hold Ga, letting it ring against the drone. Then play Ga-Re-Sa to descend. Then try approaching Ga from different angles - Re-Ga, Sa-Ga (a wider leap), and eventually use meend to slide into Ga from Re."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 2, 0],
+          "prompt": "Play Sa Re Ga Re Sa - an alap phrase with three notes",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "silence-in-alap",
+      "title": "The Role of Silence",
+      "content": ["Silence is not the absence of music in alap - it IS music. The pauses between phrases are as important as the phrases themselves.", "A pause does five things:", "1. It lets the drone reclaim the space. After you play a phrase, the tanpura's overtones wash over the silence, 'resetting' the listener's ear for the next phrase.", "2. It creates anticipation. The listener waits, engaged. What will the next phrase reveal?", "3. It lets a phrase sink in. A beautiful phrase followed immediately by another phrase diminishes both. A beautiful phrase followed by silence lets it resonate in the listener's memory.", "4. It gives the musician time to breathe, both physically and musically. The next phrase should be a deliberate choice, not a reflex.", "5. It demonstrates mastery. Rushing through notes shows anxiety. Comfortable silence shows command.", "The ancient concept of Nada Brahma teaches that 'sound is the divine'. But the silence between sounds is where the listener truly hears - where the raga lives in the space between notes.", "Great masters are known as much for their silences as for their phrases. Pandit Hariprasad Chaurasia's alap is full of silences that feel like held breath before a revelation."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is silence important in alap?",
+          "options": [
+            {
+              "text": "It fills time when the musician cannot think of what to play",
+              "why": "Silence in alap is a deliberate musical choice, not a gap. Great musicians plan their silences."
+            },
+            {
+              "text": "It lets phrases resonate, resets the ear, and creates anticipation",
+              "right": true,
+              "yes": "Right. Silence is an active element of the music, not a passive gap. It makes each phrase more powerful."
+            },
+            {
+              "text": "The audience needs a break from concentrated listening",
+              "why": "The audience is often most engaged during silences - waiting for the next phrase."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does Nada Brahma mean?",
+          "options": [
+            {
+              "text": "Music is entertainment",
+              "why": "Nada Brahma points to something deeper than entertainment."
+            },
+            {
+              "text": "Sound is the divine",
+              "right": true,
+              "yes": "Correct. Nada Brahma is the ancient teaching that sound is a manifestation of the divine."
+            },
+            {
+              "text": "Silence is forbidden in music",
+              "why": "On the contrary - the tradition values silence as much as sound."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alap-arcs",
+      "title": "Internal Arcs and Register",
+      "content": ["An alap is not a straight line from low to high. It moves in arcs - climbing to a certain point, then descending back toward Sa before climbing higher on the next arc.", "Think of it like waves on a rising tide. Each wave (arc) reaches a little higher than the last, but always pulls back before pushing further:", "Arc 1: Sa - Re - Sa. Explore the lowest part of the raga.", "Arc 2: Sa - Re - Ga - Re - Sa. Reach Ga, return home.", "Arc 3: Sa - Re - Ga - Ma - Ga - Re - Sa. Touch Ma, come back.", "Arc 4: Reach Pa, the halfway point of the saptak. This is a significant moment.", "Arc 5+: Continue into the upper register - Dha, Ni, upper Sa.", "Each arc has its own internal drama: departure, exploration, return. The return to Sa (or to the vadi note) between arcs is essential - it re-grounds the music and prevents the alap from becoming an aimless climb.", "This arc structure is sometimes called avartan in alap - not to be confused with taal avartan. Here it means the alap's own internal cycles of ascent and descent."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 4, 2, 0],
+          "prompt": "Play an alap arc: Sa Re Ga Ma Ga Re Sa - climb to Ma and return",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does an alap move in arcs rather than a straight ascent?",
+          "options": [
+            {
+              "text": "Because the musician keeps forgetting the higher notes",
+              "why": "Arcs are a deliberate structural choice, not a lapse."
+            },
+            {
+              "text": "Each arc explores a range and returns home before climbing higher, building gradually",
+              "right": true,
+              "yes": "Exactly. The arc structure creates internal drama and prevents the alap from becoming a mechanical scale."
+            },
+            {
+              "text": "Because the flute can only play a few notes at a time",
+              "why": "The bansuri can play the full range. Arcs are a musical choice."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alap-moods",
+      "title": "Alap in Different Moods",
+      "content": ["The character of an alap changes with the raga:", "Yaman alap is majestic and serene. The tivra Ma gives it a bright, uplifting quality. Evening ragas often have this spacious, contemplative feel.", "Bhairavi alap is devotional and tender. The komal notes create a gentle, inward mood. It is the raga of parting and longing.", "Darbari alap is grave and weighty. The andolan on komal Ga and komal Dha creates a deep, serious atmosphere. This is a raga of the midnight court.", "Bhupali alap is light and sweet. With only five notes, every phrase is clean and direct.", "The alap must match the raga's personality. Playing Darbari phrases in a bright, cheerful way destroys the raga's identity. The first note of your alap should already tell the listener which emotional world they are entering."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How should an alap's character relate to the raga?",
+          "options": [
+            {
+              "text": "Every alap should sound the same regardless of raga",
+              "why": "Each raga has its own mood. The alap must express that specific character."
+            },
+            {
+              "text": "The alap must match the raga's mood and personality",
+              "right": true,
+              "yes": "Exactly. A grave raga needs a grave alap. A bright raga needs a bright one. The music must be true to the raga."
+            },
+            {
+              "text": "The alap should always be as fast as possible",
+              "why": "Alap is characteristically slow. Speed comes later in the performance."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

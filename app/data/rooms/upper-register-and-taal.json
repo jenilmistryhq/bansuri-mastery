@@ -1,0 +1,249 @@
+{
+  "id": "upper-register-and-taal",
+  "title": "Upper Register and Taal",
+  "tasks": [
+    {
+      "id": "overblowing",
+      "title": "The Upper Octave",
+      "content": ["Every note on the bansuri can be played an octave higher by overblowing - increasing air speed while keeping the same fingering. The air column inside the flute vibrates at twice the frequency (the second harmonic), producing a note one octave above.", "The upper octave needs:\n- Faster, more focused air (not necessarily more volume)\n- A slightly smaller lip opening\n- More forward direction of the airstream", "The key insight is air speed, not air volume. Think of the difference between blowing out a candle across a table (fast, narrow stream) versus cooling a bowl of soup (slow, wide breath). Upper notes need the candle approach. Blowing harder just wastes air and makes the note sharp or squeaky.", "The jump between octaves should be clean, not a gradual slide. If you hear a squeak, you are forcing too much air. If the note will not come, narrow your lip opening and speed up the air."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How do you play the upper octave on a bansuri?",
+          "options": [
+            {
+              "text": "Use different fingerings for each upper note",
+              "why": "The same fingerings work. You change the air speed, not the fingers."
+            },
+            {
+              "text": "Increase air speed while keeping the same fingering",
+              "right": true,
+              "yes": "Correct. The upper register is reached by overblowing - faster, more focused air."
+            },
+            {
+              "text": "Press the holes harder",
+              "why": "Pressing harder does not change the octave. Air speed is what matters."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "overblowing-technique",
+      "title": "The Overblowing Sweet Spot",
+      "content": ["Each upper note has a sweet spot - a narrow range of air speed that produces a clean, stable tone. Too little speed and you stay in the middle octave. Too much and the note cracks, squeaks, or goes very sharp.", "Finding the sweet spot for upper Sa: start by playing a steady middle Sa. Without changing your fingering, gradually increase air speed while making your lip opening slightly smaller and more focused. At some point, the note will flip up to the octave. That transition point is what you are looking for.", "Important details:\n- Each upper note requires a slightly different air speed. Upper Pa needs more speed than upper Sa because less of the flute is covered.\n- The lip aperture (the opening between your lips) should narrow as you go higher. Think of it as a nozzle - smaller opening means faster air at the same effort.\n- Diaphragm support is critical. The steady pressure must come from below, not from your throat or cheeks.\n- Common problems: squeaking (too much pressure too fast), going sharp (too much air volume), breathiness (air stream not focused enough on the blowing edge)."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 12,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold upper Sa cleanly for 5 seconds - find the sweet spot",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What happens if you use too much air pressure when overblowing?",
+          "options": [
+            {
+              "text": "The note sounds richer and fuller",
+              "why": "Excessive pressure causes squeaking or extreme sharpness, not richness."
+            },
+            {
+              "text": "The note squeaks or goes very sharp",
+              "right": true,
+              "yes": "Right. Too much pressure overwhelms the sweet spot. The key is speed and focus, not force."
+            },
+            {
+              "text": "The note drops back to the lower octave",
+              "why": "Dropping back happens with too little pressure. Too much causes squeaking."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-upper-sa",
+      "title": "Practice Upper Sa",
+      "content": "Start with upper Sa - the same fingering as lower Sa (holes 1, 2, 3 closed), but with faster air.\n\nTips for a clean upper Sa:\n- Start with lower Sa, then gradually speed up your air stream\n- Keep your throat open and relaxed\n- Direct the air more forward across the blowing hole edge\n- Do not puff your cheeks - the air speed comes from your diaphragm\n\nHold upper Sa as steadily as you can. It should sound clear and full, not thin or squeaky.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 12,
+          "seconds": 4,
+          "cents": 35,
+          "prompt": "Hold upper Sa steady for 4 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "practice-upper-re",
+      "title": "Practice Upper Re",
+      "content": "Upper Re uses the same fingering as lower Re (holes 2 and 3 closed, hole 1 open) with overblowing.\n\nUpper Re is slightly harder than upper Sa because less of the flute is covered, making the air column less stable. You may need to focus the air even more narrowly.\n\nPlay lower Re first, then gradually increase air speed until it jumps up. Hold it steady.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 14,
+          "seconds": 4,
+          "cents": 35,
+          "prompt": "Hold upper Re steady for 4 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "what-is-taal",
+      "title": "What Is Taal?",
+      "content": ["Taal is the rhythmic cycle in Indian music. Unlike a simple time signature that counts beats, a taal is a repeating pattern with specific accented and unaccented positions.", "Key concepts:\n- **Sam** (beat 1) - the strongest beat. Everything resolves here. Phrases land on sam. Tihais end on sam.\n- **Taali** - accented beats, marked by a clap\n- **Khali** - the empty beat, marked by a wave of the hand. It provides contrast.\n- **Vibhag** - groups of beats within the cycle\n- **Matra** - a single beat. Teentaal has 16 matras. Each matra can be subdivided further for faster patterns.", "The cycle repeats endlessly. A musician always knows where they are in the cycle, even during complex improvisation. Each matra can be subdivided into 2 (dugun), 3 (tigun), or 4 (chaugun) sub-beats, allowing increasingly fast rhythmic patterns while the underlying pulse stays constant."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is 'sam' in a taal cycle?",
+          "options": [
+            {
+              "text": "The last beat of the cycle",
+              "why": "Sam is the first beat - the point of resolution."
+            },
+            {
+              "text": "The first and strongest beat where everything resolves",
+              "right": true,
+              "yes": "Right. Sam is the anchor of the entire cycle."
+            },
+            {
+              "text": "Any accented beat",
+              "why": "Sam is specifically beat 1, not just any accented beat."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "teentaal-structure",
+      "title": "Teentaal - 16 Beats",
+      "content": "Teentaal (also called Trital) is the most common taal in Hindustani music. It has 16 beats divided into 4 groups of 4:\n\nGroup 1: 1  2  3  4   (Taali - clap on 1 = sam)\nGroup 2: 5  6  7  8   (Taali - clap on 5)\nGroup 3: 9  10 11 12  (Khali - wave on 9)\nGroup 4: 13 14 15 16  (Taali - clap on 13)\n\nThe tabla plays a specific pattern (theka) for each taal. Teentaal's theka is:\nDha Dhin Dhin Dha | Dha Dhin Dhin Dha | Dha Tin Tin Ta | Ta Dhin Dhin Dha\n\nNotice how the khali section (beats 9-12) uses lighter bols (Tin, Ta instead of Dhin, Dha).",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many beats are in Teentaal?",
+          "options": [
+            {
+              "text": "8 beats",
+              "why": "That would be Keherwa taal. Teentaal has 16 beats."
+            },
+            {
+              "text": "12 beats",
+              "why": "That would be Ektaal. Teentaal has 16 beats."
+            },
+            {
+              "text": "16 beats",
+              "right": true,
+              "yes": "Correct. 16 beats in 4 groups of 4."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which beat is 'khali' (empty) in Teentaal?",
+          "options": [
+            {
+              "text": "Beat 1",
+              "why": "Beat 1 is sam, the strongest beat. Khali is beat 9."
+            },
+            {
+              "text": "Beat 9",
+              "right": true,
+              "yes": "Correct. Beat 9 is khali - you wave instead of clapping, and the tabla plays lighter bols."
+            },
+            {
+              "text": "Beat 16",
+              "why": "Beat 16 is the last beat before sam returns. Khali is beat 9."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clapping-teentaal",
+      "title": "Clap the Cycle",
+      "content": "Practice counting Teentaal while marking the beats with your hands:\n\n- Beat 1: CLAP (sam - the strongest)\n- Beats 2, 3, 4: count silently\n- Beat 5: CLAP (second taali)\n- Beats 6, 7, 8: count silently\n- Beat 9: WAVE (khali - open palm, no sound)\n- Beats 10, 11, 12: count silently\n- Beat 13: CLAP (third taali)\n- Beats 14, 15, 16: count silently\n- Back to beat 1: CLAP (sam returns)\n\nFeel how sam (beat 1) has the most weight. Everything in the music gravitates toward it.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In Teentaal, what do you do on beat 9?",
+          "options": [
+            {
+              "text": "Clap loudly",
+              "why": "Beat 9 is khali (empty). You wave, not clap."
+            },
+            {
+              "text": "Wave your hand (no clap)",
+              "right": true,
+              "yes": "Right. The wave on beat 9 marks the khali, providing contrast to the claps."
+            },
+            {
+              "text": "Stay silent and do nothing",
+              "why": "You mark khali with a wave of the open palm. It is an active gesture."
+            }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I can count and clap Teentaal (1 to 16) at a slow tempo"
+        }
+      ]
+    },
+    {
+      "id": "taal-while-playing",
+      "title": "Taal Awareness While Playing",
+      "content": ["The ultimate rhythmic challenge: maintaining awareness of the taal cycle while simultaneously playing melodic phrases. In performance, your mind must track four things at once:\n1. Where you are in the taal cycle (which beat?)\n2. What melodic phrase you are playing or planning\n3. The physical execution on the instrument\n4. Listening to the tabla for rhythmic cues and dialogue", "This sounds overwhelming, but with practice, taal awareness becomes automatic - like keeping your balance while walking. You do not think about it; you feel it.", "Practice technique: play a simple ascending and descending scale (Sa Re Ga Ma Pa Ma Ga Re Sa) while silently counting Teentaal. At first, you will lose the count whenever the melody gets your attention. That is normal. Keep at it. The goal is for the taal to run in the background of your mind like a clock.", "When taal counting becomes automatic, your creative energy is freed up for melody, expression, and dialogue with the tabla. This is when music-making becomes truly spontaneous."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 5, 4, 2, 0],
+          "prompt": "Play Sa Re Ga Ma Pa Ma Ga Re Sa while silently counting to 16",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is it important for taal counting to become automatic?",
+          "options": [
+            {
+              "text": "So you can play faster",
+              "why": "Speed comes from finger technique, not taal awareness. Automatic counting frees your creative energy."
+            },
+            {
+              "text": "So your creative energy is freed for melody and expression",
+              "right": true,
+              "yes": "Exactly. When the rhythm runs in the background like a clock, you can focus on making music."
+            },
+            {
+              "text": "So you do not need a tabla player",
+              "why": "Taal awareness makes you a better partner for the tabla player, not a replacement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-training-upper",
+      "title": "Ear Training - Upper Notes",
+      "content": "Now that you are exploring the upper octave, train your ear to recognise notes in the higher range.\n\nThis exercise plays notes from Pa upward - the range where the upper octave begins to open up. Listen and identify each one.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [7, 9, 11, 12],
+          "count": 5,
+          "pass": 3,
+          "prompt": "Identify upper-range notes (Pa, Dha, Ni, upper Sa). Get 3 of 5 to pass.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "Done!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

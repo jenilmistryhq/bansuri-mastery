@@ -30,6 +30,7 @@ const WHY_PLAY = "Finish the step first: play it while the app listens.";
 const WHY_ANY = "Finish the step first: do what it asks above.";
 export const lessonRecord = id => store(KEY, {})[id] || null;
 function saveRecord(id, rec) { const all = store(KEY, {}); all[id] = rec; storeSet(KEY, all); }
+export function saveLessonRecord(id, rec) { saveRecord(id, rec); }
 
 // All steps in order, each with its chapter.
 export function flatSteps(lesson) {
@@ -44,7 +45,7 @@ export function lessonPlayer(lesson, opts) {
   const steps = flatSteps(lesson);
   const rec = lessonRecord(lesson.id) || { at: 0, data: {}, done: null, started: today() };
   if (!rec.data) rec.data = {};
-  let at = Math.min(rec.at || 0, steps.length - 1), live = null, isReady = false;
+  let at = steps.length ? Math.min(rec.at || 0, steps.length - 1) : 0, live = null, isReady = false;
   const save = () => saveRecord(lesson.id, rec);
 
   const closeBtn = h("button", { type: "button", class: "lesson-close", "aria-label": "Close the lesson (it resumes where you left it)" }, icon("x"));
@@ -113,18 +114,19 @@ export function lessonPlayer(lesson, opts) {
     whyMsg.hidden = true;
     chapterEl.textContent = s.chapterTitle;
     backBtn.hidden = at === 0;
-    nextBtn.textContent = s.next || (at === steps.length - 1 ? "Finish" : "Continue");
+    const value = v => typeof v === "function" ? v() : v;
+    nextBtn.textContent = value(s.next) || (at === steps.length - 1 ? "Finish" : "Continue");
     api.ready(false);
     misses = 0; lastFix = null; trouble.hidden = true; trouble.replaceChildren(); el.classList.remove("lesson-introuble");
     const kind = s.kind === "custom" ? { make: s.make } : STEP_KINDS[s.kind];
     live = kind ? kind.make(s, api) : { el: h("p", null, "This step is missing.") };
-    const head = s.title ? h("h2", { class: "lesson-title", tabindex: "-1" }, s.title) : null;
+    const head = s.title ? h("h2", { class: "lesson-title", tabindex: "-1" }, value(s.title)) : null;
     // A practice-day drill names the lesson it comes from.
     const from = s.from ? h("p", { class: "small muted lesson-from" }, "Practice from Day " + s.from.day + ": " + s.from.title) : null;
     // The day's explanation for this step's chapter, folded under the step (lesson/learn.js), and
     // under the reward, the day's pass check.
-    const goal = s.goal ? h("div", { class: "lesson-goal" }, h("span", { class: "eyebrow" }, "Today's goal"), h("p", null, s.goal)) : null;
-    stage.replaceChildren(...[from, head, s.intro ? h("p", { class: "lesson-intro" }, s.intro) : null, live.el, goal, whyLayer(s.blocks)].filter(Boolean));
+    const goal = s.goal ? h("div", { class: "lesson-goal" }, h("span", { class: "eyebrow" }, "Today's goal"), h("p", null, value(s.goal))) : null;
+    stage.replaceChildren(...[from, head, s.intro ? h("p", { class: "lesson-intro" }, value(s.intro)) : null, live.el, goal, whyLayer(s.blocks)].filter(Boolean));
     stage.dataset.kind = s.kind; stage.dataset.step = s.id; stage.dataset.target = s.target === undefined ? "" : String(s.target);
     stage.dataset.notes = (s.phrase || s.targets || (s.ex ? [s.ex.from ?? s.ex.grace ?? s.ex.note ?? (s.ex.notes || [])[0], s.ex.to ?? s.ex.main].filter(x => x !== undefined) : [])).join(","); // for the tests' lesson walker
     if (head) head.focus({ preventScroll: true });
@@ -170,10 +172,10 @@ export function lessonPlayer(lesson, opts) {
       const back = "#/lesson/" + lesson.id + "#resume";
       try { history.replaceState(history.state, "", back); } catch (e) { /* the link on the fix screen still leads back */ }
       setStepReturn(back);
-      location.hash = "#/skills/fix/" + fix;
+      location.hash = "#/teacher/fix/" + fix;
     });
     const skip = h("button", { type: "button", class: "linkbtn" }, "Skip for now");
-    skip.addEventListener("click", () => { if (!api.data[s.id]) api.data[s.id] = { passed: false, skipped: true }; save(); go(at + 1); });
+    skip.addEventListener("click", () => { if (!api.data[s.id]) api.data[s.id] = { passed: false, skipped: true }; save(); if (at < steps.length - 1) go(at + 1); else { api.ready(); } });
     trouble.replaceChildren(help, skip);
     trouble.hidden = false;
     el.classList.add("lesson-introuble");
@@ -200,8 +202,8 @@ export function lessonPlayer(lesson, opts) {
       if (live && live.destroy) { try { live.destroy(); } catch (e) { /* ignore */ } }
       stopAll();
       // A reading left open over the lesson goes with it.
-      document.querySelectorAll("dialog.sheet").forEach(d => { if (d.open) d.close(); d.remove(); });
+      el.querySelectorAll("dialog.sheet").forEach(d => { if (d.open) d.close(); d.remove(); });
     },
-    restart() { rec.at = 0; save(); go(0); },
+    restart() { rec.at = 0; rec.data = {}; api.data = rec.data; save(); go(0); },
   };
 }

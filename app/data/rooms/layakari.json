@@ -1,0 +1,314 @@
+{
+  "id": "layakari",
+  "title": "Layakari - Rhythmic Play",
+  "tasks": [
+    {
+      "id": "what-is-layakari",
+      "title": "What Is Layakari?",
+      "content": ["Layakari is the art of playing with rhythm. The word comes from 'laya' (tempo) and 'kari' (to do or to play). It is the sophisticated manipulation of speed, subdivisions, and rhythmic patterns within a taal cycle - the technique that makes Indian classical music so dynamic and alive.", "Here is the key concept: the taal (rhythmic cycle) stays constant, but layakari changes how many notes you fit into each beat. Think of it as the difference between walking, jogging, and sprinting - all to the same clock. The tabla plays a steady theka (basic pattern), while the soloist shifts between speeds, creating waves of rhythmic intensity.", "This rhythmic sophistication is what distinguishes a musician from a note-player. Two performers can play the same raga with the same notes, but the one who commands layakari can make the audience lean forward, hold their breath, and burst into applause - all through rhythm alone.", "In a performance, when the soloist enters high-speed layakari while the tabla holds steady, the audience often starts swaying involuntarily. It is one of the most thrilling moments in Indian music - a demonstration of mathematical precision and artistic freedom at once."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does 'layakari' literally mean?",
+          "options": [
+            {
+              "text": "Playing with melody",
+              "why": "That would describe taan or raga exploration. Layakari specifically means playing with laya (tempo/rhythm)."
+            },
+            {
+              "text": "Playing with laya (tempo/rhythm)",
+              "right": true,
+              "yes": "Correct. Laya means tempo and kari means to do or to play - so layakari is the art of rhythmic manipulation."
+            },
+            {
+              "text": "Playing with feeling",
+              "why": "While layakari creates feeling, the word itself refers to laya (tempo) and kari (to do)."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When a musician performs layakari, does the taal (rhythmic cycle) change?",
+          "options": [
+            {
+              "text": "Yes - the taal speeds up with the melody",
+              "why": "The taal stays constant. Layakari changes how many notes fit within each beat, not the beat itself."
+            },
+            {
+              "text": "No - the taal stays constant while the note density changes",
+              "right": true,
+              "yes": "Exactly. The taal remains steady while the soloist varies how many notes fit into each beat."
+            },
+            {
+              "text": "The taal stops during layakari",
+              "why": "The taal continues steadily throughout. It is the anchor against which layakari creates its effect."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thah-base-speed",
+      "title": "Thah - The Base Speed",
+      "content": ["Thah (also called 'barabar') means one note per beat. This is your starting point - the foundation of all layakari. At thah, each matra (beat) gets exactly one note. The tempo is steady, the phrasing deliberate, and each note has full space to breathe.", "In Teentaal (a 16-beat cycle), playing at thah means you play 16 notes per cycle - one for each matra. It sounds measured, almost meditative. There is no rush, no compression. Each note occupies its full beat.", "Thah is not boring - it is fundamental. A musician who cannot play clean, perfectly timed thah will never achieve clean dugun or chaugun. The precision of your base speed determines the precision of everything built upon it.", "Practice thah by playing along with a metronome or tabla. Each note should land exactly on the beat - not slightly before, not slightly after. This precision is harder than it sounds and is the mark of a disciplined musician."],
+      "questions": [
+        {
+          "type": "play",
+          "prompt": "Play this 16-note phrase at thah (one note per beat) - keep each note perfectly on the beat",
+          "notes": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0, 0]
+        },
+        {
+          "type": "type",
+          "prompt": "How many notes per beat does thah (barabar) have?",
+          "answer": "1",
+          "hint": "Thah is the base speed - the simplest ratio of notes to beats."
+        }
+      ]
+    },
+    {
+      "id": "dugun-double-speed",
+      "title": "Dugun - Double Speed",
+      "content": ["Dugun means 2 notes per matra. The taal stays the same, but you now play twice as many notes within each beat. In Teentaal (16 beats), that means 32 notes per cycle instead of 16. The feel shifts from walking to jogging.", "Dugun is the first step of layakari and the most commonly used speed level. It is where most musicians spend the majority of their playing time. When you hear a musician 'picking up speed' in a performance, they are typically moving from thah into dugun.", "The key to clean dugun: both notes within each beat must be perfectly equal in duration. If the first note is longer and the second is rushed, the dugun sounds lopsided. Practice with a metronome, placing one note exactly on the beat and one exactly halfway between beats.", "Think of it mathematically: at thah you play Sa... Re... Ga... Ma... (one per beat). At dugun you play SaRe GaMa PaDha NiSa (two per beat). The same notes, twice as dense, against the same steady pulse."],
+      "questions": [
+        {
+          "type": "play",
+          "prompt": "Play this phrase at a steady tempo - imagine fitting 2 notes per beat",
+          "notes": [0, 0, 2, 2, 4, 4, 5, 5, 7, 7, 9, 9, 11, 11, 12, 12]
+        },
+        {
+          "type": "choice",
+          "prompt": "How many notes does dugun fit per beat?",
+          "options": [
+            {
+              "text": "1 note per beat",
+              "why": "That is thah (barabar). Dugun doubles the speed."
+            },
+            {
+              "text": "2 notes per beat",
+              "right": true,
+              "yes": "Correct. Dugun means double - 2 notes per matra."
+            },
+            {
+              "text": "3 notes per beat",
+              "why": "That would be tigun (triple speed). Dugun means double."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tigun-triple-speed",
+      "title": "Tigun - Triple Speed",
+      "content": ["Tigun means 3 notes per matra. This creates a 'triplet' feel - three notes squeezed into the space of one beat. In Teentaal, tigun gives 48 notes per cycle (16 beats times 3 notes each).", "Tigun sounds distinctly different from dugun because it creates an uneven, swinging quality against the even pulse. Where dugun divides each beat into two equal halves (which feels natural and balanced), tigun divides each beat into three equal parts, creating a rolling, lilting rhythm.", "This triplet feel is harder to maintain evenly than dugun. Each group of 3 notes must be precisely equal in duration - not two quick notes followed by a long one, and not a long note followed by two quick ones. Even subdivision is the key.", "Tigun is less commonly used than dugun or chaugun, but it has a special beauty. Its 3-against-4 quality (when played over a taal counted in 4s) creates a subtle tension that experienced listeners find deeply satisfying. Some musicians use tigun as a brief passing speed between dugun and chaugun, while others develop extended passages in tigun to showcase its unique rhythmic flavour."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many notes per beat does tigun use?",
+          "options": [
+            {
+              "text": "2 notes per beat",
+              "why": "That is dugun (double). Tigun means triple."
+            },
+            {
+              "text": "3 notes per beat",
+              "right": true,
+              "yes": "Correct. Tigun means triple - 3 notes per matra."
+            },
+            {
+              "text": "4 notes per beat",
+              "why": "That would be chaugun (quadruple). Tigun means triple."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does tigun sound different from dugun?",
+          "options": [
+            {
+              "text": "It uses different notes",
+              "why": "The notes can be the same. The difference is rhythmic - 3 subdivisions per beat create a different feel than 2."
+            },
+            {
+              "text": "It divides each beat into 3 equal parts instead of 2, creating a rolling quality",
+              "right": true,
+              "yes": "Exactly. The triplet subdivision creates a swinging, lilting quality that contrasts with the balanced feel of dugun."
+            },
+            {
+              "text": "It is played louder",
+              "why": "Volume does not change between speed levels. The difference is purely in how many notes fit per beat."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chaugun-quadruple-speed",
+      "title": "Chaugun - Quadruple Speed",
+      "content": ["Chaugun means 4 notes per matra. This is the 'sprint' - four notes per beat, which in Teentaal gives 64 notes per cycle. At chaugun, the melody moves so fast that it blurs into a continuous stream of sound.", "The technical challenge at chaugun is immense. Every note must be clean and distinct despite the speed. On the bansuri, this means precise finger movements and excellent breath control. A single sloppy note at chaugun is far more noticeable than at slower speeds because the listener's ear is tracking a rapid sequence.", "At chaugun, the tabla's steady pulse becomes the anchor that keeps everything together. The soloist and the tabla player share a deep awareness: the soloist trusts the taal to remain constant, and the tabla player trusts the soloist to land correctly on sam (the first beat of the cycle) despite the speed.", "Beyond chaugun lie even higher speeds: aath-gun (8 notes per beat), which is used by virtuosos in climactic moments. At these extreme speeds, the individual notes blend into textural washes of sound. Few musicians can maintain clean aath-gun for more than a few beats."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many notes per cycle does chaugun create in Teentaal (16 beats)?",
+          "options": [
+            {
+              "text": "32 notes per cycle",
+              "why": "That is dugun (2 notes per beat times 16 beats). Chaugun has 4 notes per beat."
+            },
+            {
+              "text": "48 notes per cycle",
+              "why": "That is tigun (3 notes per beat times 16 beats). Chaugun has 4 notes per beat."
+            },
+            {
+              "text": "64 notes per cycle",
+              "right": true,
+              "yes": "Correct. 4 notes per beat times 16 beats = 64 notes per cycle at chaugun."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the term for 4 notes per beat?",
+          "answer": "chaugun",
+          "hint": "'Chau' means four in Hindi/Sanskrit."
+        }
+      ]
+    },
+    {
+      "id": "layakari-progression",
+      "title": "The Layakari Progression",
+      "content": ["The most exciting moment in a performance is the layakari progression: starting at thah and gradually accelerating through dugun, tigun, to chaugun. The audience hears the music building in intensity while the taal remains steady underneath.", "This progression creates waves of energy. At thah, the music is calm and measured. As dugun begins, the audience senses movement. At tigun, there is a gathering momentum. When chaugun arrives, the energy peaks - the music seems to take flight while the rhythm stays grounded.", "The key to a successful layakari progression: each speed level must be CLEAN before you accelerate. Sloppy dugun does not become clean tigun - it becomes messier tigun. Practice each speed independently until it is rock solid, then practice the transitions between speeds.", "The great musicians also know when to come back down. After reaching chaugun, dropping suddenly back to thah creates a dramatic contrast - like a runner stopping to stand still. This contrast is as powerful as the acceleration itself. The best performances use both acceleration and deceleration as expressive tools."],
+      "questions": [
+        {
+          "type": "play",
+          "prompt": "Play this phrase cleanly at a steady tempo - then try playing it faster",
+          "notes": [0, 2, 4, 5, 7, 5, 4, 2]
+        },
+        {
+          "type": "choice",
+          "prompt": "What must be true before accelerating to the next speed level?",
+          "options": [
+            {
+              "text": "You need permission from the tabla player",
+              "why": "While musical communication matters, the requirement is that your current speed level must be clean and precise."
+            },
+            {
+              "text": "Each speed level must be clean and precise before moving to the next",
+              "right": true,
+              "yes": "Exactly. Sloppy dugun becomes messier tigun. Each level must be solid before you build on it."
+            },
+            {
+              "text": "You must wait for the audience to react",
+              "why": "The progression is a musical choice driven by the performer's control, not audience reaction."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cross-rhythms-syncopation",
+      "title": "Cross-Rhythms and Syncopation",
+      "content": ["Beyond simple multiplication of notes per beat, advanced layakari includes cross-rhythms: playing patterns that do not align with the beat, creating tension before resolution. This is where layakari becomes truly sophisticated.", "For example, imagine playing a 3-note melodic pattern against a 4-beat pulse. The pattern and the pulse align only every 12 notes (the least common multiple of 3 and 4). This creates 11 beats of tension before the pattern and the taal finally meet again on sam. The audience feels this tension viscerally.", "These cross-rhythmic patterns are called 'ari' or 'ada' in Hindustani music terminology. They are related to the concept of tihai (a phrase repeated three times to land on sam), but ari patterns are more sustained - they create ongoing tension rather than a single arrival point.", "Syncopation - placing emphasis on off-beats rather than on-beats - is another layakari technique. By accenting notes that fall between beats, the musician creates a sense of rhythmic displacement. The ear expects emphasis on the beat but hears it elsewhere, creating a compelling forward motion."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What creates tension in cross-rhythm layakari?",
+          "options": [
+            {
+              "text": "Playing louder than the tabla",
+              "why": "Volume does not create cross-rhythmic tension. The tension comes from patterns that do not align with the beat."
+            },
+            {
+              "text": "Patterns that do not align with the taal, creating tension before resolution",
+              "right": true,
+              "yes": "Correct. When the melodic pattern and the taal pulse are out of phase, tension builds until they finally realign."
+            },
+            {
+              "text": "Playing wrong notes deliberately",
+              "why": "Cross-rhythms use correct raga notes. The tension is rhythmic, not melodic."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When a 3-note pattern is played against a 4-beat pulse, when do they align?",
+          "options": [
+            {
+              "text": "Every 7 notes",
+              "why": "7 is the sum of 3 and 4, but alignment happens at the least common multiple, which is 12."
+            },
+            {
+              "text": "Every 12 notes",
+              "right": true,
+              "yes": "Correct. The least common multiple of 3 and 4 is 12, so the pattern and pulse align every 12 notes."
+            },
+            {
+              "text": "They never align",
+              "why": "They do align - at every 12th note (the least common multiple of 3 and 4). This eventual alignment is the resolution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layakari-and-taan",
+      "title": "Layakari and Taan",
+      "content": ["A taan (fast run of notes) and layakari are related but fundamentally different concepts. A taan is about WHICH notes you play - it is a melodic concept. Layakari is about HOW FAST you play them relative to the beat - it is a rhythmic concept.", "The same taan sounds completely different at dugun versus chaugun. At dugun, each note in the taan has space to breathe - the listener can follow the melodic contour clearly. At chaugun, the same taan becomes a blur of virtuosity - the listener perceives the overall shape and energy rather than individual notes.", "Great musicians combine melodic creativity (taan) with rhythmic creativity (layakari). A simple melodic idea played at shifting speeds is more interesting than a complex melodic idea played at constant speed. The interplay between what notes you choose and how you place them in time is the heart of improvisation.", "In practice, a musician might introduce a taan at dugun, repeat it at chaugun, then return to thah and play a completely different melodic idea. This creates contrast on two dimensions simultaneously: melody AND rhythm. It is this multi-dimensional improvisation that makes Hindustani music endlessly fascinating."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the difference between taan and layakari?",
+          "options": [
+            {
+              "text": "Taan is melodic (which notes), layakari is rhythmic (how fast relative to the beat)",
+              "right": true,
+              "yes": "Correct. Taan concerns note selection and melodic contour. Layakari concerns rhythmic speed and placement."
+            },
+            {
+              "text": "They are the same thing with different names",
+              "why": "They are distinct: taan is a melodic concept (which notes to play), layakari is a rhythmic concept (how those notes relate to the beat)."
+            },
+            {
+              "text": "Taan is for beginners and layakari is advanced",
+              "why": "Both have beginner and advanced aspects. The distinction is not about difficulty but about what dimension of music they address."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which concept is melodic and which is rhythmic?",
+          "options": [
+            {
+              "text": "Taan is rhythmic, layakari is melodic",
+              "why": "It is the other way around. Taan is about which notes (melodic), layakari is about speed relative to the beat (rhythmic)."
+            },
+            {
+              "text": "Both are melodic",
+              "why": "Layakari is specifically a rhythmic concept - it deals with how notes are placed in time relative to the beat."
+            },
+            {
+              "text": "Taan is melodic, layakari is rhythmic",
+              "right": true,
+              "yes": "Exactly. Taan = which notes (melody). Layakari = how fast and where relative to the beat (rhythm)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-building-layakari",
+      "title": "Practice: Building Layakari",
+      "content": ["Start with a simple 4-note phrase: Sa Re Ga Ma. Play it at thah (1 note per beat). Feel each note sitting squarely on its beat. This is your baseline.", "Now play the same phrase at dugun (2 notes per beat). The phrase now takes 2 beats instead of 4 - SaRe on beat 1, GaMa on beat 2. The taal has not changed, but your phrase is compressed. Each note gets half the time it had before.", "Then try tigun (3 notes per beat). Now SaReGa fits into beat 1, and Ma starts beat 2. The triplet feel makes the phrase swing differently. Then chaugun: all four notes (SaReGaMa) squeezed into a single beat.", "Each time, the taal stays constant but your phrase compresses. This is layakari in action. Practice with a metronome until each speed level is perfectly even. The metronome is your tabla - steady, unchanging, while you dance through the speeds. Mastering even this simple exercise gives you the foundation for all rhythmic improvisation."],
+      "questions": [
+        {
+          "type": "play",
+          "prompt": "Play this ascending-descending phrase at a steady tempo",
+          "notes": [0, 2, 4, 5, 7, 5, 4, 2, 0]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice layakari at each speed level (thah, dugun, tigun, chaugun) daily with a metronome"
+        }
+      ]
+    }
+  ]
+}

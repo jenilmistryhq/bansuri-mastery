@@ -228,7 +228,7 @@ export function holdMeter(opts) {
   const needle = lvEl("i", { class: "lv-needle" });
   const centsTxt = lvEl("span", { class: "lv-cents" }, "");
   // What the old live tuner showed too: the Western name and the frequency. Hidden, not removed, in silence.
-  const hzTxt = lvEl("span", { class: "lv-hz", style: "visibility:hidden" }, "C5 523.3 Hz");
+  const hzTxt = lvEl("span", { class: "lv-hz", style: "visibility:hidden" }, westOf(0) + " " + hzOf(0).toFixed(1) + " Hz");
   const msg = lvEl("p", { class: "lv-msg", "aria-live": "polite" }, "Press Start, then play a long, steady note.");
   // Playing mode's one word (docs/redesign 09), readable from a music stand. bench.css hides it; the
   // lesson player shows it while the microphone listens, so other screens are unchanged.
@@ -698,10 +698,10 @@ export function fluteFinder(opts) {
       const m = 69 + 12 * Math.log2(f / 440), n = Math.round(m), cents = Math.round((m - n) * 100);
       const note = (n % 12 + 12) % 12, oct = Math.floor(n / 12) - 1;
       const a4 = Math.abs(cents) >= 8 ? Math.round(440 * Math.pow(2, cents / 1200) * 10) / 10 : 440;
-      found = { saNote: note, saOct: Math.min(5, Math.max(4, oct)), a4, f, cents, oct };
+      found = { saNote: note, saOct: Math.min(6, Math.max(3, oct)), a4, f, cents, oct };
       big.textContent = WEST[note] + oct;
       const off = Math.abs(cents) < 8 ? "in tune with A4 = 440 Hz" : `${Math.abs(cents)} cents ${cents > 0 ? "sharp" : "flat"} of standard pitch (tuning set to A4 = ${a4} Hz)`;
-      msg.textContent = `Your Sa is ${WEST[note]}${oct} (${f.toFixed(1)} Hz), ${off}.` + (oct < 4 || oct > 5 ? " This flute is outside the bass and medium range the app supports; the nearest octave is used." : "");
+      msg.textContent = `Your Sa is ${WEST[note]}${oct} (${f.toFixed(1)} Hz), ${off}.` + (oct < 3 || oct > 6 ? " This flute is outside the octave range the app supports; the nearest octave is used." : "");
       useBtn.hidden = false; lvChime(); stop();
     }
   }

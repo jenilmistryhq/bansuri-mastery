@@ -1,0 +1,139 @@
+[
+  {
+    "id": "getting-started",
+    "title": "Getting Started",
+    "description": "From unboxing your bansuri to your first clear note on Sa.",
+    "modules": [
+      {
+        "id": "meet-and-setup",
+        "title": "Meet Your Flute",
+        "description": "Inspect, hold, and tune your bansuri for the first time.",
+        "rooms": ["meet-your-flute", "body-breath-first-sound", "bansuri-care"]
+      },
+      {
+        "id": "first-sounds",
+        "title": "First Sounds",
+        "description": "Develop a steady Sa and build breath control.",
+        "rooms": ["first-sound-on-sa", "long-tones-and-pitch", "common-mistakes", "breath-mastery", "meditation-and-bansuri"]
+      }
+    ]
+  },
+  {
+    "id": "bansuri-foundations",
+    "title": "Bansuri Foundations",
+    "description": "Build a solid foundation from your first note to a complete saptak.",
+    "modules": [
+      {
+        "id": "first-notes",
+        "title": "Your First Notes",
+        "description": "Find your home note and learn your first three swaras.",
+        "rooms": ["sa-the-home-note", "sa-re-ga-first-three"]
+      },
+      {
+        "id": "early-skills",
+        "title": "Early Skills",
+        "description": "Build alankars, discover lower Ni, and learn sargam theory.",
+        "rooms": ["first-alankars", "lower-ni", "sargam-theory", "advanced-alankars", "practice-planning", "tongue-techniques", "swara-sadhana"]
+      },
+      {
+        "id": "building-range",
+        "title": "Building Your Range",
+        "description": "Expand from three notes to the full seven-note saptak.",
+        "rooms": ["ma-pa-expanding-range", "shuddha-ma-half-holing", "dha-ni-full-saptak", "cross-fingering"]
+      },
+      {
+        "id": "expression-melody",
+        "title": "Expression and Melody",
+        "description": "Shape your first melodies and develop your musical ear.",
+        "rooms": ["first-melody", "song-by-ear", "rhythm-and-laya", "taal-deep-dive", "recording-your-bansuri"]
+      }
+    ]
+  },
+  {
+    "id": "intermediate-skills",
+    "title": "Intermediate Skills",
+    "description": "Develop your technique, ear, and understanding of ragas.",
+    "modules": [
+      {
+        "id": "expanding-range",
+        "title": "Expanding Your Range",
+        "description": "Master the upper octave, intonation, and meend.",
+        "rooms": ["upper-register-and-taal", "intonation", "meend-and-slides", "shruti-and-tuning", "register-mastery", "advanced-ear-training", "layakari"]
+      },
+      {
+        "id": "raga-theory",
+        "title": "Understanding Ragas",
+        "description": "Learn what ragas are and experience your first one.",
+        "rooms": ["what-is-a-raga", "raga-yaman-intro", "ten-thaats", "raga-time-theory", "concert-listening", "indian-music-history", "film-music-bansuri"]
+      },
+      {
+        "id": "notation-systems",
+        "title": "Notation Systems",
+        "description": "Read and write Indian and Western notation.",
+        "rooms": ["bhatkhande-notation", "western-notation", "keys-and-transposition"]
+      },
+      {
+        "id": "ornaments",
+        "title": "Ornaments and Expression",
+        "description": "Learn the ornaments that give bansuri its singing voice.",
+        "rooms": ["kan-khatka-murki", "gamak-and-andolan", "dynamics-and-expression"]
+      }
+    ]
+  },
+  {
+    "id": "raga-explorer",
+    "title": "Raga Explorer",
+    "description": "Deepen your knowledge of the 12-note system and explore ragas beyond Yaman.",
+    "modules": [
+      {
+        "id": "twelve-notes",
+        "title": "The 12-Note System",
+        "description": "Master komal swaras and tivra Ma to unlock every note on the bansuri.",
+        "rooms": ["komal-swaras", "tivra-ma"]
+      },
+      {
+        "id": "pentatonic-ragas",
+        "title": "Pentatonic Ragas",
+        "description": "Start with five-note ragas that build confidence and ear training.",
+        "rooms": ["raga-bhupali", "raga-durga", "raga-hansadhwani", "raga-shivranjani"]
+      },
+      {
+        "id": "komal-ragas",
+        "title": "Ragas with Komal Notes",
+        "description": "Explore ragas that use komal Ga and Ni - the emotional heart of Hindustani music.",
+        "rooms": ["raga-kafi", "raga-bhairavi", "raga-families", "raga-malkauns", "raga-desh", "raga-bageshree", "raga-ahir-bhairav", "raga-jaunpuri"]
+      },
+      {
+        "id": "advanced-ragas",
+        "title": "Advanced Ragas",
+        "description": "Tackle the most challenging ragas that test your full command of technique and theory.",
+        "rooms": ["raga-todi", "raga-marwa", "raga-bihag", "raga-kedar"]
+      }
+    ]
+  },
+  {
+    "id": "advanced-musicianship",
+    "title": "Advanced Musicianship",
+    "description": "From composition to performance - become a complete musician.",
+    "modules": [
+      {
+        "id": "creative-skills",
+        "title": "Creative Skills",
+        "description": "Learn to improvise and compose within the raga framework.",
+        "rooms": ["improvise-and-compose", "bandish-taans-tihai", "tihai-math", "taan-patterns", "nyas-and-vistar"]
+      },
+      {
+        "id": "performance-craft",
+        "title": "The Performance Craft",
+        "description": "Master alap, learn to play with others, and find your style.",
+        "rooms": ["alap-and-vistar", "accompaniment", "style-adaptation", "dhrupad-and-khayal", "thumri-and-light-classical", "jugalbandi", "raga-pilu"]
+      },
+      {
+        "id": "mastery",
+        "title": "Mastery",
+        "description": "Put it all together in a complete raga presentation.",
+        "rooms": ["performing", "full-raga-presentation", "circular-breathing", "stage-and-sound"]
+      }
+    ]
+  }
+]

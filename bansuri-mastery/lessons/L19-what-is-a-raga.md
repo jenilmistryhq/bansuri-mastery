@@ -66,7 +66,7 @@ scale, written ascending, and has no rules of its own: it is a **filing system**
 | Marwa | `S r G M P D N` | (none) | Marwa, Sohni |
 | Todi | `S r g M P d N` | (none) | Todi, Multani |
 
-**Bansuri note:** with Sa = C on your flute, **Kalyan thaat needs no half-holes at all**.
+**Bansuri note:** **Kalyan thaat needs no half-holes** in the standard 6-hole relative fingering; use it with your own Sa.
 Bilawal needs one (`m`). Bhairavi needs five. This is why the curriculum teaches ragas in the
 order Bhupali, Yaman, Durga, Khamaj... ([D12](../knowledge-tree/D12-RAG-raga.md)).
 

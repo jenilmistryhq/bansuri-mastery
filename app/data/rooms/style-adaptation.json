@@ -1,0 +1,265 @@
+{
+  "id": "style-adaptation",
+  "title": "Style and Gharana",
+  "tasks": [
+    {
+      "id": "what-is-gharana",
+      "title": "What Is a Gharana?",
+      "content": "A gharana is a school or lineage of musical training passed down from guru to student across generations. The word comes from 'ghar' (home) - a musical family.\n\nEach gharana has distinct characteristics:\n- **Emphasis on certain ornaments** (some use more meend, others prefer khatka)\n- **Approach to alap** (slow and expansive vs. compact and direct)\n- **Relationship with rhythm** (tightly structured vs. free-flowing)\n- **Repertoire** - specific compositions passed down through generations\n\nGharanas are not rigid boxes. Great musicians absorb from many traditions. But understanding gharana differences helps you appreciate why the same raga can sound so different from two musicians.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is a gharana?",
+          "options": [
+            {
+              "text": "A type of raga with specific rules",
+              "why": "A gharana is a school of musical training, not a raga."
+            },
+            {
+              "text": "A school or lineage with distinct musical characteristics",
+              "right": true,
+              "yes": "Correct. Each gharana has its own approach to expression, ornaments, and repertoire."
+            },
+            {
+              "text": "A specific size of bansuri",
+              "why": "Gharana refers to a musical tradition, not an instrument type."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "major-gharanas",
+      "title": "Major Gharana Traditions",
+      "content": "Several gharanas have shaped Hindustani music:\n\n- **Maihar Gharana** (Allauddin Khan) - Known for technical brilliance and blending Hindustani and Carnatic ideas. Ravi Shankar, Ali Akbar Khan, and Nikhil Banerjee came from this lineage.\n- **Senia Gharana** - Traced to Tansen himself. Emphasises dhrupad-style purity and slow, majestic alap.\n- **Gwalior Gharana** - The oldest vocal gharana. Known for clear, direct presentation with strong rhythmic sense.\n- **Kirana Gharana** - Famous for slow, contemplative alap and emphasis on sustained notes with subtle ornaments.\n\nThe bansuri tradition draws primarily from Maihar gharana and from vocal gayaki (singing) style.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which gharana is the bansuri tradition most closely connected to?",
+          "options": [
+            {
+              "text": "Gwalior Gharana",
+              "why": "Gwalior is primarily a vocal tradition. The bansuri draws more from Maihar."
+            },
+            {
+              "text": "Maihar Gharana and vocal gayaki style",
+              "right": true,
+              "yes": "Correct. Pannalal Ghosh studied with Allauddin Khan (Maihar), and Chaurasia brought in the gayaki vocal influence."
+            },
+            {
+              "text": "Senia Gharana",
+              "why": "Senia is linked to the been (rudra veena) tradition, not bansuri."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bansuri-pioneers",
+      "title": "Bansuri Pioneers",
+      "content": "The bansuri was traditionally a folk instrument, associated with Lord Krishna's pastoral music. Its entry into Hindustani classical music was largely due to two visionaries:\n\n**Pannalal Ghosh** (1911-1960) - Made the first long bansuri (around 32 inches) suitable for classical music. Before him, only small, high-pitched flutes existed. He proved the bansuri could handle the full range and depth of classical expression. He studied with Allauddin Khan of the Maihar gharana.\n\n**Hariprasad Chaurasia** (b. 1938) - Made the bansuri famous worldwide. Developed the gayaki (vocal) style of playing, using meend, murkis, and breath control to make the bansuri sing like a human voice. His film music brought the bansuri into popular culture.\n\nThese musicians transformed a simple folk instrument into one of the most expressive voices in Hindustani music.",
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Who is credited with introducing the bansuri to Hindustani classical music?",
+          "answer": "Pannalal Ghosh",
+          "accept": [
+            "Pannalal Ghosh",
+            "pannalal ghosh",
+            "Pannalal",
+            "pannalal",
+            "Ghosh"
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "gayaki-ang",
+      "title": "Gayaki Ang - Vocal Style",
+      "content": "Gayaki ang means 'in the manner of singing'. This style treats the bansuri as a human voice, using:\n\n- **Meend** (slides) - Long, smooth slides between notes, mimicking a singer gliding between pitches\n- **Murkis** - Rapid note clusters that imitate vocal turns\n- **Breathing phrasing** - Phrases shaped by breath, with natural pauses like a singer takes\n- **Emotional expression** - Prioritising feeling over speed\n\nHariprasad Chaurasia is the supreme exponent of this style. Listen to his alap in Raga Marwa or Raga Yaman - the bansuri breathes and sings.\n\nGayaki ang is the dominant modern bansuri style. Most bansuri players today play in this tradition.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which ornament is most central to the gayaki (vocal) style of bansuri playing?",
+          "options": [
+            {
+              "text": "Gamak - heavy, rapid oscillation",
+              "why": "Gamak is more characteristic of the instrumental (tantrakari) approach."
+            },
+            {
+              "text": "Meend - smooth slides mimicking the voice",
+              "right": true,
+              "yes": "Correct. Meend is the essence of gayaki ang - the voice slides naturally between pitches, and the bansuri imitates this."
+            },
+            {
+              "text": "Tihai - rhythmic repetition",
+              "why": "Tihai is a rhythmic device, not an ornament specific to the vocal style."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tantrakari-ang",
+      "title": "Tantrakari Ang - Instrumental Style",
+      "content": "Tantrakari ang means 'in the manner of instruments'. This style exploits the bansuri's unique capabilities rather than imitating the voice:\n\n- **Fast taans** - Rapid runs that use the bansuri's ability to articulate faster than a singer\n- **Gamak** - Heavy oscillations that the sustained breath of a flute can maintain longer than a voice\n- **Wide leaps** - Jumping between registers, using the bansuri's full range\n- **Rhythmic precision** - Tight rhythmic patterns with clear articulation using tongue stops\n\nPannalal Ghosh leaned more toward tantrakari ang. His playing showcased the bansuri's power and range.\n\nMost modern bansuri players blend both styles, drawing from gayaki ang for alap and tantrakari ang for fast sections.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What distinguishes the tantrakari (instrumental) style?",
+          "options": [
+            {
+              "text": "Long, smooth meend slides",
+              "why": "That is the hallmark of gayaki (vocal) style."
+            },
+            {
+              "text": "Exploiting the instrument's unique abilities - speed, range, and sustained breath",
+              "right": true,
+              "yes": "Correct. Tantrakari plays to the bansuri's strengths rather than imitating the voice."
+            },
+            {
+              "text": "Playing only in the lower register",
+              "why": "Tantrakari actually uses the full range, including wide leaps between registers."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "maihar-and-bansuri",
+      "title": "The Maihar Gharana and Its Legacy",
+      "content": ["The Maihar gharana is unique among the major musical lineages because it is primarily an instrumental gharana, not a vocal one. Founded by Ustad Allauddin Khan (1862-1972), a multi-instrumentalist genius who played over a hundred instruments, the Maihar school emphasises technical virtuosity, speed, precision, and the ability to play elaborate compositions at breakneck tempo.", "Allauddin Khan's central philosophy was that an instrument must 'sing' - it must be treated as a voice, not just a mechanical device. This idea shaped generations of musicians. His most famous students - Ravi Shankar on sitar, Ali Akbar Khan on sarod, and Annapurna Devi on surbahar - all played with a vocal quality that set them apart.", "For the bansuri, the Maihar connection runs through Pannalal Ghosh, who studied directly with Allauddin Khan. Ghosh applied the Maihar ideals to the flute: he redesigned the instrument itself, extending it to about 32 inches and adding a seventh finger hole to increase range. Before Ghosh, the bansuri was considered too simple and too high-pitched for the demands of classical raga performance. His longer flute produced the deep, resonant bass register that made classical bansuri possible.", "This transformation - from Krishna's pastoral folk flute to a full concert instrument capable of rendering the most complex ragas - is one of the great stories in Indian music history."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What did Pannalal Ghosh change about the bansuri to make it suitable for classical music?",
+          "options": [
+            {
+              "text": "He added metal keys like a Western flute",
+              "why": "The bansuri remains a simple bamboo flute with no keys. Ghosh changed the size and hole count."
+            },
+            {
+              "text": "He made it longer with a seventh hole, giving it the range and depth for raga performance",
+              "right": true,
+              "yes": "Correct. The longer body produced a deeper register, and the seventh hole extended the range to cover the full classical gamut."
+            },
+            {
+              "text": "He switched from bamboo to metal",
+              "why": "The bansuri's identity is bamboo. Ghosh kept the material and changed the design."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which gharana did Pannalal Ghosh study under, founded by Allauddin Khan?",
+          "answer": "Maihar",
+          "accept": ["Maihar", "maihar", "Maihar gharana", "maihar gharana"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "film-bhajan-folk",
+      "title": "Film, Bhajan, and Folk",
+      "content": "The bansuri is not limited to classical music. It appears in many genres:\n\n**Film music** - Chaurasia's film soundtracks (Silsila, Chandni, Darr) made the bansuri one of the most recognisable sounds in Bollywood. Film bansuri is usually simpler than classical - beautiful melodies without the elaborate alap.\n\n**Bhajan** (devotional) - The bansuri's association with Krishna makes it perfect for bhajans. Slow, meditative playing with long meend and gentle ornaments.\n\n**Folk** - Each region has its own folk flute tradition. Rajasthani, Bengali, and South Indian folk styles all use the bansuri differently - faster, more rhythmic, often in pentatonic scales.\n\nLearning classical technique gives you the tools to play in any genre.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is the bansuri especially suited to bhajan (devotional) music?",
+          "options": [
+            {
+              "text": "Because bhajans require very fast playing",
+              "why": "Bhajans are usually slow and meditative, not fast."
+            },
+            {
+              "text": "Because of its association with Lord Krishna and its meditative tone",
+              "right": true,
+              "yes": "Correct. Krishna's flute is central to Hindu devotional imagery, and the bansuri's warm tone suits contemplative music."
+            },
+            {
+              "text": "Because bhajans do not use ragas",
+              "why": "Many bhajans are based on ragas like Bhairavi, Yaman, and Des."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modern-and-fusion",
+      "title": "Modern and Fusion Approaches",
+      "content": ["The bansuri has moved far beyond the classical concert stage. Hariprasad Chaurasia's 1967 album 'Call of the Valley' - a collaboration with santoor player Shivkumar Sharma and guitarist Brij Bhushan Kabra - is considered a landmark in Indian fusion music. It proved that Indian classical instruments could meet Western ones without losing their identity.", "Today, the bansuri appears in jazz ensembles, ambient recordings, world music festivals, and film scores worldwide. Ronu Majumdar is known for his rhythmic precision and willingness to experiment with electronic soundscapes. Rakesh Chaurasia (Hariprasad's nephew) bridges film music and classical concert performance, bringing the bansuri to new audiences.", "Fusion is not without controversy. Purists argue that mixing the bansuri with Western harmony undermines the raga system, which is built on melody and drone, not chords. Others see fusion as a natural evolution - the same ragas that absorbed Persian influence centuries ago can absorb Western influence now.", "The key insight: even in fusion, the raga framework provides the bansuri's musical grammar. A bansuri playing random pentatonic notes over a jazz chord progression is not fusion - it is dilution. True fusion brings the raga's depth into a new context. The musician must know the tradition deeply enough to extend it without losing it."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the key to successful bansuri fusion music?",
+          "options": [
+            {
+              "text": "Abandoning raga rules to fit Western harmony",
+              "why": "Without raga, the bansuri loses its musical identity. Fusion extends tradition, not abandons it."
+            },
+            {
+              "text": "Knowing the raga tradition deeply enough to bring it into a new context",
+              "right": true,
+              "yes": "Correct. True fusion is an extension of tradition, not a rejection of it. You must know the rules before you can bend them."
+            },
+            {
+              "text": "Playing only Western scales on the bansuri",
+              "why": "That would be imitation, not fusion. The bansuri's power comes from the raga system."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which landmark album is considered a pioneer of Indian fusion music?",
+          "options": [
+            {
+              "text": "Call of the Valley (1967)",
+              "right": true,
+              "yes": "Correct. This collaboration between Chaurasia, Sharma, and Kabra showed that Indian and Western instruments could create something genuinely new."
+            },
+            {
+              "text": "The Concert for Bangladesh (1971)",
+              "why": "That was a charity concert featuring Ravi Shankar, significant but primarily a live event, not an album of fusion composition."
+            },
+            {
+              "text": "Raga Rock (1966)",
+              "why": "Raga Rock was a Western pop term for sitar-influenced rock, not an Indian classical fusion project."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "developing-your-voice",
+      "title": "Developing Your Voice",
+      "content": ["Understanding gharana traditions and bansuri history helps you appreciate the depth of the tradition you are learning.", "As you advance, you will naturally develop your own 'ang' - your personal approach and angle for playing a raga. Ang is not deviation from tradition. It is personal expression within tradition. Two musicians can play Yaman following all the same rules and still sound completely different because their ang is different - the phrases they favour, the ornaments they reach for, the emotional shade they bring.", "Your ang is shaped by:\n- The musicians you listen to most\n- Your physical strengths (breath capacity, finger speed)\n- The ragas you are drawn to\n- The genres you play in\n- Your emotional temperament\n\nListen widely. The more styles you absorb, the richer your own expression becomes. There is no single 'correct' way to play - only your honest musical voice. The tradition gives you the grammar; your ang gives you the poetry."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is 'ang' in the context of bansuri playing?",
+          "options": [
+            {
+              "text": "A specific technique for fast taans",
+              "why": "Ang refers to your personal approach and style, not a single technique."
+            },
+            {
+              "text": "Your personal approach and angle for interpreting a raga - expression within tradition",
+              "right": true,
+              "yes": "Correct. Your ang is what makes your Yaman sound like YOUR Yaman, while still following the raga's grammar."
+            },
+            {
+              "text": "A type of ornament used in alap",
+              "why": "Ang is broader than any single ornament. It is your overall musical personality."
+            }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand the traditions and am ready to develop my own ang",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

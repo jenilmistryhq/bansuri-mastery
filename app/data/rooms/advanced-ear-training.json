@@ -1,0 +1,337 @@
+{
+  "id": "advanced-ear-training",
+  "title": "Advanced Ear Training",
+  "tasks": [
+    {
+      "id": "why-ear-training",
+      "title": "Why Ear Training Matters",
+      "content": [
+        "In Indian classical music, everything begins with the ear. There is no written score to follow during improvisation - you must hear the raga in your mind before your fingers can play it. Your ear is both your compass and your judge.",
+        "Advanced ear training means developing four distinct skills: hearing intervals instantly (knowing the distance between two notes without counting), identifying individual swaras against the drone, recognizing ragas from just a few phrases, and catching pitch errors in your own playing in real time.",
+        "This is not a gift that some people have and others lack. It is a skill built through daily, focused practice. Every musician who seems to have a 'natural ear' has trained it, often from childhood. The good news: your ear improves at any age if you practice consistently."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is ear training particularly important in Indian classical music?",
+          "options": [
+            {
+              "text": "Because Indian music has more notes than Western music",
+              "why": "Both systems use 12 chromatic notes. The importance comes from the improvisational nature of the tradition."
+            },
+            {
+              "text": "Because improvisation requires hearing the music internally before playing it",
+              "right": true,
+              "yes": "Correct. Without a written score to follow, your ear is your only guide during improvisation."
+            },
+            {
+              "text": "Because Indian instruments are harder to tune",
+              "why": "While tuning matters, the real reason is that Indian music relies heavily on improvisation and oral tradition."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Is perfect pitch (absolute pitch) necessary for Indian classical music?",
+          "options": [
+            {
+              "text": "Yes - you must identify any note without a reference",
+              "why": "Indian music always has a drone (tanpura) as reference. Relative pitch against the drone is what matters."
+            },
+            {
+              "text": "No - relative pitch against the drone is what matters",
+              "right": true,
+              "yes": "Right. The tanpura provides Sa and Pa as constant references. You train to hear all other notes relative to these anchors."
+            },
+            {
+              "text": "Ear training is not important at all",
+              "why": "Ear training is arguably the single most important skill in Indian music."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lower-intervals",
+      "title": "Sa Re Ga - The Lower Intervals",
+      "content": [
+        "Start with the foundation: the first four notes against the drone. Sa (0), Re (2), komal Ga (3), and shuddha Ga (4).",
+        "The critical distinction here is between komal Ga and shuddha Ga - a difference of just one semitone. But the emotional impact is vast. Komal Ga (3 semitones above Sa) sounds warm, tender, and slightly melancholic. It is the note that gives Kafi and Bhairavi their emotional depth. Shuddha Ga (4 semitones above Sa) sounds bright, open, and confident - the Ga of Yaman and Bhupali.",
+        "Listen carefully against the drone. Komal Ga creates a minor third with Sa - an interval associated with sadness in Western music too. Shuddha Ga creates a major third - bright and uplifting. Train until you can distinguish them in a single hearing."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 3, 4],
+          "count": 8,
+          "pass": 5,
+          "prompt": "Identify each note: Sa (0), Re (2), komal Ga (3), or shuddha Ga (4)",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Which Ga sounds warmer and more melancholic?",
+          "options": [
+            {
+              "text": "Shuddha Ga (4 semitones above Sa)",
+              "why": "Shuddha Ga creates a major third - it sounds bright and open, not melancholic."
+            },
+            {
+              "text": "Komal Ga (3 semitones above Sa)",
+              "right": true,
+              "yes": "Correct. Komal Ga creates a minor third with Sa, giving it that warm, tender, slightly sad quality."
+            },
+            {
+              "text": "They sound the same",
+              "why": "They differ by one semitone and have very different emotional characters. Keep training - the difference becomes clear with practice."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "middle-intervals",
+      "title": "Ma Pa Dha - The Middle Intervals",
+      "content": [
+        "Now the middle register: Ma (5), tivra Ma (6), Pa (7), and Dha (9).",
+        "The Ma vs tivra Ma distinction is one of the most important in Hindustani music. Shuddha Ma (5 semitones, a perfect fourth) belongs to the world of Kafi thaat, Bhairavi, and grounded ragas. Tivra Ma (6 semitones, a tritone) belongs to the world of Yaman and Marwa - ragas that feel elevated, reaching upward. This one-semitone shift changes the entire emotional universe of a raga.",
+        "Pa (7 semitones, the perfect fifth) is the most consonant note after Sa itself. Against the drone, Pa sounds so stable it almost disappears into the Sa. This consonance is why Pa is achal (immovable) - it never changes.",
+        "Dha (9 semitones) completes the upper framework. It is the sixth degree, and its komal/shuddha variants are equally important, but start by hearing shuddha Dha clearly."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [5, 6, 7, 9],
+          "count": 8,
+          "pass": 5,
+          "prompt": "Identify each note: Ma (5), tivra Ma (6), Pa (7), or Dha (9)",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What distinguishes the emotional world of shuddha Ma from tivra Ma?",
+          "options": [
+            {
+              "text": "Shuddha Ma is grounded (Kafi/Bhairavi world); tivra Ma is elevated (Yaman/Marwa world)",
+              "right": true,
+              "yes": "Correct. This one-semitone difference creates entirely different raga universes."
+            },
+            {
+              "text": "They belong to the same emotional world",
+              "why": "They create fundamentally different moods. Shuddha Ma grounds a raga; tivra Ma lifts it."
+            },
+            {
+              "text": "Tivra Ma is always sad and shuddha Ma is always happy",
+              "why": "It is not about happy/sad but about grounded vs elevated. Yaman (tivra Ma) is not sad - it is uplifting."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "upper-register-ni",
+      "title": "Ni and the Upper Register",
+      "content": [
+        "Komal Ni (10) versus shuddha Ni (11): another one-semitone distinction with massive raga implications.",
+        "Komal Ni belongs to the Kafi thaat family. Ragas like Bageshree, Kafi, Malkauns, and Darbari all use komal Ni. It creates a softer, more inward quality in the upper register - a sense of pulling back rather than reaching forward.",
+        "Shuddha Ni belongs to the Bilawal and Kalyan thaat families. Ragas like Yaman, Bhupali, and Bihag use shuddha Ni. It creates a brighter, more outward quality - a sense of completion and arrival.",
+        "Raga Desh is a special case: it uses shuddha Ni (11) in ascent and komal Ni (10) in descent. This dual-Ni treatment gives Desh its unique character - bright going up, wistful coming down. Hearing which Ni is in use is essential for identifying Desh and understanding its personality."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [9, 10, 11, 12],
+          "count": 8,
+          "pass": 5,
+          "prompt": "Identify each note: Dha (9), komal Ni (10), shuddha Ni (11), or upper Sa (12)",
+          "points": 20
+        },
+        {
+          "type": "type",
+          "prompt": "Which raga famously uses both forms of Ni - shuddha in ascent, komal in descent?",
+          "answer": "Desh",
+          "accept": ["Desh", "desh", "raga desh", "Raga Desh"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "komal-shuddha-challenge",
+      "title": "Komal vs Shuddha Challenge",
+      "content": [
+        "This is the hardest ear training challenge in Hindustani music: distinguishing komal from shuddha versions of the same swara.",
+        "There are four pairs to master:\n- komal Re (1) vs shuddha Re (2)\n- komal Ga (3) vs shuddha Ga (4)\n- komal Dha (8) vs shuddha Dha (9)\n- komal Ni (10) vs shuddha Ni (11)",
+        "Each pair is separated by just one semitone. In isolation, the difference can be hard to hear. But against the drone, each version creates a distinctly different relationship with Sa. The komal version pulls inward, creating tension or tenderness. The shuddha version sits more openly, creating stability or brightness.",
+        "This skill is what separates advanced musicians from beginners. A master hears komal Ga and instantly knows: Kafi, Bhairavi, Darbari, Malkauns. They hear shuddha Ga and think: Yaman, Bhupali, Bilawal. The note itself announces its raga world."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [1, 2, 3, 4, 8, 9, 10, 11],
+          "count": 10,
+          "pass": 6,
+          "prompt": "Identify the note from all 8 komal and shuddha variants",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "Which komal/shuddha pair is typically hardest for students to distinguish?",
+          "options": [
+            {
+              "text": "komal Re (1) vs shuddha Re (2) - because both are close to Sa",
+              "right": true,
+              "yes": "Correct. Both Re variants sit near Sa, making them harder to separate. Komal Re is especially elusive - just one semitone above Sa."
+            },
+            {
+              "text": "komal Ga (3) vs shuddha Ga (4) - because Ga is in the middle",
+              "why": "This pair is challenging but many students find it slightly easier because the minor/major third distinction is emotionally vivid."
+            },
+            {
+              "text": "komal Ni (10) vs shuddha Ni (11) - because Ni is high",
+              "why": "While Ni is high, the two versions have quite different emotional characters that help distinguish them."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interval-recognition",
+      "title": "Interval Recognition",
+      "content": [
+        "Beyond identifying individual notes, train yourself to hear the distance between two notes - the interval. Each interval has a distinctive quality you can learn to recognize by feel.",
+        "The key intervals in Indian music:\n- 2 semitones (Sa to Re): a major second. Sounds bright, like a step upward.\n- 3 semitones (Sa to komal Ga): a minor third. Sounds warm, tender, slightly sad.\n- 4 semitones (Sa to Ga): a major third. Sounds bright, happy, open.\n- 5 semitones (Sa to Ma): a perfect fourth. Sounds stable, anchored, resolved.\n- 7 semitones (Sa to Pa): a perfect fifth. The most consonant interval after the octave. Sounds pure, blending, almost transparent.",
+        "When you hear an interval, you should feel its quality before you name it. The perfect fifth (Sa-Pa) feels spacious and stable. The minor third (Sa-komal Ga) feels intimate and inward. These feelings are more reliable than counting semitones."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 3, 4, 5, 7],
+          "count": 8,
+          "pass": 5,
+          "prompt": "Identify each note: Sa, Re, komal Ga, Ga, Ma, or Pa",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Which interval is considered the most consonant after the octave?",
+          "options": [
+            {
+              "text": "Major third (Sa to Ga, 4 semitones)",
+              "why": "The major third is consonant but not the most consonant. The perfect fifth is purer."
+            },
+            {
+              "text": "Perfect fifth (Sa to Pa, 7 semitones)",
+              "right": true,
+              "yes": "Correct. The perfect fifth (ratio 3:2) is so consonant that Pa almost merges with Sa against the drone."
+            },
+            {
+              "text": "Minor second (Sa to komal Re, 1 semitone)",
+              "why": "The minor second is actually one of the most dissonant intervals - tense and clashing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raga-clues",
+      "title": "Raga Clues",
+      "content": [
+        "Every raga has telltale signs that identify it. Learning to read these clues is the art of raga recognition.",
+        "The first clue is which notes are present and which are absent. Bhupali uses only Sa, Re, Ga, Pa, Dha - no Ma, no Ni. Malkauns uses only Sa, komal Ga, Ma, komal Dha, komal Ni - no Re, no Pa. The absence of notes is as distinctive as their presence.",
+        "The second clue is which notes are komal or tivra. Yaman's tivra Ma immediately identifies its thaat. Bhairavi's four komal notes (Re, Ga, Dha, Ni) announce its identity from the first phrase.",
+        "The third clue is the vadi - which note receives the most emphasis, the longest duration, the most ornamentation. In Yaman, Ga is the vadi. In Bhupali, Dha is the vadi. The vadi tells you what note the raga considers most important.",
+        "The fourth clue is characteristic phrases. Yaman's ascending Ni-Re-Ga is unmistakable. Bhairavi's descending komal Dha-Pa-Ma-komal Ga is its signature. These phrases are like a raga's fingerprint."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the first thing to listen for when trying to identify a raga?",
+          "options": [
+            {
+              "text": "The tempo and rhythm",
+              "why": "Tempo varies within a performance. The notes being used are a more reliable clue."
+            },
+            {
+              "text": "Which notes are present and which are absent",
+              "right": true,
+              "yes": "Correct. The scale itself - which notes appear and which are missing - is the first and most reliable identifier."
+            },
+            {
+              "text": "The instrument being played",
+              "why": "Any raga can be played on any instrument. The notes and phrases identify the raga, not the instrument."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does the vadi (most emphasized note) tell you about a raga?",
+          "options": [
+            {
+              "text": "Which note the raga considers most important and gives the most attention to",
+              "right": true,
+              "yes": "Right. The vadi is the king note - it gets the longest durations, the most ornamentation, and the most phrases built around it."
+            },
+            {
+              "text": "Which note should never be played",
+              "why": "That would be a vivadi (dissonant/forbidden) note. The vadi is the opposite - the most important note."
+            },
+            {
+              "text": "Which note to start the raga on",
+              "why": "Many ragas start on Sa regardless of the vadi. The vadi is about emphasis throughout the performance."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full-chromatic-challenge",
+      "title": "Full Chromatic Challenge",
+      "content": [
+        "The ultimate ear training test: identify any of the 12 notes in the octave against the drone.",
+        "Sa (0), komal Re (1), Re (2), komal Ga (3), Ga (4), Ma (5), tivra Ma (6), Pa (7), komal Dha (8), Dha (9), komal Ni (10), Ni (11).",
+        "This is the complete chromatic set - every possible note within one octave. If you can reliably identify all 12, your ear has reached an advanced level. Very few students achieve this quickly. It typically takes months or years of daily practice.",
+        "Do not be discouraged by mistakes. Each wrong answer teaches you something - it shows you which note pairs your ear still confuses. Focus your future practice on those specific confusions."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+          "count": 12,
+          "pass": 7,
+          "prompt": "Identify the note from all 12 chromatic swaras",
+          "points": 30
+        }
+      ]
+    },
+    {
+      "id": "daily-ear-training",
+      "title": "Daily Ear Training Practice",
+      "content": [
+        "Build ear training into your daily riyaz: five minutes at the start of each session. Always practice against the drone.",
+        "Start with the notes of whatever raga you are studying that week. If you are working on Yaman, train on Sa, Re, Ga, tivra Ma, Pa, Dha, Ni. If you are working on Bhairavi, train on Sa, komal Re, komal Ga, Ma, Pa, komal Dha, komal Ni.",
+        "Once you are comfortable with the raga's own notes, expand to include the komal/shuddha variants that the raga does not use. This builds your ability to hear what does NOT belong - which is just as important as hearing what does.",
+        "Over months of consistent practice, your ear will sharpen dramatically. You will begin to identify notes faster, catch intonation errors sooner, and hear ragas in everyday sounds. The goal is not perfection but steady progress - each week should bring small, noticeable improvements in speed and confidence."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Sa within 15 cents for 5 seconds - anchor your ear to the home note",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the full shuddha saptak ascending and descending as a reference",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice ear training for at least 5 minutes at the start of every practice session."
+        }
+      ]
+    }
+  ]
+}

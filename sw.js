@@ -1,6 +1,6 @@
 // Service worker: keeps the app and the whole course available offline.
 // VERSION is rewritten by scripts/build_app.py whenever any app or course file changes.
-const VERSION = "174e77a06b85";
+const VERSION = "d6ec81b83a9f";
 const CACHE = "bansuri-" + VERSION;
 const VOICE_CACHE = "voice-clips-v1";
 
@@ -16,8 +16,7 @@ self.addEventListener("install", event => {
     // background once the app is open (see "CACHE_REST"), so the first visit is quick.
     const core = list.docs.filter(d => /^(README|05-|06-)/.test(d.path) || d.path === "ragas/README.md" || d.path === "exercises/EX-MEL-practice-melodies.md");
     const urls = ["./", "index.html", "manifest.webmanifest", "app/data/files.json"].concat(list.assets, core.map(d => "bansuri-mastery/" + d.path));
-    await cache.addAll(urls.map(u => new Request(u, { cache: "reload" })));
-    // Network-first pages never depend on this worker's cache while online, so it can take over at once.
+    await Promise.all(urls.map(u => fetch(new Request(u, { cache: "reload" })).then(r => r.ok ? cache.put(u, r) : null).catch(() => null)));
     await self.skipWaiting();
   })());
 });
@@ -68,11 +67,11 @@ self.addEventListener("notificationclick", event => {
 
 async function cacheRest() {
   const cache = await caches.open(CACHE);
-  const list = await (await fetch("app/data/files.json")).json();
+  const list = await (await fetch("app/data/files.json", { cache: "no-cache" })).json();
   const todo = [];
   for (const d of list.docs) { const u = "bansuri-mastery/" + d.path; if (!(await cache.match(u))) todo.push(u); }
   for (let i = 0; i < todo.length; i += 6) {
-    await Promise.all(todo.slice(i, i + 6).map(u => fetch(u, { cache: "no-cache" }).then(r => r.ok ? cache.put(u, r) : null).catch(() => null)));
+    await Promise.all(todo.slice(i, i + 6).map(u => fetch(new Request(u, { cache: "no-cache" })).then(r => r.ok ? cache.put(u, r) : null).catch(() => null)));
   }
 }
 

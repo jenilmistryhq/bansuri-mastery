@@ -1,0 +1,319 @@
+{
+  "id": "practice-planning",
+  "title": "Practice Planning",
+  "tasks": [
+    {
+      "id": "why-structure-matters",
+      "title": "Why Practice Structure Matters",
+      "content": [
+        "Random noodling is not practice. Picking up the flute and playing whatever comes to mind may be enjoyable, but it does not build skills systematically. You will repeat what you already know, avoid what you find difficult, and progress will stall.",
+        "Structured riyaz (disciplined practice) is the Indian musician's training method. Riyaz is not performance - it is work. You isolate specific skills, repeat them with focus, and push slightly beyond your comfort zone every session.",
+        "The difference between riyaz and casual playing is the difference between training for a marathon and going for a walk. Both involve movement, but only one builds capacity.",
+        "Even 30 minutes of structured riyaz produces more improvement than 2 hours of unfocused playing. The key is intention: knowing what you are working on, why, and how to tell if you are improving."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is riyaz?",
+          "options": [
+            {
+              "text": "A type of raga",
+              "why": "Riyaz is not a raga. It is the practice of disciplined, structured daily training."
+            },
+            {
+              "text": "Disciplined, structured practice - the musician's daily training",
+              "right": true,
+              "yes": "Correct. Riyaz is the foundation of every serious musician's development - systematic, focused, and intentional."
+            },
+            {
+              "text": "A performance for an audience",
+              "why": "Riyaz is private practice, the opposite of performance. You fix problems in riyaz; you express in performance."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which is more effective for improvement?",
+          "options": [
+            {
+              "text": "2 hours of playing whatever you feel like",
+              "why": "Unfocused playing reinforces habits, good and bad. Structured practice targets weaknesses."
+            },
+            {
+              "text": "30 minutes of structured riyaz with clear goals",
+              "right": true,
+              "yes": "Right. Focused, structured practice with intention produces more growth than hours of unfocused playing."
+            },
+            {
+              "text": "Both are equally effective",
+              "why": "They are not. Structure and intention make practice dramatically more effective."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "five-part-session",
+      "title": "The Five-Part Session",
+      "content": [
+        "A complete daily riyaz session has five parts, each serving a specific purpose:",
+        "Part 1: Warm-up with long tones (5 minutes). Hold each note of the saptak against the drone. Check your intonation. Wake up your breath support. This is non-negotiable - never skip it.",
+        "Part 2: Alankars and technique (10 minutes). Practice melodic patterns at controlled speed. Focus on evenness and accuracy. Gradually increase speed only when the current tempo is clean.",
+        "Part 3: Raga study (15 minutes). Pick one raga and explore its phrases deeply. Learn its aroha, avaroha, pakad, and characteristic movements. Do not rush to play fast - sit with each phrase and understand it.",
+        "Part 4: Composition practice (10 minutes). Work on a specific bandish. Learn the sthayi and antara. Practice the mukhda return. Work on taans within the raga.",
+        "Part 5: Creative exploration (10 minutes). Free improvisation within the raga you are studying. No rules except the raga's rules. This is where you discover your own voice.",
+        "Total: approximately 50 minutes. Beginners can shorten to 30 minutes (3-5-10-7-5). Serious students can extend to 90 minutes by doubling each section."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many parts does the standard structured practice session have?",
+          "answer": "5",
+          "accept": ["5", "five"],
+          "points": 10,
+          "yes": "Correct! Five parts: warm-up, alankars, raga study, composition, and creative exploration.",
+          "no": "The standard session has 5 parts: warm-up, alankars, raga study, composition, and creative exploration."
+        },
+        {
+          "type": "choice",
+          "prompt": "Which part of the practice session should always come first?",
+          "options": [
+            {
+              "text": "Raga study - dive straight into the raga",
+              "why": "Playing a raga cold, without warming up, risks poor intonation and stiff fingers."
+            },
+            {
+              "text": "Warm-up with long tones against the drone",
+              "right": true,
+              "yes": "Right. Always warm up first. Long tones check your intonation, wake up your breath, and prepare your body for focused playing."
+            },
+            {
+              "text": "Creative exploration - start with something fun",
+              "why": "Fun is important, but it comes after the structured work. Warm up, build, then create."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "warmup-long-tones",
+      "title": "Warm-Up: Long Tones",
+      "content": [
+        "Start every session with long tones against the drone. This is the most important five minutes of your practice.",
+        "Hold each note of the saptak for 4-6 seconds: Sa, Re, Ga, Ma, Pa, Dha, Ni, upper Sa. As you hold each note, listen for 'beats' - a wavering, pulsing sound between your note and the drone. If you hear beats, your note is slightly out of tune. Adjust your air pressure and embouchure until the beats disappear and the two sounds merge into one smooth tone.",
+        "Long tones accomplish three things simultaneously: they check your intonation (are your notes in tune today?), they warm up your breath support (the diaphragm needs a few minutes to engage properly), and they centre your ear (you start hearing the drone relationship before playing anything complex).",
+        "Never skip the warm-up. Even professional musicians with decades of experience begin every session with long tones. It is the musical equivalent of stretching before running."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Warm-up: hold Sa for 6 seconds against the drone. Listen for beats and adjust until they vanish.",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Now hold Pa for 5 seconds. Pa should lock in with the drone - the most consonant interval after the octave.",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold Ga for 5 seconds. Ga is warmer and more sensitive - listen carefully for beats.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "slow-practice-rule",
+      "title": "The Slow Practice Rule",
+      "content": [
+        "This is the single most important practice principle: never increase speed until the slow version is perfectly clean.",
+        "If you cannot play a phrase cleanly at 60 BPM, you have no business playing it at 120 BPM. Speed without accuracy is just noise. When you play slowly and correctly, your fingers learn the right movements, the right pressure, the right timing. When you play fast and sloppy, your fingers learn mistakes - and mistakes practised at speed become deeply ingrained habits that are extremely difficult to fix later.",
+        "The path to speed is counterintuitive: slow and perfect, then slightly faster, then slightly faster. Each increment is small - perhaps 5-10 BPM. At each new speed, you play until it is completely clean before going faster. This process takes days or weeks, not minutes.",
+        "Professional musicians understand this. They spend hours on a single phrase at slow tempo, perfecting every transition, every finger lift, every breath. The speed comes later, almost as a side effect of deep accuracy.",
+        "A useful rule: if you make a mistake, go back to a slower tempo. Speed is earned, not forced."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What should you fix before increasing the speed of a phrase?",
+          "options": [
+            {
+              "text": "Nothing - speed comes from repetition at high tempo",
+              "why": "Fast repetition of mistakes just ingrains those mistakes deeper. Accuracy must come first."
+            },
+            {
+              "text": "Every note, transition, and timing issue at the current slow tempo",
+              "right": true,
+              "yes": "Exactly. Perfect the phrase at a slow tempo first. Speed is a byproduct of accuracy, not a separate skill."
+            },
+            {
+              "text": "Only the first and last notes - the middle does not matter at speed",
+              "why": "Every note matters. At speed, any weakness in the middle becomes a stumble or blur."
+            }
+          ]
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 5, 4, 2, 0],
+          "prompt": "Play Sa Re Ga Ma Pa Ma Ga Re Sa slowly and evenly. Every note should be the same length, every transition clean.",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "weekly-focus",
+      "title": "Weekly Focus",
+      "content": [
+        "Pick one raga per week. This depth-first approach builds real understanding far faster than jumping between ragas every day.",
+        "Here is a sample weekly plan for studying a raga:",
+        "Monday: Learn the aroha (ascending) and avaroha (descending) patterns. Play them slowly, repeatedly, until they are in your fingers.",
+        "Tuesday: Learn the pakad - the signature phrases that identify the raga. Play them in isolation, then connect them.",
+        "Wednesday: Practice characteristic phrases and movements. How does the raga move between its important notes? What ornaments does it use?",
+        "Thursday: Work on a composition (bandish) in the raga. Learn the sthayi and antara.",
+        "Friday: Improvise freely within the raga. Use everything you have learned this week.",
+        "Weekend: Listen to recordings of masters playing the raga. Notice what they do that you do not. This listening is practice too.",
+        "After a week of focused study, you will know one raga well. After a year of weekly study, you will have deep familiarity with 50 ragas. That is a substantial repertoire."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which approach builds deeper understanding of ragas?",
+          "options": [
+            {
+              "text": "Practice a different raga every day for variety",
+              "why": "Variety feels productive but builds only shallow familiarity. Depth requires sustained focus."
+            },
+            {
+              "text": "Focus on one raga per week and study it deeply each day",
+              "right": true,
+              "yes": "Correct. Depth over breadth. One week of focused study builds more understanding than a month of scattered exploration."
+            },
+            {
+              "text": "Only practice one raga for the entire year",
+              "why": "One raga per year is too narrow. One per week balances depth with reasonable breadth."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the signature phrase that identifies a raga called?",
+          "answer": "pakad",
+          "accept": ["pakad", "pakar", "pakad phrase"],
+          "points": 10,
+          "yes": "Correct! The pakad is the raga's fingerprint - the short phrase that immediately identifies it.",
+          "no": "The signature phrase is called the pakad (also spelled pakar)."
+        }
+      ]
+    },
+    {
+      "id": "recording-yourself",
+      "title": "Recording Yourself",
+      "content": [
+        "Record your practice sessions and listen back. This is one of the most powerful improvement tools available to any musician, and it costs nothing.",
+        "When you play, your attention is divided between technique, rhythm, intonation, expression, and a dozen other things. You cannot hear yourself objectively. But when you listen to a recording, you hear with fresh ears. Problems that were invisible while playing become obvious: pitch wandering, uneven timing, notes that do not connect smoothly, phrases that rush or drag.",
+        "Comparison is equally valuable. Find a recording of a master playing the same raga or composition you are working on. Listen to both side by side. The gap between your playing and theirs is not discouraging - it is a detailed map of exactly where to focus your practice.",
+        "Record the same piece every month. Over time, you build an audio journal of your progress. The improvement that is invisible day to day becomes dramatically clear over months."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is recording yourself valuable for improvement?",
+          "options": [
+            {
+              "text": "To share on social media",
+              "why": "Sharing can be motivating, but the main value is objective self-assessment."
+            },
+            {
+              "text": "You hear problems that are invisible while playing - pitch, timing, connections",
+              "right": true,
+              "yes": "Exactly. While playing, your attention is divided. Recordings let you hear yourself with fresh, objective ears."
+            },
+            {
+              "text": "To prove you practised",
+              "why": "Accountability can help, but the real value is hearing what you actually sound like versus what you think you sound like."
+            }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will start recording my practice sessions and listening back",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "setting-goals",
+      "title": "Setting Goals",
+      "content": [
+        "Good practice goals are specific and measurable. 'Get better at Bhupali' is a wish, not a goal. 'Play Bhupali aroha and avaroha cleanly at 90 BPM' is a goal - you can test it, measure it, and know exactly when you have achieved it.",
+        "Set three levels of goals:",
+        "This week: a small, achievable target. 'Learn the sthayi of a new bandish.' 'Hold each note of the saptak for 8 seconds at 20 cents.' 'Identify all seven shuddha swaras by ear with 80% accuracy.'",
+        "This month: a medium target that requires sustained effort. 'Be able to play three alankars at 100 BPM cleanly.' 'Learn the aroha, avaroha, and pakad of four new ragas.'",
+        "This year: an ambitious but realistic vision. 'Perform a 10-minute presentation of Raga Yaman.' 'Be able to identify 10 ragas by their opening phrases.' 'Play with a tabla accompaniment.'",
+        "Write your goals down. Review them weekly. Cross off what you have achieved and set new targets. This simple habit creates a powerful sense of direction and momentum."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Which is a better practice goal: 'get better' or 'play Bhupali at 90 BPM'?",
+          "answer": "play Bhupali at 90 BPM",
+          "accept": ["play Bhupali at 90 BPM", "play bhupali at 90 bpm", "play Bhupali at 90 BPM cleanly", "bhupali at 90", "play bhupali at 90"],
+          "points": 10,
+          "yes": "Right! Specific, measurable goals let you track progress and know exactly when you have succeeded.",
+          "no": "The specific goal is better: 'play Bhupali at 90 BPM.' It is measurable and testable."
+        },
+        {
+          "type": "choice",
+          "prompt": "How often should you review your practice goals?",
+          "options": [
+            {
+              "text": "Once a year",
+              "why": "Too infrequent. Goals need regular review to stay relevant and motivating."
+            },
+            {
+              "text": "Weekly",
+              "right": true,
+              "yes": "Correct. Weekly review keeps goals fresh, lets you celebrate progress, and adjust targets as needed."
+            },
+            {
+              "text": "Never - just set them and forget them",
+              "why": "Goals you never review are goals you never achieve. Regular review creates accountability."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lifelong-journey",
+      "title": "The Lifelong Journey",
+      "content": [
+        "The great bansuri masters practised for decades and still found new things to learn. Pandit Hariprasad Chaurasia practised for over 60 years and described himself as a perpetual student. This is not false modesty - it is truth. A single raga has infinite depth. You could spend years on Yaman alone and keep discovering new phrases, new shades, new emotions within it.",
+        "The key to sustaining a lifelong practice is finding joy in the process itself, not just in the results. Some days you will sound terrible - your breath will not cooperate, your fingers will stumble, the raga will not come alive. Other days, a note will sing in a way it never has before, and you will feel something shift inside you. Both days are practice. Both days matter.",
+        "The Indian tradition holds that music is sadhana - spiritual practice. Each time you sit with your bansuri, you are not just training your fingers and your breath. You are training your attention, your patience, your ability to listen, and your capacity for beauty.",
+        "Play this final ascending and descending saptak as a dedication to your practice. Feel each note as it comes and goes. Then carry that awareness into every session that follows."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the full saptak up and down: Sa Re Ga Ma Pa Dha Ni Sa' Ni Dha Pa Ma Ga Re Sa. Play it with awareness and care.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I commit to regular, structured riyaz - even 15 minutes a day makes a difference",
+          "points": 5
+        }
+      ]
+    }
+  ]
+}

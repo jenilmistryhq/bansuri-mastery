@@ -2,7 +2,7 @@
 
 [Projects](README.md) | Phase: [2](../phases/phase-2-core-technique.md) | Objectives: FNG-04, FNG-05, FNG-07, FNG-11, TON-07, PIT-08, RHY-05..07, RHY-14, THY-04
 
-## Test (drone on C; tabla loop for items 4-5)
+## Test (drone on your flute's Sa; tabla loop for items 4-5)
 
 | # | Item | Pass criterion | Required |
 |---|---|---|---|

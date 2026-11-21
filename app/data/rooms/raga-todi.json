@@ -1,0 +1,321 @@
+{
+  "id": "raga-todi",
+  "title": "Raga Todi - The Morning Challenge",
+  "tasks": [
+    {
+      "id": "the-mountain-raga",
+      "title": "The Mountain Raga",
+      "content": [
+        "Todi is one of the most challenging and profound ragas in the Hindustani tradition. It is so important that one of the 10 parent scales (thaats) is named after it - the Todi thaat. Learning Todi marks a significant milestone in a musician's development.",
+        "What makes Todi extraordinary is the sheer number of altered notes it uses. Three notes are komal (flat) - Re, Ga, and Dha - and Ma is tivra (sharp). Only Sa, Pa, and Ni remain in their natural positions. No other commonly performed raga alters this many notes from the shuddha (natural) scale.",
+        "The result is a sound world that is dark, intense, and deeply spiritual. Todi expresses viraha (the pain of separation) and karuna (pathos) with a gravity that few other ragas can match. It is a morning raga, performed during the second prahar (9 AM to noon), and it is considered one of the 'big six' ragas that every serious student must eventually master."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many komal (flat) notes does Raga Todi use?",
+          "options": [
+            {
+              "text": "One - only komal Re",
+              "why": "Todi uses three komal notes: Re, Ga, and Dha. This extreme flattening is what defines its character."
+            },
+            {
+              "text": "Three - komal Re, komal Ga, and komal Dha",
+              "right": true,
+              "yes": "Correct. Three komal notes plus tivra Ma make Todi the most heavily altered of the common ragas."
+            },
+            {
+              "text": "Four - all movable notes are komal",
+              "why": "Three notes are komal (Re, Ga, Dha), but Ma is tivra (raised), not komal. Ni is shuddha."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When is Raga Todi traditionally performed?",
+          "options": [
+            {
+              "text": "Late night, after midnight",
+              "why": "Late night belongs to ragas like Malkauns and Bageshree. Todi is a morning raga."
+            },
+            {
+              "text": "Morning, between 9 AM and noon",
+              "right": true,
+              "yes": "Right. Todi is performed during the second prahar of the day, from late morning to midday."
+            },
+            {
+              "text": "Evening, at sunset",
+              "why": "Sunset is the time for ragas like Yaman and Marwa. Todi belongs to the morning."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-altered-scale",
+      "title": "The Altered Scale",
+      "content": [
+        "Todi's seven notes: Sa(0), komal Re(1), komal Ga(3), tivra Ma(6), Pa(7), komal Dha(8), shuddha Ni(11).",
+        "Count the alterations from the shuddha (natural) scale: komal Re (down from 2 to 1), komal Ga (down from 4 to 3), tivra Ma (up from 5 to 6), komal Dha (down from 9 to 8). That is four altered notes out of seven. Only Sa, Pa, and Ni sit at their natural positions.",
+        "This extreme chromaticism creates Todi's intense, compressed sound. The notes cluster tightly in some places (komal Re to komal Ga is only 2 semitones, komal Dha to Pa is only 1 semitone) and spread widely in others (komal Ga to tivra Ma is 3 semitones, komal Dha to Ni is 3 semitones). These uneven intervals are what give Todi its restless, searching character.",
+        "Play komal Re against the drone. It sits just one semitone above Sa - closer to home than any other Re. This closeness creates a tension that defines Todi's lower register."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many notes in Todi are altered from the shuddha (natural) scale?",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10
+        },
+        {
+          "type": "hold",
+          "target": 1,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Re within 20 cents for 5 seconds - feel the tension against Sa",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "the-lower-register",
+      "title": "The Lower Register",
+      "content": [
+        "The komal Re(1) to komal Ga(3) interval is only 2 semitones - very close together. This tight cluster at the bottom of the scale creates Todi's brooding, dark lower register.",
+        "The movement r-g, r-g - oscillating between komal Re and komal Ga - is one of Todi's most characteristic gestures. This back-and-forth has a rocking, meditative quality. It is how Todi establishes itself in the alap, returning again and again to this fundamental movement before expanding.",
+        "Practice this slowly: komal Re, komal Ga, komal Re, komal Ga, then resolve to Sa. The two notes are so close together that precision matters enormously. Even a small pitch error will make one note bleed into the other. This is where Todi begins to test your intonation."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [1, 3, 1, 3, 0],
+          "prompt": "Play the characteristic r-g oscillation: komal Re, komal Ga, komal Re, komal Ga, Sa",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 3,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Ga within 20 cents for 5 seconds",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What makes Todi's lower register sound particularly dark?",
+          "options": [
+            {
+              "text": "The use of shuddha Re and Ga, which are bright notes",
+              "why": "Todi uses komal (flat) Re and Ga, not shuddha. The flatness creates the darkness."
+            },
+            {
+              "text": "The tight 2-semitone cluster between komal Re(1) and komal Ga(3)",
+              "right": true,
+              "yes": "Exactly. komal Re and komal Ga sit very close together, creating a compressed, brooding quality."
+            },
+            {
+              "text": "The absence of any notes below Sa",
+              "why": "While lower notes are not used, the darkness comes from the tight komal Re-Ga cluster above Sa."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tivra-ma-contrast",
+      "title": "Tivra Ma - The Sharp Contrast",
+      "content": [
+        "Against the three komal notes pulling everything downward, tivra Ma(6) stands out as a point of brightness. It sits one semitone higher than shuddha Ma(5), pushing upward where everything else sinks.",
+        "The movement from komal Ga(3) to tivra Ma(6) spans 3 semitones - the widest interval in Todi's lower half of the scale. After the tight, compressed cluster of Sa(0), komal Re(1), and komal Ga(3), this leap to tivra Ma feels like breaking free from gravity.",
+        "This contrast - three notes pulling flat and one note pushing sharp - is the engine of Todi's dramatic intensity. The raga lives in the tension between darkness and light, between the komal notes that descend and the tivra Ma that ascends. Neither wins; the tension sustains."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 6,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold tivra Ma within 20 cents for 5 seconds - feel its brightness against the komal notes",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does tivra Ma stand out in Raga Todi?",
+          "options": [
+            {
+              "text": "It is the lowest note in the raga",
+              "why": "Tivra Ma is in the middle of the scale. It stands out because it is the only note pushed sharp while three others are flat."
+            },
+            {
+              "text": "It is the one raised note against three komal notes, creating a bright contrast",
+              "right": true,
+              "yes": "Correct. Tivra Ma provides an upward push against the downward pull of three komal notes, creating dramatic tension."
+            },
+            {
+              "text": "It is never used in any phrase",
+              "why": "Tivra Ma is used frequently and prominently. It is the contrast it provides that makes it stand out."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ascending-todi",
+      "title": "Ascending Todi",
+      "content": [
+        "Todi's ascending movement often uses a vakra (crooked) pattern: Sa r g, r g M P, d N Sa'. Notice that the r-g phrase appears twice - you approach komal Ga from komal Re, fall back, and then climb through it again before reaching tivra Ma.",
+        "This repetition builds anticipation. It is as though the raga hesitates at the bottom, gathering strength before making the climb to tivra Ma and beyond.",
+        "Pa(7) is touched lightly, serving as a stepping stone between tivra Ma(6) and komal Dha(8). It is not dwelt upon or emphasised. Its role is transitional - a bridge that the melody crosses quickly on its way to the upper register.",
+        "The upper register opens up with komal Dha(8) to Ni(11) - a wide 3-semitone gap. This spaciousness in the upper register contrasts with the tightness of the lower register, giving Todi a sense of expansion as it climbs."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 3, 1, 3, 6, 7, 8, 11, 12],
+          "prompt": "Play the vakra ascent: Sa r g, r g M P, d N Sa'",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Pa feel like a stepping stone in Todi?",
+          "options": [
+            {
+              "text": "Pa is the most important note in Todi",
+              "why": "Pa is relatively weak in Todi. The vadi is komal Dha and the samvadi is komal Ga."
+            },
+            {
+              "text": "It sits between tivra Ma and komal Dha and is not dwelt upon",
+              "right": true,
+              "yes": "Right. Pa serves as a brief bridge between the strong tivra Ma below and komal Dha above."
+            },
+            {
+              "text": "Pa is not used in Todi at all",
+              "why": "Pa is used, but only as a transitional note. It is present but not emphasised."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "descending-todi",
+      "title": "Descending Todi",
+      "content": [
+        "The avaroha: Sa' N d P, M g r Sa. The descent reveals Todi's full gravity. Each note sinks lower, and the komal notes pull everything downward with a sense of inevitability.",
+        "Notice two tight clusters in the descent: komal Dha(8) to Pa(7) is only 1 semitone, and komal Ga(3) to komal Re(1) to Sa(0) covers just 3 semitones in three notes. These compressed intervals make the descent feel heavy and deliberate.",
+        "The final g-r-Sa movement - komal Ga through komal Re to Sa - is the classic Todi resolution. It sinks through two flattened notes to land on the home note. This resolution has a distinctive feeling of weight and finality that is unique to Todi."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 8, 7, 6, 3, 1, 0],
+          "prompt": "Play the descent: Sa' N d P M g r Sa",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 1, 3, 6, 7, 8, 11],
+          "rounds": 6,
+          "prompt": "Identify each note from Todi's scale",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "vadi-and-samvadi",
+      "title": "Vadi and Samvadi",
+      "content": [
+        "komal Dha(8) is the vadi - the king note of Todi. Give it weight and prominence, and treat it with andolan (a slow, wide oscillation). The andolan on komal Dha is one of Todi's most expressive moments - the note should feel like it is breathing, gently swaying rather than sitting still.",
+        "komal Ga(3) is the samvadi - the minister. These two notes form the emotional axis of the raga. The interval between them is 5 semitones - a diminished fifth (or tritone). This is an inherently tense, unstable interval, and it is precisely this tension that fuels Todi's restless intensity.",
+        "In Western music, the tritone was once called 'diabolus in musica' (the devil in music) because of its dissonance. In Todi, that same dissonance becomes a source of spiritual depth rather than something to avoid. The raga embraces tension rather than resolving it."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 8,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold komal Dha (the vadi) within 15 cents for 6 seconds - precision anchoring",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What interval do the vadi (komal Dha) and samvadi (komal Ga) of Todi create?",
+          "options": [
+            {
+              "text": "A perfect fifth - stable and consonant",
+              "why": "A perfect fifth would be 7 semitones. komal Dha(8) to komal Ga(3) is 5 semitones - a diminished fifth."
+            },
+            {
+              "text": "A diminished fifth (tritone) - tense and unstable",
+              "right": true,
+              "yes": "Correct. The 5-semitone gap creates a tritone, an inherently tense interval that drives Todi's restless intensity."
+            },
+            {
+              "text": "A major third - warm and bright",
+              "why": "A major third is 4 semitones. The vadi-samvadi interval in Todi is 5 semitones - a tritone."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-bansuri-challenge",
+      "title": "The Bansuri Challenge",
+      "content": [
+        "Todi is one of the hardest ragas to play on the bansuri. The reason is technical: it requires multiple half-hole fingerings in rapid succession.",
+        "komal Re needs a half-hole. komal Ga needs a half-hole. Tivra Ma needs a half-hole or cross-fingering. komal Dha needs a half-hole. That is four notes out of seven requiring precise partial finger coverage. No other common raga demands this much half-holing.",
+        "The finger coordination is demanding. Moving from komal Re(1) to komal Ga(3) means adjusting one half-hole while maintaining or adjusting another. Moving from komal Ga(3) to tivra Ma(6) means opening and partially covering different holes in one motion.",
+        "This is why Todi is typically attempted only after you have solid command of komal swaras, tivra Ma, and half-holing technique through simpler ragas. Take it slowly. Accuracy matters far more than speed. A clean, in-tune Todi at slow tempo is more impressive than a fast, messy one."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 3, 6, 7, 8, 11, 12, 11, 8, 7, 6, 3, 1, 0],
+          "prompt": "Play the full Todi scale: ascending then descending",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is Raga Todi particularly challenging on the bansuri?",
+          "options": [
+            {
+              "text": "It uses notes that do not exist on the bansuri",
+              "why": "All Todi notes are playable on the bansuri. The challenge is technical, not about missing notes."
+            },
+            {
+              "text": "Four of its seven notes require half-hole fingerings",
+              "right": true,
+              "yes": "Exactly. komal Re, komal Ga, tivra Ma, and komal Dha all need half-holes, making the finger coordination extremely demanding."
+            },
+            {
+              "text": "It must be played at very high speed",
+              "why": "Todi is often played slowly and meditatively. The challenge is precision, not speed."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "todi-in-context",
+      "title": "Todi in Context",
+      "content": [
+        "Todi belongs to the 'big six' - the ragas that every serious student of Hindustani music must eventually master. The six are Bhairav, Todi, Malkauns, Yaman, Bhairavi, and Marwa. Each represents a different emotional and technical challenge.",
+        "Among them, Todi is perhaps the most technically demanding and emotionally intense. Its mastery demonstrates several things: command of komal swaras at precise pitch, comfort with tivra Ma, the ability to maintain a dark and intense mood over an extended performance, and the finger coordination to handle multiple half-holes cleanly.",
+        "When you can play Todi convincingly - maintaining its gravity, hitting its tight intervals cleanly, letting its komal notes sing with their full weight - you have reached a significant level of maturity as a bansuri player. It is not a raga to rush. Let it develop over months and years of patient practice."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 3, 6, 7, 8, 11, 12, 11, 8, 7, 6, 3, 1, 0],
+          "prompt": "Play the complete Todi journey: ascend and descend with control and intention",
+          "points": 25
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand that Todi is a long-term practice commitment and will approach it with patience."
+        }
+      ]
+    }
+  ]
+}

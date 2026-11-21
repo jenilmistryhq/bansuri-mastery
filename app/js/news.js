@@ -8,9 +8,9 @@ export const NEWS = {
   title: "New: a progress dashboard",
   items: [
     "Me now answers five questions: am I improving, am I practising regularly, where am I, what to work on, and level and badges.",
-    "Today is simpler: Resume, one thing to fix, and the session.",
-    "Lessons read in plain words, and the Hindi lessons include quizzes and checklists.",
-    "Practice > Transcribe writes down the notes of a recording (a YouTube video, the microphone or a file) as sargam for your flute.",
+    "Today brings your next activity, a useful practice focus and quick ways to keep playing.",
+    "Lessons adapt note names and sounds to your flute's configured Sa.",
+    "Music > Mine > Transcribe turns a recording into sargam for your flute.",
   ],
 };
 

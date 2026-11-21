@@ -1,0 +1,290 @@
+{
+  "id": "raga-mian-ki-malhar",
+  "title": "Raga Mian ki Malhar - The Monsoon King",
+  "tasks": [
+    {
+      "id": "malhar-tradition",
+      "title": "The Monsoon Raga Tradition",
+      "content": [
+        "India's monsoon season - when the rains finally arrive after months of scorching heat - has inspired an entire family of ragas called the Malhar group. These ragas evoke the drama, joy, and intensity of the rains.",
+        "The most majestic of these is Raga Mian ki Malhar, attributed to the legendary Tansen - the greatest musician in the court of Emperor Akbar. 'Mian' refers to Tansen himself (his title was 'Mian Tansen'), and 'Malhar' means 'rain-bringing'. Legend says Tansen could summon rain by singing this raga.",
+        "The Malhar family includes several related ragas: Megh (the simplest, most direct rain raga), Gaud Malhar, Sur Malhar, and Ramdasi Malhar. But Mian ki Malhar stands above them all in depth and complexity. It is a full, serious raga capable of extended alap and a complete concert performance.",
+        "Mian ki Malhar is traditionally performed during the monsoon season (July-September) or at any time when the performer wishes to evoke the grandeur of the rains."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Who is Raga Mian ki Malhar attributed to?",
+          "options": [
+            { "text": "Amir Khusrau", "why": "Amir Khusrau is credited with many innovations in Indian music, but Mian ki Malhar is attributed to Tansen." },
+            { "text": "Tansen", "right": true, "yes": "Correct. 'Mian' is Tansen's title, and 'ki Malhar' means 'his Malhar' - this is Tansen's personal monsoon raga." },
+            { "text": "Hariprasad Chaurasia", "why": "Chaurasia is a modern master. Mian ki Malhar dates back to the Mughal era." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does 'Malhar' signify?",
+          "options": [
+            { "text": "Morning light", "why": "Malhar is associated with rain and monsoon, not morning." },
+            { "text": "Rain-bringing or rain-evoking", "right": true, "yes": "Correct. Malhar ragas are the monsoon ragas of Indian classical music, associated with bringing or evoking rain." },
+            { "text": "Evening meditation", "why": "Malhar refers to the monsoon and rain, not evening practice." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "malhar-family",
+      "title": "The Malhar Family",
+      "content": [
+        "The Malhar ragas form a family connected by their monsoon association and certain shared melodic features. Understanding the family helps you appreciate what makes Mian ki Malhar special.",
+        "Megh Malhar is the simplest - a pentatonic or hexatonic raga that directly evokes gathering clouds. It is relatively easy to learn and captures the anticipation of approaching rain.",
+        "Gaud Malhar combines elements of Raga Gaud with Malhar characteristics. It has a lighter, more playful quality - like dancing in the rain.",
+        "Sur Malhar and Ramdasi Malhar are more elaborate, each with their own distinctive phrases and treatments.",
+        "Mian ki Malhar is the most complex of the family. It uses both shuddha and komal Ga, and both shuddha and komal Ni - a rare dual-note treatment that gives it extraordinary depth. Where the simpler Malhars evoke rain directly, Mian ki Malhar evokes the entire monsoon experience: the dark clouds, the first drops, the deluge, the thunder, the relief, and the green aftermath."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What makes Mian ki Malhar the most complex raga in the Malhar family?",
+          "options": [
+            { "text": "It uses more ornaments than other Malhars", "why": "Complexity is about note treatment, not just ornamentation." },
+            { "text": "It uses both shuddha and komal Ga, and both shuddha and komal Ni", "right": true, "yes": "Correct. This rare dual-note treatment gives Mian ki Malhar a depth and range that the simpler Malhars lack." },
+            { "text": "It is played faster than other Malhars", "why": "Speed does not define a raga's complexity. Mian ki Malhar's complexity comes from its unique note treatment." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which simple pentatonic raga in the Malhar family directly evokes gathering clouds?",
+          "answer": "Megh",
+          "accept": ["Megh", "megh", "Megh Malhar", "megh malhar"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "mian-ki-malhar-notes",
+      "title": "The Notes and Scale",
+      "content": [
+        "Mian ki Malhar's scale is unique because it uses nine notes instead of the usual seven. It includes both forms of Ga and both forms of Ni: Sa R G g m P D n N Sa'.",
+        "The shuddha forms (G and N) are primary. The komal forms (g and n) appear as secondary notes in specific phrase contexts. This is called 'mishra' (mixed) usage - the raga borrows notes that do not belong to its parent thaat.",
+        "The aroha (ascending) uses primarily shuddha notes: Sa R G m P D N Sa'. The avaroha (descending) is where the komal notes appear: Sa' n D P, m P g m R Sa. Notice the komal Ni in the descent from upper Sa, and the komal Ga in the lower descent.",
+        "The vadi (king note) is Ma (semitone 5). The samvadi is Sa. This makes Mian ki Malhar a Ma-centric raga - its phrases orbit around the fourth degree, giving it a grounded, powerful quality."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the primary ascending scale: Sa R G m P D N Sa'",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "How many distinct notes does Mian ki Malhar use?",
+          "options": [
+            { "text": "Seven (sampoorna)", "why": "Seven would be a standard heptatonic raga. Mian ki Malhar uses more because of its dual Ga and dual Ni." },
+            { "text": "Nine (including both forms of Ga and Ni)", "right": true, "yes": "Correct. By using shuddha and komal versions of both Ga and Ni, Mian ki Malhar employs nine distinct notes." },
+            { "text": "Five (audav/pentatonic)", "why": "Five notes would be pentatonic. Mian ki Malhar is one of the most note-rich ragas." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the vadi (king note) of Mian ki Malhar?",
+          "answer": "Ma",
+          "accept": ["Ma", "ma", "m"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "signature-phrase",
+      "title": "The Signature Phrase",
+      "content": [
+        "Mian ki Malhar's most distinctive phrase is the movement involving komal Ni: 'n D n P' (semitones 10, 9, 10, 7). This phrase - komal Ni touching Dha and then falling to Pa - is the raga's unmistakable fingerprint. The moment a listener hears this phrase, they know they are hearing Mian ki Malhar.",
+        "The komal Ni in this phrase is not treated as a stable note. It oscillates around Dha, touching it briefly before returning. Some musicians describe it as komal Ni 'swinging' toward Dha and back. This oscillating movement is what evokes the rhythm of falling rain.",
+        "Another important phrase is 'R m P' (ascending) and 'P m g m R Sa' (descending with the komal Ga touch). The komal Ga appears as a brief grace note between Ma and Re, adding depth and shadows to the descent.",
+        "These two signature phrases - 'n D n P' in the upper register and the komal Ga touch in the lower register - are what distinguish Mian ki Malhar from all other Malhar ragas."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [10, 9, 10, 7],
+          "prompt": "Play the signature phrase: n D n P (komal Ni touching Dha, falling to Pa)",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [2, 5, 7, 10, 9, 10, 7],
+          "prompt": "Play this extended phrase: R m P n D n P",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "Which phrase is Mian ki Malhar's most distinctive signature?",
+          "options": [
+            { "text": "N R G (ascending from lower Ni)", "why": "This is a Yaman phrase. Mian ki Malhar's signature involves komal Ni, not shuddha." },
+            { "text": "n D n P (komal Ni oscillating around Dha, falling to Pa)", "right": true, "yes": "Correct. This oscillating komal Ni phrase is Mian ki Malhar's unmistakable fingerprint - the sound of rain." },
+            { "text": "g m d n (ascending with komal notes)", "why": "This ascending pattern is not Mian ki Malhar's signature. The raga's identity is in its characteristic n D n P descent." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aroha-avaroha-detail",
+      "title": "Aroha and Avaroha",
+      "content": [
+        "Mian ki Malhar's aroha has a vakra (crooked) element. The standard ascending path is: Sa R G m P D N Sa'. But in practice, the ascent often includes characteristic zigzags: Sa R m P, n D N Sa'. Notice how it skips Ga going up (Ga appears more in expanded phrases), and the komal Ni appears briefly before resolving to shuddha Ni.",
+        "The avaroha reveals more of the raga's character: Sa' n D P, m P g m R Sa. The descent from upper Sa begins with komal Ni (not shuddha), which is crucial. Then the lower descent introduces komal Ga between Ma and Re as a brief touch.",
+        "The movement 'm P' is very important - Ma ascending to Pa is a fundamental gesture in this raga. Many phrases in Mian ki Malhar feature this Ma-Pa pair as a structural anchor. The vadi Ma drives upward to Pa, and many phrase patterns orbit around this axis.",
+        "The asymmetry between aroha and avaroha - shuddha forms going up, komal forms coming down - is what creates the raga's dramatic range. The ascent is bright and majestic. The descent is deeper, more shadowed, more complex."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 10, 9, 7, 5, 7, 3, 5, 2, 0],
+          "prompt": "Play this avaroha phrase: Sa' n D P m P g m R Sa",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "In the avaroha, which form of Ni is used when descending from upper Sa?",
+          "options": [
+            { "text": "Shuddha Ni", "why": "Shuddha Ni is used in the aroha. The avaroha from upper Sa uses the komal form." },
+            { "text": "Komal Ni", "right": true, "yes": "Correct. The descent from upper Sa begins with komal Ni (n), which is part of Mian ki Malhar's signature sound." },
+            { "text": "Neither - Ni is skipped", "why": "Ni is not skipped. The komal form appears in the characteristic n D n P phrase." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vadi-ma-role",
+      "title": "Vadi Ma and the Role of Pa",
+      "content": [
+        "Ma (semitone 5) is the vadi of Mian ki Malhar. This means phrases gravitate toward Ma, rest on Ma, and use Ma as a point of resolution. Many alap phrases in this raga begin and end on Ma.",
+        "Pa (semitone 7) is Ma's closest companion. The Ma-Pa pair is the structural backbone of Mian ki Malhar. Where some ragas treat Pa as a second home note, in Mian ki Malhar, Pa serves as Ma's partner - the two notes create a stable platform from which the rest of the raga unfolds.",
+        "The phrase 'R m P' (ascending from Re through Ma to Pa) appears constantly. It is the raga's basic ascending gesture - a clear, strong movement that establishes the Ma-Pa axis.",
+        "In the upper register, phrases tend to orbit around Dha and Ni before descending back through Pa to Ma. In the lower register, phrases settle on Sa or Re before rising back to Ma. Ma is the centre of gravity in both directions."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Ma (the vadi) for 6 seconds - feel its grounded, powerful quality in this raga",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [2, 5, 7, 5, 2, 0],
+          "prompt": "Play this Ma-centric phrase: R m P m R Sa",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the structural backbone of Mian ki Malhar?",
+          "options": [
+            { "text": "The Sa-Pa pair", "why": "Sa and Pa are important in all ragas. The specific backbone of Mian ki Malhar is a different pair." },
+            { "text": "The Ma-Pa pair", "right": true, "yes": "Correct. Ma (the vadi) and Pa together form the structural axis around which all Mian ki Malhar phrases orbit." },
+            { "text": "The Ga-Dha pair", "why": "While Ga and Dha appear in the raga, the structural backbone is built on the vadi Ma and its partner Pa." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monsoon-rasa",
+      "title": "Rasa and the Monsoon",
+      "content": [
+        "The monsoon in India is not just weather - it is an emotional and cultural event. After months of crushing summer heat (temperatures reaching 45-50 degrees Celsius in many regions), the arrival of the monsoon rains is experienced as a release, a renewal, a kind of ecstasy.",
+        "Mian ki Malhar captures this entire emotional arc. The grandeur of dark clouds gathering (the deep, slow alap movements around Ma and Pa). The first drops of rain (the komal Ni oscillation - n D n P - mimicking the rhythm of falling water). The full deluge (the driving jod and jhala sections). The aftermath of cool, green relief.",
+        "The rasa is primarily adbhuta (wonder) with elements of shringara (love) - the monsoon is traditionally associated with romantic longing and reunion in Indian poetry and painting. The imagery of Megh (clouds), bijli (lightning), and barsat (rain) runs through countless compositions in this raga.",
+        "On the bansuri, Mian ki Malhar is especially evocative. The flute's breathy, natural tone suggests wind and rain. The meend ornaments suggest rolling thunder. A skilled bansuri player can make the audience feel the monsoon."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the primary rasa of Mian ki Malhar?",
+          "options": [
+            { "text": "Karuna (sorrow)", "why": "While the monsoon can evoke longing, the overall mood of Mian ki Malhar is wonder and grandeur, not sorrow." },
+            { "text": "Adbhuta (wonder) with shringara (love)", "right": true, "yes": "Correct. The raga captures the wonder of the monsoon and the romantic associations of rain in Indian culture." },
+            { "text": "Raudra (fury)", "why": "While the monsoon has dramatic elements, the raga's overall character is majestic, not angry." }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand that Mian ki Malhar's n D n P phrase mimics the rhythm of falling rain - this connection between sound and nature is central to the raga's identity",
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "playing-mian-ki-malhar",
+      "title": "Playing Mian ki Malhar Phrases",
+      "content": [
+        "Now let us practice some characteristic Mian ki Malhar phrases on the bansuri.",
+        "Start with the basic Ma-Pa movement: R m P. Feel the strong upward pull from Ma to Pa. This is the raga's foundation.",
+        "Next, add the signature phrase: R m P, n D n P. The komal Ni oscillation around Dha should be gentle but clear - two distinct notes, not a slide. Let the komal Ni ring briefly before returning to Dha and descending to Pa.",
+        "For the full descent, practice: Sa' n D P, m P g m R Sa. The komal Ga between Ma and Re is a quick touch - do not linger on it. It should feel like a shadow passing through the phrase.",
+        "In performance, Mian ki Malhar benefits from a full, resonant tone. Use generous breath and let the notes ring. This is a raga of grandeur - it should sound majestic, not timid."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [2, 5, 7, 10, 9, 10, 7, 5, 2, 0],
+          "prompt": "Play this complete Mian ki Malhar phrase: R m P n D n P m R Sa",
+          "points": 25
+        },
+        {
+          "type": "hold",
+          "target": 10,
+          "seconds": 4,
+          "cents": 15,
+          "prompt": "Hold komal Ni for 4 seconds - hear its quality before using it in the n D n P phrase",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the bright ascending scale: Sa R G m P D N Sa'",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "malhar-identification",
+      "title": "Malhar Family Identification",
+      "content": [
+        "Test your understanding of Mian ki Malhar and the Malhar family. The key to identification is listening for the signature phrases and note treatments that distinguish each Malhar raga.",
+        "When you hear the n D n P phrase with both forms of Ga and Ni, you are almost certainly hearing Mian ki Malhar. No other Malhar uses all four variant notes (shuddha Ga, komal Ga, shuddha Ni, komal Ni) in this way.",
+        "Remember: Mian ki Malhar is grand and complex. Megh Malhar is simpler and more direct. Gaud Malhar is lighter and more playful. The character of the performance tells you as much as the notes."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "You hear a monsoon raga with the phrase 'n D n P' and both shuddha and komal forms of Ga and Ni. Which raga?",
+          "options": [
+            { "text": "Megh Malhar", "why": "Megh Malhar is a simpler raga that does not use dual forms of Ga and Ni." },
+            { "text": "Mian ki Malhar", "right": true, "yes": "Correct. The combination of the n D n P signature phrase with dual Ga and dual Ni is Mian ki Malhar's unmistakable identity." },
+            { "text": "Gaud Malhar", "why": "Gaud Malhar has a lighter character and different note treatment than Mian ki Malhar." },
+            { "text": "Bhairavi", "why": "Bhairavi is a morning raga with a very different character, not associated with the monsoon." }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 3, 4, 5, 7, 9, 10, 11],
+          "rounds": 6,
+          "prompt": "Identify all nine notes of Mian ki Malhar - both forms of Ga and Ni plus the standard notes",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "Which structural pair forms the backbone of Mian ki Malhar?",
+          "options": [
+            { "text": "Sa and upper Sa", "why": "Sa and upper Sa are octave endpoints, not the structural backbone specific to this raga." },
+            { "text": "Ma and Pa", "right": true, "yes": "Correct. Ma (the vadi) and Pa together form the axis around which all Mian ki Malhar phrases orbit." },
+            { "text": "Ga and Dha", "why": "While these notes appear in the raga, the structural backbone is the Ma-Pa pair." }
+          ]
+        }
+      ]
+    }
+  ]
+}

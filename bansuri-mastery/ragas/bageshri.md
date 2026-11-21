@@ -23,7 +23,7 @@ phrases like `m P D` or `D m P D`.
 - **Shuddha Dha** with **komal Ni**: `D n S'`. Do not make Dha komal.
 - `D g m g R S` (a jump down from Dha to komal Ga) is a characteristic descending move.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Register |
 |---|---|---|
@@ -98,7 +98,7 @@ Check what you hear against this card: the aroh/avroh, the pakad and the notes t
 g m D n | S' n D m | P D g m | g R S - ||
 ```
 
-Line 1 is the pakad `.D .n S, m, m P D, m g R S`; line 2 goes up without Pa (`g m D n S'`) and comes down along the avroh `S' n D m P D g m g R S`. Pa appears only inside `m P D`. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+Line 1 is the pakad `.D .n S, m, m P D, m g R S`; line 2 goes up without Pa (`g m D n S'`) and comes down along the avroh `S' n D m P D g m g R S`. Pa appears only inside `m P D`. Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 **Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
 

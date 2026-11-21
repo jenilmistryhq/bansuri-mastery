@@ -1,9 +1,9 @@
-// Fix a problem (Skills > Fix, #/skills/fix; the old #/coach): diagnose a practice problem from the
+// Fix a problem (Skills > Fix, #/teacher/fix; the old #/coach): diagnose a practice problem from the
 // course's troubleshooting guides. Works offline; no AI and no network beyond the app's own files.
 // Offers the matching live drill and remembers what helped. Its first section is the Tone check
 // (views/tone.js), which listens to a held note, scores it and runs diagnose() below. Each symptom,
-// and each Tone check finding, opens its fix on its own screen (redesign W50): #/skills/fix/TS-nn
-// (#/coach/TS-nn), and #/skills/fix/TS-nn/<skill> also links back to that skill; #/tone opens the
+// and each Tone check finding, opens its fix on its own screen (redesign W50): #/teacher/fix/TS-nn
+// (#/coach/TS-nn), and #/teacher/fix/TS-nn/<skill> also links back to that skill; #/tone opens the
 // Fix tab at the Tone check.
 import { h, clear, store, storeSet, today, fmtDate, icon } from "../util.js";
 import { renderMarkdown, fetchDoc, tablesOf, sectionOf } from "../content.js";
@@ -92,13 +92,13 @@ export function fixesOf(md) {
   });
 }
 
-// A fix on its own screen (redesign W50, #/skills/fix/TS-nn and #/skills/fix/TS-nn/<skill>): what it
+// A fix on its own screen (redesign W50, #/teacher/fix/TS-nn and #/teacher/fix/TS-nn/<skill>): what it
 // sounds like, the guide's fixes numbered, each with Try for the topic's live drill, a good example to
 // hear, the full guide, the teacher, and the way back to where it was opened from.
 async function fixScreen(main, ts, fromSkill) {
   const path = "troubleshooting/" + FIX_FILE[ts], title = FIX_INFO[ts] || ts;
   const page = h("div", { class: "page fixpage", dataset: { noswipe: "1", ts } },
-    backHead("#/skills/fix", "Fix a problem", title, h("span", { class: "chip mutedc fixcode", translate: "no" }, ts)));
+    backHead("#/teacher/fix", "Fix a problem", title, h("span", { class: "chip mutedc fixcode", translate: "no" }, ts)));
   main.append(page);
   let drill = null, audio = null;
   const guide = await fetchDoc(path).catch(() => "");
@@ -152,7 +152,7 @@ async function fixScreen(main, ts, fromSkill) {
   if (EXAMPLES[ts]) links.append(h("div", { class: "row" }, h("button", { type: "button", class: "btn fixhear", onclick: () => { if (audio) audio.pause(); audio = new Audio("app/audio/" + EXAMPLES[ts]); audio.play().catch(() => {}); } }, icon("play"), " Hear a good example")));
   links.append(h("div", { class: "hublist" },
     h("a", { class: "hubrow", href: "#/read/" + path }, h("b", null, "Open the full guide"), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">")),
-    h("a", { class: "hubrow fixteacher", href: "#/me/teacher" }, h("span", { class: "stack" }, h("span", { class: "small muted" }, "Still stuck?"), h("b", null, "Ask your teacher")), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">"))));
+    h("a", { class: "hubrow fixteacher", href: "#/teacher" }, h("span", { class: "stack" }, h("span", { class: "small muted" }, "Still stuck?"), h("b", null, "Ask your teacher")), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">"))));
   if (seek) links.append(h("details", { class: "small fixseek" }, h("summary", null, "When to see a teacher"), md(seek)));
   page.append(h("section", { class: "card fixpart" }, links));
   // Back: to the hub it was opened from (or belongs to). When the screen before this one is that hub,
@@ -168,13 +168,13 @@ async function fixScreen(main, ts, fromSkill) {
     const label = /^#\/(skills\/fix|coach|tone)$/.test(prev) ? "Back to Fix a problem" : /^#\/(lesson|session|day)\//.test(prev) ? "Back to the step" : other ? "Back to " + other.title : "Back";
     back = h("button", { type: "button", class: "btn ghost fixback", onclick: () => history.back() }, label);
   } else if (hub) back = h("a", { class: "btn ghost fixback", href: hubHref }, "Back to " + hub.title);
-  else back = h("a", { class: "btn ghost fixback", href: "#/skills/fix" }, "Back to Fix a problem");
+  else back = h("a", { class: "btn ghost fixback", href: "#/teacher/fix" }, "Back to Fix a problem");
   page.append(h("div", { class: "row" }, back));
   return () => { closeDrill(); if (audio) audio.pause(); };
 }
 
 export async function render(main, { params } = {}) {
-  // #/skills/fix/TS-nn (and #/coach/TS-nn): the fix on its own screen.
+  // #/teacher/fix/TS-nn (and #/coach/TS-nn): the fix on its own screen.
   const want = params && /^TS-\d\d$/.test(params[0] || "") ? params[0] : null;
   if (want && FIX_FILE[want]) return fixScreen(main, want, params[1] ? skillById(params[1]) : null);
   const page = h("div", { class: "page" });
@@ -197,14 +197,14 @@ export async function render(main, { params } = {}) {
     if (!list.length) return;
     histHost.append(h("section", { class: "card" }, h("h2", null, "What you worked on"),
       h("div", { class: "stack" }, list.slice(0, 5).map(x => h("div", { class: "row between" },
-        h("a", { class: "linkbtn", href: "#/skills/fix/" + x.ts }, FIX_INFO[x.ts] || x.symptom),
+        h("a", { class: "linkbtn", href: "#/teacher/fix/" + x.ts }, FIX_INFO[x.ts] || x.symptom),
         h("span", { class: "small muted" }, fmtDate(x.d) + " - " + (x.helped === true ? "it helped" : x.helped === false ? "not yet" : "tried")))))));
   }
 
   // Each symptom opens its fix on its own screen (W50).
   const symCard = r => {
     const first = String((causeCol && r[causeCol]) || "").split(/[;,.]/)[0];
-    return h("a", { class: "symcard", href: "#/skills/fix/" + tsOf(r), "data-sym": r.Symptom }, h("b", null, r.Symptom), first ? h("span", { class: "small muted" }, first) : null);
+    return h("a", { class: "symcard", href: "#/teacher/fix/" + tsOf(r), "data-sym": r.Symptom }, h("b", null, r.Symptom), first ? h("span", { class: "small muted" }, first) : null);
   };
   // Grouped as the learner hears the problem; a guide the groups do not name goes last, on its own.
   const placed = new Set(GROUPS.flatMap(g => g[1]));

@@ -1,0 +1,475 @@
+{
+  "id": "rhythm-and-laya",
+  "title": "Rhythm and Laya - Finding the Beat",
+  "description": "Discover tala and laya - the rhythmic foundation that turns notes into music.",
+  "difficulty": "medium",
+  "skills": ["rhythm", "theory", "tala"],
+  "minutes": 45,
+  "order": 9,
+  "prerequisites": ["ma-pa-expanding-range"],
+  "tasks": [
+    {
+      "id": "t1-what-is-laya",
+      "title": "What is laya?",
+      "content": [
+        "Laya is the tempo - the speed at which music moves. In Indian music, laya is not just a metronome setting; it is a living quality that shapes the character of a performance.",
+        { "type": "list", "items": [
+          "Vilambit laya - slow tempo, used for deep exploration and ornamentation",
+          "Madhya laya - medium tempo, the most common for compositions and practice",
+          "Drut laya - fast tempo, used for exciting climaxes and displays of skill"
+        ] },
+        "A musician controls laya the way a storyteller controls pace - slowing down for drama, speeding up for excitement, always keeping the listener engaged.",
+        { "type": "note", "text": "Unlike Western music where tempo is often fixed by a conductor or click track, Indian classical music allows the soloist to stretch and compress laya expressively within certain boundaries." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What does 'laya' mean in Indian music?",
+          "options": [
+            { "text": "Melody", "right": false, "why": "Melody is the domain of raga, not laya." },
+            { "text": "Tempo and rhythmic flow", "right": true, "yes": "Correct! Laya is the speed and rhythmic quality of the music." },
+            { "text": "Loudness", "right": false, "why": "Dynamics (volume) are separate from laya." },
+            { "text": "The type of instrument used", "right": false, "why": "Laya refers to time, not instrumentation." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What is the Hindi term for medium tempo?",
+          "answer": "madhya laya",
+          "accept": ["madhya laya", "madhya", "madhyalaya"],
+          "points": 10,
+          "yes": "Correct! Madhya laya is the medium tempo.",
+          "no": "Medium tempo is called madhya laya."
+        }
+      ],
+      "hints": [
+        "The three speeds: vilambit (slow), madhya (medium), drut (fast).",
+        "Think of laya as the heartbeat of the music."
+      ]
+    },
+    {
+      "id": "t2-sam",
+      "title": "Sam - the first beat",
+      "content": [
+        "Sam is the most important beat in Indian rhythm - it is beat one, the point of resolution, the moment when melody and rhythm come together.",
+        "In a tala cycle, everything builds toward sam. A melodic phrase that lands precisely on sam feels complete and satisfying. Missing sam feels unsettled.",
+        { "type": "list", "items": [
+          "Sam (pronounced 'sum') means 'together' or 'equal'",
+          "It is always beat 1 of the rhythmic cycle",
+          "The tabla player emphasizes sam with a strong stroke",
+          "Melodic phrases are designed to arrive at sam - like a question reaching its answer"
+        ] },
+        { "type": "note", "text": "Watch any Indian classical concert: the audience nods, the musicians make eye contact, and the tabla player strikes forcefully - all at the exact moment of sam. It is the gravitational center of the music." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What is sam?",
+          "options": [
+            { "text": "The last beat of a cycle", "right": false, "why": "Sam is the first beat, not the last - though the cycle leads into it." },
+            { "text": "The first beat of the rhythmic cycle - the point of resolution", "right": true, "yes": "Exactly! Sam is beat 1, the gravitational center of the tala." },
+            { "text": "A rest in the music", "right": false, "why": "Sam is the strongest beat, not a silence." },
+            { "text": "The name of a drum stroke", "right": false, "why": "Sam is a rhythmic position, not a specific stroke." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What does 'sam' literally mean?",
+          "answer": "together",
+          "accept": ["together", "equal", "even", "same"],
+          "points": 10,
+          "yes": "Correct! Sam means 'together' - the point where everything converges.",
+          "no": "Sam means 'together' or 'equal' - the meeting point of all musical elements."
+        }
+      ],
+      "hints": [
+        "Think of sam as the destination that every musical phrase is traveling toward.",
+        "In concert, sam is the moment when the soloist and tabla player lock eyes."
+      ]
+    },
+    {
+      "id": "t3-teen-taal",
+      "title": "Teen Taal - 16 beats",
+      "content": [
+        "Teen Taal (also spelled Teental or Tintal) is the most common tala in North Indian music. It has 16 beats (matras) divided into 4 groups of 4.",
+        { "type": "list", "items": [
+          "Total matras: 16",
+          "Divided into 4 vibhags (sections) of 4 beats each",
+          "Vibhag 1 (beats 1-4): SAM - Dha Dhin Dhin Dha (clap on beat 1)",
+          "Vibhag 2 (beats 5-8): Dha Dhin Dhin Dha (clap on beat 5)",
+          "Vibhag 3 (beats 9-12): KHALI - Dha Tin Tin Ta (wave on beat 9 - the 'empty' section)",
+          "Vibhag 4 (beats 13-16): Ta Dhin Dhin Dha (clap on beat 13)"
+        ] },
+        "The pattern of claps and waves helps you keep track of where you are in the cycle. The wave (khali) on beat 9 marks the midpoint - like an open question waiting for sam to answer it.",
+        { "type": "note", "text": "Teen Taal's 16-beat structure is so natural that you will find it everywhere - from classical concerts to Bollywood film songs." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "How many beats (matras) does Teen Taal have?",
+          "options": [
+            { "text": "8", "right": false, "why": "That would be Keherwa taal, not Teen Taal." },
+            { "text": "12", "right": false, "why": "That would be Ektaal, not Teen Taal." },
+            { "text": "16", "right": true, "yes": "Correct! Teen Taal has 16 matras in 4 groups of 4." },
+            { "text": "7", "right": false, "why": "That would be Rupak taal." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "What happens on beat 9 of Teen Taal?",
+          "options": [
+            { "text": "A strong clap (tali)", "right": false, "why": "Beat 9 is the khali, not a clap." },
+            { "text": "A wave of the hand (khali) - the 'empty' beat", "right": true, "yes": "Right! The khali on beat 9 marks the open, contrasting section of the cycle." },
+            { "text": "Sam (beat 1)", "right": false, "why": "Sam is always beat 1, not beat 9." },
+            { "text": "A rest or silence", "right": false, "why": "Khali is marked by a wave, not by silence - the tabla still plays." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Teen = three. Teen Taal has three tali (clap) positions: beats 1, 5, and 13.",
+        "The wave (khali) on beat 9 is the tension point. Sam on beat 1 is the resolution."
+      ]
+    },
+    {
+      "id": "t4-clapping-pattern",
+      "title": "Clap along - the theka",
+      "content": [
+        "The theka is the basic drum pattern that defines a tala. For Teen Taal, the theka uses specific bols (syllables) for each beat.",
+        "Teen Taal theka:",
+        { "type": "list", "items": [
+          "| Dha Dhin Dhin Dha | Dha Dhin Dhin Dha | Dha Tin Tin Ta | Ta Dhin Dhin Dha |",
+          "   (clap)                (clap)              (wave)           (clap)"
+        ] },
+        "Practice counting to 16 while clapping on beats 1, 5, and 13, and waving on beat 9. This is how Indian musicians keep time internally.",
+        { "type": "note", "text": "Notice the symmetry: vibhags 1 and 2 sound the same (Dha Dhin Dhin Dha), vibhag 3 opens up with Tin and Ta (the khali section), and vibhag 4 bridges back to sam." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "What are the first four bols (syllables) of Teen Taal's theka?",
+          "answer": "Dha Dhin Dhin Dha",
+          "accept": ["Dha Dhin Dhin Dha", "dha dhin dhin dha", "dha din din dha"],
+          "points": 10,
+          "yes": "Perfect! Dha Dhin Dhin Dha starts the cycle at sam.",
+          "no": "The first four bols are: Dha Dhin Dhin Dha."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "On which beats do you clap (tali) in Teen Taal?",
+          "options": [
+            { "text": "Beats 1, 5, 9, 13", "right": false, "why": "Beat 9 is a wave (khali), not a clap." },
+            { "text": "Beats 1, 5, 13", "right": true, "yes": "Correct! Clap on 1, 5, and 13. Wave on 9." },
+            { "text": "Beats 1 and 9", "right": false, "why": "That misses claps on 5 and 13, and 9 is a wave." },
+            { "text": "Every fourth beat", "right": false, "why": "Every fourth beat would be 4, 8, 12, 16 - that is not Teen Taal's structure." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "confirm",
+          "prompt": "I have practiced counting to 16 and clapping on beats 1, 5, and 13 while waving on 9",
+          "points": 5
+        }
+      ],
+      "hints": [
+        "Count: 1-2-3-4 (clap), 5-6-7-8 (clap), 9-10-11-12 (wave), 13-14-15-16 (clap), and then back to 1 (sam).",
+        "Start slowly - clap and count out loud until the pattern feels natural."
+      ]
+    },
+    {
+      "id": "t5-tempo-expression",
+      "title": "Tempo and musical expression",
+      "content": [
+        "Laya is not just a speed setting - it shapes the entire character of the music. The same raga played at different tempos feels completely different.",
+        { "type": "list", "items": [
+          "Vilambit (slow, 30-60 BPM): space for ornamentation, deep expression, each note explored",
+          "Madhya (medium, 60-120 BPM): balanced, good for learning compositions and steady practice",
+          "Drut (fast, 120-240+ BPM): exciting, requires precise finger technique, less space for ornaments"
+        ] },
+        "As a beginner, you will mainly work in madhya laya. This gives you enough space to think about each note while still feeling the rhythm.",
+        "Advanced musicians use layakari - the art of playing at different speed ratios within the same taal cycle. The four main ratios are: thah (1:1, the base tempo), dugun (2:1, double speed - two notes per beat), tigun (3:1, triple speed), and chaugun (4:1, quadruple speed). A musician might play a phrase at thah speed, then repeat it at dugun, creating rhythmic excitement while the taal stays constant.",
+        { "type": "note", "text": "Professional musicians often begin a performance in vilambit laya and gradually increase through madhya to drut, building energy over the course of an hour or more." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Which laya (tempo) is best for a beginner practicing a new phrase?",
+          "options": [
+            { "text": "Vilambit (slow)", "right": false, "why": "Vilambit is so slow that beginners may lose the rhythmic pulse. It actually requires advanced control." },
+            { "text": "Madhya (medium)", "right": true, "yes": "Right! Madhya laya gives enough space to think while maintaining a clear rhythmic feel." },
+            { "text": "Drut (fast)", "right": false, "why": "Fast tempo leaves no room for a beginner to find each note." },
+            { "text": "No tempo - just play freely", "right": false, "why": "Practicing without rhythm builds bad habits. Even slow practice should have a pulse." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "In a traditional classical performance, how does the tempo typically progress?",
+          "options": [
+            { "text": "Starts fast, then slows down", "right": false, "why": "This is the opposite of tradition." },
+            { "text": "Stays at one speed throughout", "right": false, "why": "Classical performances build energy through tempo changes." },
+            { "text": "Begins slow (vilambit), builds through medium (madhya) to fast (drut)", "right": true, "yes": "Yes! The gradual acceleration from vilambit to drut builds dramatic energy over the performance." },
+            { "text": "Alternates between fast and slow randomly", "right": false, "why": "The progression is deliberate, not random." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Think of a performance as a story arc: slow beginning, building middle, exciting climax.",
+        "Madhya laya (60-120 BPM) is your practice sweet spot."
+      ]
+    },
+    {
+      "id": "t6-play-sa-on-sam",
+      "title": "Play Sa on the beat",
+      "content": [
+        "Now bring your bansuri into the rhythm. The simplest exercise: play Sa on the beat.",
+        "Count a steady 4-beat pulse. Play Sa on each beat and hold it until the next. Focus on starting each note precisely on time - not early, not late.",
+        { "type": "note", "text": "This is harder than it sounds! Playing in time requires coordinating your breath, fingers, and internal sense of pulse. Start slowly." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Play Sa and hold it steady for 4 seconds - imagine you are playing one long note on beat 1.",
+          "target": 0,
+          "seconds": 4,
+          "cents": 40,
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "hold",
+          "prompt": "Now hold Sa for 6 seconds. Imagine holding across beats 1-2-3-4 of a slow Teen Taal vibhag.",
+          "target": 0,
+          "seconds": 6,
+          "cents": 35,
+          "points": 15
+        }
+      ],
+      "hints": [
+        "Count internally: 1-and-2-and-3-and-4-and while holding Sa.",
+        "Keep your breath absolutely steady. Any surge or dip in air pressure will show as a pitch wobble.",
+        "If you need to, tap your foot to keep the pulse while playing."
+      ]
+    },
+    {
+      "id": "t7-phrase-on-sam",
+      "title": "Land a phrase on sam",
+      "content": [
+        "The real magic of rhythm happens when a melodic phrase arrives on sam. This is the most satisfying feeling in Indian music - everything clicking into place on beat 1.",
+        "Exercise: play the phrase Sa Re Ga Re Sa, timing it so the final Sa lands cleanly.",
+        "Think of the phrase as a journey that departs and returns home. The final Sa is your landing - make it precise.",
+        { "type": "note", "text": "In performance, musicians calculate their phrases so that the last note lands exactly on sam. This skill - called 'sam pe aana' (arriving on sam) - is what separates a good musician from a great one." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play: Sa Re Ga Re Sa - a simple phrase that departs and returns home.",
+          "notes": [0, 2, 4, 2, 0],
+          "tempo": 60,
+          "points": 20
+        },
+        {
+          "id": "q2",
+          "type": "play",
+          "prompt": "Play: Sa Re Ga Ma Pa Ga Re Sa - a longer phrase through the first five notes.",
+          "notes": [0, 2, 4, 5, 7, 4, 2, 0],
+          "tempo": 55,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "The final Sa is the most important note. Make sure it is clean and confident.",
+        "Think of the phrase as: depart (Sa Re Ga) - turn (Ga Re or Pa Ga) - return (Re Sa).",
+        "If you lose the pulse, start over at a slower tempo."
+      ]
+    },
+    {
+      "id": "t8-matras-vibhags",
+      "title": "Understanding matras and vibhags",
+      "content": [
+        "Every tala is built from matras (beats) grouped into vibhags (sections). Understanding this structure is key to feeling the rhythm, not just counting it.",
+        { "type": "list", "items": [
+          "Matra: a single beat - the smallest unit of rhythmic time",
+          "Vibhag: a group of matras forming one section of the tala",
+          "Tali: a vibhag that starts with a clap (emphasis)",
+          "Khali: a vibhag that starts with a wave (the 'open' or contrasting section)",
+          "Avartan: one complete cycle of the tala (all vibhags from sam back to sam)"
+        ] },
+        "In Teen Taal: 16 matras, 4 vibhags of 4 matras each, 3 tali (claps) and 1 khali (wave).",
+        { "type": "note", "text": "Different talas have different vibhag structures. Jhaptaal has 10 beats in groups of 2-3-2-3. Rupak has 7 beats in groups of 3-2-2. The vibhag pattern gives each tala its unique feel." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "What is a single beat called in Indian rhythm?",
+          "answer": "matra",
+          "accept": ["matra", "maatra", "beat"],
+          "points": 10,
+          "yes": "Correct! A matra is the basic unit of rhythmic time.",
+          "no": "A single beat is called a matra."
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What is one complete cycle of a tala called?",
+          "answer": "avartan",
+          "accept": ["avartan", "aavartan", "avart", "cycle"],
+          "points": 10,
+          "yes": "Right! An avartan is one full trip around the tala, from sam back to sam.",
+          "no": "One complete cycle is called an avartan."
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "In Teen Taal, how are the 16 matras divided into vibhags?",
+          "options": [
+            { "text": "2 groups of 8", "right": false, "why": "That would create a very different rhythmic feel." },
+            { "text": "4 groups of 4", "right": true, "yes": "Correct! 4 vibhags of 4 matras each gives Teen Taal its balanced, square structure." },
+            { "text": "3 groups of 5 plus 1", "right": false, "why": "That adds up to 16 but is not how Teen Taal is structured." },
+            { "text": "8 groups of 2", "right": false, "why": "Too many divisions - Teen Taal uses 4 groups." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Matra = beat, Vibhag = section, Avartan = one full cycle.",
+        "Teen Taal: 4 x 4 = 16 matras. It is the most symmetrical common tala."
+      ]
+    },
+    {
+      "id": "t9-recognize-taal",
+      "title": "Taal recognition challenge",
+      "content": [
+        "Test your understanding of tala structures. Can you identify the properties of different talas from their descriptions?",
+        "This knowledge will help you as you encounter different rhythmic frameworks in your musical journey."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "A tala has 16 beats in 4 groups of 4, with claps on beats 1, 5, 13 and a wave on beat 9. Which tala is this?",
+          "options": [
+            { "text": "Jhaptaal", "right": false, "why": "Jhaptaal has 10 beats, not 16." },
+            { "text": "Rupak", "right": false, "why": "Rupak has 7 beats, not 16." },
+            { "text": "Teen Taal", "right": true, "yes": "Correct! 16 beats, 4+4+4+4, claps on 1-5-13 and wave on 9 is Teen Taal." },
+            { "text": "Ektaal", "right": false, "why": "Ektaal has 12 beats, not 16." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "In any tala, what is the relationship between sam and the melodic phrase?",
+          "options": [
+            { "text": "The phrase must start on sam", "right": false, "why": "Phrases can start anywhere - what matters is where they end." },
+            { "text": "The phrase is designed to arrive at sam as its point of resolution", "right": true, "yes": "Yes! Phrases are crafted to 'land' on sam, creating rhythmic satisfaction." },
+            { "text": "Sam is a rest where no melody plays", "right": false, "why": "Sam is the strongest beat, often carrying the most important note." },
+            { "text": "Sam and melody are unrelated", "right": false, "why": "The connection between melody and sam is fundamental to Indian music." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "choice",
+          "prompt": "What distinguishes the khali vibhag from the tali vibhags?",
+          "options": [
+            { "text": "Khali is louder", "right": false, "why": "Khali is actually the lighter, more open section." },
+            { "text": "Khali is marked by a wave instead of a clap, creating contrast and openness", "right": true, "yes": "Right! The khali's wave creates rhythmic contrast - like a question before sam's answer." },
+            { "text": "Khali has fewer beats", "right": false, "why": "In Teen Taal, all vibhags have 4 beats. The difference is emphasis, not count." },
+            { "text": "Khali is silent", "right": false, "why": "The tabla still plays during khali - the bols change to create a lighter texture." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q4",
+          "type": "type",
+          "prompt": "How many tali (clap) positions does Teen Taal have? Type the number.",
+          "answer": "3",
+          "accept": ["3", "three", "teen"],
+          "points": 10,
+          "yes": "Correct! Three claps: on beats 1, 5, and 13. This is why it is called 'Teen' (three) Taal.",
+          "no": "Teen Taal has 3 tali (claps): on beats 1, 5, and 13. 'Teen' means three!"
+        }
+      ],
+      "hints": [
+        "Teen = three. The name tells you there are three claps.",
+        "Sam is the destination. The phrase 'sam pe aana' means 'to arrive on sam'.",
+        "Khali means 'empty' - it is a lighter section that contrasts with the heavier tali sections."
+      ]
+    },
+    {
+      "id": "t10-rhythm-challenge",
+      "title": "Rhythm challenge - play and return to sam",
+      "content": [
+        "Final challenge: play a musical phrase that travels through several notes and returns to Sa - your musical 'sam'.",
+        "Think of Sa as your beat 1. Your phrase departs, explores, and comes back home.",
+        { "type": "list", "items": [
+          "Start on Sa (home)",
+          "Travel through Re, Ga, Ma, Pa",
+          "Return through the notes back to Sa",
+          "Make the final Sa confident and clear - this is your sam"
+        ] },
+        { "type": "note", "text": "Congratulations on completing the rhythm room! You now understand laya, tala, and sam - the rhythmic foundation that will support everything you play." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play a rising phrase: Sa Re Ga Ma Pa - take off from home.",
+          "notes": [0, 2, 4, 5, 7],
+          "tempo": 60,
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "play",
+          "prompt": "Now descend back home: Pa Ma Ga Re Sa - land on sam.",
+          "notes": [7, 5, 4, 2, 0],
+          "tempo": 60,
+          "points": 15
+        },
+        {
+          "id": "q3",
+          "type": "play",
+          "prompt": "Full journey: Sa Re Ga Ma Pa Ma Ga Re Sa - depart and return in one breath if you can.",
+          "notes": [0, 2, 4, 5, 7, 5, 4, 2, 0],
+          "tempo": 55,
+          "points": 25
+        },
+        {
+          "id": "q4",
+          "type": "type",
+          "prompt": "What is double speed (2:1 ratio) called in layakari?",
+          "answer": "dugun",
+          "accept": ["dugun", "duguna", "dugun laya"],
+          "points": 10,
+          "yes": "Correct! Dugun means double speed - playing two notes for every one beat.",
+          "no": "Double speed is called dugun (2:1 ratio)."
+        }
+      ],
+      "hints": [
+        "The ascending phrase (Sa to Pa) should feel like building energy.",
+        "The descending phrase (Pa to Sa) should feel like relaxing into resolution.",
+        "For the full journey, take a deep breath and play evenly. If you run out of air, breathe at Pa (the top)."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+{
+  "id": "shruti-and-tuning",
+  "title": "Shruti and Microtonal Ear Training",
+  "tasks": [
+    {
+      "id": "beyond-12-notes",
+      "title": "Beyond 12 Notes",
+      "content": [
+        "Western music divides the octave into 12 equal semitones. Each semitone is exactly 100 cents wide, giving a clean, symmetrical grid. This system - called equal temperament - works well for keyboards and fretted instruments where every note is fixed.",
+        "Indian classical music takes a different approach. The tradition recognizes 22 shrutis (micro-intervals) within the octave. These are not equally spaced. They arise from pure mathematical ratios between frequencies, and their exact positions shift depending on the raga being performed.",
+        "This difference is subtle but essential. It is what gives Indian classical music its emotional depth. A komal Ga in Bhairavi sits at a slightly different pitch than a komal Ga in Kafi. The same note name, two different feelings. On the bansuri, where pitch is controlled by breath and finger position rather than fixed frets, you have the freedom to reach every one of these micro-intervals."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many shrutis does the Indian classical tradition recognize per octave?",
+          "options": [
+            { "text": "12", "why": "12 is the number of semitones in Western equal temperament. The Indian system is finer." },
+            { "text": "22", "right": true, "yes": "Correct. The 22 shrutis give Indian music its microtonal richness." },
+            { "text": "7", "why": "7 is the number of swara names (Sa Re Ga Ma Pa Dha Ni), but each swara can occupy multiple shruti positions." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How many equal semitones does the Western system divide the octave into?",
+          "options": [
+            { "text": "22", "why": "22 is the Indian shruti count. Western equal temperament uses 12." },
+            { "text": "12", "right": true, "yes": "Right. 12 semitones, each exactly 100 cents apart." },
+            { "text": "8", "why": "An octave spans 8 note names (do re mi fa sol la ti do), but there are 12 semitones including sharps and flats." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "achal-swaras",
+      "title": "Sa and Pa - The Fixed Points",
+      "content": [
+        "Sa and Pa are called achal swaras - immovable notes. No matter which raga you play, Sa is always Sa and Pa is always Pa. They never become komal or tivra. They are the two anchors of the entire system.",
+        "Sa is your reference pitch - the drone note, the home. Pa sits a pure fifth above Sa, at a frequency ratio of 3:2 (approximately 702 cents). This interval is so consonant that it feels almost like a second home note.",
+        "This is why the tanpura drones Sa and Pa together. These two fixed points create a stable harmonic field against which every other note defines itself. The five movable swaras (Re, Ga, Ma, Dha, Ni) shift their positions within this field depending on the raga.",
+        "To develop shruti awareness, start by anchoring yourself perfectly on these two fixed points. Hold each one with absolute precision - no wobble, no drift."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Sa with precision - within 15 cents for 6 seconds",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Pa with the same precision - 15 cents for 6 seconds",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What does 'achal swara' mean?",
+          "options": [
+            { "text": "A swara that changes with every raga", "why": "The opposite - achal means immovable. These swaras never change." },
+            { "text": "An immovable swara that never changes position", "right": true, "yes": "Exactly. Sa and Pa are fixed reference points that never become komal or tivra." },
+            { "text": "A swara that is always played softly", "why": "Achal refers to pitch position, not volume. It means the note is fixed." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "just-vs-equal",
+      "title": "Just Intonation vs Equal Temperament",
+      "content": [
+        "In Western equal temperament, every semitone is exactly 100 cents apart. This makes it easy to play in any key on a piano, but it means every interval is slightly compromised - no interval except the octave is perfectly pure.",
+        "Indian music uses just intonation, where intervals are based on simple mathematical ratios. A just-tuned Ga (the major third) has a frequency ratio of 5:4, which works out to about 386 cents. The equal-tempered version is 400 cents - 14 cents sharper. That 14-cent difference may seem tiny, but against a drone it is clearly audible. The just version feels smooth and locked in. The equal-tempered version has a slight restlessness.",
+        "On the bansuri, you are not locked to equal temperament. By adjusting your breath pressure and finger position, you can reach the pure just-intonation intervals. This is one of the great advantages of a fretless, holeless instrument - you have infinite pitch resolution."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which tuning system uses pure mathematical ratios between frequencies?",
+          "options": [
+            { "text": "Equal temperament", "why": "Equal temperament compromises every ratio to make all keys equal. Just intonation preserves the pure ratios." },
+            { "text": "Just intonation", "right": true, "yes": "Correct. Just intonation tunes each interval to a pure frequency ratio like 3:2 or 5:4." },
+            { "text": "Both are the same", "why": "They are different systems. Just intonation uses pure ratios; equal temperament divides the octave into 12 equal parts." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "A just-tuned Ga (major third, ratio 5:4) is approximately how many cents?",
+          "answer": "386",
+          "accept": ["386", "386 cents"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "movable-swaras",
+      "title": "The Movable Swaras",
+      "content": [
+        "While Sa and Pa are fixed, the other five swaras each occupy multiple shruti positions. The traditional distribution is:",
+        "Sa occupies 4 shrutis. Re has 3 positions. Ga has 2. Ma has 4. Pa occupies 4 shrutis. Dha has 3 positions. Ni has 2.",
+        "Adding them up: 4 + 3 + 2 + 4 + 4 + 3 + 2 = 22 shrutis total.",
+        "What does this mean in practice? It means that when a raga uses shuddha Re, the exact pitch of that Re depends on the raga's character. A Re in Yaman might sit at a slightly different shruti than a Re in Bilawal, even though both are called shuddha Re. The difference is small but perceptible, and it contributes to each raga's unique identity.",
+        "Ma and Sa have the most shruti positions (4 each), which is fitting - Ma is the note with the most dramatic shift (shuddha to tivra), and Sa anchors the whole system."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which swaras have the most shruti positions (4 each)?",
+          "options": [
+            { "text": "Re and Dha", "why": "Re and Dha each have 3 shruti positions, not 4." },
+            { "text": "Ga and Ni", "why": "Ga and Ni each have only 2 shruti positions - the fewest of any swara." },
+            { "text": "Sa, Ma, and Pa", "right": true, "yes": "Right. Sa, Ma, and Pa each occupy 4 shrutis. Sa and Pa are fixed but still span 4 shruti positions in the theoretical framework." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the total number of shrutis in one octave? (4+3+2+4+4+3+2)",
+          "answer": "22",
+          "accept": ["22", "twenty two", "twenty-two"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "hearing-the-difference",
+      "title": "Hearing the Difference",
+      "content": [
+        "Shruti awareness starts with your ears, not your intellect. The key is learning to hear consonance - the feeling of a note locking in with the drone.",
+        "When your note is perfectly in tune with the drone, the combined sound feels smooth, steady, and resonant. The two frequencies reinforce each other. Musicians describe this as the note 'sitting' in the drone.",
+        "When you are slightly off - even by 10 or 15 cents - you hear a wavering or beating effect. The two frequencies interfere with each other, creating a subtle pulse. The further off you are, the faster the beating.",
+        "This beating is your built-in tuning tool. Play a note, listen to the drone, and adjust until the beating disappears and the note locks in. On the bansuri, you adjust by rolling your finger slightly to change the hole opening, or by modifying your breath angle and pressure."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 7],
+          "rounds": 5,
+          "prompt": "Identify each note - listen carefully to its character against the drone",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Ga within 15 cents for 5 seconds - feel it lock into the drone",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "komal-ga-ragas",
+      "title": "Komal Ga in Different Ragas",
+      "content": [
+        "Komal Ga (semitone 3, approximately 300 cents) appears in many ragas - Bhairavi, Kafi, Todi, Asavari, Darbari Kanada, and others. But its treatment varies dramatically from raga to raga.",
+        "In Darbari Kanada, komal Ga receives a distinctive slow oscillation called andolan. The note does not sit still - it gently swings between shruti positions, creating a deep, brooding quality. This andolan on komal Ga is Darbari's most recognizable feature. No other raga treats Ga this way.",
+        "In Bhairavi, komal Ga is more stable. It is approached directly and sits firmly. The emotion is devotional and tender rather than brooding.",
+        "In Todi, komal Ga is approached with a meend (slide) from komal Re, creating a distinctive pull. The Ga in Todi sits lower than in Kafi - closer to Re - which gives Todi its haunting, austere quality.",
+        "Same note name, completely different musical identities. This is why shruti awareness matters - it is not just about being 'in tune.' It is about being in tune with the specific raga."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What ornament does Darbari Kanada use on komal Ga?",
+          "options": [
+            { "text": "Kan (grace note)", "why": "Kan is a quick grace note. Darbari uses a slow oscillation on komal Ga." },
+            { "text": "Andolan (slow oscillation)", "right": true, "yes": "Correct. The andolan on komal Ga is Darbari's signature - a slow, deliberate swing between shruti positions." },
+            { "text": "Murki (turn)", "why": "Murki is a quick ornamental turn. Darbari's treatment of komal Ga is slow and deliberate." }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 1, 3, 5, 7],
+          "rounds": 5,
+          "prompt": "Identify notes from the Bhairavi lower register - including komal Re and komal Ga",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "shruti-and-rasa",
+      "title": "Shruti and Rasa",
+      "content": [
+        "Rasa is the emotional essence of a raga - the specific feeling it evokes in the listener. Indian aesthetics identifies nine rasas: shringara (love), karuna (compassion), veera (heroism), raudra (fury), hasya (joy), bhayanaka (fear), bibhatsa (disgust), adbhuta (wonder), and shanta (peace).",
+        "The connection between shruti and rasa runs deep. A note's exact micro-position shapes the emotion it carries. Consider komal Ga again: in Darbari Kanada, it sits at a lower shruti position, and the andolan pulls it even lower at times. This produces karuna rasa - deep, grave compassion. In Kafi, the same komal Ga sits at a higher shruti position and is approached more briskly. This produces shringara rasa - romantic, playful love.",
+        "The same principle applies across every movable swara. A komal Ni placed low and approached with weight creates gravity and introspection (Bhairavi's devotional quality). The same komal Ni placed higher and treated lightly creates warmth and intimacy (Khamaj's evening charm).",
+        "This is why masters spend years refining the placement of individual notes. Moving a swara by just 5-10 cents in a particular raga does not just change its pitch - it changes its emotional meaning. The shruti is not a frequency. It is a feeling."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does the shruti position of komal Ga differ between Darbari Kanada and Kafi?",
+          "options": [
+            { "text": "They are identical - komal Ga is always at 300 cents", "why": "In practice, komal Ga sits at different shruti positions in different ragas. The 300-cent equal-temperament value is an approximation." },
+            { "text": "Darbari's sits lower, Kafi's sits higher", "right": true, "yes": "Correct. Darbari pulls komal Ga toward a lower, graver shruti position. Kafi places it higher, creating a lighter, more romantic quality." },
+            { "text": "Kafi's sits lower, Darbari's sits higher", "why": "It is the opposite. Darbari's brooding character comes from pulling Ga to a lower position. Kafi's lighter feel comes from a higher placement." },
+            { "text": "The difference is only in ornamentation, not pitch", "why": "While ornamentation differs too, the actual shruti position of the note is different. Darbari's Ga is pitched lower than Kafi's Ga." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which rasa (emotional essence) is most associated with Darbari Kanada's treatment of komal Ga?",
+          "options": [
+            { "text": "Shringara (romantic love)", "why": "Shringara is lighter and more playful. Darbari's deep oscillation on komal Ga produces a graver emotion." },
+            { "text": "Karuna (deep compassion)", "right": true, "yes": "Correct. Darbari Kanada's low-placed, slowly oscillating komal Ga creates karuna rasa - a profound, almost sorrowful compassion." },
+            { "text": "Veera (heroism)", "why": "Veera rasa requires bold, assertive phrases. Darbari's andolan on komal Ga is contemplative, not heroic." },
+            { "text": "Hasya (joy)", "why": "Darbari Kanada is one of the most serious, meditative ragas. Its mood is far from joyful." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many rasas does Indian aesthetics traditionally identify?",
+          "answer": "9",
+          "accept": ["9", "nine", "nava rasa"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "tuning-to-drone",
+      "title": "Tuning to the Drone",
+      "content": [
+        "Each swara has a characteristic feeling when played against the Sa-Pa drone. Learning to recognize these feelings is the foundation of shruti awareness.",
+        "Sa feels perfectly stable - it is the drone itself. Pa feels almost as stable - a pure fifth that locks in like a second anchor. These are your reference points.",
+        "Re (shuddha) and Dha (shuddha) feel bright and clear. They have an open, forward quality. Ga (shuddha) and Ni (shuddha) feel warmer and more intimate. They are sweet notes that add emotional color.",
+        "Shuddha Ma feels stable and grounded - a solid foundation note. Tivra Ma feels restless and yearning - it wants to move somewhere, usually upward to Pa. This contrast between the two Ma positions is one of the most powerful expressive tools in Indian music.",
+        "Practice holding each note and paying attention to its emotional quality. This is not abstract theory - it is what you hear and feel when the note is in tune with the drone."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Re within 15 cents - feel its bright, open quality",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Ga within 15 cents - feel its warm, intimate quality",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which notes feel most stable against the Sa-Pa drone?",
+          "options": [
+            { "text": "Ga and Ni", "why": "Ga and Ni are warm and expressive, but Sa and Pa are the most stable - they are the achal (fixed) swaras." },
+            { "text": "Sa and Pa", "right": true, "yes": "Correct. As achal swaras, Sa and Pa form the most consonant, stable intervals with the drone." },
+            { "text": "Tivra Ma and komal Re", "why": "These notes have tension and yearning. Sa and Pa are the fixed, stable anchors." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practical-shruti-exercises",
+      "title": "Practical Shruti Exercises",
+      "content": [
+        "Here are three exercises that build shruti awareness from the ground up. Practice each one daily with a tanpura or drone app running.",
+        "Exercise 1 - Shruti scanning: Pick one note (start with Ga). Play it and hold. Now, without changing your fingering, use only breath pressure and embouchure angle to shift the pitch up by a few cents, then down by a few cents. Feel how the consonance changes. Find the exact spot where it locks in with the drone - that is the just-intonation position. This exercise teaches you that every note has a sweet spot, and that you can find it by listening.",
+        "Exercise 2 - Raga colouring: Play the same note in the context of two different ragas. For example, play shuddha Ga first with Yaman-style phrases (ascending toward Pa and Dha) and then with Bilawal-style phrases (descending from Pa toward Sa). Notice how the same Ga wants to sit at a slightly different pitch in each context. The raga pulls the note to its preferred shruti position.",
+        "Exercise 3 - Drone matching: Set your drone to Sa-Pa. Play each of the seven shuddha swaras in ascending order. On each note, hold it long enough to feel the beating slow down and stop as you find the pure interval. The goal is not speed but precision. When a note locks in and the beating disappears, you have found its shruti position relative to the drone."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 8,
+          "cents": 10,
+          "prompt": "Shruti scan on Ga: hold within 10 cents for 8 seconds - find and lock into the sweet spot",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 9,
+          "seconds": 8,
+          "cents": 10,
+          "prompt": "Shruti scan on Dha: hold within 10 cents for 8 seconds - feel it lock into the drone",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the full ascending shuddha saptak with precision: Sa R G m P D N Sa'",
+          "points": 25
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice shruti scanning for at least 5 minutes daily with a drone running",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "beyond-equal-temperament",
+      "title": "Beyond Equal Temperament",
+      "content": [
+        "This app uses semitone-based pitch detection, which approximates the 12-note equal temperament grid. It is a practical tool for building basic pitch accuracy. But real mastery goes beyond this grid.",
+        "Listen to recordings of masters like Hariprasad Chaurasia or Pannalal Ghosh. Notice how their notes seem to glow and pulse against the drone. That is shruti awareness in action - each note placed at precisely the right micro-interval for the raga, the phrase, the moment.",
+        "Developing this awareness is a lifelong practice. It begins with the exercises in this room - holding notes with precision, listening for consonance, understanding why the same note name can feel different in different ragas. Over time, your ear becomes more refined, and the 22 shrutis become not a theory but a living, audible reality.",
+        "The bansuri is the perfect instrument for this journey. With no frets, no keys, and no fixed positions, your only guide is your ear and the drone. Every note is a choice, and every choice shapes the raga."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "rounds": 6,
+          "prompt": "Identify all seven shuddha swaras - the full saptak",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will develop my shruti awareness through careful listening and daily practice with the drone",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

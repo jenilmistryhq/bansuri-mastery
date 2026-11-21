@@ -41,7 +41,7 @@ The tuner shows you a number; the drone teaches your **ear**. When your Sa match
 
 ### Step 1: Confirm Sa (INS-02)
 
-Do the tuner check from [L00 step 6](L00-day-0-your-flute.md). Write down the reading. Expected: **C5** (about 523 Hz). If your relaxed Sa is consistently 20-40 cents flat or sharp, that may be how your flute sits at your breath and room temperature. Note it; [L17](L17-intonation-and-drone.md) covers adjusting.
+Do the tuner check from [L00 step 6](L00-day-0-your-flute.md). Write down the reading. Expected: the Sa note and octave saved for your flute. The default C5 flute reads about 523 Hz. If your relaxed Sa is consistently 20-40 cents flat or sharp, that may be how your flute sits at your breath and room temperature. Note it; [L17](L17-intonation-and-drone.md) covers adjusting.
 
 ### Step 2: The basic long tone (TON-04)
 

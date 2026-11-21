@@ -1,0 +1,324 @@
+{
+  "id": "advanced-alankars",
+  "title": "Advanced Alankars",
+  "tasks": [
+    {
+      "id": "beyond-straight-scales",
+      "title": "Beyond Straight Scales",
+      "content": [
+        "In the First Alankars room you learned the foundational patterns: straight ascending and descending scales, paired notes, three-note groups, and four-note groups. Those are levels 1 through 4 of the alankar system - the foundation every player needs.",
+        "But real musical fluency requires more. When you play a raga, your fingers do not just walk up and down the scale in order. They skip notes, reverse direction mid-phrase, leap across wide intervals, and change speed. Advanced alankars train exactly these movements.",
+        "This room covers levels 5 through 9: skip patterns, zigzag patterns, combined ascending-descending groups, wide intervals, and speed variation. Each pattern builds a specific skill that you will use in raga improvisation.",
+        "The golden rule of alankar practice: never increase speed until the slow version is perfectly clean. Every note must sound with equal weight and clarity before you push the tempo."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the main purpose of practising advanced alankars?",
+          "options": [
+            {
+              "text": "To memorise the names of all the swaras",
+              "why": "You already know the swara names from earlier rooms. Alankars build physical skill, not memorisation."
+            },
+            {
+              "text": "To build finger independence, interval awareness, and agility for raga improvisation",
+              "right": true,
+              "yes": "Exactly. Advanced alankars train the finger movements and direction changes you need for real musical phrases."
+            },
+            {
+              "text": "To play as fast as possible",
+              "why": "Speed is a byproduct, not the goal. Clean tone at slow speed always comes first."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skip-patterns",
+      "title": "Skip Patterns",
+      "content": [
+        "Skip patterns jump over one note in the scale: Sa Ga, Re Ma, Ga Pa, Ma Dha, Pa Ni, Dha Sa'. Instead of stepping through adjacent swaras, you leap across one.",
+        "This is harder than it sounds. On the bansuri, adjacent notes differ by one or two finger holes. Skipping a note means lifting or closing two or three holes at once, which demands coordinated finger movement.",
+        "The skip pattern also trains your ear to hear intervals larger than a step. In raga playing, phrases constantly leap across notes - the skip alankar is where you build that comfort.",
+        "Start slowly. Play each pair clearly: Sa then Ga, pause, Re then Ma, pause. Once clean, connect them into a flowing line without pauses."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 2, 5, 4, 7, 5, 9, 7, 11, 9, 12],
+          "prompt": "Play the ascending skip pattern: Sa Ga, Re Ma, Ga Pa, Ma Dha, Pa Ni, Dha Sa'",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "In a skip pattern, how many swaras do you jump over between each pair?",
+          "options": [
+            {
+              "text": "None - you play every adjacent note",
+              "why": "That would be a straight scale, not a skip pattern."
+            },
+            {
+              "text": "One swara is skipped between each pair",
+              "right": true,
+              "yes": "Right. Sa skips Re to land on Ga, Re skips Ga to land on Ma, and so on."
+            },
+            {
+              "text": "Two swaras are skipped",
+              "why": "Skipping two swaras would be a wide interval pattern, which comes later."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zigzag-up",
+      "title": "Zigzag Up",
+      "content": [
+        "The zigzag pattern is one of the most important alankars for raga playing. Almost every melodic phrase in Indian classical music changes direction at some point - a pure straight line up or down sounds mechanical.",
+        "The ascending zigzag goes: Sa Re Sa, Re Ga Re, Ga Ma Ga, Ma Pa Ma, Pa Dha Pa, Dha Ni Dha, Ni Sa' Ni. Each group rises one step, drops back, then the next group starts one note higher.",
+        "The challenge is the turnaround point. When your fingers change direction, there is a natural tendency to rush or blur the middle note. Fight this - every note in the zigzag must sound with equal clarity.",
+        "Think of it as a wave pattern: each wave crests one step higher than the last. The overall motion is upward, but the path is not straight."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 0, 2, 4, 2, 4, 5, 4, 5, 7, 5],
+          "prompt": "Play the first four zigzag groups: Sa Re Sa, Re Ga Re, Ga Ma Ga, Ma Pa Ma",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What specific skill does the zigzag pattern develop?",
+          "options": [
+            {
+              "text": "Breath capacity for long phrases",
+              "why": "While breath helps, the zigzag specifically targets direction-change agility."
+            },
+            {
+              "text": "Agility at changing direction mid-phrase",
+              "right": true,
+              "yes": "Correct. The constant up-down-up movement trains your fingers to reverse direction cleanly, which is essential for raga phrases."
+            },
+            {
+              "text": "Playing very high notes",
+              "why": "The zigzag covers the same range as a straight scale - it is the direction changes that matter."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zigzag-down",
+      "title": "Zigzag Down",
+      "content": [
+        "The descending zigzag is the mirror of the ascending one: Sa' Ni Sa', Ni Dha Ni, Dha Pa Dha, Pa Ma Pa, Ma Ga Ma, Ga Re Ga, Re Sa Re.",
+        "Descending patterns are often harder than ascending ones on the bansuri. When ascending, you lift fingers one by one - a natural opening motion. When descending, you close holes one by one, and each finger must land precisely on its hole to avoid air leaks.",
+        "The descending zigzag doubles this difficulty by mixing closing and opening in rapid succession. If you find the descending version harder than the ascending, that is normal - spend extra time on it.",
+        "A common mistake is letting the lower note of each group (the dip down) become inaudible. Give it full weight. Sa' Ni Sa' means three equally clear notes, not Sa' with a quick brush past Ni."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 12, 11, 9, 11, 9, 7, 9, 7, 5, 7],
+          "prompt": "Play the descending zigzag: Sa' Ni Sa', Ni Dha Ni, Dha Pa Dha, Pa Ma Pa",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Why are descending patterns often harder on bansuri?",
+          "options": [
+            {
+              "text": "Descending needs more breath",
+              "why": "Breath demand is similar in both directions. The difficulty is in finger placement."
+            },
+            {
+              "text": "Closing holes precisely is harder than opening them",
+              "right": true,
+              "yes": "Right. Each descending step requires a finger to land exactly on its hole. Incomplete coverage causes squeaks and air leaks."
+            },
+            {
+              "text": "The lower notes are quieter",
+              "why": "Volume changes slightly, but the real challenge is precise hole closure."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "combined-ascending",
+      "title": "Combined Ascending",
+      "content": [
+        "Combined patterns merge ascending and descending movement within each group. The pattern goes: Sa Re Ga Re, Re Ga Ma Ga, Ga Ma Pa Ma, Ma Pa Dha Pa.",
+        "Each four-note group climbs three steps then drops back one. The overall trajectory is upward, but each group contains a mini descent. This is closer to how real raga phrases work - rarely does a phrase just go straight up.",
+        "The combined ascending pattern also builds an important musical instinct: the feeling of reaching forward then pulling back. In raga alap, almost every phrase does this - stretching toward a higher note, touching it, then returning to settle on a lower one before reaching further.",
+        "Pay special attention to the seam between groups. The last note of one group and the first note of the next are the same pitch (Re ends group 1, Re starts group 2). Make both notes distinct - do not slide or blur them together."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 2, 2, 4, 5, 4, 4, 5, 7, 5],
+          "prompt": "Play the combined ascending: Sa Re Ga Re, Re Ga Ma Ga, Ga Ma Pa Ma",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What musical instinct does the combined ascending pattern build?",
+          "options": [
+            {
+              "text": "Playing as many notes as possible in one breath",
+              "why": "Breath management is not the focus here - it is the reach-and-return motion."
+            },
+            {
+              "text": "Reaching toward a note then pulling back before climbing higher",
+              "right": true,
+              "yes": "Exactly. This reach-and-return motion is the heartbeat of raga alap - stretching forward, touching a note, settling back, then reaching further."
+            },
+            {
+              "text": "Memorising long note sequences",
+              "why": "The pattern is systematic, not a memorisation exercise. It builds a physical and musical reflex."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wide-intervals",
+      "title": "Wide Intervals",
+      "content": [
+        "Wide interval patterns skip two swaras at a time: Sa Ma, Re Pa, Ga Dha, Ma Ni, Pa Sa'. These are the largest steps in the basic saptak, spanning a fourth (five semitones) or more.",
+        "On the bansuri, wide intervals require lifting or closing three or four fingers simultaneously. The challenge is making the jump clean - no ghost notes from fingers landing one at a time.",
+        "Wide intervals appear constantly in raga music. The leap from Sa to Ma is the backbone of Kafi phrases. Pa to Sa' (the upper tonic) is how many phrases resolve. Ga to Dha is a Yaman signature.",
+        "Practice tip: for each pair, hold the first note for two seconds, then jump to the second note in one clean motion. No sliding, no passing through intermediate notes. Just two clean, separated pitches."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 5, 2, 7, 4, 9, 5, 11, 7, 12],
+          "prompt": "Play the wide interval pattern: Sa Ma, Re Pa, Ga Dha, Ma Ni, Pa Sa'",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 5, 7, 12],
+          "rounds": 5,
+          "prompt": "Identify wide interval target notes: Sa, Ma, Pa, or upper Sa",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "meend-preparation",
+      "title": "Meend Preparation Alankars",
+      "content": [
+        "Some alankars prepare you for specific ornaments. This pattern trains smooth, even connections between notes - the foundation for meend (slides between swaras).",
+        "Play the ascending saptak slowly and evenly: Sa Re Ga Ma Pa. Focus not on speed but on the transition between each note. Each note should flow into the next without gaps or bumps.",
+        "On the bansuri, smooth transitions mean gradually rolling fingers rather than lifting them abruptly. The air stream stays constant while the fingers create a continuous pitch change.",
+        "After playing the connected phrase, hold Ga (the middle of the range) steady for five seconds. This tests whether your embouchure and breath remain stable after the movement of the connected phrase."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play Sa Re Ga Ma Pa slowly and smoothly - focus on even transitions",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold Ga steady for 5 seconds after the phrase - prove your breath is stable",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "speed-building",
+      "title": "Speed Building",
+      "content": [
+        "Layakari is the art of playing at different speeds within the same taal cycle. In alankar practice, this means playing the same pattern at increasing speeds while keeping every note clean.",
+        "The three basic speeds are: thah (single speed, one note per beat), dugun (double speed, two notes per beat), and tigun (triple speed, three notes per beat). Advanced players also use chaugun (quadruple speed).",
+        "The rule that separates good players from great ones: never increase speed until the slow version is perfect. Rushing to dugun with a sloppy thah builds bad habits that are extremely hard to fix later.",
+        "Start with the full ascending saptak at thah speed. Play each note with full tone and even duration. Only when every note rings clearly and your drone sounds in tune with every swara should you consider doubling the speed."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the full ascending saptak at a steady, even pace",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What does 'dugun' mean in the context of layakari?",
+          "options": [
+            {
+              "text": "Half speed - slowing down",
+              "why": "Dugun means double, not half. It doubles the number of notes per beat."
+            },
+            {
+              "text": "Double speed - two notes per beat instead of one",
+              "right": true,
+              "yes": "Correct. Dugun doubles the density of notes within the same taal cycle."
+            },
+            {
+              "text": "Playing the same note twice",
+              "why": "Dugun refers to speed, not repetition. It means fitting twice as many notes into the same time."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the name for triple speed (three notes per beat)?",
+          "answer": "tigun",
+          "accept": ["tigun", "tigun laya", "teen gun", "teengun", "trigun"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "alankar-marathon",
+      "title": "Alankar Marathon",
+      "content": [
+        "Time to put it all together. This exercise combines skip patterns, direction changes, and a straight descent into one continuous phrase.",
+        "The pattern: ascending skips (Sa Ga, Re Ma, Ga Pa, Ma Dha, Pa Ni, Dha Sa') flowing into a straight descent (Ni Dha Pa Ma Ga Re Sa). The ascending half tests interval jumps; the descending half tests smooth stepwise movement.",
+        "This is a real workout - 19 notes in a single phrase. Take a full breath before you start. Keep your air stream steady and your fingers precise throughout.",
+        "If you can play this pattern cleanly from bottom to top and back, your fingers have the agility to handle most raga phrases. The patterns you have practised in this room - skips, zigzags, combined groups, wide intervals - are the building blocks of every melody in Indian classical music."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 2, 5, 4, 7, 5, 9, 7, 11, 9, 12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the full marathon: ascending skips then straight descent back to Sa",
+          "points": 30
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "rounds": 5,
+          "prompt": "Identify notes from the full saptak - all seven shuddha swaras",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "After completing this room, what should you do with these patterns?",
+          "options": [
+            {
+              "text": "Move on and never practise them again",
+              "why": "Alankars are lifelong practice. Even advanced players warm up with them daily."
+            },
+            {
+              "text": "Include them in daily riyaz, gradually increasing speed while maintaining clarity",
+              "right": true,
+              "yes": "Exactly. Alankars are not a one-time exercise - they are a daily practice that keeps your fingers sharp and your intonation clean for a lifetime."
+            },
+            {
+              "text": "Only practise them before a performance",
+              "why": "Daily practice builds lasting skill. Occasional practice before performances is not enough to maintain finger agility."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

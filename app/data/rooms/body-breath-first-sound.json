@@ -1,0 +1,266 @@
+{
+  "id": "body-breath-first-sound",
+  "title": "Body, Breath, First Sound",
+  "tasks": [
+    {
+      "id": "sit-like-a-player",
+      "title": "Sit Like a Player",
+      "content": "Good posture is not rigid - it is relaxed and tall.\n\n**On a chair:** Sit near the front edge, feet flat, back off the backrest.\n**On the floor:** Cross-legged on a firm cushion, hips a little above the knees.\n\nThen:\n- Imagine a thread pulling the top of your head upward\n- Let your shoulders drop and widen\n- Keep your chin level - neither tucked nor lifted\n- Leave your belly free to move (no tight belt)",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I am sitting tall with relaxed shoulders"
+        },
+        {
+          "type": "choice",
+          "prompt": "Your shoulders keep rising while you play. What is the fix?",
+          "options": [
+            {
+              "text": "Pull them back firmly",
+              "why": "Pulling back creates stiffness. The fix is to let them drop."
+            },
+            {
+              "text": "Lift them to your ears, then let them fall",
+              "right": true,
+              "yes": "Correct. Where they land naturally is the right position."
+            },
+            {
+              "text": "Ignore it - it does not affect playing",
+              "why": "Raised shoulders cause tension in the neck, jaw, and arms. It affects everything."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finger-placement",
+      "title": "Where Do Your Fingers Go?",
+      "content": "**Top hand** (nearest your mouth): index, middle, and ring fingers cover holes 1, 2, 3.\n**Bottom hand**: index, middle, and ring fingers cover holes 4, 5, 6.\n\nThumbs go underneath for support. Little fingers rest lightly on the flute body.\n\nThe pads of your fingers (not the tips) cover the holes. Use the lightest pressure that makes a seal.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which part of the finger covers the holes?",
+          "options": [
+            {
+              "text": "The fingertip",
+              "why": "Tips are too small to seal the hole. Use the flat pad."
+            },
+            {
+              "text": "The flat pad of the finger",
+              "right": true,
+              "yes": "Right. The pad makes a full seal with less effort."
+            },
+            {
+              "text": "The knuckle",
+              "why": "The knuckle cannot cover a hole. Use the pad."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What do the little fingers do?",
+          "options": [
+            {
+              "text": "Cover holes 7 and 8",
+              "why": "A standard bansuri has only 6 finger holes."
+            },
+            {
+              "text": "Rest lightly on the flute body",
+              "right": true,
+              "yes": "Correct. They rest lightly for stability without gripping."
+            },
+            {
+              "text": "Stay in the air",
+              "why": "Resting them lightly on the flute helps stability."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tension-scan",
+      "title": "Tension Scan",
+      "content": "Do this at the start of every session and halfway through. Go from top to bottom:\n\n1. **Jaw** - Teeth slightly apart. No clenching.\n2. **Neck and shoulders** - Head floats; shoulders drop. Raised shoulders are the most common fault.\n3. **Elbows and wrists** - Elbows hang naturally. Wrists fairly straight - turn the flute, not the wrist.\n4. **Fingers** - Gently curved or flat. No white knuckles.\n\nIf you notice tension, breathe out and let it go. Do not fight it - just notice and release.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the most common tension fault for bansuri players?",
+          "options": [
+            {
+              "text": "Tight ankles",
+              "why": "Ankles rarely cause problems. The most common issue is raised shoulders."
+            },
+            {
+              "text": "Raised shoulders",
+              "right": true,
+              "yes": "Correct. Raised shoulders cause tension in the neck, jaw, and arms - the three areas that matter most for flute playing."
+            },
+            {
+              "text": "Bent knees",
+              "why": "Knee position matters less than upper body. Raised shoulders are the main culprit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "low-breathing",
+      "title": "Low Breathing",
+      "content": "Put one hand on your belly and one on your upper chest.\n\n**Breathe in:** The belly hand moves out. The chest hand stays still. The shoulders do not rise.\n**Breathe out:** The belly hand moves back in. Slow, steady, controlled.\n\nThis is diaphragmatic breathing. It gives you more air, more control, and a warmer tone than chest breathing.\n\nPractice 10 breath cycles: 4 counts in, 6 counts out.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I can feel my belly moving while my chest stays still"
+        },
+        {
+          "type": "choice",
+          "prompt": "During low breathing, which moves?",
+          "options": [
+            {
+              "text": "The upper chest rises",
+              "why": "If your chest rises, you are chest-breathing. The belly should move."
+            },
+            {
+              "text": "The belly expands outward",
+              "right": true,
+              "yes": "Correct. The diaphragm drops, pushing the belly out."
+            },
+            {
+              "text": "The shoulders lift",
+              "why": "Shoulder lifting means shallow breathing. Keep shoulders still."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-hiss-test",
+      "title": "The Hiss Test",
+      "content": "The hiss test trains the steady airstream a flute needs.\n\n1. Take a low breath\n2. Hiss through slightly parted teeth - the same volume from start to end\n3. Stop when you can no longer keep it even - do not squeeze out the last air\n\nAim for 8-10 seconds of even hiss. This directly transfers to your flute tone: a steady hiss means a steady sound.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why does the hiss test help with flute playing?",
+          "options": [
+            {
+              "text": "It strengthens the lungs",
+              "why": "It is not about lung strength. The hiss trains a steady, even airstream - the same skill a flute needs."
+            },
+            {
+              "text": "A steady hiss transfers directly to a steady flute tone",
+              "right": true,
+              "yes": "Right. The even airflow you practise in the hiss is exactly what produces a clean, stable note on the bansuri."
+            },
+            {
+              "text": "It warms up the bamboo",
+              "why": "The hiss is done without the flute. It trains your breath control, not the instrument."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blow-across-not-into",
+      "title": "Blow Across, Not Into",
+      "content": "The most important thing about flute embouchure: **blow across the hole, not into it.**\n\nImagine blowing across the top of a bottle. The air splits at the far edge of the hole - half goes in, half goes out. That split is what makes the sound.\n\nIf you blow straight into the hole, you get a breathy whoosh with no tone. Direct the air across the hole's far edge.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why does blowing across the hole produce sound?",
+          "options": [
+            {
+              "text": "The air pushes the bamboo to vibrate",
+              "why": "It is the air column inside the flute that vibrates, not the bamboo itself."
+            },
+            {
+              "text": "The air splits at the far edge, creating vibrations in the air column",
+              "right": true,
+              "yes": "Correct. The edge-tone splits the airstream and sets the air column vibrating."
+            },
+            {
+              "text": "The air enters the holes and comes out the other end",
+              "why": "The sound comes from vibrations in the air column, not from air flowing through."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-lip-opening",
+      "title": "The Lip Opening",
+      "content": "Your embouchure (lip shape) is a small, flat, oval opening:\n\n1. Relax your face, teeth slightly apart\n2. Say \"pu\" softly - the lips make a small oval in the centre\n3. Keep the corners relaxed: no smile, no kiss shape\n\n**Palm test:** Blow gently at your palm 10 cm away. You should feel a narrow, cool stream on one small spot, not a wide warm breath.\n\n**Mirror check:** The opening is centred, cheeks not puffed, lips not pressed hard.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I can feel a narrow, cool stream on my palm"
+        },
+        {
+          "type": "choice",
+          "prompt": "Your cheeks are puffing out when you blow. What does that mean?",
+          "options": [
+            {
+              "text": "You are using too much air pressure",
+              "why": "Puffed cheeks mean air is leaking sideways instead of forming a focused stream."
+            },
+            {
+              "text": "The lip opening is too wide or the corners are too loose",
+              "right": true,
+              "yes": "Right. Keep the opening small and centred. Corners relaxed but not loose."
+            },
+            {
+              "text": "This is normal and correct",
+              "why": "Puffed cheeks waste air. The stream should be narrow and focused."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "find-the-sound",
+      "title": "Find the Sound",
+      "content": "Close holes 1-2-3 (Sa position). Rest the flute on your lower lip so the lip covers about a quarter to a third of the blowing hole.\n\nBlow a gentle \"pooh\" across the hole for 3-4 seconds. If no sound comes:\n- Roll the flute in tiny increments toward you and away\n- Adjust the size of your lip opening\n- Try a little more or less air\n\nThe first sound may be airy or unstable - that is normal. Any clear tone, even for a moment, is a success. Rest every 2-3 minutes.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 3,
+          "cents": 50,
+          "prompt": "Play Sa and hold any clear tone for 3 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "higher-or-lower",
+      "title": "Higher or Lower?",
+      "content": "Every sound has a pitch - how high or low it sounds. A bird chirps high; a drum booms low.\n\nOn the bansuri, covering more holes makes the pitch lower (the air column is longer). Opening holes raises the pitch.\n\nTrain your ear to notice pitch differences. This skill becomes essential when you start tuning notes and playing melodies.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [
+            0,
+            2,
+            4,
+            7
+          ],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Listen to each note and identify it",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "day-1-complete",
+      "title": "Body, Breath, Sound - Complete",
+      "content": "You now know:\n- How to sit and hold the flute without tension\n- Low breathing and the hiss test\n- How to shape your lips and direct air across the hole\n- What pitch means and how to listen for it\n\nFrom here, everything builds on these fundamentals. Keep the tension scan and the hiss test in every practice session.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "On to the next room!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

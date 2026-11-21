@@ -1,0 +1,241 @@
+{
+  "id": "raga-ahir-bhairav",
+  "title": "Raga Ahir Bhairav - The Pastoral Morning",
+  "tasks": [
+    {
+      "id": "t1-cowherd",
+      "title": "The Cowherd's Morning Raga",
+      "content": [
+        "\"Ahir\" refers to the Ahir community - cowherds and pastoralists of India. Ahir Bhairav evokes the image of a cowherd playing the flute at dawn, surrounded by nature awakening. This is not an abstract concept - it is the very scene of Krishna with his bansuri, standing among the cows as the sun rises over the Yamuna river.",
+        "The raga captures the peace, devotion, and gentle beauty of early morning. It is one of the most beloved ragas for bansuri because the instrument's pastoral, breathy quality perfectly matches the raga's character. Where other ragas might suit the sitar or sarod equally well, Ahir Bhairav feels like it was made for the bamboo flute."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does \"Ahir\" in the name Ahir Bhairav refer to?",
+          "options": [
+            { "text": "A community of cowherds and pastoralists", "right": true, "yes": "Yes - the Ahir were cowherds, connecting the raga to Krishna's pastoral world." },
+            { "text": "A type of morning prayer", "why": "Ahir refers to the cowherd community, not a prayer form." },
+            { "text": "A region in northern India", "why": "Ahir refers to a pastoral community, not a geographic region." },
+            { "text": "An ancient musician's name", "why": "Ahir refers to cowherds and pastoralists, linking the raga to Krishna imagery." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is Ahir Bhairav especially suited to the bansuri?",
+          "options": [
+            { "text": "The bansuri's pastoral, breathy quality matches the raga's pastoral character", "right": true, "yes": "Exactly - both the instrument and the raga evoke the same pastoral world." },
+            { "text": "The raga uses only notes that are easy on bansuri", "why": "Ahir Bhairav uses komal Re and komal Ni, which require half-holing. The match is about character, not ease." },
+            { "text": "It was composed specifically for bansuri", "why": "Ahir Bhairav predates the bansuri's use as a classical instrument. The match is about the shared pastoral quality." },
+            { "text": "The raga requires very loud playing", "why": "Ahir Bhairav is gentle and peaceful - the opposite of loud. It suits the bansuri's intimate dynamic range." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-compound",
+      "title": "A Compound Raga",
+      "content": [
+        "Ahir Bhairav is a \"jod raga\" - a compound raga that blends elements from two raga families. From Bhairav, it takes komal Re (semitone 1) - the gravity and seriousness of the morning. From Kafi, it takes komal Ni (semitone 10) - the warmth and earthiness of folk music.",
+        "The other notes are all shuddha (natural): Ga (4), Ma (5), Pa (7), Dha (9). This combination creates something neither parent raga possesses - a warm, pastoral morning feeling that is uniquely Ahir Bhairav. Pure Bhairav is intense and austere. Pure Kafi is warm and playful. Ahir Bhairav takes the best of both: Bhairav's morning depth and Kafi's folk warmth."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which two raga families does Ahir Bhairav blend?",
+          "options": [
+            { "text": "Bhairav and Kafi", "right": true, "yes": "Correct - komal Re from Bhairav, komal Ni from Kafi." },
+            { "text": "Bhairav and Yaman", "why": "Yaman uses tivra Ma, which is not part of Ahir Bhairav. The blend is Bhairav and Kafi." },
+            { "text": "Kafi and Kalyan", "why": "The blend is Bhairav (komal Re) and Kafi (komal Ni)." },
+            { "text": "Bhairavi and Khamaj", "why": "Ahir Bhairav blends Bhairav (not Bhairavi) and Kafi (not Khamaj)." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which komal note comes from the Kafi family?",
+          "answer": "ni",
+          "accept": ["Ni", "komal ni", "komal Ni", "n"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t3-seven-notes",
+      "title": "The Seven Notes",
+      "content": [
+        "Ahir Bhairav uses all seven notes: Sa (0), komal Re (1), Ga (4), Ma (5), Pa (7), Dha (9), komal Ni (10). Two komal notes (Re and Ni), five shuddha notes.",
+        "The two komal notes create moments of emotional depth - komal Re adds contemplative weight, komal Ni adds folk warmth. The five shuddha notes provide brightness and openness. This balance is what makes Ahir Bhairav accessible yet profound. It has enough komal color to be emotionally rich, but enough shuddha brightness to feel welcoming rather than heavy."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 4, 5, 7, 9, 10, 12],
+          "prompt": "Play the ascending scale of Ahir Bhairav: Sa, komal Re, Ga, Ma, Pa, Dha, komal Ni, Sa'.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "How many komal (flat) notes does Ahir Bhairav have?",
+          "options": [
+            { "text": "Two - komal Re and komal Ni", "right": true, "yes": "Correct - one from each parent raga family." },
+            { "text": "One - only komal Re", "why": "Ahir Bhairav has two komal notes: Re from Bhairav and Ni from Kafi." },
+            { "text": "Three - komal Re, komal Ga, and komal Ni", "why": "Ga is shuddha in Ahir Bhairav, not komal. There are only two komal notes." },
+            { "text": "Four - komal Re, Ga, Dha, and Ni", "why": "Only Re and Ni are komal. Ga and Dha are shuddha (natural)." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-komal-re",
+      "title": "Komal Re - The Bhairav Element",
+      "content": [
+        "Komal Re (semitone 1) sits just 1 semitone above Sa. This note carries the morning weight of Bhairav - serious, contemplative, devotional. In Ahir Bhairav, komal Re is approached gently, often from Sa with a slight meend (slide).",
+        "The phrase Sa - komal Re - Ga (0-1-4) is fundamental. The 3-semitone leap from komal Re to Ga creates a moment of opening, like dawn breaking through the darkness. komal Re is the darkness, Ga is the first light. This interval is wider than the stepwise movement you might expect, and that width gives the phrase its characteristic lift."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 1,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Re (semitone 1) steady for 5 seconds. Feel its closeness to Sa - just 1 semitone apart.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What mood does komal Re bring from the Bhairav family?",
+          "options": [
+            { "text": "Morning gravity - serious, contemplative, devotional", "right": true, "yes": "Yes - komal Re carries Bhairav's depth and morning seriousness." },
+            { "text": "Playful energy - light and dancing", "why": "Playfulness comes from the Kafi element. komal Re brings Bhairav's contemplative gravity." },
+            { "text": "Sadness and grief", "why": "komal Re in Ahir Bhairav is devotional and contemplative, not grief-stricken." },
+            { "text": "Heroic strength and power", "why": "Ahir Bhairav is peaceful and pastoral, not heroic. komal Re adds contemplative depth." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t5-komal-ni",
+      "title": "Komal Ni - The Kafi Warmth",
+      "content": [
+        "Komal Ni (semitone 10) sits 2 semitones below upper Sa. Where shuddha Ni (semitone 11) would sound bright and resolving, komal Ni sounds warm and folk-like. It gives Ahir Bhairav its pastoral earthiness - the feeling of open fields and simple, honest living.",
+        "The phrase Dha - komal Ni - Sa' (9-10-12) is one of the raga's most beautiful moments. Dha opens up with brightness, komal Ni adds a touch of warmth and longing, and then Sa' arrives with quiet fulfillment. If you replaced komal Ni with shuddha Ni here, the phrase would sound more like pure Bhairav - brighter but less tender."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 10,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Ni (semitone 10) steady for 5 seconds. Notice how it sounds warmer than shuddha Ni would.",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [9, 10, 12],
+          "prompt": "Play Dha - komal Ni - Sa' (9-10-12). Feel the tender approach to upper Sa through the warm komal Ni.",
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t6-phrases",
+      "title": "Morning Phrases",
+      "content": [
+        "Practice the core phrases of Ahir Bhairav: (1) Sa re Ga Ma (0-1-4-5) - the opening, where komal Re lifts gently to the warm Ga-Ma pair. (2) Ga Ma Pa Dha (4-5-7-9) - the middle register, open and peaceful like the morning sky expanding. (3) Dha ni Sa' (9-10-12) - the tender upper approach through komal Ni. (4) Sa' ni Dha Pa Ma Ga re Sa (12-10-9-7-5-4-1-0) - the flowing morning descent, like mist clearing from a valley.",
+        "Each phrase should feel like the first rays of sunlight - gentle, warm, unhurried. Ahir Bhairav is not a raga you rush. Let each note breathe. The beauty is in the spaces between the notes as much as in the notes themselves."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 4, 5, 7, 9],
+          "prompt": "Play the ascending phrase: Sa, komal Re, Ga, Ma, Pa, Dha. Let it unfold like morning light spreading across the horizon.",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [12, 10, 9, 7, 5, 4, 1, 0],
+          "prompt": "Play the descending phrase: Sa', komal Ni, Dha, Pa, Ma, Ga, komal Re, Sa. Flow downward like morning mist clearing.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t7-vadi-ma",
+      "title": "Ma - The Raga's Heart",
+      "content": [
+        "Ma (semitone 5) is the vadi of Ahir Bhairav. It is the note where the raga most naturally rests and expresses itself. Ma sits near the center of the octave, giving it a balanced, centered quality that reflects the raga's peaceful nature.",
+        "The Ma-Pa movement (5-7) is open and calming - two notes that naturally support each other. The Ga-Ma touch (4-5) is warm and intimate, just a single semitone step that feels like a gentle embrace. When you play Ahir Bhairav, let Ma be your anchor. Return to it. Hold it. Explore around it. The raga radiates outward from Ma."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Ma (semitone 5) steady for 6 seconds. This is the heart of Ahir Bhairav - let it resonate with the drone.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Ma work well as the vadi of a peaceful morning raga like Ahir Bhairav?",
+          "options": [
+            { "text": "It sits near the center of the octave, giving a balanced, centered quality", "right": true, "yes": "Yes - Ma's central position reflects the raga's balanced, peaceful character." },
+            { "text": "It is the loudest note on the bansuri", "why": "Volume does not determine vadi status. Ma is the vadi because of its central, balanced quality." },
+            { "text": "It is the easiest note to play", "why": "Ma actually requires half-holing. It is the vadi because of its balanced position in the scale." },
+            { "text": "It creates dissonance with Sa", "why": "Ma and Sa are consonant. Ma is the vadi because of its stable, centered quality." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-comparison",
+      "title": "Ahir Bhairav vs Pure Bhairav",
+      "content": [
+        "Pure Bhairav uses komal Re (1) and shuddha Ni (11). Ahir Bhairav replaces shuddha Ni with komal Ni (10). This single change transforms the raga's character entirely.",
+        "Pure Bhairav is intense, serious, and austere - a raga of deep morning meditation, almost severe in its devotion. Ahir Bhairav is warm, gentle, and pastoral - a raga of devotional beauty that welcomes rather than demands. The komal Ni softens everything, like the warm golden light of dawn softening the sharp edges of night. This is a powerful lesson: changing just one note can create a completely different emotional world."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the key note difference between pure Bhairav and Ahir Bhairav?",
+          "options": [
+            { "text": "Pure Bhairav uses shuddha Ni; Ahir Bhairav uses komal Ni", "right": true, "yes": "Exactly - this single note swap transforms the raga from austere to pastoral." },
+            { "text": "Pure Bhairav uses shuddha Re; Ahir Bhairav uses komal Re", "why": "Both ragas use komal Re. The difference is in Ni - shuddha vs komal." },
+            { "text": "Pure Bhairav has no Pa; Ahir Bhairav has Pa", "why": "Both ragas use Pa. The key difference is komal Ni replacing shuddha Ni." },
+            { "text": "Pure Bhairav uses tivra Ma; Ahir Bhairav uses shuddha Ma", "why": "Both ragas use shuddha Ma. The difference is in Ni." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How does komal Ni change the character of Bhairav into Ahir Bhairav?",
+          "options": [
+            { "text": "It softens the raga from austere and intense to warm and pastoral", "right": true, "yes": "Yes - komal Ni brings Kafi's folk warmth, transforming Bhairav's severity into tenderness." },
+            { "text": "It makes the raga faster and more energetic", "why": "Speed is not determined by notes. komal Ni changes the mood, not the tempo." },
+            { "text": "It has no real effect on the character", "why": "Changing even one note in a raga transforms its character. komal Ni completely changes the mood." },
+            { "text": "It makes the raga sadder and more melancholic", "why": "komal Ni makes the raga warmer and more pastoral, not sadder." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t9-playing-dawn",
+      "title": "Playing the Dawn",
+      "content": [
+        "Play a complete Ahir Bhairav phrase: ascend gently through the morning, let Ma and Dha breathe, touch komal Ni with warmth, reach Sa', then descend like the morning mist clearing from a river valley.",
+        "This raga does not need speed or complexity - it needs the peace and beauty of an Indian dawn. Play slowly. Let each note ring. Feel the komal Re's gravity, the shuddha Ga's brightness, Ma's centered warmth, Pa's openness, Dha's clarity, and komal Ni's tender folk quality. When you play Ahir Bhairav well, the listener should feel the first warmth of the sun on their face."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 4, 5, 7, 9, 10, 12, 10, 9, 7, 5, 4, 1, 0],
+          "prompt": "Play the complete Ahir Bhairav phrase: ascend through all seven notes to Sa', then descend back home. Let it breathe like the morning itself.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will play Ahir Bhairav in the early morning hours, when its pastoral beauty is most alive."
+        }
+      ]
+    }
+  ]
+}

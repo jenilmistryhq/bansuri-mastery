@@ -22,7 +22,7 @@
 ## 2. Prerequisites
 
 You can play `.P` to `S'` cleanly (at least `S R G P D`), keep a steady pulse with a metronome
-or keherwa loop, and play with a C drone.
+or keherwa loop, and play with a tanpura set to your flute's Sa.
 
 ## 3. Simple explanation
 
@@ -44,7 +44,7 @@ copied phrases, then changed one word, then two. This lesson follows the same pa
 
 ### 4.1 Call and response (IMP-01)
 
-**Setup:** drone on C, keherwa loop or metronome at 70 BPM.
+**Setup:** drone on your flute's Sa, keherwa loop or metronome at 70 BPM.
 
 1. **Copy round.** Play a 4-beat phrase, record it, then play it back exactly. Or use a
    teacher, a friend or a video: they play, you copy. (This is EAR-09 practice too.)
@@ -124,7 +124,7 @@ Level 0  Call and response (4.1) ............. copy, then answer
 
 ## 6. Watch and listen
 
-- Use a drone: [R-A01](../02-RESOURCE-LIBRARY.md#7-apps-and-tools) (browser, free) or another drone app in C.
+- Use a drone: [R-A01](../02-RESOURCE-LIBRARY.md#7-apps-and-tools) (browser, free) or another drone app set to your flute's Sa.
 - For a tabla loop: [R-A04 / R-A05](../02-RESOURCE-LIBRARY.md#7-apps-and-tools) (iOS) or any tabla app with keherwa.
 - Listen to the slow opening (alap) of a bansuri raga performance, for example [R-L02](../02-RESOURCE-LIBRARY.md#9-listening-library), and notice how the player uses only a few notes at first.
 

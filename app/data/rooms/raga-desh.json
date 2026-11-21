@@ -1,0 +1,243 @@
+{
+  "id": "raga-desh",
+  "title": "Raga Desh - The Patriotic Evening Raga",
+  "tasks": [
+    {
+      "id": "raga-of-the-nation",
+      "title": "The Raga of the Nation",
+      "content": ["Raga Desh is perhaps the most widely recognised raga in India. It is the raga of 'Vande Mataram' - the national song - and of countless patriotic compositions that stir the collective spirit. When Indians hear Desh, they hear belonging.", "But Desh is far more than a patriotic raga. It belongs to the Khamaj thaat and is traditionally associated with the monsoon season and the second prahar of the night (roughly 9 PM to midnight). Its mood weaves together patriotic fervour, the romance of rainy evenings, and a gentle, wistful longing.", "What makes Desh musically special is its use of BOTH forms of Ni - shuddha Ni in the ascent and komal Ni in the descent. This one-note switch between going up and coming down gives Desh its dual personality: bright and uplifting on the way up, softer and more reflective on the way down.", "Desh is an ideal raga for intermediate students because its structure is accessible, its phrases are memorable, and its emotional range rewards expressive playing. Many musicians consider it one of the most beautiful ragas in the entire Hindustani system."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which famous patriotic song is composed in Raga Desh?",
+          "options": [
+            {
+              "text": "Jana Gana Mana (the national anthem)",
+              "why": "The national anthem draws from multiple ragas. 'Vande Mataram' is the composition most strongly associated with Raga Desh."
+            },
+            {
+              "text": "Vande Mataram - the national song of India",
+              "right": true,
+              "yes": "Correct. 'Vande Mataram' is composed in Raga Desh, making this raga synonymous with Indian patriotism."
+            },
+            {
+              "text": "Raghupati Raghav Raja Ram",
+              "why": "That is a devotional song in a different raga. Desh's patriotic association is primarily through 'Vande Mataram'."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "two-ni",
+      "title": "Two Ni - The Defining Feature",
+      "content": ["The single most important thing to understand about Raga Desh is its treatment of Ni. It uses BOTH versions:", "In the ascent (aroha), Desh uses shuddha Ni (N, semitone 11). This is the natural, unflattened seventh. It sits just one semitone below upper Sa, creating a bright, upward-reaching feeling. When you hear Desh ascending through shuddha Ni to Sa, it sounds optimistic and resolved.", "In the descent (avaroha), Desh switches to komal ni (n, semitone 10). This flattened seventh sits two semitones below upper Sa - just one semitone lower than shuddha Ni. The effect is subtle but profound: the descent takes on a softer, more wistful quality. The bright resolution of the ascent becomes a gentle, reflective unwinding.", "This dual-Ni treatment is called a vikrit swara (altered note), and it is Desh's fingerprint. If you hear both forms of Ni in one raga - bright going up, soft coming down - you are almost certainly hearing Desh or one of its close relatives."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which form of Ni does Raga Desh use in the ascending scale?",
+          "options": [
+            {
+              "text": "Komal Ni (semitone 10) - the flat version",
+              "why": "Komal Ni is used in the descent. The ascent uses shuddha (natural) Ni."
+            },
+            {
+              "text": "Shuddha Ni (semitone 11) - the natural version",
+              "right": true,
+              "yes": "Correct. Shuddha Ni in the ascent gives Desh its bright, uplifting quality going up."
+            },
+            {
+              "text": "Neither - Desh does not use Ni",
+              "why": "Desh uses both forms of Ni - that is its defining characteristic."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which form of Ni appears in Desh's descending scale? (shuddha or komal)",
+          "answer": "komal",
+          "accept": ["komal", "komal ni", "komal Ni", "flat"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "ascending-desh",
+      "title": "Ascending Desh",
+      "content": ["The aroha of Raga Desh is: Sa R G m P D N Sa'.", "In semitones: 0, 2, 4, 5, 7, 9, 11, 12. Going up, Desh uses all shuddha (natural) notes with shuddha Ni. This makes the ascending scale nearly identical to the Western major scale - which is part of why Desh sounds so immediately appealing and accessible to modern ears.", "The bright, major-scale quality of the ascent is what gives Desh its patriotic and uplifting character. When you play Sa R G m P D N Sa' ascending, it sounds like a flag being raised, like a song being sung with pride. The shuddha Ni (semitone 11) sitting just one semitone below upper Sa creates a strong pull upward - a leading tone that resolves brightly.", "The vadi (king note) is Re (semitone 2). Give Re prominence as you ascend. It should feel energetic and bright - the note that launches the raga's upward motion."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the ascending Desh scale: Sa R G m P D N Sa' - feel its bright, uplifting quality",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "rounds": 6,
+          "prompt": "Identify ascending Desh notes. Notice the shuddha Ni (semitone 11).",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "descending-desh",
+      "title": "Descending Desh",
+      "content": ["The avaroha of Raga Desh is: Sa' n D P m G R Sa.", "In semitones: 12, 10, 9, 7, 5, 4, 2, 0. Notice the change: where the ascent used shuddha Ni (11), the descent uses komal ni (10). This single semitone difference transforms the character of the entire descent.", "The komal ni (10) softens the top of the scale. Instead of the bright leading tone pulling up to Sa, you have a gentler note that settles downward. The result is a descent that feels reflective, wistful, and tender - like a sigh after an exclamation.", "This is what makes Desh so emotionally versatile. The same raga that sounds patriotic and bold going up can sound romantic and yearning coming down. It is two moods in one raga, joined by the simple switch of one semitone on one note."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 10, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the descending Desh scale: Sa' n D P m G R Sa - feel the softer komal ni",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "How does the descent of Desh differ from the ascent in mood?",
+          "options": [
+            {
+              "text": "The descent is louder and more forceful",
+              "why": "Volume is not the difference. The mood shift comes from the switch to komal Ni."
+            },
+            {
+              "text": "The descent feels softer, more reflective and wistful because komal Ni replaces shuddha Ni",
+              "right": true,
+              "yes": "Exactly. The one-semitone drop from shuddha Ni to komal Ni transforms the entire descent from bright to tender."
+            },
+            {
+              "text": "The descent uses completely different notes",
+              "why": "Only one note changes: Ni switches from shuddha (11) to komal (10). All other notes stay the same."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "core-phrases",
+      "title": "The Core Phrases",
+      "content": ["Desh's characteristic phrases make use of its dual-Ni personality:", "Phrase 1: G m P, D N D P. This ascending phrase climbs through the middle register, touches shuddha Ni briefly (like a flag reaching its peak), then drops back to Pa. The quick touch of shuddha Ni followed by the descent is a classic Desh gesture - a moment of brightness before settling.", "Phrase 2: D n D P m G. Here the komal ni appears in its natural habitat - a brief, passing presence in the descent. Notice how komal ni is never held or emphasised. It appears and passes through, adding a momentary softness before the phrase continues downward.", "Phrase 3: P m G R Sa. The standard descent to Sa. Clean, satisfying, with a gentle arrival on the home note.", "Together, these phrases tell you how Desh moves: upward with brightness, downward with tenderness, always circling through the middle register where Re and Pa anchor the raga."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 5, 7, 9, 11, 9, 7],
+          "prompt": "Play: G m P D N D P - ascending phrase touching shuddha Ni then dropping",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [9, 10, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play: D n D P m G R Sa - descending phrase with komal ni passing through",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "vadi-re-samvadi-pa",
+      "title": "Vadi Re and Samvadi Pa",
+      "content": ["Re (semitone 2) is the vadi of Desh - the most important note. Pa (semitone 7) is the samvadi - the second most important. They sit a perfect fifth apart, which is the most common and stable vadi-samvadi relationship.", "Re should feel energetic and bright. It is the launching point of phrases, the note that gives Desh its forward momentum. When you play Re in Desh, linger on it slightly, give it weight. It is not a passing note - it is a destination.", "Pa functions as the resting point in the middle register. It is the minister - stable, reliable, the note where phrases pause before continuing. Pa in Desh does not have the floating quality it has in some other ragas; here it feels grounded and clear.", "The Re-Pa axis gives Desh its structural clarity. Even when the raga is exploring the upper register with its dual Ni, the music feels anchored because Re and Pa are always pulling it back to centre."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold Re (semitone 2) for 5 seconds - feel the vadi's bright energy",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold Pa (semitone 7) for 5 seconds - the samvadi's stable presence",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the vadi (king note) of Raga Desh?",
+          "options": [
+            {
+              "text": "Sa - the home note",
+              "why": "Sa is the tonic but not the vadi. The vadi of Desh is Re."
+            },
+            {
+              "text": "Re - shuddha Re, semitone 2",
+              "right": true,
+              "yes": "Correct. Re is the king note of Desh - give it prominence and energy in every phrase."
+            },
+            {
+              "text": "Ni - because Desh is known for its Ni",
+              "why": "While the dual Ni is Desh's distinctive feature, the vadi is Re. Ni is treated as a passing note."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "desh-and-monsoon",
+      "title": "Desh and the Monsoon",
+      "content": ["Beyond its patriotic associations, Raga Desh is deeply connected to the monsoon season - the period from June to September when India's rains transform the landscape. Many traditional compositions in Desh describe rain clouds gathering, the first drops falling, the earth releasing its scent, and the longing that comes with rainy evenings.", "The connection is not arbitrary. The bright ascent of Desh mirrors the building of monsoon clouds - the anticipation, the gathering energy. The softer descent mirrors the rain itself - the release, the gentle fall, the relief after heat. And the dual Ni captures the monsoon's dual nature: joyful arrival and wistful separation.", "In the Khamaj thaat family, several ragas share this rain association. But Desh holds a special place because its mood is simultaneously patriotic and romantic, public and private. It is the raga you sing with a crowd and the raga you play alone by a window watching the rain.", "Listen for both emotions when you play Desh. The raga has room for both the exuberant and the intimate."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What season is Raga Desh traditionally associated with?",
+          "options": [
+            {
+              "text": "Winter - the cold season",
+              "why": "Winter ragas include Basant and Bahar. Desh is associated with the monsoon."
+            },
+            {
+              "text": "The monsoon - the rainy season",
+              "right": true,
+              "yes": "Correct. Desh captures both the joy of the monsoon's arrival and the gentle wistfulness of rainy evenings."
+            },
+            {
+              "text": "Summer - the hot season",
+              "why": "Summer ragas include Deepak and Sarang. Desh belongs to the monsoon and evening."
+            }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 10, 11],
+          "rounds": 6,
+          "prompt": "Identify all notes from Desh - including both forms of Ni (10 and 11).",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ear-training-ni-switch",
+      "title": "Ear Training: Catching the Ni Switch",
+      "content": ["The ultimate Desh skill is hearing which form of Ni is being used. This is a one-semitone difference - komal Ni at semitone 10 versus shuddha Ni at semitone 11 - and it is the entire identity of Raga Desh compressed into one interval.", "To train this, you need to hear all three upper notes clearly: Dha (9), komal Ni (10), and shuddha Ni (11). These sit one semitone apart from each other. Dha is the lowest, komal Ni sits in the middle, and shuddha Ni is at the top.", "Tips for discrimination: shuddha Ni (11) has a bright, pulling quality - it wants to resolve upward to Sa. Komal Ni (10) has a softer, more relaxed quality - it settles rather than pulls. And Dha (9) has a warm, stable quality distinct from both.", "This is advanced ear training. If you can reliably distinguish komal Ni from shuddha Ni, you have developed the kind of pitch sensitivity that opens up dozens of ragas that use vikrit (altered) notes."],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [9, 10, 11],
+          "rounds": 6,
+          "prompt": "Distinguish Dha (9), komal Ni (10), and shuddha Ni (11). Three adjacent notes - one semitone apart.",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "playing-desh-phrase",
+      "title": "Playing a Desh Phrase",
+      "content": ["The final exercise brings everything together. You will play a phrase that travels up with shuddha Ni and returns down with komal ni - the essence of Desh captured in a single musical breath.", "The phrase: Sa R G m P D N D n D P m G R Sa. Going up, the shuddha Ni (11) touches the peak with brightness. The phrase briefly rests on Dha (9), then the komal ni (10) appears as the descent begins, adding its characteristic softness. The rest of the descent follows the standard avaroha back to Sa.", "This is not just an exercise - it is a miniature Desh performance. The ascending brightness, the moment of arrival at the top, the subtle shift to komal ni, and the gentle descent home. If you can play this phrase with feeling, you are playing Desh.", "Raga Desh proves that a single note - one semitone, one tiny shift - can transform the entire emotional landscape of a raga. The dual Ni is not a complication. It is a gift: two moods, two colours, two stories in one musical framework."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 9, 10, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the complete Desh phrase: Sa R G m P D N D n D P m G R Sa - up bright, down wistful",
+          "points": 25
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand how the dual Ni gives Raga Desh its unique personality",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

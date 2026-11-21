@@ -166,7 +166,7 @@ Then: 11. Write the Bilawal scale pattern using W (whole step = 2 semitones) and
 4. If you treat Pa (G) as Sa, which C-flute fingering gives the new "Ni"?
 5. A song uses D E F# G A with D as Sa. Write it in sargam.
 6. Which C-flute notes (in C-flute sargam) does that song use? Are any half-holes needed?
-7. A song is in A major (A B C# D E F# G#). If you play it with A as Sa on your C flute, which notes need half-holes?
+7. A song is in A major (A B C# D E F# G#). As a C5-reference worked example, if you use A as Sa on a C flute, which notes need half-holes?
 8. Which thaat becomes half-hole-free on your flute if you treat Dha (A) as Sa?
 
 <details markdown="1">

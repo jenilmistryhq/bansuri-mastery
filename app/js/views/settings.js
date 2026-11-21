@@ -1,6 +1,6 @@
 // Settings (#/me/settings, old #/settings): five groups of preferences, each row showing what it is set
 // to; a group opens on its own (#/me/settings/data). Me > Flute (#/me/flute) is drawn here too.
-import { h, toast, today, fmtDate } from "../util.js";
+import { h, toast, today, fmtDate, icon } from "../util.js";
 import { errorList, clearErrors, problemReport } from "../errors.js";
 import { getState, update, restoreFrom, resetAll } from "../state.js";
 import { getPlan, current } from "../course.js";
@@ -108,15 +108,25 @@ function accessSection() {
     offline.textContent = n ? "Voice saved for offline use" : "Could not save the voice now"; offline.disabled = false;
   });
   const model = h("p", { class: "small muted" }, modelReady() ? "The reading voice for lessons is on this device." : "Lessons can also be read aloud by a natural voice. It downloads once (about 90 MB) the first time you tap a speaker on a lesson card.");
+  const mode = set.simple ? "simple" : set.talk ? "talk" : "read";
+  const modes = [["read", "I like to read", "Lessons and steps as text"], ["speaker", "Talk to me", "The app says each step and how each note went"], ["hand", "Simple mode", "Three big buttons; the app talks you through each session"]];
+  const learningModes = h("div", { class: "howtiles learnmodes", role: "group", "aria-label": "How do you like to learn?" }, modes.map(([ic, label, sub], i) => {
+    const key = ["read", "talk", "simple"][i], selected = mode === key;
+    const tile = h("button", { type: "button", class: "howtile learnmode" + (selected ? " selected" : ""), "aria-pressed": String(selected), onclick: () => {
+      setSettings(key === "simple" ? { talk: true, simple: true, notesAs: "pictures" } : { talk: key === "talk", simple: false });
+      learningModes.querySelectorAll(".learnmode").forEach((b, j) => { const on = j === i; b.classList.toggle("selected", on); b.setAttribute("aria-pressed", String(on)); });
+    } }, icon(ic), h("b", null, label), h("span", { class: "small" }, sub));
+    return tile;
+  }));
   return [h("section", { class: "card", id: "voice" }, h("h2", null, "Voice and language"),
     h("label", { class: "field", for: "st-lang" }, h("span", { translate: "no" }, "Language / भाषा"), langSel),
     h("p", { class: "small muted" }, "The app's buttons, messages and voice change language. The course pages stay in English, and the voice can read them aloud."),
-    h("div", { class: "row between" }, check("talk", "Talk to me: say the steps, and how each note went"), sayButton(["welcome"], "Hear the voice")),
+    h("h3", null, "How do you like to learn?"), learningModes,
+    h("div", { class: "row between" }, sayButton(["welcome"], "Hear the voice")),
     h("p", { class: "small muted" }, "A natural human-sounding voice, made on this device's copy of the app; nothing is sent anywhere. The microphone does not listen while the app speaks."),
     h("div", { class: "row" }, offline, removeVoice), model,
     check("hints", "After an off note, play a soft slide from my note to the right one")),
   h("section", { class: "card", id: "access" }, h("h2", null, "Easier to use"),
-    check("simple", "Simple mode: three big buttons (Practice, Play, Listen), and the app talks you through each session"),
     select("notesAs", "Show notes as", [["letters", "Letters (S R G)"], ["pictures", "Pictures of the fingering"]]),
     h("label", { class: "field", for: "st-size" }, "Text size", h("span", { class: "row" }, size, sizeTxt)),
     check("easyFont", "Easy-to-read font"),
@@ -170,7 +180,8 @@ export async function render(main, ctx = {}) {
   const s = getState();
   const set = getSettings();
   const page = h("div", { class: "page" });
-  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Settings"), h("h1", null, "Settings")));
+  page.append(backHead("#/me", "Me", fluteView ? "Your flute" : "Settings"));
+  if (!fluteView) page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Settings"), h("h1", null, "Settings")));
   const access = accessSection();
 
   // Flute: set by hand, or found by listening to the learner's Sa.
@@ -186,7 +197,7 @@ export async function render(main, ctx = {}) {
   // Flute.
   const noteSel = h("select", { id: "st-note" }, WEST.map((w, i) => h("option", { value: String(i) }, w)));
   noteSel.value = String(set.saNote);
-  const octSel = h("select", { id: "st-oct" }, h("option", { value: "4" }, "4 (bass flutes)"), h("option", { value: "5" }, "5 (medium flutes)"));
+  const octSel = h("select", { id: "st-oct" }, h("option", { value: "3" }, "3 (very low flutes)"), h("option", { value: "4" }, "4 (bass flutes)"), h("option", { value: "5" }, "5 (medium flutes)"), h("option", { value: "6" }, "6 (high flutes)"));
   octSel.value = String(set.saOct);
   const a4In = h("input", { id: "st-a4", type: "number", min: "415", max: "466", step: "0.1", value: String(set.a4) });
   const volIn = h("input", { id: "st-vol", type: "range", min: "0", max: "100", value: String(Math.round(set.volume * 100)) });
@@ -282,31 +293,34 @@ export async function render(main, ctx = {}) {
 
   // Placement.
   const plan = getPlan();
-  const phaseSel = h("select", { id: "st-phase", "aria-label": "Phase to start from" }, plan.phases.map(p => h("option", { value: String(p.id) }, "Phase " + p.id + ": " + p.title + " (Day " + p.firstDay + ")")));
+  const phaseSel = h("select", { id: "st-phase", "aria-label": "Phase to start from" }, plan.phases.map(p => h("option", { value: String(p.id) }, "Phase " + p.id + ": " + p.title)));
   const placeBtn = h("button", { type: "button", class: "btn" }, "Start from this phase");
   placeBtn.addEventListener("click", () => {
     const ph = plan.phases.find(p => String(p.id) === phaseSel.value);
     if (!ph) return;
-    if (placeBtn.dataset.armed !== "1") { placeBtn.dataset.armed = "1"; placeBtn.textContent = "Tap again to jump to Day " + ph.firstDay; setTimeout(() => { placeBtn.dataset.armed = ""; placeBtn.textContent = "Start from this phase"; }, 4000); return; }
+    if (placeBtn.dataset.armed !== "1") { placeBtn.dataset.armed = "1"; placeBtn.textContent = "Tap again to start from this phase"; setTimeout(() => { placeBtn.dataset.armed = ""; placeBtn.textContent = "Start from this phase"; }, 4000); return; }
     update(st => {
       st.current = ph.firstDay;
       if (!st.startedAt) st.startedAt = today();
       for (const m of plan.milestones) if (m.day < ph.firstDay && (!st.milestones[m.id] || st.milestones[m.id].status !== "passed")) st.milestones[m.id] = Object.assign({ attempts: [] }, st.milestones[m.id] || {}, { status: "skipped" });
     });
-    toast("Now on Day " + ph.firstDay + ". Earlier milestones are marked as skipped; you can still take them.");
+    toast("Your path now starts at Phase " + ph.id + ". Earlier milestones remain available in your course.");
     location.hash = "#/today";
   });
   // The playing test: the microphone checks a few items and recommends the phase.
   const testHost = h("div", { class: "toolhost", hidden: true });
-  const testBtn = h("button", { type: "button", class: "btn primary", id: "st-placetest" }, "Take the playing test");
+  const testBtn = h("button", { type: "button", class: "btn primary", id: "st-placetest" }, "Retake skill assessment");
   let placer = null;
   testBtn.addEventListener("click", () => {
-    if (placer) { placer.destroy(); placer = null; testHost.hidden = true; testBtn.textContent = "Take the playing test"; return; }
-    placer = placementTest({ onResult: phase => { phaseSel.value = String(phase); placeBtn.textContent = "Start from this phase"; } });
+    if (placer) { placer.destroy(); placer = null; testHost.hidden = true; testBtn.textContent = "Retake skill assessment"; return; }
+    placer = placementTest({ onResult: (phase, profile) => {
+      phaseSel.value = String(phase); placeBtn.textContent = "Start from this phase";
+      update(st => { st.prefs.assessment = profile; st.prefs.recommendedPhase = phase; st.prefs.assessmentCompleted = true; });
+    } });
     testHost.replaceChildren(placer.el); testHost.hidden = false; testBtn.textContent = "Close the test";
   });
-  page.append(h("section", { class: "card", id: "already-play" }, h("h2", null, "Already play?"),
-    h("p", { class: "small muted" }, "If you can already do what earlier phases teach, start later. The playing test takes about five minutes: play a few items into the microphone and it recommends a phase. You are on Day " + current() + "."),
+  page.append(h("section", { class: "card", id: "already-play" }, h("h2", null, "Placement and skill checks"),
+    h("p", { class: "small muted" }, "Check your tone, note control, range, intonation, ear and rhythm. Use the result to choose a starting level or find a skill to practise next."),
     h("div", { class: "row" }, testBtn), testHost,
     h("div", { class: "row" }, h("div", { style: { flex: "1 1 260px" } }, phaseSel), placeBtn)));
 
@@ -456,7 +470,7 @@ export async function render(main, ctx = {}) {
 
   page.append(h("section", { class: "card" }, h("h2", null, "About"),
     h("p", null, h("a", { href: "#/me/privacy" }, "Privacy: what stays on your device"), " - in short, everything."),
-    h("p", null, "Bansuri Mastery teaches the bansuri day by day from the open curriculum. Read it all as a ", h("a", { href: "docs/" }, "website"), " or in the ", h("a", { href: "#/library" }, "library"), "."),
+    h("p", null, "Bansuri Mastery teaches the bansuri through interactive rooms and a structured curriculum. Read it all as a ", h("a", { href: "docs/" }, "website"), " or explore the ", h("a", { href: "#/course" }, "learning paths"), "."),
     h("p", { class: "small muted" }, "Course content: CC BY-NC-SA 4.0. Code: MIT. Fonts: Hind, Rozha One (Indian Type Foundry) and JetBrains Mono, SIL Open Font License. Markdown rendering: marked (MIT). Everything runs in your browser; nothing you do here is sent anywhere."),
     h("p", { class: "small muted" }, "Limits: the app cannot hear your tone, see your posture or judge raga intonation. Use recordings, a tuner and, when you can, a teacher. ", h("a", { href: "#/read/07-QUALITY-REPORT.md" }, "Quality report"), ".")));
   // Calibration with a real flute (Help): helps set the app's tolerances from real players.

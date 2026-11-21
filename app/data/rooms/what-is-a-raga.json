@@ -1,0 +1,295 @@
+{
+  "id": "what-is-a-raga",
+  "title": "What Is a Raga?",
+  "tasks": [
+    {
+      "id": "beyond-the-scale",
+      "title": "Beyond the Scale",
+      "content": "A raga uses a set of notes, like a scale does. But a raga is far more than a list of notes.\n\nTwo ragas can share the exact same notes yet sound completely different. Raga Bhupali and Raga Deshkar both use Sa Re Ga Pa Dha - the same five notes. But Bhupali lingers on Ga and Dha, while Deshkar revolves around Pa and Re. A trained ear can tell them apart immediately.\n\nThe difference lies in rules that go beyond the note set: which notes are important, which phrases are characteristic, how you move between notes, and even what time of day the raga belongs to.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Can two different ragas use the same set of notes?",
+          "options": [
+            {
+              "text": "No - each raga has unique notes",
+              "why": "Many raga pairs share the same notes. Bhupali and Deshkar both use Sa Re Ga Pa Dha."
+            },
+            {
+              "text": "Yes - they differ in emphasis, phrases, and rules",
+              "right": true,
+              "yes": "Exactly. Same notes, different personality - that is what makes a raga more than a scale."
+            },
+            {
+              "text": "Yes, but only in different octaves",
+              "why": "They differ in the same octave through different phrases and emphasis."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "five-elements",
+      "title": "The Five Elements of a Raga",
+      "content": "Every raga is defined by five elements:\n\n1. **Notes (swar)** - which of the 12 chromatic notes are allowed\n2. **Phrases (pakad)** - characteristic melodic phrases that identify the raga\n3. **Hierarchy (vadi/samvadi)** - which notes are most important\n4. **Movement (aaroh/avroh)** - how you go up and come down (which may differ)\n5. **Mood (rasa)** - the emotional quality and time of day\n\nA musician who knows all five elements does not just play the right notes - they speak the raga's language.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is 'pakad' in a raga?",
+          "options": [
+            {
+              "text": "The tempo of the raga",
+              "why": "Tempo (laya) is separate from the raga. Pakad means characteristic phrases."
+            },
+            {
+              "text": "The characteristic phrases that identify the raga",
+              "right": true,
+              "yes": "Correct. The pakad is like the raga's signature - hear those phrases and you know which raga it is."
+            },
+            {
+              "text": "The scale of the raga",
+              "why": "The scale is just the note set. Pakad refers to specific melodic patterns."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vadi-samvadi",
+      "title": "Vadi and Samvadi",
+      "content": "Every raga has two special notes:\n\n- **Vadi** (the king) - the most important note. It gets the most emphasis, the longest durations, and the most frequent returns. The raga revolves around this note.\n- **Samvadi** (the minister) - the second most important note. It supports the vadi and provides a secondary centre of gravity.\n\nThe vadi and samvadi are always a fourth or fifth apart (5 or 7 semitones), creating a natural harmonic balance. This is not a coincidence - the intervals of a fourth and fifth are the most consonant after the octave, so they create a stable pair of anchors for the raga.\n\nExamples:\n- Raga Yaman: vadi = Ga, samvadi = Ni (7 semitones apart - a fifth)\n- Raga Bhupali: vadi = Ga, samvadi = Dha (5 semitones - a fourth)\n- Raga Bhairavi: vadi = Ma, samvadi = Sa (5 semitones - a fourth)",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the vadi of a raga?",
+          "options": [
+            {
+              "text": "The first note of the scale",
+              "why": "The first note is always Sa. The vadi can be any note in the raga."
+            },
+            {
+              "text": "The most important note that gets the most emphasis",
+              "right": true,
+              "yes": "Right. The vadi is the king - the raga revolves around it."
+            },
+            {
+              "text": "The highest note in the raga",
+              "why": "The vadi is about importance and emphasis, not register."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In Raga Yaman, what is the vadi (king note)?",
+          "answer": "Ga",
+          "accept": ["Ga", "ga", "G", "g"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "note-hierarchy",
+      "title": "The Full Note Hierarchy",
+      "content": ["Every note in a raga has a role in a strict hierarchy, like a royal court:", "**Vadi** (king) - the dominant note. Gets the most time, the strongest emphasis, and the most elaborate treatment. The raga's identity centres here.", "**Samvadi** (minister) - the second in command. Supports the vadi from across the scale (always a fourth or fifth away). Phrases often move between vadi and samvadi.", "**Anuvadi** (attendant) - the remaining notes that belong to the raga. They are used freely but never overshadow the vadi or samvadi. Think of them as supporting characters.", "**Vivadi** (enemy) - notes that do NOT belong to the raga. Using a vivadi note is like a wrong word in a sentence - it breaks the raga's identity. Advanced musicians sometimes touch a vivadi note very lightly for expressive colour, but beginners should avoid them entirely.", "This hierarchy is what makes the same set of notes sound like different ragas. In Bhupali, Ga is the king and gets all the attention. In Deshkar (same five notes), Dha becomes more prominent and the whole character shifts."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What is the term for the 'king note' of a raga?",
+          "answer": "vadi",
+          "accept": ["vadi", "vaadi", "vadi swara"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What is a 'vivadi' note?",
+          "options": [
+            {
+              "text": "The most important note in the raga",
+              "why": "That is the vadi. Vivadi means the opposite - an enemy note."
+            },
+            {
+              "text": "A note that does not belong to the raga and should generally be avoided",
+              "right": true,
+              "yes": "Correct. Vivadi notes are outsiders that break the raga's identity if played carelessly."
+            },
+            {
+              "text": "A note played at double speed",
+              "why": "Speed is about laya. Vivadi describes a note's forbidden status in a raga."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "The vadi and samvadi are always separated by which interval?",
+          "options": [
+            {
+              "text": "An octave",
+              "why": "An octave would just be the same note in a different register."
+            },
+            {
+              "text": "A fourth or a fifth",
+              "right": true,
+              "yes": "Right. The fourth and fifth are the most consonant intervals, creating a stable pair of anchors."
+            },
+            {
+              "text": "A semitone",
+              "why": "A semitone would create tension, not the stable foundation a raga needs."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pakad-graha-nyasa",
+      "title": "Pakad, Graha, and Nyasa",
+      "content": ["Three concepts that bring a raga to life beyond its scale:", "**Pakad** (signature phrase) - a short melodic motif that immediately identifies the raga. If someone plays Yaman's pakad (Ni Re Ga, Ga Ma Dha Ni), you know the raga in two seconds. The pakad is the raga's fingerprint - learn it, and you can recognise and play the raga.", "**Graha swara** (starting note) - the note where the raga's exploration begins. This is NOT always Sa. Raga Yaman traditionally begins from lower Ni: the first sound the audience hears is Ni, not Sa. Beginning from the right note sets the raga's mood immediately.", "**Nyasa swara** (resting note) - the note where phrases tend to pause or come to rest. This is often the vadi, but not always. When you end a phrase, the note you stop on communicates meaning - like the last word of a sentence.", "Together, these three concepts are what make a performance sound authentic. Playing the right notes is necessary but not sufficient - you must play the right phrases, start from the right place, and rest on the right notes."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What is the short melodic motif that identifies a raga called?",
+          "answer": "pakad",
+          "accept": ["pakad", "pakar", "pakad phrase"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "In Raga Yaman, what is the graha swara (starting note)?",
+          "options": [
+            {
+              "text": "Sa - always start from the home note",
+              "why": "Not all ragas begin from Sa. Yaman traditionally starts from lower Ni."
+            },
+            {
+              "text": "Ni - Yaman begins from lower Ni, not Sa",
+              "right": true,
+              "yes": "Correct. Beginning from Ni is a defining characteristic of Yaman. It sets the mood before you even reach Sa."
+            },
+            {
+              "text": "Ga - the vadi note",
+              "why": "While Ga is the vadi, the raga's exploration traditionally starts from lower Ni."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aroh-avroh",
+      "title": "Aaroh and Avroh",
+      "content": "Every raga defines how you ascend and descend:\n\n- **Aaroh** - the ascending pattern (how you go up)\n- **Avroh** - the descending pattern (how you come down)\n\nThese are not always straight scales. A raga may skip notes going up, include extra notes coming down, or take indirect routes.\n\nRaga Yaman's aaroh often skips Sa entirely:\n.Ni Re Ga Ma(tivra) Pa Dha Ni Sa'\n\nIt starts from lower Ni and leaps to Re, bypassing Sa.\n\nRagas are classified by how many notes they use:\n- Sampurna (7 notes) - all seven swaras\n- Shadav (6 notes) - six swaras\n- Audav (5 notes) - five swaras (pentatonic)",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is 'aaroh'?",
+          "options": [
+            {
+              "text": "The ascending pattern of a raga",
+              "right": true,
+              "yes": "Correct. Aaroh goes up; avroh comes down."
+            },
+            {
+              "text": "The descending pattern of a raga",
+              "why": "That is avroh. Aaroh is ascending."
+            },
+            {
+              "text": "The mood of a raga",
+              "why": "Mood is called rasa. Aaroh is the ascending pattern."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "If a raga uses all 7 notes, it is called:",
+          "answer": "sampurna",
+          "accept": ["sampurna", "sampoorna", "sampurna raga", "sampurna jati"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "time-theory",
+      "title": "Time Theory of Ragas",
+      "content": "Indian classical music assigns each raga a time of day. This tradition, called prahar theory, divides the day into eight 3-hour watches:\n\n- **Morning ragas** (6-9 AM) - Bhairav, Todi, Ahir Bhairav. These often use komal Re and have an introspective, awakening quality.\n- **Late morning** (9 AM-12 PM) - Asavari, Jaunpuri. Warmer, more open.\n- **Afternoon** (12-3 PM) - Sarang, Multani. Bright and intense.\n- **Evening/sunset** (6-9 PM) - Yaman, Puriya, Marwa. Majestic, serene. Many use tivra Ma.\n- **Night** (9 PM-12 AM) - Malkauns, Bageshri, Chandrakauns. Deep and contemplative.\n- **Late night** (12-3 AM) - Darbari Kanada. Grave and profound.\n\nPerformers traditionally choose ragas appropriate to the time, though concert schedules do not always permit it.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Raga Yaman is traditionally performed at which time?",
+          "options": [
+            {
+              "text": "Early morning",
+              "why": "Morning ragas include Bhairav and Todi, not Yaman."
+            },
+            {
+              "text": "Evening (around sunset)",
+              "right": true,
+              "yes": "Correct. Yaman is an evening raga with a majestic, serene mood."
+            },
+            {
+              "text": "Late night",
+              "why": "Late night ragas include Malkauns and Darbari Kanada."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Morning ragas like Bhairav tend to share which feature?",
+          "options": [
+            {
+              "text": "They use tivra Ma",
+              "why": "Tivra Ma is more typical of evening ragas like Yaman and Marwa."
+            },
+            {
+              "text": "They often use komal Re and komal Dha",
+              "right": true,
+              "yes": "Right. Komal Re and komal Dha create the distinctive tension and introspection of morning ragas."
+            },
+            {
+              "text": "They use only five notes",
+              "why": "Morning ragas can use any number of notes. It is their specific komal swaras that define them."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raga-mood-rasa",
+      "title": "Raga Mood and Rasa",
+      "content": "Every raga carries an emotional quality, called rasa. This is not just a label - it is something you feel when the raga is played well.\n\nSome common rasas and the ragas that embody them:\n- **Shanti (peace)** - Yaman, Bhupali. Calm, balanced, uplifting.\n- **Karuna (compassion/sadness)** - Todi, Darbari. Deep, weighty, introspective.\n- **Shringar (romance)** - Khamaj, Tilak Kamod. Playful, tender.\n- **Veer (heroic)** - Desh, Kedar. Bold, confident.\n\nThe rasa comes from the combination of notes, the characteristic phrases, the ornaments, and the way the musician presents the raga. The same raga can feel different in different hands, but its core rasa remains.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is 'rasa' in the context of a raga?",
+          "options": [
+            {
+              "text": "The tempo at which the raga is played",
+              "why": "Tempo is called laya. Rasa is the emotional quality."
+            },
+            {
+              "text": "The emotional quality or mood that the raga conveys",
+              "right": true,
+              "yes": "Correct. Rasa is the raga's emotional essence - what the listener feels."
+            },
+            {
+              "text": "The number of notes in the raga",
+              "why": "The number of notes is called jati (audav/shadav/sampurna). Rasa is emotional quality."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-training-yaman",
+      "title": "Ear Training - Yaman's Notes",
+      "content": "Raga Yaman uses: Sa Re Ga Ma(tivra) Pa Dha Ni - all shuddha notes with tivra Ma instead of shuddha Ma.\n\nThis exercise plays notes from Yaman's note set. Listen carefully and identify each one. If you can hear and name these notes, you are ready to start exploring the raga.\n\nRemember: in Yaman, the vadi is Ga and the samvadi is Ni. Those two notes should feel like the raga's anchors.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 6, 7, 9, 11],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify notes from Raga Yaman. Get 4 out of 6 to pass.",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+{
+  "id": "circular-breathing",
+  "title": "Circular Breathing",
+  "tasks": [
+    {
+      "id": "t1-unbroken-note",
+      "title": "The Unbroken Note",
+      "content": [
+        "Circular breathing allows you to play continuously without stopping for breath. The technique works by using your cheeks as a temporary air reservoir: while your cheek muscles push stored air through the flute, you quickly inhale through your nose. When done well, the listener hears no interruption - just an endless, flowing tone.",
+        "This technique has been used for thousands of years across many cultures. Australian didgeridoo players use it as a fundamental skill. Carnatic nagaswaram players sustain phrases that would be impossible with normal breathing. Western oboe and clarinet players use it for long orchestral passages. On the bansuri, circular breathing opens up new possibilities for sustained alap phrases and meditative playing."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What acts as a temporary air reservoir during circular breathing?",
+          "options": [
+            { "text": "The cheeks", "right": true, "yes": "Correct. Your puffed cheeks store air that sustains the note while you inhale through your nose." },
+            { "text": "The lungs", "why": "The lungs are where you inhale TO. The cheeks hold the bridge air that keeps the sound going during the inhale." },
+            { "text": "The diaphragm", "why": "The diaphragm controls lung breathing but does not store air for the circular breathing cycle." },
+            { "text": "The throat", "why": "The throat actually seals shut during circular breathing. The cheeks are the reservoir." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Through which passage do you inhale during circular breathing?",
+          "options": [
+            { "text": "The nose", "right": true, "yes": "Right. You inhale through your nose while your cheek air continues to flow through your mouth into the flute." },
+            { "text": "The mouth", "why": "Your mouth is busy pushing cheek air into the flute. The nose handles the inhale." },
+            { "text": "Both nose and mouth", "why": "Only the nose inhales. The mouth must keep pushing air into the flute during the entire cycle." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-how-it-works",
+      "title": "How It Works",
+      "content": [
+        "The circular breathing cycle has five steps: (1) While playing normally, puff your cheeks slightly to store air. (2) Seal the back of your throat with your soft palate - the same muscle you use to hold your breath. (3) Use your cheek muscles to push the stored air through your lips, maintaining the sound. (4) While cheek air sustains the note, quickly inhale through your nose. (5) Re-open your throat and resume normal lung-powered playing.",
+        "The entire cycle takes about 1-2 seconds and must become automatic through practice. The critical moment is the handoff: the transition from lung air to cheek air, and then back to lung air. Each transition is a potential point where the sound could break, the pitch could waver, or the listener could hear a bump. Smooth transitions are the hallmark of mastered circular breathing."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What part of the body seals the back of the throat during circular breathing?",
+          "answer": "soft palate",
+          "accept": ["palate", "soft palette", "velum"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How long does one complete circular breathing cycle typically take?",
+          "options": [
+            { "text": "1-2 seconds", "right": true, "yes": "Correct. The cycle is fast - just long enough for a quick nose inhale while cheek air sustains the note." },
+            { "text": "5-10 seconds", "why": "That would be far too long. Your cheeks cannot hold enough air for 5-10 seconds of playing." },
+            { "text": "Less than half a second", "why": "Half a second is too short for a full nose inhale. The cycle needs 1-2 seconds to complete comfortably." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-straw-exercise",
+      "title": "The Straw Exercise",
+      "content": [
+        "Before trying circular breathing on the bansuri, practice with a straw in a glass of water. This is the classic learning method used by wind players worldwide. Place a straw in a glass of water and blow a steady stream of bubbles. Watch the bubbles - they are your visual feedback.",
+        "Now, while blowing, puff your cheeks with air. Seal your throat with your soft palate. Use your cheek pressure to keep the bubbles going - watch them carefully, they should not stop. While the bubbles continue from cheek air alone, breathe in quickly through your nose. Then re-open your throat and resume blowing from your lungs. If the bubbles never stopped, you just did circular breathing. Practice this for several days until it becomes natural before moving to the bansuri."
+      ],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I will practice the straw-and-water exercise daily until the bubbles never stop."
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is the straw-and-water exercise a good starting point for learning circular breathing?",
+          "options": [
+            { "text": "The bubbles give you immediate visual feedback on whether air flow stopped", "right": true, "yes": "Exactly. The bubbles show you instantly whether your air stream was interrupted during the transition." },
+            { "text": "It strengthens your lungs", "why": "Lung strength is not the main point. The visual feedback from the bubbles is what makes this exercise so effective." },
+            { "text": "Water makes the air pressure easier to control", "why": "The water actually adds resistance. The value is the visual feedback - you can SEE whether air flow stopped." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-without-flute",
+      "title": "Without the Flute",
+      "content": [
+        "Before adding the bansuri's complexity, practice the air cycle without any instrument. Blow a steady stream of air through pursed lips, as if you are cooling hot soup. Feel the air flowing smoothly. Now puff your cheeks. Seal your throat. Push cheek air out through your lips while inhaling through your nose. Resume lung air.",
+        "The key sensation to look for: a smooth handoff between lung air and cheek air, like a relay race where the baton passes without dropping. The air stream through your lips should feel continuous even though the source switches from lungs to cheeks and back. Practice this cycle over and over - 50 repetitions, 100 repetitions. The coordination between your soft palate, cheek muscles, nose, and lips must become second nature before you add the flute."
+      ],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I can cycle between cheek air and lung air without an instrument, maintaining a continuous air stream through my lips."
+        },
+        {
+          "type": "choice",
+          "prompt": "What should the transition between lung air and cheek air feel like?",
+          "options": [
+            { "text": "A smooth handoff with no break in air flow", "right": true, "yes": "Exactly. The air stream should feel continuous through your lips even as the source switches." },
+            { "text": "A noticeable pause while you switch", "why": "Any pause means the technique needs more practice. The goal is zero interruption in air flow." },
+            { "text": "A burst of extra pressure", "why": "A burst means you are pushing too hard with your cheeks. The transition should be seamless, not forceful." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t5-on-single-note",
+      "title": "On a Single Note",
+      "content": [
+        "Now try circular breathing on the bansuri, playing a single sustained Sa. Play normally for a few seconds, then initiate the circular breathing cycle: puff cheeks, seal throat, push cheek air, inhale through nose, resume. The flute adds a new challenge - you must maintain not just air flow but also the correct embouchure and air speed to keep the note sounding clearly.",
+        "The most common problem at this stage: the pitch drops during the cheek-air phase because your cheeks generate less pressure than your lungs. The note may go flat or even break. To compensate, squeeze your cheeks more firmly and keep your embouchure tight during the transition. The transition might sound like a slight bump at first. This is normal - it will smooth out with hundreds of repetitions."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 12,
+          "cents": 30,
+          "prompt": "Hold Sa for 12 seconds - attempt circular breathing to sustain the note beyond one normal breath.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does the pitch often drop during the cheek-air phase of circular breathing?",
+          "options": [
+            { "text": "Cheek muscles generate less air pressure than the lungs", "right": true, "yes": "Correct. Your cheeks simply cannot match the pressure your diaphragm and lungs produce, so the note goes flat." },
+            { "text": "The flute cools down", "why": "Temperature changes do affect pitch slightly, but the pitch drop in circular breathing is caused by reduced air pressure from the cheeks." },
+            { "text": "You are covering the holes differently", "why": "Finger position should not change during circular breathing. The pitch drop comes from the lower air pressure of cheek air compared to lung air." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-common-challenges",
+      "title": "Common Challenges",
+      "content": [
+        "The three main challenges of circular breathing: (1) The 'blip' - an audible bump or click during the transition between lung air and cheek air. This is caused by an abrupt change in air pressure. Fix: practice the cheek-to-lung handoff hundreds of times until the pressure change is so gradual that no bump is audible. (2) Pitch drop - the note goes flat during the cheek-air phase. Fix: squeeze your cheeks more firmly and maintain tight embouchure to increase cheek air pressure.",
+        "(3) The nose inhale is too slow - you run out of cheek air before the inhale is complete, causing the sound to break. Fix: practice fast nose inhales separately, away from the flute. Take sharp, quick sniffs that fill your lungs in under a second. Speed is everything here. Your cheeks hold only a small amount of air, so the nose inhale must be fast enough to refill your lungs before the cheek air runs out."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What causes the audible 'blip' during circular breathing transitions?",
+          "options": [
+            { "text": "An abrupt change in air pressure during the handoff", "right": true, "yes": "Right. When the air source switches too suddenly, the pressure change creates an audible bump in the sound." },
+            { "text": "Moving your fingers accidentally", "why": "Fingers should stay still during circular breathing. The blip is caused by an air pressure discontinuity, not finger movement." },
+            { "text": "Breathing through the mouth instead of the nose", "why": "If you breathe through the mouth, the note would stop entirely, not just blip. The blip is a subtler pressure issue." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How do you fix the pitch drop problem during the cheek-air phase?",
+          "options": [
+            { "text": "Squeeze cheeks more firmly and maintain tight embouchure", "right": true, "yes": "Correct. Firmer cheek pressure and tighter embouchure compensate for the lower pressure compared to lung air." },
+            { "text": "Blow harder before the transition", "why": "Blowing harder before the transition does not help during the cheek-air phase. You need more cheek pressure during that phase itself." },
+            { "text": "Cover more of the blowing hole", "why": "Changing your embouchure position can introduce other problems. The fix is to increase cheek air pressure to match lung pressure." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-when-to-use",
+      "title": "When to Use It",
+      "content": [
+        "Circular breathing is powerful but should not be overused. Good uses: alap, where sustained meditative phrases benefit from no audible breath breaks. Long taans that exceed one breath's capacity. Drone-like passages where you want to create a tanpura-like continuous sound. Certain dramatic moments where an unbroken phrase creates a specific emotional effect.",
+        "Bad uses: every single phrase. Natural breathing pauses are an essential part of musical phrasing. They create space, tension, and release. They give the listener's ear a moment to absorb what they just heard. Music needs silence as much as it needs sound. A musician who never pauses sounds mechanical and exhausting, not masterful. Use circular breathing as a special tool, not as your default breathing strategy. The best use of circular breathing is when the listener does not even realize you used it."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When is circular breathing most effective?",
+          "options": [
+            { "text": "During sustained alap phrases and long taans", "right": true, "yes": "Right. These are the moments where an unbroken tone adds the most musical value." },
+            { "text": "During every phrase to show mastery", "why": "Overusing circular breathing removes natural pauses that are essential to musical phrasing. It sounds mechanical, not masterful." },
+            { "text": "Only during fast passages", "why": "Fast passages usually have natural breaks between phrases. Circular breathing is most valuable for long, sustained tones." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why should circular breathing NOT be used constantly?",
+          "options": [
+            { "text": "Natural breathing pauses are part of musical phrasing and expression", "right": true, "yes": "Exactly. Pauses create space, tension, and release. Music without silence sounds mechanical and tiresome." },
+            { "text": "It is bad for your health", "why": "Circular breathing is not harmful when done correctly. The reason to avoid overuse is musical, not physical." },
+            { "text": "It makes all notes sound the same", "why": "Circular breathing does not change the notes themselves. The issue is that eliminating all pauses removes an essential element of musical expression." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-practice-journey",
+      "title": "The Practice Journey",
+      "content": [
+        "Circular breathing typically takes weeks to months of daily practice to master. Here is a realistic timeline: Days 1-7, practice the straw-and-water exercise until bubbles never stop. Days 7-14, practice air cycling without the flute until the handoff feels automatic. Weeks 3-4, try on a single sustained note on the bansuri, focusing on eliminating the blip and pitch drop. Month 2, attempt slow two-note and three-note phrases with circular breathing. Month 3 and beyond, begin using circular breathing in actual alap playing.",
+        "The timeline varies - some people learn faster, some slower. The key is daily practice, even if just 5 minutes of focused circular breathing drills. Do not rush to use it in performance before it is seamless. A broken circular breathing attempt sounds worse than simply taking a normal breath. Be patient. One day, the technique will simply click and become natural, like riding a bicycle. You will not be able to pinpoint the exact moment it happened - you will just realize you are doing it."
+      ],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I understand that circular breathing takes weeks to months of patient daily practice, and I will not rush to use it in performance."
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the most important factor in learning circular breathing?",
+          "options": [
+            { "text": "Daily practice, even if only 5 minutes", "right": true, "yes": "Correct. Consistency matters more than session length. Daily short practice builds the muscle memory faster than occasional long sessions." },
+            { "text": "Having a large lung capacity", "why": "Lung capacity is not the main factor. Circular breathing is about coordination, not lung size. The cheeks hold only a small amount of air." },
+            { "text": "Using an expensive microphone to hear the blips", "why": "While recording can help, the most important factor is simply consistent daily practice to build the coordination." }
+          ]
+        }
+      ]
+    }
+  ]
+}

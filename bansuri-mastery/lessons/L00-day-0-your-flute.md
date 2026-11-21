@@ -1,7 +1,7 @@
-# L00 - Day 0: Your Flute
+# Your Flute: Setup, Care and Tuning
 
 **Objectives:** INS-01, INS-02, INS-03, INS-04, INS-05, INS-06
-**Time span:** Day 0 (60-90 minutes, no playing pressure)
+**Time span:** Self-paced; split this guide into short sessions if that feels better.
 **Prerequisites:** none. Read [Conventions](../05-CONVENTIONS-AND-NOTATION-KEY.md) sections 1-3 first.
 **Previous:** none | **Next:** [L01 - How to Practise](L01-how-to-practise.md)
 
@@ -9,14 +9,14 @@
 
 ## 1. Learning objectives
 
-By the end of today you will:
+By the end of this guide you can:
 
 - Name every part of your bansuri (INS-01).
 - Have inspected it for cracks and problems (INS-03).
 - Know the daily care and hygiene routine (INS-04, INS-06), and what your maker says about oiling (INS-05).
 - Have set up the four tools you need: a drone, a tuner, a metronome and a recorder.
 - Have chosen which side you hold the flute on (a permanent decision).
-- Have checked, or planned to check, that your Sa really is C5 (INS-02).
+- Have checked, or planned to check, that your Sa matches the pitch set for your flute (INS-02).
 
 ## 2. Prerequisites
 
@@ -70,7 +70,7 @@ Try each way for 30 seconds while holding the flute without blowing. **Recommend
 
 | Tool | What it does | Day-0 choice |
 |---|---|---|
-| Drone (tanpura/shruti box) | Plays Sa continuously so you can hear whether you are in tune | [R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box) in a browser. Set it to **C**. Phone apps: R-A02, R-A03, R-A05 (iOS); on Android, see the note in the library. |
+| Drone (tanpura/shruti box) | Plays Sa continuously so you can hear whether you are in tune | [R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box) in a browser. Set it to your flute's Sa. Phone apps: R-A02, R-A03, R-A05 (iOS); on Android, see the note in the library. |
 | Tuner | Shows which note you are playing and how far off you are | Any chromatic tuner app (R-A10, R-A11, R-A12) |
 | Metronome | A steady click to keep time | Usually built into tuner apps |
 | Recorder | Records you so you can listen back | Your phone's voice recorder. Name files by date: `2026-10-30-sa.m4a` |
@@ -81,11 +81,11 @@ Test each one now. Play the drone and listen for 1 minute: that low, humming sou
 
 1. Open the tuner. Make sure it is a **chromatic** tuner (it shows all note names, not only guitar strings).
 2. Close the top three holes (`XXX OOO`) and blow gently, as described in [L04](../lessons/L04-first-sound.md).
-3. Read the display. **Expected:** the note **C**. If the tuner shows octave numbers, it should say **C5**, at about **523 Hz**.
-4. A reading of C anywhere between -30 and +30 cents is normal for a beginner. Cents are hundredths of a semitone; [L07](L07-long-tones-tuner-and-drone.md) explains them.
-5. Write in your log: "Sa = C5, reading ___ cents".
+3. Read the display. It should match the Sa note and octave saved in **Me > Flute**. For the default C5 setting, that is C5 at about 523 Hz; another flute will show its own note and octave.
+4. A reading within -30 to +30 cents of your saved Sa is a useful beginner check. Cents are hundredths of a semitone; [L07](L07-long-tones-tuner-and-drone.md) explains them.
+5. Write in your log: "My flute's Sa = ___, reading ___ cents".
 
-If you see C#, B or something else entirely, you are probably blowing too hard or too softly. Try again more gently. If it stays wrong, your flute may be a different key than labelled. See [Conventions section 7](../05-CONVENTIONS-AND-NOTATION-KEY.md#7-if-your-flute-is-different).
+If the note does not match the Sa saved in Me > Flute, check your air and the flute setting. If you do not know the pitch, use **Detect from my flute** in Me > Flute, or ask a teacher to help confirm it. See [Conventions section 7](../05-CONVENTIONS-AND-NOTATION-KEY.md#7-if-your-flute-is-different).
 
 ## 5. Diagrams
 
@@ -115,7 +115,7 @@ Your flute, measured: about 48 cm (19 in) long. Sa = holes 1-2-3 closed = `XXX O
 
 Today is about setup, not practice. The only "practice" is this 10-minute listening task:
 
-1. Play the C drone (R-A01) for 3 minutes. Hum along quietly with it, matching its lowest pitch.
+1. In the app, start the tanpura with your flute's Sa selected. Hum along quietly for 3 minutes, matching its lowest pitch. If you use a recording instead, make sure it is in your flute's key.
 2. Listen to 7 minutes of a bansuri recording (R-L02).
 
 ## 8. Independent exercises
@@ -132,7 +132,7 @@ Today is about setup, not practice. The only "practice" is this 10-minute listen
 | Leaving the flute in a hot car or in sun | A crack appears days later | Always store it in its bag at room temperature |
 | Switching holding side after a few weeks | Your finger habits keep fighting you | Decide today and write it down |
 | Using a guitar tuner | Only E A D G B E are shown | Use a chromatic tuner |
-| Drone set to the wrong note | Your Sa never "fits" the drone | Check that the app says C (or Sa = C) |
+| Drone set to the wrong note | Your Sa never "fits" the drone | Set the app's tanpura to your flute's saved Sa |
 
 ## 10. Quiz
 
@@ -149,7 +149,7 @@ Today is about setup, not practice. The only "practice" is this 10-minute listen
 2. The finger hole nearest the blowing hole.
 3. Any two of: heat (sun, car, heater), rapid drying or temperature change, impact, AC vents.
 4. Only if your maker recommends it. Follow the maker's instructions; if there are none, don't oil in the first months.
-5. C, specifically C5 (about 523 Hz), with the top 3 holes closed.
+5. The Sa note and octave saved for your flute, with the top 3 holes closed. On the default C5 setting this is C5, about 523 Hz.
 
 </details>
 

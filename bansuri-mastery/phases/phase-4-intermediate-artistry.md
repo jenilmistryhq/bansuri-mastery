@@ -44,7 +44,7 @@ Objectives: RAG-05, RAG-06, RAG-08.
 ### 4C - Keys, transposition and limits (months 12-14)
 
 - [L26](../lessons/L26-keys-transposition-and-limits.md). Objectives: TRN-02, TRN-03, TRN-04, TRN-05, INS-08, INS-10.
-- Play known melodies with Pa-as-Sa and Ma-as-Sa on your C flute; transpose notations.
+- Play known melodies with Pa-as-Sa and Ma-as-Sa on your flute; transpose notations from your own Sa.
 - Decide whether and when to buy a second flute (Recommendation in L26).
 
 ### Milestone M8 (about month 14)

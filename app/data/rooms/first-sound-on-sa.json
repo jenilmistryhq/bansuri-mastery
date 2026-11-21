@@ -1,0 +1,199 @@
+{
+  "id": "first-sound-on-sa",
+  "title": "First Sound on Sa",
+  "tasks": [
+    {
+      "id": "warm-up",
+      "title": "Warm Up",
+      "content": "Before playing:\n1. Shoulder rolls and finger stretches (30 seconds)\n2. Low breathing: 5 cycles, 4 counts in, 6 counts out\n3. Hiss test: aim for 8 seconds of even hiss\n\nThis warm-up protects your body and primes your air support.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "Warm-up complete"
+        }
+      ]
+    },
+    {
+      "id": "embouchure-sweet-spot",
+      "title": "The Embouchure Sweet Spot",
+      "content": [
+        "The embouchure - your lip position and shape - is the single most important factor in bansuri tone production. The 'sweet spot' is the exact angle and position where your air stream strikes the blowing hole edge to produce the clearest, most resonant tone. Finding it is the difference between a beautiful sound and no sound at all.",
+        "Start with the flute resting on your lower lip, covering about one-third of the blowing hole. Direct your air stream ACROSS the edge, not into the hole. Now experiment with tiny adjustments - millimeters matter. Roll the flute slightly toward you, then away. Shift it left or right by a hair. At some point the tone will suddenly lock in and ring. That is the sweet spot.",
+        "Common mistakes: covering too much of the hole produces a muffled sound. Covering too little gives an airy, toneless hiss. Blowing too hard creates a sharp, strained tone. Not enough breath support results in a weak, breathy whisper. The key insight is to let the flute speak rather than forcing the sound. A relaxed, focused air stream produces a far better tone than raw effort."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Find your sweet spot and hold Sa with a clear, resonant tone",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What does 'finding the sweet spot' mean for bansuri embouchure?",
+          "options": [
+            {
+              "text": "Blowing as hard as possible into the hole",
+              "why": "Blowing hard and directly into the hole produces a strained, sharp tone. The air should go across the edge, not into it."
+            },
+            {
+              "text": "The exact angle and position where the air stream hits the edge to produce the clearest tone",
+              "right": true,
+              "yes": "Exactly. The sweet spot is a precise point where air, lip, and flute edge align perfectly. Tiny adjustments make a big difference."
+            },
+            {
+              "text": "Pressing the flute tightly against your lips",
+              "why": "Pressing too hard restricts lip movement and air flow. The flute should rest gently on the lower lip."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "long-sa",
+      "title": "Long Tones on Sa",
+      "content": [
+        "Play Sa (holes 1-2-3 closed) and hold it as long as you comfortably can. The goal is not maximum length but maximum steadiness.",
+        "Listen for a clear, not breathy, tone with steady volume from start to end and no wobble or wavering in pitch. Keep your lip aperture small and focused - imagine blowing through a tiny straw. Direct the air at a slight downward angle across the blowing edge. If the tone wavers, check that your jaw and lips are relaxed rather than clenching.",
+        "Play 5 long tones, resting between each one."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold Sa steady for 5 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "tone-quality",
+      "title": "Tone Quality",
+      "content": [
+        "A good tone is clear, warm, and steady. Common problems and their fixes:",
+        "Airy or breathy: too much air, lip opening too wide, or the angle is off. Try less air and a smaller opening. Focus the stream so the air column hits the edge cleanly. Shrill or sharp: too much pressure. Relax your jaw and use less force - think of sighing warmly rather than blowing. Wavering: unsteady air support. Engage your diaphragm and think of a hydraulic lift holding the air stream from below. Cracking or jumping up: you are overblowing into the second octave. Use less air pressure and keep the stream gentle.",
+        "A useful test: if you can hear the 'wind' sound alongside the tone, too much air is escaping past the edge. Narrow your lip aperture until the wind noise disappears and only the pure note remains."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Your Sa sounds breathy with more air than tone. What should you try?",
+          "options": [
+            {
+              "text": "Blow harder to push through the breathiness",
+              "why": "More air pressure makes it worse. The fix is less air and a smaller opening."
+            },
+            {
+              "text": "Make the lip opening smaller and use less air",
+              "right": true,
+              "yes": "Correct. A smaller, more focused stream usually fixes a breathy tone."
+            },
+            {
+              "text": "Cover more holes",
+              "why": "Sa already has holes 1-2-3 closed. The issue is embouchure, not fingering."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sa-with-drone",
+      "title": "Sa with the Drone",
+      "content": [
+        "Turn on the tanpura drone and play Sa along with it. Listen for the blend:",
+        "When your pitch matches, the two sounds merge into one rich tone - you can barely tell where the drone ends and your note begins. When you are sharp or flat, you hear a wavering or beating, like two waves pushing against each other.",
+        "Adjust by rolling the flute slightly toward or away from you. Even tiny adjustments change the pitch. The drone is your most honest teacher - it never lies about whether you are in tune. Make it a habit to always practice with a drone playing. Over time your ear will become sensitive enough to detect pitch differences of just a few cents."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 25,
+          "prompt": "Match the drone: hold Sa within pitch for 6 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ear-training-sa",
+      "title": "Ear Training: Recognising Sa",
+      "content": "Sa is your anchor. No matter what notes are playing around it, you should always be able to find Sa in your mind.\n\nListen to some notes and pick out Sa from the group.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 7],
+          "count": 5,
+          "pass": 4,
+          "prompt": "Which note is Sa?",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "tone-consistency",
+      "title": "Tone Consistency",
+      "content": [
+        "When you first pick up the bansuri, your tone may be unstable. Your lip muscles need time to 'warm up' - just like a runner stretches before sprinting. After 10 to 15 minutes of gentle playing, your embouchure muscles settle into position and your tone becomes more stable and controlled.",
+        "The consistency challenge: can you produce the SAME quality of Sa at the beginning, middle, and end of a practice session? Start your sessions with gentle long tones at moderate volume. Do not push for full power immediately. Gradually increase intensity as your embouchure warms up. Think of it as 'centering' the tone - finding the exact core of the note where it resonates most fully, then staying there.",
+        "Professional bansuri players spend 15 to 20 minutes on long tones before any other practice. This is not wasted time. It is the foundation that makes everything else possible."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 8,
+          "cents": 20,
+          "prompt": "Hold Sa for 8 seconds with a centered, consistent tone",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "Why might your tone be unstable in the first few minutes of practice?",
+          "options": [
+            {
+              "text": "The flute needs time to warm up physically",
+              "why": "While bamboo does change slightly with temperature, the main factor is your embouchure muscles needing time to settle."
+            },
+            {
+              "text": "Your embouchure muscles have not yet settled into their playing position",
+              "right": true,
+              "yes": "Correct. Like any muscle group, your lips and jaw need a few minutes to find their optimal position and tension."
+            },
+            {
+              "text": "You are using the wrong fingering",
+              "why": "Fingering does not change during a session. Tone instability at the start is about embouchure warm-up."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recording",
+      "title": "Record Your Sa",
+      "content": "Recording yourself is the fastest way to improve. You hear things in a recording that you miss while playing.\n\nUse any recorder (phone, computer, this app). Play three long Sa tones and listen back. Notice:\n- Is the attack clean or does it start with a puff of air?\n- Is the volume steady?\n- Does the pitch stay constant?",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I have recorded and listened back to my Sa"
+        }
+      ]
+    },
+    {
+      "id": "first-sound-complete",
+      "title": "First Sound on Sa - Complete",
+      "content": "You can now produce a steady Sa and match it to the drone. This is the single most important skill in bansuri playing - everything else builds on a solid Sa.\n\nKeep practicing long tones at the start of every session.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "Done!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

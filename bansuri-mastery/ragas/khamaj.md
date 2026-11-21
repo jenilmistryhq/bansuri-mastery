@@ -24,7 +24,7 @@ Romantic, playful, light. The basis of countless thumris, dadras, bhajans and fi
 - **Re is skipped going up:** `S G m P`, not `S R G m`.
 - Light-classical Khamaj often adds other touches; learn the strict form first.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Register |
 |---|---|---|
@@ -97,7 +97,7 @@ G G S G | m P G m | n D - m | P D - m |
 G - - - | D N S' - | S' n D P | m G R S ||
 ```
 
-Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

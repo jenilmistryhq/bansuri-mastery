@@ -1,0 +1,286 @@
+{
+  "id": "raga-yaman-intro",
+  "title": "Raga Yaman - Your First Raga",
+  "description": "Enter the world of ragas through Yaman - the evening raga that every student learns first.",
+  "difficulty": "hard",
+  "skills": ["raga", "melody", "theory"],
+  "minutes": 45,
+  "order": 8,
+  "prerequisites": ["dha-ni-full-saptak"],
+  "tasks": [
+    {
+      "id": "what-is-raga",
+      "title": "What Is a Raga?",
+      "content": [
+        "A raga is much more than a scale. It is a melodic framework - a set of rules that tells you which notes to use, how to move between them, which phrases define its character, and what mood it evokes.",
+        "A raga specifies which swaras are used (not all seven may be present). It defines the aroha (ascending movement) and avaroha (descending movement), which may differ. It has a vadi (most important note) and samvadi (second most important). It has characteristic phrases called pakad that make it instantly recognizable. And each raga is associated with a time of day, a season, and a mood (rasa).",
+        "Think of a raga as a personality. Two ragas may share the same notes but sound completely different because of how those notes are approached, emphasized, and combined. There are hundreds of ragas in the Indian classical tradition. Yaman is traditionally the first raga a student learns because its rules are clear and its mood is uplifting."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the main difference between a raga and a Western scale?",
+          "options": [
+            { "text": "A raga has more notes", "why": "Ragas can have fewer notes than a Western scale - some use only five." },
+            { "text": "A raga includes rules about movement, phrasing, and mood", "right": true, "yes": "Exactly. A raga is a complete melodic personality, not just a set of pitches." },
+            { "text": "A raga is played faster", "why": "Speed is a choice of the performer, not a property of the raga itself." },
+            { "text": "There is no difference", "why": "A scale is just a set of pitches. A raga carries movement rules, moods, and identity." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "What is the term for a raga's ascending movement?",
+          "answer": "aroha",
+          "accept": ["aroha", "aaroha", "aroh", "aaroh"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "yaman-scale",
+      "title": "Yaman's Scale - Tivra Ma",
+      "content": [
+        "Raga Yaman uses all seven notes, but with one crucial difference from the natural (shuddh) scale: Ma is raised to tivra Ma. Shuddh Ma (natural fourth) sits at semitone 5. Tivra Ma (raised fourth) sits at semitone 6. In Western terms, shuddh Ma is like a perfect fourth, while tivra Ma is like an augmented fourth.",
+        "Yaman's notes: Sa Re Ga Ma(tivra) Pa Dha Ni Sa'. This single change - raising Ma by one semitone - completely transforms the mood. Where shuddh Ma feels grounded and restful, tivra Ma creates a sense of yearning and elevation.",
+        "On the bansuri, tivra Ma is played by half-covering the third finger hole from the bottom. Practice finding this half-hole position - it takes some experimentation. The transition from Ga (semitone 4) to tivra Ma (semitone 6) is a whole tone, which pushes upward more strongly than the Ga-to-shuddh-Ma half step you are used to."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is special about Ma in Raga Yaman?",
+          "options": [
+            { "text": "Ma is omitted entirely", "why": "Yaman uses all seven notes - Ma is included but altered." },
+            { "text": "Ma is flattened (komal)", "why": "Ma is raised, not lowered." },
+            { "text": "Ma is raised to tivra (sharp)", "right": true, "yes": "Right. Tivra Ma at semitone 6 is what gives Yaman its distinctive character." },
+            { "text": "Ma is played twice", "why": "Each note appears once in the scale - Ma is simply altered to its sharp form." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "hold",
+          "target": 6,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold tivra Ma steady for 5 seconds - find that half-hole position",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "aroha-avaroha",
+      "title": "Aroha and Avaroha",
+      "content": [
+        "Every raga defines how you ascend (aroha) and descend (avaroha). These paths may skip notes or use zigzag patterns.",
+        "Yaman's aroha: Sa Re Ga Ma(t) Pa Dha Ni Sa'. Yaman's avaroha: Sa' Ni Dha Pa Ma(t) Ga Re Sa. Yaman is a sampoorna raga, meaning it uses all seven notes in both directions.",
+        "In practice, many musicians begin Yaman's aroha from Ni of the lower octave: Ni Re Ga Ma(t) Pa Dha Ni Sa'. This avoidance of a direct landing on Sa in the ascending line is one of Yaman's most distinctive traits. The opening always reaches upward from below, touching the lower Ni before rising through Re and Ga."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What does 'sampoorna' mean when describing a raga?",
+          "answer": "all seven notes",
+          "accept": ["all seven notes", "all seven", "all 7 notes", "all 7", "complete", "sampoorna", "uses all notes", "full scale"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How do many musicians traditionally begin Yaman's ascending line?",
+          "options": [
+            { "text": "Starting directly from Sa", "why": "Yaman traditionally begins by touching the lower Ni first, not landing directly on Sa." },
+            { "text": "Starting from Ni of the lower octave (Ni Re Ga...)", "right": true, "yes": "Yes. The characteristic Yaman opening avoids a direct start on Sa, beginning from Ni below instead." },
+            { "text": "Starting from Pa", "why": "Starting from Pa would skip the lower half of the scale." },
+            { "text": "Starting from Re", "why": "While Re is important, the traditional start touches the lower Ni first." }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "vadi-samvadi",
+      "title": "Vadi and Samvadi",
+      "content": [
+        "Every raga has a vadi (the king note, most important) and a samvadi (the minister note, second most important). These two notes anchor the raga's identity. When you improvise, you return to them. When you hold a note for emphasis, it should often be one of these two.",
+        "In Yaman, the vadi is Ga (semitone 4) and the samvadi is Ni (semitone 11). Notice that they are separated by a perfect fifth - this consonant relationship is a common pattern in ragas. Ga gives Yaman its sweetness. Ni gives it its aspiration, that feeling of reaching upward.",
+        "When you play Yaman, linger on Ga and Ni. Give them more time, more weight, more expression than the other notes. This is how the raga's personality shines through your playing."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the vadi (most important note) of Raga Yaman?",
+          "options": [
+            { "text": "Sa", "why": "Sa is the tonic, the home note - but the vadi is a different concept." },
+            { "text": "Ga", "right": true, "yes": "Correct. Ga (semitone 4) is Yaman's king note. Give it extra weight and time." },
+            { "text": "Pa", "why": "Pa is important in many ragas, but Yaman's vadi is Ga." },
+            { "text": "Tivra Ma", "why": "Tivra Ma defines Yaman's scale, but the vadi is Ga." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Ga (the vadi) for 6 seconds - feel why it is Yaman's king note",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 11,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Ni (the samvadi) for 6 seconds - feel its aspiring quality",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "pakad",
+      "title": "Yaman's Signature Phrases",
+      "content": [
+        "The pakad is the raga's fingerprint - a short phrase or set of phrases that immediately identifies it. If you hear these movements, you know it is Yaman.",
+        "Ni Re Ga Re - the characteristic opening, rising from below Sa to Ga. Ga Ma(t) Pa - the upward push through tivra Ma. Ga Ma(t) Dha Ni - a wide ascending leap that is pure Yaman. Ni Dha Pa Ma(t) Ga Re Sa - the graceful descending line. These phrases are not rigid rules but guiding patterns. A skilled musician weaves them naturally into improvisation.",
+        "When you hear Ni Re Ga Re followed by Ga Ma Pa with a sharp Ma, your ear knows immediately: this is Yaman. The pakad literally means 'grip' - it is what 'catches' your ear and tells you which raga is playing."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is a pakad?",
+          "options": [
+            { "text": "The tempo of a raga", "why": "Tempo (laya) is separate from the melodic identity." },
+            { "text": "The rhythm pattern used in a raga", "why": "Rhythm belongs to tala, not raga." },
+            { "text": "A characteristic phrase that identifies the raga", "right": true, "yes": "Right. The pakad is the raga's melodic fingerprint." },
+            { "text": "The highest note in a raga", "why": "That would just be the range, not the identity." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [11, 2, 4, 2],
+          "prompt": "Play the classic Yaman opening: Ni Re Ga Re",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "mood-and-time",
+      "title": "Yaman's Mood and Time",
+      "content": [
+        "In the Indian tradition, every raga belongs to a specific time of day. This is not arbitrary - the association comes from centuries of observation about when each raga's mood resonates most deeply.",
+        "Yaman is an evening raga, traditionally performed in the first prahar of the night (roughly 6 PM to 9 PM). Its mood (rasa) is devotional, serene, romantic, and uplifting. The tivra Ma gives it a sense of aspiration and gentle longing. It is associated with the early monsoon and cool evenings.",
+        "Imagine a quiet evening, the day's work done, the sky turning orange and purple. That feeling of peaceful reflection mixed with gentle hope - that is Yaman's heart. While concert schedules mean ragas are not always performed at their prescribed time, understanding the time association helps you feel the raga's intended mood."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When is Raga Yaman traditionally performed?",
+          "options": [
+            { "text": "Early morning", "why": "Morning ragas like Bhairav or Todi have a different character." },
+            { "text": "Midday", "why": "Afternoon ragas tend to be lighter or more playful." },
+            { "text": "Evening (first prahar of the night)", "right": true, "yes": "Correct. Yaman is an evening raga, associated with the transition from day to night." },
+            { "text": "Late night", "why": "Late-night ragas like Malkauns have a deeper, more introspective quality." }
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which mood best describes Raga Yaman?",
+          "options": [
+            { "text": "Fierce and intense", "why": "Intensity belongs to ragas like Darbari or Marwa." },
+            { "text": "Serene, devotional, and gently uplifting", "right": true, "yes": "Yes. Yaman's tivra Ma creates a mood of peaceful aspiration." },
+            { "text": "Sorrowful and heavy", "why": "Sorrow is the domain of ragas like Todi or Bhairavi." }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "ear-training",
+      "title": "Ear Training - Hear the Yaman Character",
+      "content": [
+        "Now train your ear to recognize Yaman's sound. The key is the tivra Ma - once you can hear it, Yaman becomes unmistakable. You will hear notes from Yaman's scale played one at a time. Identify each note by ear.",
+        "Focus on the relationship between the notes. Ga and tivra Ma are separated by a whole tone (two semitones). Pa sits just one semitone above tivra Ma. These intervals are what give Yaman its characteristic sound - the wide step from Ga to Ma(t) followed by the narrow step from Ma(t) to Pa."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 6, 7, 9, 11],
+          "rounds": 5,
+          "prompt": "Identify each note from Yaman's scale",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "play-ascending",
+      "title": "Play Yaman's Ascending Line",
+      "content": [
+        "Time to play. Start with Yaman's aroha: Sa Re Ga Ma(tivra) Pa Dha Ni Sa'. Remember that Ma is tivra (semitone 6), so use the half-hole fingering for the raised fourth.",
+        "Play slowly and deliberately. Focus on hitting each note cleanly before moving to the next. The transition from Ga (4) to tivra Ma (6) is a whole tone. Feel how it pushes upward more strongly than the Ga-to-shuddh-Ma half step you are used to."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 6, 7, 9, 11, 12],
+          "prompt": "Play the ascending Yaman scale: Sa Re Ga Ma(t) Pa Dha Ni Sa'",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "play-descending",
+      "title": "Play Yaman's Descending Line",
+      "content": [
+        "Now play the avaroha: Sa' Ni Dha Pa Ma(tivra) Ga Re Sa. Descending often feels harder because you are working against the natural tendency to rise. Take your time and let each note ring before moving down.",
+        "In Yaman's avaroha, notice how the descent from Pa to Ma(tivra) to Ga creates a gentle, cascading feeling - this is one of the most beautiful sounds in Yaman. The wide step from tivra Ma down to Ga (two semitones) gives a sense of release, like settling into something warm."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 7, 6, 4, 2, 0],
+          "prompt": "Play the descending Yaman scale: Sa' Ni Dha Pa Ma(t) Ga Re Sa",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [4, 6, 9, 11],
+          "prompt": "Play the ascending Yaman phrase: Ga Ma(t) Dha Ni",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "bandish-and-challenge",
+      "title": "A Simple Yaman Composition",
+      "content": [
+        "A bandish is a fixed composition within a raga - a melody that showcases the raga's character. Here is a simple Yaman bandish built from its characteristic phrases.",
+        "Phrase 1: Ni Re Ga Re - the classic opening. Phrase 2: Ga Ma(t) Pa Dha - rising through the middle register. Phrase 3: Dha Pa Ma(t) Ga Re Sa - the full descent home. Play each phrase separately first, then try connecting them. A good bandish tells a story: it departs, rises, reaches a peak, and returns home.",
+        "If you accidentally play shuddh Ma (semitone 5) in a Yaman performance, the raga's identity breaks immediately. Shuddh Ma is a foreign note to Yaman. This is why understanding a raga deeply matters - one wrong note can break the spell. Congratulations on completing your first raga. Even master players return to Yaman throughout their careers."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [11, 2, 4, 2],
+          "prompt": "Play phrase 1: Ni Re Ga Re",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [4, 6, 7, 9],
+          "prompt": "Play phrase 2: Ga Ma(t) Pa Dha",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [9, 7, 6, 4, 2, 0],
+          "prompt": "Play phrase 3 (descent): Dha Pa Ma(t) Ga Re Sa",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I have completed my introduction to Raga Yaman!"
+        }
+      ]
+    }
+  ]
+}

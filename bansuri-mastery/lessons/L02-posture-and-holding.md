@@ -23,7 +23,7 @@ You have chosen your holding side in [L00](L00-day-0-your-flute.md). This lesson
 
 Good posture has two jobs. It **lets you breathe deeply**: a slumped chest cannot fill with air. And it **frees your fingers**: if your hands are busy gripping the flute, they can't move quickly or seal holes accurately. The ideal is a hold that is **stable but light**. The flute rests on a few support points, and the fingers only cover holes.
 
-On a C medium flute (about 48 cm), the holes are moderately spaced. Most adults can reach them with the finger pads without strain. Players with small hands sometimes use the middle segment of the fingers instead of the pads (a "piper's grip") on longer flutes. On your size, try the pad grip first (Recommendation).
+On the 48 cm C-medium reference flute, the holes are moderately spaced. Hole spacing varies with flute size: check that you can reach yours without strain. Players with small hands sometimes use the middle segment of the fingers instead of the pads (a "piper's grip") on longer flutes. Try the pad grip first (Recommendation).
 
 ## 4. Step-by-step instructions
 
@@ -146,7 +146,7 @@ Every player's hold differs a little; compare with the checklist above, not pixe
 - [R-V10](../02-RESOURCE-LIBRARY.md#31-structured-beginner-series) (G flute, Level 1): watch the holding and finger position section. A G flute is longer than yours; the principles are identical.
 - [R-V03](../02-RESOURCE-LIBRARY.md#31-structured-beginner-series): watch how the flute is brought to the lips.
 
-**Honest note:** no verified demonstration specific to a C medium flute was found (see the library's gaps table). Your best check is a video of yourself compared with the checklist below, plus a teacher check when possible.
+**Honest note:** no verified demonstration specific to the 48 cm C-medium reference flute was found (see the library's gaps table). Compare a video of yourself with the checklist below, plus a teacher check when possible.
 
 ## 7. Guided practice (Days 1-3, 10 min each day, no blowing needed)
 

@@ -120,7 +120,7 @@ Convert to ASCII:
 
 ## Level 6: Western letters and sargam (from L26/L28; THY-03, NOT-07)
 
-**On your flute, Sa = C:** C=S, Db=r, D=R, Eb=g, E=G, F=m, F#=M, G=P, Ab=d, A=D, Bb=n, B=N.
+**Worked example (Sa = C):** C=S, Db=r, D=R, Eb=g, E=G, F=m, F#=M, G=P, Ab=d, A=D, Bb=n, B=N. Use your own flute's Sa when you play the patterns.
 
 Convert (Sa = C):
 

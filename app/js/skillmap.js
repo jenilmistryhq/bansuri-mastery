@@ -110,10 +110,11 @@ function ornamentsPassed() {
 // The tools of each skill that open on their own screen (#/skills/<skill>/<tool>), in the order of
 // the switch at the top of that screen.
 export const TOOLS = {
-  tone: [["longtones", "Long tones"], ["check", "Tone check"]],
-  rhythm: [["tap", "Tap the beat"]],
+  tone: [["longtones", "Long tones"], ["check", "Tone check"], ["breath", "Breath timer"]],
+  notes: [["scale", "Scale practice"]],
+  rhythm: [["tap", "Tap the beat"], ["subdivisions", "Subdivisions"]],
   ornaments: [["trainer", "Ornament trainer"]],
-  ear: [["quiz", "Ear quiz"], ["playback", "Play it back"]],
+  ear: [["quiz", "Ear quiz"], ["playback", "Play it back"], ["interval", "Intervals"], ["raga", "Raga practice"], ["compare", "Compare"]],
 };
 
 // Each skill: the section tab's id and label, its full name, the latest measure (or null), the tools
@@ -129,7 +130,7 @@ export const SKILLS = [
       if (any) return { text: "{n} s".replace("{n}", Math.round(any)), label: "Longest steady note", history: recent(holds.any, x => Math.round(x.s)), unit: "{n} s" };
       return null;
     },
-    train: [["Long tones", "#/skills/tone/longtones", "Hold each note with live feedback on pitch and steadiness."], ["Tone check", "#/skills/tone/check", "Hold one note: the app says what it hears and which fix to try."]],
+    train: [["Long tones", "#/skills/tone/longtones", "Hold each note with live feedback on pitch and steadiness."], ["Tone check", "#/skills/tone/check", "Hold one note: the app says what it hears and which fix to try."], ["Breath timer", "#/skills/tone/breath", "Timed inhale-hold-exhale cycles to build breath capacity."]],
     games: ["balloon", "boat", "swell", "taar"], also: [],
     fixes: ["TS-01", "TS-02", "TS-03", "TS-04", "TS-07"],
     more: [["Good tone, step by step", "#/music/listen"]],
@@ -142,7 +143,7 @@ export const SKILLS = [
       if (b !== null) return { text: "best {n}".replace("{n}", b), label: "Bullseye", more };
       return p ? { text: more[0][1], label: more[0][0] } : null;
     },
-    train: [["Tuner: which note, how many cents", "dock:check", "Play any note and see it, with how far it is from true."], ["Fingering chart", "dock:chart", "Tap a note to see its holes and hear it."]],
+    train: [["Tuner: which note, how many cents", "dock:check", "Play any note and see it, with how far it is from true."], ["Fingering chart", "dock:chart", "Tap a note to see its holes and hear it."], ["Scale practice", "#/skills/notes/scale", "Play a scale with live feedback on each note."]],
     games: ["steer", "bullseye", "lanterns", "floors", "road"], also: [],
     fixes: ["TS-05", "TS-06"],
     more: [],
@@ -153,7 +154,7 @@ export const SKILLS = [
       const taps = getState().live.taps, t = last(taps);
       return t ? { text: "{n}% on the beat".replace("{n}", Math.round(t.within * 100)), label: "Latest tap the beat", history: recent(taps, x => Math.round(x.within * 100)), unit: "{n}%" } : null;
     },
-    train: [["Tap the beat", "#/skills/rhythm/tap", "Tap with the click to see whether you rush or drag."], ["Taal", "dock:taal", "Teentaal and other taals on tabla."]],
+    train: [["Tap the beat", "#/skills/rhythm/tap", "Tap with the click to see whether you rush or drag."], ["Taal", "dock:taal", "Teentaal and other taals on tabla."], ["Subdivisions", "#/skills/rhythm/subdivisions", "Tap dugun, tigun or chaugun over the taal cycle."]],
     games: ["tongue", "laya", "tihai", "sam"], also: [],
     fixes: ["TS-09"],
     more: [],
@@ -186,7 +187,7 @@ export const SKILLS = [
       if (et) lines.push(["Play it back", of(er, et)]);
       return lines.length ? { label: lines[0][0], text: lines[0][1], more: lines.slice(1) } : null;
     },
-    train: [["Ear quiz", "#/skills/ear/quiz", "Hear a note over the drone and name it."], ["Play it back", "#/skills/ear/playback", "Hear a short phrase, then play it back on your flute."]],
+    train: [["Ear quiz", "#/skills/ear/quiz", "Hear a note over the drone and name it."], ["Play it back", "#/skills/ear/playback", "Hear a short phrase, then play it back on your flute."], ["Intervals", "#/skills/ear/interval", "Hear two notes and name the interval."], ["Raga practice", "#/skills/ear/raga", "Improvise in a raga: the app flags wrong notes."], ["Compare", "#/skills/ear/compare", "Record a phrase and compare it to the reference."]],
     games: ["higherlower", "wrong", "bingo", "nameorn"], also: [],
     fixes: ["TS-10"],
     more: [],

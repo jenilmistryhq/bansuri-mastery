@@ -1,0 +1,292 @@
+{
+  "id": "komal-swaras",
+  "title": "Komal Swaras - The Flats",
+  "description": "Learn the four komal (flat) notes and the half-holing technique that produces them on the bansuri.",
+  "difficulty": "medium",
+  "skills": [
+    "notes",
+    "technique",
+    "theory"
+  ],
+  "minutes": 40,
+  "order": 10,
+  "prerequisites": [
+    "raga-yaman-intro"
+  ],
+  "tasks": [
+    {
+      "id": "shuddha-and-vikrit",
+      "title": "Shuddha and Vikrit Swaras",
+      "content": [
+        "You already know the 7 shuddha (natural) swaras. But Indian music uses 12 notes per octave, just like Western music. The extra five notes come from altering certain swaras.",
+        "A swara lowered by one semitone is called komal (flat). A swara raised by one semitone is called tivra (sharp). Together, the altered forms are called vikrit swaras.",
+        "Only five swaras can be altered: Re, Ga, Ma, Dha, and Ni. Sa and Pa are achala (immovable) - they never change. This is fundamental to the entire Indian note system. Sa is the anchor of pitch, and Pa is its natural harmonic partner at a perfect fifth. Altering either one would destroy the tonal center of the music.",
+        "Of the five that can change, four have komal (lowered) forms: Re, Ga, Dha, and Ni. Only Ma has a tivra (raised) form. This room focuses on the four komal swaras."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which two swaras can never be komal or tivra?",
+          "options": [
+            {
+              "text": "Re and Ga",
+              "why": "Both Re and Ga have komal forms."
+            },
+            {
+              "text": "Sa and Pa",
+              "right": true,
+              "yes": "Correct. Sa and Pa are achala - immovable. They are the fixed anchors of the note system."
+            },
+            {
+              "text": "Ma and Ni",
+              "why": "Ma can be tivra, Ni can be komal."
+            },
+            {
+              "text": "Dha and Ni",
+              "why": "Both Dha and Ni have komal forms."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "the-twelve-notes",
+      "title": "The 12-Note Chromatic Scale",
+      "content": [
+        "Here are all 12 notes in one octave, with their semitone values from Sa:",
+        "S(0) - r(1) - R(2) - g(3) - G(4) - m(5) - M(6) - P(7) - d(8) - D(9) - n(10) - N(11)",
+        "The notation convention is important: lowercase letters r, g, d, n mean komal forms of Re, Ga, Dha, and Ni. Uppercase R, G, D, N mean their shuddha forms. Ma is reversed: lowercase m is shuddha Ma, uppercase M is tivra Ma. This reversal trips up many students, so remember: for Ma, capital means raised.",
+        "Every raga draws its notes from these 12. Some ragas use just 5 (pentatonic), others use all 7 scale degrees with specific komal or shuddha choices. Learning to play and hear all 12 opens every raga to you."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many distinct notes are there per octave in Indian music? Type the number.",
+          "answer": "12",
+          "accept": ["12", "twelve"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "In sargam notation, what does lowercase 'g' mean?",
+          "options": [
+            {
+              "text": "Shuddha Ga",
+              "why": "Shuddha Ga is written as uppercase G."
+            },
+            {
+              "text": "Komal Ga",
+              "right": true,
+              "yes": "Right. Lowercase g means komal Ga - the minor third at 3 semitones above Sa."
+            },
+            {
+              "text": "Tivra Ga",
+              "why": "There is no tivra form of Ga. Only Ma has a tivra form."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "half-holing-technique",
+      "title": "Half-Holing Technique",
+      "content": [
+        "On the bansuri, komal notes are produced by partially covering a finger hole - a technique called half-holing. By lifting your finger just slightly, you expose only part of the hole, which lowers the pitch by roughly one semitone.",
+        "The key to good half-holing is control at the fingertip. You are not lifting the whole finger off - you are rolling or sliding the fingertip so that about half the hole is exposed. The exact amount varies by note and by flute. Too little exposure and the note stays shuddha. Too much and it goes flat below komal.",
+        "Your ear is the final judge. The tuner helps at first, but eventually you must internalize the pitch. Each komal swara has a specific emotional color - komal Re feels tense and plaintive, komal Ga feels warm and minor, komal Dha feels dark, komal Ni feels restful and grounded.",
+        "Start with the easiest komal note (Ni, closest to the blowing end) and work toward the hardest (Re, farthest away where leverage is weakest)."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What physical technique produces komal notes on the bansuri?",
+          "options": [
+            {
+              "text": "Blowing harder",
+              "why": "Blowing harder raises the octave, it does not create komal notes."
+            },
+            {
+              "text": "Partially covering a finger hole (half-holing)",
+              "right": true,
+              "yes": "Correct. Half-holing lowers the pitch by about one semitone to produce the komal swara."
+            },
+            {
+              "text": "Covering extra holes below",
+              "why": "Covering more holes raises the pitch. Half-holing the target hole is what creates komal notes."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "komal-ni-hold",
+      "title": "Play Komal Ni",
+      "content": [
+        "Komal Ni (n) sits at 10 semitones above Sa. It is the easiest komal note to half-hole because the Ni hole is closest to the blowing end, giving your finger the most leverage and control.",
+        "Komal Ni appears in many beloved ragas: Kafi, Khamaj, Desh, Bhairavi, and countless film songs. It has a gentle, settled quality - where shuddha Ni (N at 11 semitones) has a leading-tone tension that wants to resolve up to Sa, komal Ni feels relaxed. It does not push toward Sa the way shuddha Ni does.",
+        "To play it: finger the shuddha Ni position, then roll your fingertip back slightly to half-open the hole. Listen for the pitch to drop one semitone. Hold it steady."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 10,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold komal Ni (n) steady for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "komal-dha-hold",
+      "title": "Play Komal Dha",
+      "content": [
+        "Komal Dha (d) is at 8 semitones above Sa. It has a dark, shadowy quality. In Raga Bhairav, the combination of komal Re and komal Dha creates the raga's stern, majestic morning mood. In Bhairavi, komal Dha adds depth and gravity.",
+        "Half-holing for komal Dha requires a bit more precision than komal Ni because the Dha hole is farther from the blowing end. Keep your finger relaxed and roll it gently. If the note wavers, steady your breath support - a wavering komal note usually means inconsistent air, not inconsistent fingers.",
+        "Listen to the interval from Pa (7) to komal Dha (8) - just one semitone. This tight, tense interval is what gives ragas like Bhairav and Todi their distinctive gravity."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 8,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold komal Dha (d) steady for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "komal-ga-re",
+      "title": "Komal Ga and Komal Re",
+      "content": [
+        "Komal Ga (g) at 3 semitones is the minor third - the interval that makes music sound 'minor' in Western terms. It appears in Kafi, Bhimpalasi, Bageshri, Malkauns, and many other deeply emotional ragas. The difference between shuddha Ga (G at 4 semitones, the major third) and komal Ga transforms the entire character of a melody.",
+        "Komal Re (r) at 1 semitone is the hardest komal note to half-hole because the Re hole is farthest from the blowing end. It sits just one semitone above Sa, creating maximum tension. Ragas with komal Re - Bhairav, Todi, Marwa, Poorvi - all have an intense, serious character. This one semitone gap between Sa and komal Re is one of the most powerful intervals in Indian music.",
+        "Practice komal Re last. Get comfortable with komal Ni, Dha, and Ga first, then tackle Re when your half-holing control is stronger."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 3,
+          "seconds": 4,
+          "cents": 25,
+          "prompt": "Hold komal Ga (g) steady for 4 seconds",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 1,
+          "seconds": 4,
+          "cents": 30,
+          "prompt": "Hold komal Re (r) steady for 4 seconds - the hardest half-hole",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "ear-shuddha-vs-komal",
+      "title": "Ear Training: Shuddha vs Komal",
+      "content": [
+        "Being able to hear the difference between shuddha and komal is just as important as being able to play it. Many students can finger komal notes but cannot reliably identify them by ear alone.",
+        "The shuddha-to-komal shift is always one semitone down. It is a small but unmistakable change in color: shuddha Re (R, 2 semitones) sounds open and bright, komal Re (r, 1 semitone) sounds tense and close to Sa. Shuddha Ga (G, 4) sounds happy and major, komal Ga (g, 3) sounds warm and minor.",
+        "Listen carefully to each note and identify whether it is the shuddha or komal form."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [2, 1, 4, 3, 9, 8, 11, 10],
+          "rounds": 5,
+          "prompt": "Identify whether each note is shuddha or komal",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "komal-phrases",
+      "title": "Play Phrases with Komal Notes",
+      "content": [
+        "Now combine komal notes into musical phrases. These are not just exercises - they are the building blocks of real raga phrases.",
+        "First, play a descending Bhairavi fragment: Sa - komal Ni - komal Dha - Pa. This P-d-n-S pattern (descending as S-n-d-P) is one of the most common phrases in Indian music. You will hear it in Bhairavi, in bhajans, and in countless film songs.",
+        "Then try a Kafi-style phrase: Sa - Re - komal Ga - Ma - Pa. The move from Re (2) to komal Ga (3) is just one semitone, but it gives the melody its characteristic warmth."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 10, 8, 7],
+          "prompt": "Play Sa - komal Ni - komal Dha - Pa (a Bhairavi descent)",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 5, 7],
+          "prompt": "Play Sa - Re - komal Ga - Ma - Pa (a Kafi ascent)",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "thaats-and-komal",
+      "title": "Komal Notes and the Thaat System",
+      "content": [
+        "The 10 thaats (parent scales) of Hindustani music are defined by which notes are komal or tivra. Learning which komal notes belong to which thaat is a roadmap to hundreds of ragas.",
+        "Bilawal - all shuddha (the natural scale). Kalyan - tivra Ma only. Khamaj - komal Ni. Kafi - komal Ga and komal Ni. Asavari - komal Ga, Dha, and Ni. Bhairavi - komal Re, Ga, Dha, and Ni (the most komal notes of any thaat). Bhairav - komal Re and komal Dha. Poorvi - komal Re, komal Dha, tivra Ma. Marwa - komal Re, tivra Ma. Todi - komal Re, komal Ga, komal Dha, tivra Ma.",
+        "Notice the pattern: as you add more komal notes, the mood generally gets darker and more serious. Bilawal (all shuddha) feels bright and simple. Bhairavi (four komal notes) feels deeply emotional and introspective."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which thaat has the most komal swaras?",
+          "options": [
+            {
+              "text": "Bhairav (komal Re and Dha)",
+              "why": "Bhairav has only 2 komal notes."
+            },
+            {
+              "text": "Bhairavi (komal Re, Ga, Dha, Ni)",
+              "right": true,
+              "yes": "Correct. Bhairavi has four komal swaras - more than any other thaat."
+            },
+            {
+              "text": "Todi (komal Re, Ga, Dha + tivra Ma)",
+              "why": "Todi has 3 komal notes plus tivra Ma, but Bhairavi has 4 komal notes."
+            }
+          ],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "How many komal swaras exist in the Indian note system? Type the number.",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "final-challenge",
+      "title": "Final Challenge",
+      "content": [
+        "Put it all together. You will identify notes by ear, then play a phrase that uses multiple komal swaras.",
+        "The phrase Sa - komal Re - komal Ga - Ma - Pa - komal Dha - komal Ni - Sa' follows Bhairavi's ascending scale. This is one of the most important scales in all of Indian music - Bhairavi is called the queen of ragas and is traditionally the last raga performed in a concert."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [1, 2, 3, 4, 8, 9, 10, 11],
+          "rounds": 4,
+          "prompt": "Identify each note - is it komal or shuddha?",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 1, 3, 5, 7, 8, 10, 12],
+          "prompt": "Play the Bhairavi ascending scale: S r g m P d n S'",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

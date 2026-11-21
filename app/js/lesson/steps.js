@@ -55,7 +55,7 @@ export const STEP_KINDS = {
         ding(!!op.right);
         api.data[s.id] = i; api.save();
         out.replaceChildren(reveal(!!op.right, op.right ? s.yes : s.no, s.explain));
-        api.ready();
+        if (op.right) api.ready();
       });
       return b;
     }));
@@ -256,12 +256,14 @@ export const STEP_KINDS = {
       const want = order[k];
       if (id === want) {
         fl.mark(id, "fl-found"); ding(true); k++;
+        fl.mark(want, "fl-target", false);
         note.textContent = "";
         if (k < order.length) setAsk(order[k]);
         else { ask.textContent = !mistakes ? "All found, no slips. You know your flute." : mistakes === 1 ? "All found, with one slip. You know your flute." : "All found, with " + mistakes + " slips. You know your flute."; api.data[s.id] = { mistakes }; api.save(); api.ready(); }
       } else {
         mistakes++; ding(false);
-        note.replaceChildren(h("span", null, "You tapped:"), " ", h("b", null, partName(id)), ". ", h("span", null, "Holes are numbered from the blowing-hole end."));
+        if (mistakes >= 2) fl.mark(want, "fl-target");
+        note.replaceChildren(h("span", null, "You tapped:"), " ", h("b", null, partName(id)), ". ", h("span", null, mistakes >= 2 ? "Hint: look for the highlighted part." : "Holes are named from the blowing-hole end. Try again."));
       }
     } });
     setAsk(order[0]);
@@ -271,11 +273,13 @@ export const STEP_KINDS = {
   // Close and open the holes and hear the note. { goal: semitones, goalText }
   holes: { make(s, api) {
     let voice = null;
-    const seen = new Set();
+    const saved = api.data[s.id] || {};
+    const seen = new Set(saved.seen || []);
+    let heardGoal = !!saved.heardGoal, heardChange = !!saved.heardChange;
     const name = h("b", { class: "lesson-note" }, "-");
     const sub = h("span", { class: "small muted" });
     const found = h("div", { class: "lesson-found", "aria-label": "Notes you found" });
-    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, s.start || "Tap holes to close them, then press Blow.");
+    const msg = h("p", { class: "lesson-q", "aria-live": "polite" }, heardGoal && !heardChange ? "Now open one finger hole, blow again, and notice how the sound changes." : heardChange ? "Return to Sa and listen for the difference." : s.start || "Tap holes to close them, then press Blow.");
     const fl = fluteSvg({ side: api.data.side || (typeof s.side === "function" ? s.side() : s.side) || "right", numbers: true, holes: true, onTap: () => update() });
     if (s.startPattern) fl.setPattern(s.startPattern);
     const blow = h("button", { type: "button", class: "btn primary big lesson-blow" }, "Blow");
@@ -293,8 +297,21 @@ export const STEP_KINDS = {
       voice = makeVoice(hzOf(semi), t);
       voice.stop(t + 1.4);
       if (!seen.has(semi)) { seen.add(semi); found.append(h("span", { class: "chip" }, codeOf(semi))); }
-      if (semi === s.goal) { msg.textContent = s.goalText; api.ready(); ding(true); }
-      else msg.textContent = seen.size > 1 ? "More holes closed, longer air column, lower note. Keep exploring, or find " + codeOf(s.goal) + "." : "Now close or open a hole and blow again: higher or lower?";
+      if (s.compare && semi === s.goal) {
+        heardGoal = true;
+        if (heardChange) {
+          msg.textContent = typeof s.goalText === "function" ? s.goalText() : s.goalText;
+          api.ready(); ding(true);
+        } else {
+          msg.textContent = "That is Sa, your home note. Open one finger hole, blow again, and listen: did the note rise or fall? Then close it and return to Sa.";
+        }
+      } else if (s.compare && heardGoal) {
+        heardChange = true;
+        msg.textContent = "You changed the air column. Listen to the pitch, then close the top three holes again to compare with Sa.";
+      } else if (semi === s.goal) {
+        msg.textContent = typeof s.goalText === "function" ? s.goalText() : s.goalText; api.ready(); ding(true);
+      } else msg.textContent = "More holes closed make the air column longer and the note lower. Open a hole and listen: higher or lower?";
+      if (s.compare) { api.data[s.id] = { seen: [...seen], heardGoal, heardChange }; api.save(); }
     }
     function stopVoice() { if (voice) { try { voice.stop(ac().currentTime + 0.05); } catch (e) { /* ended */ } voice = null; } }
     blow.addEventListener("click", play);

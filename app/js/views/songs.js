@@ -67,25 +67,34 @@ function lastSong(songs, plays) {
 }
 
 async function list(main) {
-  const page = h("div", { class: "page" }, h("h1", { class: "sr-only" }, "Songs"));
+  const page = h("div", { class: "page musicpage" });
   main.append(page);
   let songs;
   try { songs = await allSongs(); }
   catch (e) { page.append(h("p", null, "Could not load the melodies: " + e.message)); return; }
   const learned = store(LEARNED, {});
+  page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Music"), h("h1", null, "Songs, ragas and your own tunes"),
+    h("p", { class: "muted" }, "Play along, explore ragas, make melodies and listen to real bansuri.")));
   // Carry on: the piece you were learning, first (repertoire is learned over many sessions).
   const last = lastSong(songs, getState().live.plays || []);
   if (last) page.append(h("section", { class: "card carryon" }, h("span", { class: "eyebrow" }, "Carry on"), h("h2", null, last.name),
     learned[last.id] ? h("p", { class: "small" }, icon("check"), " I can play it") : null,
     h("a", { class: "btn primary big", href: "#/music/song/" + last.id + "#play" }, "Play along")));
-  // What there is in Music, counted.
-  const counts = h("div", { class: "hublist" });
-  const crow = (href, title, aside) => h("a", { class: "hubrow", href }, h("b", null, title), aside ? h("span", { class: "small muted" }, aside) : null, h("span", { class: "chev", "aria-hidden": "true" }, ">"));
+  // Navigation cards for Music sub-views
   const ready = songs.filter(s => s.ready && !s.mine).length, tunes = store("bansuri.compose.saved", []).length;
-  const ragaRow = crow("#/music/ragas", "Ragas", null);
-  counts.append(crow("#/music/songs#songlist", "Songs", "{n} ready now".replace("{n}", ready)), ragaRow, crow("#/music/mine", "Your own tunes", "{n} saved".replace("{n}", tunes)), crow("#/music/listen", "Listen and watch", null));
-  page.append(h("section", { class: "card hubgroup" }, counts));
-  import("./ragas.js").then(m => m.ragaList()).then(rs => { ragaRow.children[0].after(h("span", { class: "small muted" }, "{n} open".replace("{n}", rs.filter(r => r.open).length))); }).catch(() => {});
+  const navCards = h("div", { class: "musiccards" });
+  const ragaCard = h("a", { class: "teachercard teachercard-ragas", href: "#/music/ragas" },
+    h("span", { class: "teachercard-icon" }, icon("note")),
+    h("b", null, "Ragas"), h("span", { class: "small muted" }, "Explore ragas and their phrases"));
+  navCards.append(ragaCard);
+  navCards.append(h("a", { class: "teachercard teachercard-mine", href: "#/music/mine" },
+    h("span", { class: "teachercard-icon" }, icon("star")),
+    h("b", null, "Your own tunes"), h("span", { class: "small muted" }, tunes ? tunes + " saved" : "Make a melody or transcribe")));
+  navCards.append(h("a", { class: "teachercard teachercard-listen", href: "#/music/listen" },
+    h("span", { class: "teachercard-icon" }, icon("listen")),
+    h("b", null, "Listen and watch"), h("span", { class: "small muted" }, "Hear a real bansuri and watch the fingers")));
+  page.append(navCards);
+  import("./ragas.js").then(m => m.ragaList()).then(rs => { const c = ragaCard.querySelector(".muted"); if (c) c.textContent = rs.filter(r => r.open).length + " open"; }).catch(() => {});
 
   // The songs, one list, with All / Ready now / Mine.
   let filter = store(FILTER, store("bansuri.songs.onlyReady", true) ? "ready" : "all");

@@ -230,7 +230,7 @@ m m m m | m G G GG | G R R G | R - P - ||
 
 Verified against: "Good Morning and Birthday Song", The Everyday Song Book (1927), ABC transcription by John Chambers, https://trillian.mit.edu/~jc/music/book/EverydaySongBook/016_Good_Morning_and_Birthday_Song.abc; and Wikipedia, "Happy Birthday to You", score, https://en.wikipedia.org/wiki/Happy_Birthday_to_You.
 
-**Full melody, notes only** (Sa = C, starting low on mandra Pa):
+**Full melody, notes only** (C-reference example, starting low on mandra Pa):
 
 ```
 .P .P .D .P S .N
@@ -368,7 +368,7 @@ More bhajans, patriotic songs and film songs, staged by difficulty and checked a
 flute's range: [09-SONG-SUGGESTIONS.md](../09-SONG-SUGGESTIONS.md).
 
 **Film songs:** choose your own. Before you start, do the **range check** in L18: note the
-lowest and highest notes. With your C flute (Sa = C) the comfortable range is about `.P` (G4) to
+lowest and highest notes. On the C5 reference profile (Sa = C) the comfortable range is about `.P` (G4) to
 `G'` (E6). If a song does not fit at its original pitch, L26 shows how to move Sa or choose
 another flute.
 

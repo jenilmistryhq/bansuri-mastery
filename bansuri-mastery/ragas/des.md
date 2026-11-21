@@ -24,7 +24,7 @@ Romantic, associated with the monsoon. Widely used in patriotic, devotional and 
 - Ascending Ni is shuddha (`N S'`); descending Ni is komal (`S' n D`).
 - The final cadence often uses mandra Ni: `R G .N S`.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 Same fingerings as [Khamaj](khamaj.md): `m` = `HOO OOO`, `n` = `XXX XHO` (register 2),
 `.N` = `XXX XOO` (register 1). The leap `P N S'` and the turn `S' n D` need clean,
@@ -93,7 +93,7 @@ R - m P | N - S' - | R' n D P | m G R - |
 R m P N | S' n D - | P D m G | R G .N S ||
 ```
 
-It is built from the pakad `R, m P N, S' R' n D P, m G R` and ends with the cadence `R G .N S`. Re is the note to lean on. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+It is built from the pakad `R, m P N, S' R' n D P, m G R` and ends with the cadence `R G .N S`. Re is the note to lean on. Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 **Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
 

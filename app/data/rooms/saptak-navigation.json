@@ -1,0 +1,270 @@
+{
+  "id": "saptak-navigation",
+  "title": "Saptak Navigation - Moving Between Octaves",
+  "tasks": [
+    {
+      "id": "three-saptaks",
+      "title": "The Three Saptaks",
+      "content": [
+        "Indian music organizes pitch into three registers called saptaks (literally 'group of seven'). Each saptak spans one octave - seven notes from Sa to Ni before the next Sa begins.",
+        "The mandra saptak (lower octave) lies below your home Sa. On a standard bansuri, only a few notes are available here - typically lower Ni, lower Dha, and sometimes lower Pa. These notes require reduced breath pressure and partial hole coverings.",
+        "The madhya saptak (middle octave) is your home range - Sa to upper Sa. This is where most music happens. All seven swaras plus their komal and tivra variants are available and comfortable here.",
+        "The taar saptak (upper octave) lies above your home range. Notes here require increased breath pressure (overblowing). On most bansuris, you can reach taar Sa, Re, Ga, and sometimes Ma before the pitch becomes difficult to control.",
+        "A complete bansuri performance uses all three saptaks. The alap often begins in the mandra saptak, develops through the madhya saptak, and climaxes in the taar saptak."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does 'saptak' literally mean?",
+          "options": [
+            { "text": "Octave or scale", "why": "While saptak corresponds to an octave, its literal meaning is more specific." },
+            { "text": "Group of seven", "right": true, "yes": "Correct. Saptak means 'group of seven' - referring to the seven swaras (Sa Re Ga Ma Pa Dha Ni) in each register." },
+            { "text": "Musical key", "why": "A key is determined by the Sa pitch. Saptak refers to the register or octave range." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which saptak is your primary playing range on the bansuri?",
+          "options": [
+            { "text": "Mandra saptak (lower)", "why": "The lower octave has limited notes on the bansuri. Your primary range is higher." },
+            { "text": "Madhya saptak (middle)", "right": true, "yes": "Correct. The madhya saptak is your home range where all swaras and their variants are comfortable and accessible." },
+            { "text": "Taar saptak (upper)", "why": "The upper octave requires overblowing and has limited range. Your primary home is the middle." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mandra-saptak",
+      "title": "The Mandra Saptak - Lower Register",
+      "content": [
+        "The mandra saptak (lower octave) on the bansuri is limited compared to the madhya saptak. With all holes closed and reduced breath pressure, you can reach lower Ni (semitone -1), lower Dha (semitone -3), and on some larger bansuris, lower Pa (semitone -5).",
+        "To play in the mandra saptak, you need to reduce breath pressure significantly while keeping all holes fully sealed. The air stream should be wider, more relaxed, and angled slightly differently than for the madhya saptak. It takes practice to produce a clear, steady tone at these low pressures.",
+        "Lower Ni (just below Sa) is the most commonly used mandra note. It appears in many ragas - notably in Yaman, where the characteristic phrase 'N R G' begins from lower Ni. Lower Dha appears in some ragas like Bhairavi and Bhimpalasi.",
+        "The mandra saptak has a deep, resonant quality that adds gravity and depth to your playing. Use it for opening alap phrases and for creating contrast with the brighter madhya and taar saptaks."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": -1,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold lower Ni for 5 seconds - use reduced breath pressure with all holes sealed",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [-1, 2, 4, 6, 7],
+          "prompt": "Play this Yaman phrase starting from lower Ni: N R G M P",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What technique produces lower octave notes on the bansuri?",
+          "options": [
+            { "text": "Increased breath pressure (overblowing)", "why": "Overblowing produces higher notes, not lower ones. The mandra saptak needs the opposite." },
+            { "text": "Reduced breath pressure with all holes sealed", "right": true, "yes": "Correct. Lower notes require less breath pressure and careful air angle, with all holes fully covered." },
+            { "text": "Faster tonguing", "why": "Tonguing affects articulation, not pitch register. Lower notes need reduced air pressure." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "madhya-saptak",
+      "title": "The Madhya Saptak - Your Home",
+      "content": [
+        "The madhya saptak (middle octave) is where you spend most of your playing time. It runs from Sa (semitone 0) to just below upper Sa (semitone 11, Ni). All seven shuddha swaras, all four komal swaras, and tivra Ma are available here with standard fingerings.",
+        "In this register, your breath pressure is at its natural, comfortable level. Each note responds predictably to finger movement and breath adjustments. This is where you have the most control over tone, dynamics, and ornamentation.",
+        "Think of the madhya saptak as home base. No matter how far you venture into the lower or upper registers, you always return here. Most alap development happens in the madhya saptak. Most bandish compositions sit primarily in this range.",
+        "Mastering the madhya saptak means having instant, accurate access to every note - shuddha and komal alike - with clean transitions, good tone, and reliable pitch. If your madhya saptak is solid, the other registers will follow."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11],
+          "prompt": "Play the complete madhya saptak ascending: Sa R G m P D N",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the complete madhya saptak descending: N D P m G R Sa",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "rounds": 6,
+          "prompt": "Identify all seven shuddha swaras in the madhya saptak",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "taar-saptak",
+      "title": "The Taar Saptak - Upper Register",
+      "content": [
+        "The taar saptak (upper octave) is reached by overblowing - increasing breath pressure so the air column in the bansuri vibrates at a higher harmonic. Upper Sa (semitone 12) is the first taar saptak note, produced by overblowing with the same fingering as middle Pa.",
+        "Beyond upper Sa, you can reach taar Re (semitone 14), taar Ga (semitone 16), and sometimes taar Ma (semitone 17). Each higher note requires more breath pressure and a narrower, more focused air stream. The tone tends to become brighter and sometimes thinner in this register.",
+        "The taar saptak is essential for climactic passages. Alap exploration in a raga typically reaches its peak in the taar saptak before descending. Jhala sections use upper Sa as a reference note. Fast taan passages often flash through the taar register for brilliance.",
+        "Breath control is the key challenge. The taar saptak consumes more air per note than the madhya saptak. Plan your breaths carefully when playing in the upper register."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 12,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold taar Sa (upper Sa) for 5 seconds - use controlled overblowing",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play a full descending phrase from taar Sa: Sa' N D P m G R Sa",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What technique produces taar saptak notes on the bansuri?",
+          "options": [
+            { "text": "Covering additional holes", "why": "The bansuri has a fixed number of holes. The taar saptak is reached through breath control, not hole changes." },
+            { "text": "Overblowing - increasing breath pressure to excite higher harmonics", "right": true, "yes": "Correct. Overblowing makes the air column vibrate at a higher harmonic, producing notes an octave higher with the same fingering." },
+            { "text": "Using a smaller bansuri", "why": "While smaller bansuris produce higher pitches, the taar saptak on any bansuri is reached through overblowing." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "smooth-transitions",
+      "title": "Smooth Saptak Transitions",
+      "content": [
+        "Moving between saptaks should sound seamless. A sudden jump in volume, tone quality, or pitch accuracy at the register boundary reveals the seam. The goal is to make transitions so smooth that the listener does not notice the register change.",
+        "The critical boundary is between madhya Ni (semitone 11) and taar Sa (semitone 12). This is where your breath pressure must increase for overblowing. Practice the transition: play Ni at comfortable pressure, then smoothly increase pressure as you finger taar Sa. The tone should remain even - no crack, no gap, no sudden volume change.",
+        "Similarly, the transition from madhya Sa (semitone 0) down to lower Ni (semitone -1) requires a smooth decrease in pressure. Practice descending from Sa to lower Ni without the note dropping out or becoming airy.",
+        "A useful exercise: play a slow ascending scale from lower Ni through the entire madhya saptak to taar Sa, maintaining consistent tone quality and volume throughout. Then descend back. The challenge is making the register boundaries invisible."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play from lower Ni through the full madhya saptak to taar Sa: N Sa R G m P D N Sa'",
+          "points": 25
+        },
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 7, 5, 4, 2, 0, -1],
+          "prompt": "Now descend from taar Sa back to lower Ni: Sa' N D P m G R Sa N",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the key to smooth saptak transitions?",
+          "options": [
+            { "text": "Playing faster through the boundary", "why": "Speed does not hide a poor transition. The key is breath control." },
+            { "text": "Gradual breath pressure changes that maintain even tone quality and volume", "right": true, "yes": "Correct. Smooth pressure transitions prevent cracks, gaps, and volume jumps at register boundaries." },
+            { "text": "Pausing between registers", "why": "Pausing highlights the boundary rather than hiding it. The goal is a seamless connection." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cross-saptak-phrases",
+      "title": "Cross-Saptak Phrases",
+      "content": [
+        "Many raga phrases span two or even three saptaks. Learning to play these phrases smoothly is essential for expressive performance.",
+        "In Yaman, the classic opening phrase spans from mandra to madhya: lower Ni - Re - Ga - Ma(tivra) - Pa. The phrase begins in the lower register and rises into the middle, creating a beautiful sense of ascent and opening.",
+        "In Bhairavi, phrases often descend from the taar saptak through the entire madhya range: upper Sa - Ni - Dha - Pa - Ma - Ga - Re - Sa - lower Ni. This sweeping descent creates the raga's characteristic emotional arc.",
+        "When practicing cross-saptak phrases, focus on maintaining consistent tone quality. The lower notes should not sound muffled, and the upper notes should not sound shrill. Aim for a uniform, singing quality throughout the range."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 2, 4, 6, 7, 9, 11, 12],
+          "prompt": "Play this Yaman phrase spanning mandra to taar: N R G M P D N Sa'",
+          "points": 25
+        },
+        {
+          "type": "play",
+          "phrase": [12, 10, 9, 7, 5, 3, 1, 0, -1],
+          "prompt": "Play this Bhairavi descent across saptaks: Sa' n D P m g r Sa N",
+          "points": 25
+        },
+        {
+          "type": "hold",
+          "target": -3,
+          "seconds": 4,
+          "cents": 20,
+          "prompt": "Hold lower Dha for 4 seconds - extend your mandra saptak range",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "breath-across-octaves",
+      "title": "Breath Pressure Across Registers",
+      "content": [
+        "Each saptak demands different breath pressure. Learning to adjust pressure smoothly is the technical foundation of saptak navigation.",
+        "Mandra saptak: low pressure, wide air stream, relaxed embouchure. The air moves slowly through the flute. Too much pressure and the note jumps to the madhya saptak.",
+        "Madhya saptak: moderate pressure, balanced air stream. This is your natural, comfortable pressure level. Most notes respond well to slight pressure variations for dynamics without changing register.",
+        "Taar saptak: high pressure, narrow focused air stream, slightly tighter embouchure. The air moves fast and focused. The challenge is maintaining tone quality under high pressure without the sound becoming harsh or pinched.",
+        "A practical exercise: play a single note (try Pa) and slowly increase breath pressure. Listen as the note transitions from madhya Pa to taar Sa (same fingering). Find the exact pressure where the register breaks. Then practice controlling that boundary - sitting just below it, just above it, and crossing it smoothly."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold madhya Pa for 6 seconds at moderate breath pressure",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 12,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Now hold taar Sa for 6 seconds - increase pressure while keeping tone quality even",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What happens if you use too much breath pressure in the mandra saptak?",
+          "options": [
+            { "text": "The note becomes louder but stays in the lower register", "why": "Excessive pressure in the mandra saptak causes a register jump, not just volume increase." },
+            { "text": "The note jumps up to the madhya saptak", "right": true, "yes": "Correct. Too much pressure causes the air column to vibrate at a higher harmonic, jumping the note up an octave." },
+            { "text": "The note goes flat", "why": "Excessive pressure pushes the note sharp and can cause a register jump, not flatness." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "saptak-exercises",
+      "title": "Saptak Navigation Exercises",
+      "content": [
+        "Here are three exercises that build saptak navigation fluency. Practice each one daily.",
+        "Exercise 1 - Full range scale: Play from your lowest available note (lower Ni or lower Dha) through the entire madhya saptak to taar Sa (or taar Re if you can reach it). Then descend all the way back. Focus on smooth transitions and consistent tone.",
+        "Exercise 2 - Octave leaps: Play Sa in the madhya saptak, then immediately play taar Sa. Then back to madhya Sa. Repeat several times. The jump should be clean - no sliding, no intermediate notes. Then try with other notes: Pa to taar Pa (same as taar Sa fingering), Ga to taar Ga.",
+        "Exercise 3 - Register contrast: Play a phrase entirely in the mandra/low madhya range, then immediately repeat the same phrase shape an octave higher. This trains your ear to hear phrases in different registers and builds muscle memory for each pressure level."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 12, 0, 12, 0],
+          "prompt": "Octave leap exercise: Sa - Sa' - Sa - Sa' - Sa (clean jumps, no sliding)",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [-1, 0, 2, 4, 7, 9, 11, 12],
+          "prompt": "Full-range ascending phrase: N Sa R G P D N Sa' (from mandra to taar)",
+          "points": 25
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice full-range scales daily, focusing on smooth transitions at register boundaries",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

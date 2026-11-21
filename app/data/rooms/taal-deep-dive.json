@@ -1,0 +1,465 @@
+{
+  "id": "taal-deep-dive",
+  "title": "Taal Deep Dive",
+  "tasks": [
+    {
+      "id": "beyond-teentaal",
+      "title": "Beyond Teentaal",
+      "content": ["Teentaal, with its 16 beats in four equal groups, is the most common taal in Hindustani classical music. But it is only one of many rhythmic frameworks. Each taal creates a completely different rhythmic landscape, and learning several of them opens up a world of compositions, moods, and grooves that Teentaal alone cannot reach.", "The taals every serious student should know are Jhaptaal (10 beats), Rupak (7 beats), Ektaal (12 beats), Dadra (6 beats), and Keherwa (8 beats). Each one has a unique internal structure - the way its beats are grouped into vibhags - and that grouping is what gives each taal its personality. Teentaal's even 4+4+4+4 feels square and stable. Jhaptaal's 2+3+2+3 swings. Rupak's 3+2+2 floats.", "By the end of this room you will be able to recognise, count, and clap along with all of these taals - and understand why a composer would choose one over another."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many beats (matras) does Teentaal have?",
+          "options": [
+            {
+              "text": "12",
+              "why": "That is Ektaal. Teentaal has 16 beats."
+            },
+            {
+              "text": "16",
+              "right": true,
+              "yes": "Correct. Teentaal has 16 matras divided into four groups of four."
+            },
+            {
+              "text": "10",
+              "why": "That is Jhaptaal. Teentaal has 16 beats."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Do all taals in Hindustani music have 16 beats?",
+          "options": [
+            {
+              "text": "Yes - 16 is the standard for all taals",
+              "why": "Taals range from 6 beats (Dadra) to 16 (Teentaal) and beyond. Each has its own beat count."
+            },
+            {
+              "text": "No - taals range from 6 to 16 beats and beyond, each with a unique structure",
+              "right": true,
+              "yes": "Right. The variety of beat counts and groupings is what makes Indian rhythm so rich."
+            },
+            {
+              "text": "No - all taals have fewer than 16 beats",
+              "why": "Some taals have fewer, but Teentaal itself has 16. There are even taals with more."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jhaptaal",
+      "title": "Jhaptaal - 10 Beats",
+      "content": ["Jhaptaal has 10 matras divided into four vibhags with an asymmetric grouping: 2 + 3 + 2 + 3. This unevenness gives Jhaptaal a swinging, lilting quality that is very different from Teentaal's square four-by-four.", "The clapping pattern is: tali (clap) on beats 1 and 3, khali (wave) on beat 6, and tali again on beat 8. Count it as: 1-2 (clap), 3-4-5 (clap), 6-7 (wave), 8-9-10 (clap).", "The theka (basic drum pattern) is:", "Dhi Na | Dhi Dhi Na | Ti Na | Dhi Dhi Na", "Notice how the alternating groups of 2 and 3 create a push-and-pull feeling. The shorter 2-beat groups create urgency, while the 3-beat groups give space. This interplay is what makes Jhaptaal so musical.", "Jhaptaal is widely used in classical vocal and instrumental compositions, especially in the madhya laya (medium tempo) range. Many famous bandishes are set in Jhaptaal."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many beats (matras) does Jhaptaal have?",
+          "answer": "10",
+          "accept": ["10", "ten"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What makes Jhaptaal feel different from Teentaal?",
+          "options": [
+            {
+              "text": "It is always played faster",
+              "why": "Tempo is independent of taal structure. Jhaptaal can be slow or fast."
+            },
+            {
+              "text": "Its asymmetric vibhag grouping (2+3+2+3) creates a swinging feel",
+              "right": true,
+              "yes": "Correct. The alternating groups of 2 and 3 give Jhaptaal its characteristic swing, unlike Teentaal's even 4+4+4+4."
+            },
+            {
+              "text": "It uses different notes",
+              "why": "Taals are rhythmic, not melodic. The difference is in beat grouping, not notes."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What are the first two bols (syllables) of Jhaptaal's theka?",
+          "answer": "Dhi Na",
+          "accept": ["Dhi Na", "dhi na", "DHI NA"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "rupak-taal",
+      "title": "Rupak - 7 Beats, Starting on Khali",
+      "content": ["Rupak has 7 matras in three vibhags grouped as 3 + 2 + 2. But its most striking feature is not the beat count - it is that sam (beat 1) falls on khali, the wave.", "In every other common taal, sam is the strongest beat - the moment of emphasis, the landing point. In Rupak, sam is the lightest moment. Beat 1 is a wave, not a clap. The first tali (clap) does not arrive until beat 4.", "This creates a unique feeling of suspension and delicacy. Where Teentaal's sam lands with authority, Rupak's sam floats. It is as if the music begins in mid-air.", "The theka is:", "Tin Tin Na | Dhi Na | Dhi Na", "Notice the opening: Tin Tin Na - all light, treble strokes. The heavier Dhi strokes only appear in the second and third vibhags. The whole structure tilts away from weight on beat 1.", "Rupak is used in many classical compositions and is especially suited to ragas with a gentle, introspective character. Its 7-beat cycle also creates interesting mathematical challenges for tihai calculations."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is unique about Rupak's sam (beat 1)?",
+          "options": [
+            {
+              "text": "It is the loudest beat",
+              "why": "The opposite - Rupak's sam is on khali, the lightest beat."
+            },
+            {
+              "text": "Sam falls on khali (wave) instead of tali (clap) - making it the lightest beat",
+              "right": true,
+              "yes": "Correct. Rupak is the rare taal where beat 1 is a wave, not a clap. This gives it a floating, delicate character."
+            },
+            {
+              "text": "Sam is skipped entirely",
+              "why": "Sam is never skipped - it is always beat 1. In Rupak it is simply marked with a wave instead of a clap."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "How many beats does Rupak taal have?",
+          "answer": "7",
+          "accept": ["7", "seven"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "On which beat is the first tali (clap) in Rupak?",
+          "options": [
+            {
+              "text": "Beat 1",
+              "why": "Beat 1 in Rupak is khali (wave). The first clap comes later."
+            },
+            {
+              "text": "Beat 4",
+              "right": true,
+              "yes": "Right. The first clap in Rupak is on beat 4, at the start of the second vibhag. Beat 1 is a wave."
+            },
+            {
+              "text": "Beat 3",
+              "why": "Beat 3 is the last beat of the first vibhag. The first clap is on beat 4."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ektaal",
+      "title": "Ektaal - 12 Beats for Slow Compositions",
+      "content": ["Ektaal has 12 matras divided into six groups of 2. With four tali (clap) positions on beats 1, 5, 9, and 11, and two khali (wave) positions on beats 3 and 7, it has the most complex clapping pattern of the common taals.", "The theka is:", "Dhin Dhin | DhaGe TiRaKiTa | Tu Na | Ka Ta | DhaGe TiRaKiTa | Dhi Na", "Ektaal is the taal of choice for vilambit (slow tempo) compositions in classical music. At a slow tempo, each of the 12 beats can last 2 to 5 seconds, stretching one full cycle to 30 seconds or even a minute. This enormous space between sam points gives the soloist room for extended improvisation.", "The name 'Ektaal' means 'one taal' - reflecting its importance as a foundational rhythmic framework. Many of the greatest classical compositions are set in vilambit Ektaal.", "At the vilambit tempo, counting Ektaal requires deep concentration. The tabla player's theka becomes a slow, meditative pattern that the soloist navigates like a river - knowing exactly where sam lies even when it feels very far away."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many beats does Ektaal have?",
+          "answer": "12",
+          "accept": ["12", "twelve"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What tempo is Ektaal primarily used for in classical music?",
+          "options": [
+            {
+              "text": "Drut (fast) - for exciting climaxes",
+              "why": "While Ektaal can be played at any tempo, its primary use is for vilambit (slow) compositions."
+            },
+            {
+              "text": "Vilambit (slow) - for deep, expansive compositions with space for improvisation",
+              "right": true,
+              "yes": "Correct. Vilambit Ektaal is the backbone of slow classical composition, giving enormous space between sam points."
+            },
+            {
+              "text": "It is only used at medium tempo",
+              "why": "Ektaal shines at vilambit tempo, where its 12 beats create a vast rhythmic canvas."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How many tali (clap) positions does Ektaal have?",
+          "options": [
+            {
+              "text": "2",
+              "why": "That is Rupak. Ektaal has more clap positions."
+            },
+            {
+              "text": "3",
+              "why": "That is Teentaal. Ektaal has four tali positions."
+            },
+            {
+              "text": "4 - on beats 1, 5, 9, and 11",
+              "right": true,
+              "yes": "Right. Ektaal has four claps (on beats 1, 5, 9, 11) and two waves (on beats 3 and 7)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dadra-taal",
+      "title": "Dadra - The Simple Six",
+      "content": ["Dadra is the simplest of the common taals: 6 matras in two groups of 3. Tali on beat 1, khali on beat 4.", "The theka is:", "Dha Dhi Na | Dha Tin Na", "Its 3+3 grouping creates a gentle, rocking motion - similar to a waltz in Western music. This natural, flowing feel makes Dadra the taal of choice for light classical genres like thumri and dadra (the genre shares the taal's name), as well as bhajans, folk songs, and many Bollywood compositions.", "Despite its simplicity, Dadra is musically rich. The contrast between the first group (Dha Dhi Na - full, resonant strokes) and the second group (Dha Tin Na - the lighter Tin replacing Dhi) creates a satisfying breathing pattern within each cycle.", "Because the cycle is so short (just 6 beats), sam arrives frequently. This makes Dadra feel grounded and accessible - you are never far from home."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many beats does Dadra taal have?",
+          "answer": "6",
+          "accept": ["6", "six"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What type of music commonly uses Dadra taal?",
+          "options": [
+            {
+              "text": "Only fast-paced instrumental solos",
+              "why": "Dadra is used for gentler, lighter forms of music."
+            },
+            {
+              "text": "Light classical (thumri), bhajans, folk music, and Bollywood songs",
+              "right": true,
+              "yes": "Correct. Dadra's gentle 3+3 grouping suits lighter, more melodic forms of music."
+            },
+            {
+              "text": "Only dhrupad - the most ancient classical form",
+              "why": "Dhrupad typically uses more complex taals. Dadra belongs to the lighter classical world."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "keherwa-taal",
+      "title": "Keherwa - 8 Beats for Light Music",
+      "content": ["Keherwa has 8 matras in two groups of 4. Tali on beat 1, khali on beat 5. Its structure is the simplest even-beat taal after Dadra.", "The theka is:", "Dha Ge Na Ti | Na Ka Dhi Na", "Keherwa is everywhere in Indian music. It is the default rhythm for bhajans (devotional songs), ghazals (Urdu poetry set to music), qawwali, and a huge number of film songs. If you have ever clapped along to a Bollywood song, chances are you were clapping in Keherwa.", "Its 4+4 structure shares the same even feel as Teentaal's vibhags, but with only 8 beats the cycle is half as long. This makes it feel more direct and propulsive - less room for complex rhythmic development, but more energy and forward motion.", "Keherwa is also the taal that many students encounter first when learning to play along with recorded music, because its cycle is short enough to track easily and it appears in so many familiar songs."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many beats does Keherwa taal have?",
+          "answer": "8",
+          "accept": ["8", "eight"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How is Keherwa's structure similar to Teentaal?",
+          "options": [
+            {
+              "text": "Both have the same number of beats",
+              "why": "Teentaal has 16 beats, Keherwa has 8. They differ in length."
+            },
+            {
+              "text": "Both use groups of 4 beats, giving an even, balanced feel",
+              "right": true,
+              "yes": "Correct. Both taals group their beats in fours, which creates a similar sense of stability and balance."
+            },
+            {
+              "text": "Both start on khali",
+              "why": "Neither starts on khali. Both have tali on beat 1. Only Rupak starts on khali."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "understanding-bols",
+      "title": "Understanding Bols",
+      "content": ["Every taal's theka is written in bols - syllables that represent specific strokes on the tabla. The tabla has two drums: the smaller dayan (treble, right hand) and the larger bayan (bass, left hand). Each bol tells the tabla player exactly which drum to strike and how.", "The main bols you will encounter:", "**Dha** - both drums struck together, open sound. The fullest, most resonant stroke. It anchors sam in most taals.", "**Dhin** - both drums together with a ringing, sustained quality. Created by pressing the ring finger on the dayan while striking.", "**Na** (or **Ta**) - dayan (treble) alone, open. A clean, bright stroke without bass.", "**Tin** (or **Ti**) - dayan alone, lighter and thinner than Na. Used in khali sections to create contrast.", "**Ge** (or **Ke**) - bayan (bass) alone. A deep, low sound.", "These bols are onomatopoeia - they sound like the strokes they describe. When you say 'Dha' aloud, the combination of the D and the aspirated 'ha' mimics the sound of both drums struck together. When you say 'Tin', the thin, high 'i' sound mirrors the light treble stroke. This is why tabla students learn by reciting bols before ever touching the drums."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does the bol 'Dha' represent on the tabla?",
+          "options": [
+            {
+              "text": "Only the bass drum (bayan)",
+              "why": "Bayan alone is Ge or Ke. Dha uses both drums."
+            },
+            {
+              "text": "Both drums (bayan and dayan) struck together, producing a full open sound",
+              "right": true,
+              "yes": "Correct. Dha is the fullest tabla sound - both drums resonating together."
+            },
+            {
+              "text": "Only the treble drum (dayan), lightly",
+              "why": "A light treble stroke would be Tin or Ti. Dha involves both drums."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which bol represents a light treble stroke on the dayan?",
+          "answer": "Tin",
+          "accept": ["Tin", "tin", "Ti", "ti"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Why are tabla bols considered onomatopoeia?",
+          "options": [
+            {
+              "text": "Because they were invented by a Western musicologist",
+              "why": "Bols are indigenous to Indian music. They are onomatopoeia because of how they sound."
+            },
+            {
+              "text": "Because the syllables sound like the drum strokes they describe",
+              "right": true,
+              "yes": "Right. Saying 'Dha' mimics the sound of both drums. Saying 'Tin' mimics a light treble tap. The words ARE the sounds."
+            },
+            {
+              "text": "Because they are always sung at the same pitch",
+              "why": "Bols can be recited at any pitch. They are onomatopoeia because they imitate the drum sounds."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "taal-personalities",
+      "title": "The Feel of Each Taal",
+      "content": ["Each taal has a distinct personality that comes from its vibhag grouping - the way its beats are divided into sections. This is not an abstract idea; you can feel it in your body when you clap along.", "**Teentaal** (16 beats, 4+4+4+4): Square, stable, majestic. The even grouping creates a sense of order and balance. It suits everything from meditative alap to virtuosic drut compositions.", "**Jhaptaal** (10 beats, 2+3+2+3): Swinging and lively. The alternating short and long groups create a sense of momentum and surprise. It suits compositions with energy and playfulness.", "**Rupak** (7 beats, 3+2+2): Light, delicate, floating. The khali on sam removes the heaviness from beat 1, and the odd number of beats (7) prevents the cycle from feeling predictable. It suits ragas with an introspective character.", "**Ektaal** (12 beats, 6 x 2): Expansive and meditative at slow tempo. The steady march of 2-beat groups creates a hypnotic pulse. At vilambit laya, it feels like a vast, slow ocean.", "**Dadra** (6 beats, 3+3): Gentle and rocking, like a lullaby or a waltz. Its short cycle and simple structure make it accessible and warm. It suits light classical and devotional music.", "**Keherwa** (8 beats, 4+4): Direct and propulsive. Similar to Teentaal's feel but more compact. It drives forward without the grandeur of 16 beats."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which taal would best suit a slow, meditative vilambit composition?",
+          "options": [
+            {
+              "text": "Dadra - its short cycle keeps things grounded",
+              "why": "Dadra is too short for the expansive improvisation that vilambit demands."
+            },
+            {
+              "text": "Ektaal - its 12 beats at slow tempo create enormous space for exploration",
+              "right": true,
+              "yes": "Correct. Vilambit Ektaal is the classic framework for deep, meditative classical compositions."
+            },
+            {
+              "text": "Keherwa - its 8-beat cycle is easy to follow",
+              "why": "Keherwa suits light music. The grandeur of vilambit requires Ektaal's longer cycle."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A taal described as 'swinging, lively, with an asymmetric push-and-pull feel' is most likely:",
+          "options": [
+            {
+              "text": "Teentaal - the most common taal",
+              "why": "Teentaal's even 4+4+4+4 is square and stable, not swinging."
+            },
+            {
+              "text": "Jhaptaal - its 2+3+2+3 grouping creates the swing",
+              "right": true,
+              "yes": "Right. Jhaptaal's alternating groups of 2 and 3 produce that distinctive swinging, asymmetric energy."
+            },
+            {
+              "text": "Dadra - the simplest taal",
+              "why": "Dadra's even 3+3 is gentle and rocking, not swinging and asymmetric."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clapping-challenge",
+      "title": "Clapping Challenge",
+      "content": ["The best way to internalise a taal is to clap it. The physical motion of clapping and waving connects your body to the rhythm in a way that counting alone cannot.", "Practice these clapping patterns:", "**Jhaptaal (10 beats):** Clap on 1, clap on 3, wave on 6, clap on 8. Count: 1-2 (clap), 3-4-5 (clap), 6-7 (wave), 8-9-10 (clap). Then repeat from 1.", "**Rupak (7 beats):** Wave on 1, clap on 4, clap on 6. Count: 1-2-3 (wave), 4-5 (clap), 6-7 (clap). Then repeat from 1. The wave on beat 1 will feel strange at first - your instinct is to clap on the downbeat.", "**Dadra (6 beats):** Clap on 1, wave on 4. Count: 1-2-3 (clap), 4-5-6 (wave). Then repeat.", "Start slowly. Say the beat numbers aloud while clapping. Once the pattern is automatic, try speaking the theka bols while clapping - this is how Indian music students train."],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I have practiced the Jhaptaal clapping pattern: clap-clap-wave-clap on beats 1, 3, 6, 8",
+          "points": 5
+        },
+        {
+          "type": "confirm",
+          "prompt": "I have practiced the Rupak clapping pattern: wave-clap-clap on beats 1, 4, 6",
+          "points": 5
+        },
+        {
+          "type": "choice",
+          "prompt": "In Rupak, why does the wave on beat 1 feel unusual?",
+          "options": [
+            {
+              "text": "Because beat 1 is normally silent",
+              "why": "Beat 1 is not silent in Rupak - the tabla still plays. It is marked with a wave instead of a clap."
+            },
+            {
+              "text": "Because our instinct is to emphasise beat 1, but Rupak deliberately removes that weight",
+              "right": true,
+              "yes": "Exactly. Every other taal puts a strong clap on beat 1. Rupak's wave on sam subverts that instinct, creating its distinctive lightness."
+            },
+            {
+              "text": "Because 7 is an odd number",
+              "why": "The odd beat count adds to the effect, but the real surprise is the khali on sam itself."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "taal-identification-quiz",
+      "title": "Taal Identification Quiz",
+      "content": ["Final challenge: can you identify each taal from its description? This tests everything you have learned in this room.", "Remember the key signatures of each taal:", "- Teentaal: 16 beats, 4+4+4+4, the standard", "- Jhaptaal: 10 beats, 2+3+2+3, the swinging one", "- Rupak: 7 beats, 3+2+2, starts on khali", "- Ektaal: 12 beats, 6 groups of 2, the vilambit one", "- Dadra: 6 beats, 3+3, the gentle one", "- Keherwa: 8 beats, 4+4, the light music one"],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "A taal with 12 beats in six groups of 2, used primarily for slow classical compositions:",
+          "options": [
+            {
+              "text": "Teentaal",
+              "why": "Teentaal has 16 beats in four groups of 4, not 12 in groups of 2."
+            },
+            {
+              "text": "Jhaptaal",
+              "why": "Jhaptaal has 10 beats in groups of 2+3+2+3."
+            },
+            {
+              "text": "Ektaal",
+              "right": true,
+              "yes": "Correct. 12 beats, 6 groups of 2, home of the vilambit bandish - that is Ektaal."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A taal with 6 beats in two groups of 3, used in light classical and devotional music:",
+          "options": [
+            {
+              "text": "Keherwa",
+              "why": "Keherwa has 8 beats in groups of 4+4."
+            },
+            {
+              "text": "Dadra",
+              "right": true,
+              "yes": "Right. 6 beats, 3+3, the gentle taal of thumri, bhajans, and folk music - Dadra."
+            },
+            {
+              "text": "Rupak",
+              "why": "Rupak has 7 beats in groups of 3+2+2."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A taal with 10 beats in groups of 2+3+2+3, known for its swinging, asymmetric character:",
+          "options": [
+            {
+              "text": "Teentaal",
+              "why": "Teentaal is symmetrical (4+4+4+4). The asymmetric 2+3+2+3 is Jhaptaal."
+            },
+            {
+              "text": "Jhaptaal",
+              "right": true,
+              "yes": "Correct. 10 beats, 2+3+2+3, with that distinctive swing - Jhaptaal."
+            },
+            {
+              "text": "Ektaal",
+              "why": "Ektaal has 12 beats in even groups of 2."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Name the taal with 7 beats that starts on khali (wave on beat 1):",
+          "answer": "Rupak",
+          "accept": ["Rupak", "rupak", "Roopak", "roopak", "Rupak taal"],
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

@@ -25,7 +25,7 @@ course. Tone is never "finished": professional flautists still do long tones dai
 
 ## Part 2: Long tones (unlocked by L07)
 
-**Method:** drone on C. Breathe low. Start the note softly and cleanly, hold it at a steady
+**Method:** drone on your flute's Sa. Breathe low. Start the note softly and cleanly, hold it at a steady
 volume, end it cleanly by stopping the air (no "pew" sound). Watch the tuner for the first
 seconds, then **close your eyes and listen** for the drone and your note "locking" without
 wavering ([PIT-03](../knowledge-tree/D06-PIT-pitch.md)). Rest 1 breath between notes.

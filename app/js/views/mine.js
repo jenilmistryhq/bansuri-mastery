@@ -3,6 +3,7 @@
 // Transcribe (each opens as that song, with its length and the "Mine" tag).
 import { h, store } from "../util.js";
 import { parseNotation, buildEvents } from "../core/notation.js";
+import { backHead } from "../backhead.js";
 
 const clock = s => Math.floor(s / 60) + ":" + String(Math.round(s % 60)).padStart(2, "0");
 // A song's length: the recording's part it was made from, else the notation played at its tempo.
@@ -12,7 +13,8 @@ export function songSeconds(m) {
 }
 
 export async function render(main) {
-  const page = h("div", { class: "page" }, h("h1", { class: "sr-only" }, "Mine"));
+  const page = h("div", { class: "page" });
+  page.append(backHead("#/music", "Music", "Your own tunes"));
   const melodies = store("bansuri.compose.saved", []), songs = store("bansuri.mysongs", []);
   const row = (href, title, aside) => h("a", { class: "hubrow", href }, h("b", null, title), aside, h("span", { class: "chev", "aria-hidden": "true" }, ">"));
   page.append(h("section", { class: "card hubgroup minetunes" }, h("h2", { class: "grouphead" }, "Your tunes"),

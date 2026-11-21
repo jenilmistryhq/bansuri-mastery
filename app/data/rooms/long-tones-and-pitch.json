@@ -1,0 +1,238 @@
+{
+  "id": "long-tones-and-pitch",
+  "title": "Long Tones and Your Sa Pitch",
+  "tasks": [
+    {
+      "id": "long-tone-sa",
+      "title": "Long Tone: Sa",
+      "content": [
+        "Play Sa and hold it as steadily as you can. Focus on starting the note cleanly (no puff of air before the tone), keeping the volume even throughout, and ending cleanly when you run out of air (do not squeeze out the last drops).",
+        "Aim for 6 to 8 seconds of steady tone. Turn on the tanpura drone and listen for how your Sa blends with it. When you are perfectly in tune, your note and the drone merge into one rich, shimmering sound. When you are off, you hear a wavering or beating. Use the drone as your pitch compass throughout this room.",
+        "This single exercise builds breath support, embouchure stability, and tonal awareness all at once."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 25,
+          "prompt": "Hold Sa steady for 6 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "long-tone-re",
+      "title": "Long Tone: Re",
+      "content": [
+        "Open hole 3 to play Re (the second note). Re is a whole step above Sa.",
+        "The same principles apply: clean start, steady volume, clean end. Re may feel slightly different from Sa because one fewer hole is closed, so the air column is shorter and needs a touch more support. Listen to how Re sits against the drone - it has a bright, expectant quality. It wants to move somewhere. That tension is what gives it character.",
+        "Compare your Re to the drone's Sa. You should hear a clear interval between them, with no wavering or beating."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold Re steady for 5 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "long-tone-ga",
+      "title": "Long Tone: Ga",
+      "content": [
+        "Open holes 3 and 2 to play Ga (the third note). Ga is a whole step above Re.",
+        "With two holes open, you need slightly more air support to keep the tone clear. Keep the same relaxed embouchure - do not press harder against your lip. If the tone becomes airy, focus your lip aperture smaller rather than blowing harder.",
+        "Ga has a warm, sweet quality against the drone. Notice how each new note has its own emotional character, its own relationship with Sa. This is the beginning of musical awareness - hearing not just 'a note' but 'this specific note and what it feels like.'"
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold Ga steady for 5 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "long-tone-pa",
+      "title": "Long Tone: Pa",
+      "content": [
+        "Pa is the fifth note - the natural resting point of a scale, sometimes called the dominant. On the bansuri, Pa requires holes 1 through 4 open (only holes 5 and 6 closed).",
+        "Pa has a strong, resonant quality and is the second most important note after Sa. The tanpura drone sounds Pa alongside Sa for this reason. Hold Pa and listen to how it relates to the drone - it should feel stable and anchored, almost as grounded as Sa itself.",
+        "With four holes open, maintaining a clear tone requires solid breath support. If the tone wavers, check your diaphragm engagement rather than adjusting your lips."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold Pa steady for 5 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "breath-support-pitch",
+      "title": "Breath Support and Pitch Stability",
+      "content": [
+        "Breath support means the engagement of your diaphragm and core muscles to maintain steady air pressure. Without it, air pressure fluctuates and pitch wavers - you hear the note drifting sharp and flat like a boat without an anchor.",
+        "Think of it as 'supporting from below.' Your diaphragm pushes up gently and steadily, like a hydraulic lift. It is not about force - it is about consistency. The difference between a controlled exhale and simply letting air leak out is the difference between a steady pitch and a wavering one.",
+        "Exercise: play a long Sa and watch your pitch (the app's tuner or the drone's beating). Notice how the pitch moves when your support wavers - typically it drops flat as air pressure fades toward the end of the breath. Practice until you can keep the pitch locked steady from the first moment to the last, spending your air evenly across the entire note."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 8,
+          "cents": 10,
+          "prompt": "Hold Sa for 8 seconds with rock-steady pitch - keep the tuner barely moving",
+          "points": 30
+        },
+        {
+          "type": "choice",
+          "prompt": "What usually happens to pitch at the end of a long note if breath support weakens?",
+          "options": [
+            {
+              "text": "The pitch goes sharp (too high)",
+              "why": "Losing support means less air pressure, which typically makes the pitch drop flat, not go sharp."
+            },
+            {
+              "text": "The pitch drops flat (too low) as air pressure fades",
+              "right": true,
+              "yes": "Correct. As breath support weakens, air pressure decreases and the pitch sags flat. Maintaining steady diaphragm engagement prevents this."
+            },
+            {
+              "text": "The pitch stays the same but the tone gets louder",
+              "why": "Less air pressure means less volume and lower pitch, not more volume."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pitch-awareness",
+      "title": "Pitch Awareness",
+      "content": [
+        "Every note has a centre pitch. When you are right on it, the note sounds pure and blends with the drone. When you are off, you hear beats - a wavering or pulsing sound that happens when two notes are almost but not quite the same pitch. As you get closer to the correct pitch, the beats slow down and disappear.",
+        "Sharp (too high): usually means too much air pressure. Roll the flute slightly toward you and ease the air. Flat (too low): usually means not enough air support. Roll slightly away and engage your diaphragm more.",
+        "The adjustments are tiny - millimeters of flute angle, small changes in air speed. Self-monitoring technique: always play with the drone on, and listen for beats. Train yourself to notice them instantly and correct without thinking. Over weeks and months, this becomes automatic - your body adjusts before your conscious mind even registers the problem."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Your note sounds sharp (too high). What should you try?",
+          "options": [
+            {
+              "text": "Blow harder",
+              "why": "More pressure makes the pitch go even higher."
+            },
+            {
+              "text": "Roll the flute slightly toward you and ease the air",
+              "right": true,
+              "yes": "Right. A tiny inward roll and less pressure brings the pitch down."
+            },
+            {
+              "text": "Cover more holes",
+              "why": "Covering holes changes the note, not the pitch of the current note."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What are 'beats' in the context of tuning?",
+          "options": [
+            {
+              "text": "The rhythm pattern of a taal",
+              "why": "In tuning, 'beats' refers to the wavering sound when two pitches are close but not matched."
+            },
+            {
+              "text": "A wavering or pulsing sound when two notes are slightly out of tune",
+              "right": true,
+              "yes": "Correct. Beats slow down as you approach the right pitch and vanish when you are in tune."
+            },
+            {
+              "text": "The vibrato on a note",
+              "why": "Vibrato is intentional. Beats from poor tuning are unintentional and sound rough."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dynamic-control",
+      "title": "Dynamic Control",
+      "content": [
+        "Playing at a single volume is like speaking in a monotone. Good musicians control dynamics - playing softer and louder to shape phrases.",
+        "On the bansuri, dynamics come from air speed and pressure. Softer: less air, roll the flute slightly inward to keep pitch stable. Louder: more air, roll slightly outward. The challenge is changing volume without changing pitch. This takes careful coordination between breath and flute angle.",
+        "Practice by holding Sa and gently swelling from soft to loud and back, keeping the pitch steady throughout. Listen to the drone as your reference - if the beating speeds up, your pitch has shifted."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the main challenge when playing louder on the bansuri?",
+          "options": [
+            {
+              "text": "The flute is too quiet to play loud",
+              "why": "The bansuri can play quite loud with more air support."
+            },
+            {
+              "text": "More air tends to push the pitch sharp, so you must compensate with flute angle",
+              "right": true,
+              "yes": "Exactly. Volume and pitch are linked - you must adjust the angle to keep the pitch centred while changing volume."
+            },
+            {
+              "text": "You need to cover more holes",
+              "why": "Hole coverage sets the note. Volume comes from air control."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "long-tones-as-warmup",
+      "title": "Long Tones as Warm-Up and Meditation",
+      "content": [
+        "Long tones serve double duty: they are both a technical exercise and a form of mental centering. Professional musicians in every tradition - bansuri, flute, trumpet, saxophone - use long tones as their daily warm-up.",
+        "The ritual: before any other playing, spend 5 minutes on long tones. Start with Sa. Then Re. Then Ga. Then Ma. Then Pa. Each note held for the full breath, with the drone playing alongside. Do not rush between notes. Let each one ring, listen to its character, and notice how it sits against the drone.",
+        "The mental benefits are as important as the physical ones. Long tones force you to focus on a single note, clearing your mind of distractions. It is a form of musical meditation. After 5 minutes of this practice, your embouchure is set, your breath is engaged, your ears are tuned to the drone, and your mind is focused. Everything you play afterward will be better for it."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play Sa Re Ga Ma Pa - hold each note as a long tone before moving to the next",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will begin every practice session with 5 minutes of long tones"
+        }
+      ]
+    },
+    {
+      "id": "ear-training-basics",
+      "title": "Ear Training: Sa Re Ga Pa",
+      "content": [
+        "The ear is the most important tool a musician has. Can you recognise these four notes by sound alone?",
+        "You will hear a note played. Identify which one it is. Listen carefully to each note's character: Sa is the home, grounded and stable. Re is a step up, slightly bright and expectant. Ga is warm and open, with a sweet quality. Pa is strong, resonant, and stable like a second home. Use the drone as your reference point - each note has a distinct distance from Sa, and your ear can learn to feel that distance instantly."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 7],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note: Sa, Re, Ga, or Pa",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

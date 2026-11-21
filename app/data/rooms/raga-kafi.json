@@ -1,0 +1,252 @@
+{
+  "id": "raga-kafi",
+  "title": "Raga Kafi - The Dorian Sound",
+  "description": "Learn Kafi, an afternoon raga with komal Ga and komal Ni that opens the door to dozens of related ragas.",
+  "difficulty": "hard",
+  "skills": [
+    "raga",
+    "melody",
+    "technique"
+  ],
+  "minutes": 45,
+  "order": 14,
+  "prerequisites": [
+    "raga-bhupali"
+  ],
+  "tasks": [
+    {
+      "id": "t1-intro",
+      "title": "Entering Kafi Thaat",
+      "content": [
+        "Kafi thaat is one of the ten parent thaats of Hindustani music. Its scale - Sa Re ga ma Pa Dha ni Sa' - has two komal (flat) notes: komal Ga and komal Ni. All other notes are shuddha.",
+        "If you know Western music theory, Kafi thaat maps to the Dorian mode. Play a D major scale using only white keys (D E F G A B C D) and you hear the same intervals. But Kafi is not Dorian - it is a raga with specific phrases, moods, and rules that go far beyond a scale.",
+        "Kafi thaat is enormously fertile. Dozens of ragas live within it - Bhimpalasi, Bageshri, Dhanashri, Pilu, and many more. Learning Raga Kafi gives you the foundation for all of them."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Which two notes are komal (flat) in Kafi thaat?",
+          "options": [
+            {
+              "text": "Re and Dha",
+              "why": "Both Re and Dha are shuddha in Kafi thaat."
+            },
+            {
+              "text": "Ga and Ni",
+              "right": true,
+              "yes": "Correct. Komal Ga and komal Ni define the Kafi sound."
+            },
+            {
+              "text": "Ma and Pa",
+              "why": "Ma is shuddha and Pa is always fixed - neither is komal."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t2-aroh-avroh",
+      "title": "Aroha, Avaroha, and Character",
+      "content": [
+        "Raga Kafi is sampurna - it uses all seven notes in both directions.",
+        "Aroha: Sa Re ga ma Pa Dha ni Sa'\nAvaroha: Sa' ni Dha Pa ma ga Re Sa",
+        "The vadi (most important note) is Pa, and the samvadi is Re. This means Pa is where phrases linger and resolve, while Re provides the answering tension.",
+        "Kafi's time is late night, though in practice it is heard at all hours in lighter forms. Its mood is romantic, playful, sometimes bittersweet - the raga of Holi songs, folk melodies, and thumri. Where Yaman is regal and Bhupali serene, Kafi is warm and human."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What is the vadi (most important note) of Raga Kafi?",
+          "options": [
+            {
+              "text": "Ga",
+              "why": "Komal Ga is important for Kafi's color but it is not the vadi."
+            },
+            {
+              "text": "Pa",
+              "right": true,
+              "yes": "Right. Pa is the vadi. Phrases revolve around it."
+            },
+            {
+              "text": "Ma",
+              "why": "Ma is present but not the vadi. Pa is the anchor."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t3-hold-komal-ga",
+      "title": "Holding Komal Ga",
+      "content": [
+        "Komal Ga is produced by a half-hole technique similar to shuddha Ma but on a different hole. The pitch sits a semitone above Re - close enough that sloppy half-holing makes it sound like a badly tuned Re rather than a distinct note.",
+        "The key is committing to the komal position. Do not hover between Re and Ga - place your finger decisively at the komal Ga position and hold it. The note should feel settled, not like a note in transit.",
+        "Hold komal Ga for 5 seconds. Keep it within 20 cents of the target. If it drifts toward Re, you are covering too much of the hole. If it drifts toward shuddha Ga, you are covering too little."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "target": 3,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Ga steady for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t4-hold-komal-ni",
+      "title": "Holding Komal Ni",
+      "content": [
+        "Komal Ni sits a semitone below shuddha Ni - the same distance as komal Ga below shuddha Ga. On the bansuri, it requires careful half-holing of the bottom hole.",
+        "Komal Ni gives Kafi its characteristic wistfulness. Where shuddha Ni leads brightly into upper Sa (as in Yaman or Bhupali), komal Ni approaches Sa from closer, with a gentler, more yearning quality.",
+        "In Kafi, komal Ni often appears in the phrase ni Dha Pa, descending away from Sa rather than resolving upward into it. This downward pull is part of what makes Kafi feel romantic rather than triumphant.",
+        "Hold komal Ni for 5 seconds. This note is tricky because the bottom hole gives you less margin for error."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "target": 10,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Ni steady for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t5-core-phrases",
+      "title": "Core Phrases of Kafi",
+      "content": [
+        "Kafi's pakad (catch phrase) centers on the movement ga ma Pa - the komal Ga rising through Ma to the vadi Pa. This three-note gesture is the heart of the raga.",
+        "Other essential phrases:",
+        "Sa Re ga ma Pa - the full ascent from Sa to Pa, covering the lower half of the raga.\nni Dha Pa ma ga Re Sa - the descent, with komal Ni leading into Dha and then stepping down through the komal Ga.",
+        "Notice how ga (komal Ga) appears in almost every phrase. It is the note that colors everything - without it, you are playing Bilawal or Khamaj, not Kafi.",
+        "Play the core ascending phrase now: ga ma Pa."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "phrase": [3, 5, 7],
+          "prompt": "Play ga ma Pa - the heart of Kafi",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t6-full-descent",
+      "title": "The Full Kafi Descent",
+      "content": [
+        "The descending phrase of Kafi is where its emotional depth reveals itself. Starting from komal Ni and stepping down through every note to Sa, the phrase tells a complete story - longing (ni), openness (Dha), strength (Pa), movement (ma), color (ga), brightness (Re), home (Sa).",
+        "This phrase should not be played mechanically. Give each note a moment. Let komal Ni hang slightly before moving to Dha. Let ga linger before resolving down to Re. The phrase is a sigh, not a scale exercise.",
+        "Play the full descent: ni Dha Pa ma ga Re Sa."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "phrase": [10, 9, 7, 5, 3, 2, 0],
+          "prompt": "Play ni Dha Pa ma ga Re Sa - Kafi's full descent",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t7-ear-komal",
+      "title": "Ear Training: Komal vs Shuddha",
+      "content": [
+        "The hardest ear-training challenge in Kafi is distinguishing the komal notes from their shuddha neighbors. Komal Ga (semitone 3) sits just one semitone above Re (semitone 2). Komal Ni (semitone 10) sits one semitone below shuddha Ni (semitone 11).",
+        "This matters because playing the wrong version of Ga or Ni changes the raga entirely. Shuddha Ga and shuddha Ni belong to Bilawal thaat - playing them in a Kafi context is a raga violation, not just a wrong note.",
+        "You will hear notes from the set Re, ga, ma, Pa, Dha, ni. Identify each one. Pay special attention to Re vs ga and Dha vs ni - those pairs are closest in pitch."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "notes": [2, 3, 5, 7, 9, 10],
+          "rounds": 6,
+          "prompt": "Identify this note from Raga Kafi",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "t8-kafi-family",
+      "title": "The Kafi Family of Ragas",
+      "content": [
+        "Kafi thaat is home to some of the most beloved ragas in Hindustani music. They all share the same seven notes but differ in emphasis, phrasing, and mood.",
+        "Bhimpalasi uses the same notes but makes Ma the vadi instead of Pa. Its mood is more serious and introspective. Its characteristic phrase is ma ga ma Pa Dha Pa - notice how Ma is approached from below and stressed.",
+        "Bageshri also uses Kafi thaat but weakens Pa - it is skipped in the ascent (Sa ga ma Dha ni Sa'). This creates a completely different melodic geometry despite identical raw material.",
+        "Pilu is a 'mishra' (mixed) raga that bends the rules - it freely mixes komal and shuddha versions of Ga and Ni within the same performance. It is the raga of thumri and light classical music."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What distinguishes Bhimpalasi from Kafi, given they share the same notes?",
+          "options": [
+            {
+              "text": "Bhimpalasi uses different notes",
+              "why": "They use the same Kafi thaat notes. The difference is emphasis."
+            },
+            {
+              "text": "Bhimpalasi makes Ma the vadi instead of Pa",
+              "right": true,
+              "yes": "Exactly. Same notes, different vadi, different character - that is the depth of the raga system."
+            },
+            {
+              "text": "Bhimpalasi is a morning raga",
+              "why": "Bhimpalasi is an afternoon raga, like Kafi."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t9-quiz",
+      "title": "Kafi Mastery Check",
+      "content": [
+        "Final review of Kafi's essentials - its notes, its Western parallel, and its place in the larger raga ecosystem."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "Which Western mode corresponds to Kafi thaat?",
+          "answer": "Dorian",
+          "accept": ["Dorian", "dorian", "dorian mode"],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Which of these ragas does NOT belong to Kafi thaat?",
+          "options": [
+            {
+              "text": "Bhimpalasi",
+              "why": "Bhimpalasi uses Kafi thaat with Ma as vadi."
+            },
+            {
+              "text": "Bageshri",
+              "why": "Bageshri uses Kafi thaat with weakened Pa."
+            },
+            {
+              "text": "Bhupali",
+              "right": true,
+              "yes": "Correct. Bhupali belongs to Kalyan thaat - it uses shuddha Ga, not komal Ga."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

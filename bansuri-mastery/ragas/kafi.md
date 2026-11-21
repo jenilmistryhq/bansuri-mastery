@@ -24,7 +24,7 @@ bhajans and Holi songs.
 - `g` and `n` must be really komal (Eb and Bb on your flute).
 - Kafi in light music sometimes uses shuddha G or N as colour. Learn the strict form first.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Register |
 |---|---|---|
@@ -106,7 +106,7 @@ S S R R | g g m m | P - - m | P D n S' |
 n D P m | g g R R | R P m P | m g R S ||
 ```
 
-Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone (check `g` and `n`), then add a teentaal loop and raise the tempo slowly.
+Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone (check `g` and `n`), then add a teentaal loop and raise the tempo slowly.
 
 ## Practice steps
 

@@ -25,7 +25,7 @@ Sa. Ga and Ni shine.
   phrases like `P M G R`.
 - **Tivra Ma** (`M`) only. A shuddha `m` turns it into Yaman Kalyan (see below).
 
-## On your C flute
+## Pitch reference: C5 medium
 
 No half-holes, which is why this curriculum teaches Yaman early.
 

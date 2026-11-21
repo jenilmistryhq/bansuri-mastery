@@ -1,0 +1,302 @@
+{
+  "id": "tivra-ma",
+  "title": "Tivra Ma - The Raised Fourth",
+  "description": "Learn tivra Ma, complete the 12-note system, and understand its central role in Kalyan and Yaman.",
+  "difficulty": "medium",
+  "skills": [
+    "notes",
+    "technique",
+    "theory"
+  ],
+  "minutes": 35,
+  "order": 11,
+  "prerequisites": [
+    "komal-swaras"
+  ],
+  "tasks": [
+    {
+      "id": "what-is-tivra-ma",
+      "title": "What Is Tivra Ma?",
+      "content": [
+        "Tivra Ma (M) is shuddha Ma raised by one semitone - sitting at 6 semitones above Sa. It is the only tivra (sharp) note in the entire Indian note system. All other altered notes are komal (flat). This makes tivra Ma unique and special.",
+        "The word 'tivra' means intense or sharp. And the note lives up to its name - tivra Ma has a bright, piercing quality that cuts through a melody. Where shuddha Ma (m at 5 semitones) feels stable and grounded like a perfect fourth, tivra Ma feels restless and luminous. It wants to move, usually upward toward Pa.",
+        "On a 6-hole bansuri, tivra Ma is played with all holes open - it is actually one of the easiest notes to produce. Shuddha Ma, by contrast, requires half-holing the top hole. So the 'altered' note is easier to play than the 'natural' one. This is a quirk of bansuri acoustics."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many semitones is tivra Ma above Sa? Type the number.",
+          "answer": "6",
+          "accept": ["6", "six"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "How is tivra Ma played on a standard 6-hole bansuri?",
+          "options": [
+            {
+              "text": "All holes closed",
+              "why": "All holes closed gives Sa."
+            },
+            {
+              "text": "All holes open",
+              "right": true,
+              "yes": "Correct. Tivra Ma is the all-open fingering on a 6-hole bansuri - one of the easiest notes to play."
+            },
+            {
+              "text": "Half-hole the top hole",
+              "why": "That gives shuddha Ma. Tivra Ma is all holes open."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "the-tritone",
+      "title": "The Tritone Interval",
+      "content": [
+        "At exactly 6 semitones, tivra Ma divides the octave perfectly in half. In Western music theory, this interval is called the tritone (three whole tones). It is one of the most distinctive intervals in all of music.",
+        "The tritone has a fascinating history. Medieval European musicians called it 'diabolus in musica' (the devil in music) because of its dissonant, unstable sound. But in Indian classical music, tivra Ma is not feared - it is celebrated. It is the defining note of some of the most beautiful and serene ragas.",
+        "The tritone's instability is what makes it so expressive. It creates a sense of yearning - a pull toward resolution. In Yaman, tivra Ma resolves beautifully upward to Pa. In Marwa, it creates an almost otherworldly tension by being paired with komal Re. Same note, completely different emotional effects depending on context."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What Western interval does tivra Ma form with Sa?",
+          "options": [
+            {
+              "text": "Perfect fourth (5 semitones)",
+              "why": "That is shuddha Ma at 5 semitones, not tivra Ma."
+            },
+            {
+              "text": "Tritone (6 semitones)",
+              "right": true,
+              "yes": "Correct. At 6 semitones, tivra Ma forms the tritone - the interval that divides the octave exactly in half."
+            },
+            {
+              "text": "Perfect fifth (7 semitones)",
+              "why": "That is Pa at 7 semitones."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "hold-tivra-ma",
+      "title": "Play and Hold Tivra Ma",
+      "content": [
+        "Since tivra Ma is the all-open fingering, it is very easy to produce a clear tone. The challenge is not in playing it, but in hearing it correctly and tuning it precisely.",
+        "When you play tivra Ma, listen to its relationship with the Sa drone. You should hear a bright tension - not dissonant exactly, but restless. It does not feel resolved the way Pa does. This restlessness is what gives Kalyan-thaat ragas their characteristic uplift.",
+        "Hold tivra Ma steady. Because all holes are open, breath control is your only variable. Focus on a pure, centered tone."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 6,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold tivra Ma (M) steady for 6 seconds with good tone",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "shuddha-vs-tivra",
+      "title": "Shuddha Ma vs Tivra Ma",
+      "content": [
+        "The difference between shuddha Ma (m at 5 semitones) and tivra Ma (M at 6 semitones) is just one semitone, but it changes the entire character of a melody. Shuddha Ma sounds settled, like coming home. Tivra Ma sounds bright and aspirational, like looking upward.",
+        "Try playing them back to back: Sa - Re - Ga - shuddha Ma - Pa. That is Bilawal, the natural scale. Now play Sa - Re - Ga - tivra Ma - Pa. That is Kalyan, and you can immediately hear how the mood shifts from simple to luminous.",
+        "On the bansuri, the fingering transition between the two is dramatic: shuddha Ma uses a half-hole on the top finger, while tivra Ma lifts all fingers entirely. Practice switching between them cleanly."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play S R G m P (Bilawal with shuddha Ma)",
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 6, 7],
+          "prompt": "Play S R G M P (Kalyan with tivra Ma)",
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "ear-training-ma",
+      "title": "Ear Training: Shuddha vs Tivra Ma",
+      "content": [
+        "Can you tell shuddha Ma from tivra Ma by ear? This is one of the most important distinctions to internalize because the choice of Ma defines which thaat family a raga belongs to.",
+        "Listen for the brightness. Tivra Ma (6 semitones) has a brighter, more luminous quality. Shuddha Ma (5 semitones) sounds more grounded and natural. If you hear the note against a Sa drone, tivra Ma creates more tension while shuddha Ma feels more consonant.",
+        "This exercise mixes both forms of Ma with Pa (for reference). Identify each note."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [5, 6, 7],
+          "rounds": 5,
+          "prompt": "Identify each note: shuddha Ma (m), tivra Ma (M), or Pa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "tivra-ma-in-ragas",
+      "title": "Tivra Ma in Ragas and Thaats",
+      "content": [
+        "Four of the ten thaats use tivra Ma, and each creates a completely different mood:",
+        "Kalyan (S R G M P D N) - all shuddha notes plus tivra Ma. Bright, serene, evening. The simplest and most accessible tivra Ma thaat. Ragas: Yaman, Bhupali, Hamsadhwani.",
+        "Marwa (S r R G M P D N - but actually S r G M D N, since it omits Pa) - komal Re paired with tivra Ma and no Pa. Extremely intense, twilight. The combination of komal Re (1 semitone) with tivra Ma (6 semitones) creates one of the most haunting sounds in Indian music.",
+        "Poorvi (S r G M P d N) - komal Re and komal Dha with tivra Ma. Serious and contemplative, associated with sunset.",
+        "Todi (S r g M P d N) - komal Re, komal Ga, komal Dha, all with tivra Ma. Perhaps the most emotionally complex thaat - deeply moving and difficult to master."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many thaats use tivra Ma? Type the number.",
+          "answer": "4",
+          "accept": ["4", "four"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which thaat pairs komal Re with tivra Ma and omits Pa entirely?",
+          "options": [
+            {
+              "text": "Kalyan",
+              "why": "Kalyan uses all shuddha notes except tivra Ma. It includes Pa."
+            },
+            {
+              "text": "Marwa",
+              "right": true,
+              "yes": "Correct. Marwa omits Pa and pairs komal Re with tivra Ma, creating an intense, haunting sound."
+            },
+            {
+              "text": "Todi",
+              "why": "Todi uses tivra Ma but includes Pa and has three komal notes."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "yaman-phrases",
+      "title": "Tivra Ma in Yaman Phrases",
+      "content": [
+        "Yaman is the most important Kalyan-thaat raga, and tivra Ma is its signature note. Yaman's characteristic phrases almost always feature tivra Ma prominently.",
+        "The classic Yaman phrase is .N R G M D N S' (ascending from lower Ni through the scale to upper Sa). Notice how tivra Ma at the center of this phrase gives it lift - the melody seems to soar upward from G to M to D.",
+        "Another important phrase is M D N S' (tivra Ma directly to Dha to Ni to upper Sa). This ascending run is one of the most recognizable sounds in Hindustani music.",
+        "In Yaman's descent, tivra Ma appears in phrases like S' N D M G R S. The M-G movement (6 to 4, two semitones) is smooth and bright."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [6, 9, 11, 12],
+          "prompt": "Play M D N S' - a classic Yaman ascending phrase",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 6, 4, 2, 0],
+          "prompt": "Play S' N D M G R S - Yaman descending",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "complete-system",
+      "title": "The Complete 12-Note System",
+      "content": [
+        "With tivra Ma, you now know all 12 notes available on the bansuri: S(0) r(1) R(2) g(3) G(4) m(5) M(6) P(7) d(8) D(9) n(10) N(11).",
+        "You do not need all 12 to start learning ragas. Many ragas use only 5 notes (pentatonic) or 6 (hexatonic). Some use 7 (heptatonic). No common raga uses all 12 simultaneously.",
+        "What matters now is not memorizing every note, but training your ear and fingers to move between shuddha and vikrit forms fluently. When you can hear the difference between R and r, between G and g, between m and M, between D and d, between N and n - you can learn any raga by listening.",
+        "This final exercise tests your ear across the full range of altered notes."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [1, 2, 3, 4, 5, 6, 8, 9, 10, 11],
+          "rounds": 6,
+          "prompt": "Identify each note from the full chromatic set",
+          "points": 25
+        },
+        {
+          "type": "confirm",
+          "prompt": "I understand the complete 12-note system and can produce komal notes by half-holing"
+        }
+      ]
+    },
+    {
+      "id": "tivra-ma-and-komal-re",
+      "title": "Tivra Ma with Komal Re - The Marwa Sound",
+      "content": [
+        "One of the most striking combinations in Indian music is tivra Ma (semitone 6) paired with komal Re (semitone 1). These two notes create the interval of an augmented fourth plus a semitone - a sound that is haunting, almost otherworldly.",
+        "This combination is the hallmark of the Marwa and Todi families. In Raga Marwa, komal Re and tivra Ma exist without Pa - creating a scale that has no traditional resting point. The music feels suspended, restless, always searching.",
+        "In Raga Todi, komal Re and tivra Ma are joined by komal Ga and komal Dha. The combined effect is profoundly moving - Todi is considered one of the most emotionally powerful ragas in the entire repertoire.",
+        "Try playing the sequence: Sa - r - G - M - P. Feel how the komal Re and tivra Ma create tension that only resolves when Pa arrives. Now try Sa - r - g - M - P (with komal Ga). That is the Todi sound - even more intense."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 1, 4, 6, 7],
+          "prompt": "Play Sa r G M P - hear the haunting komal Re to tivra Ma combination",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 1, 3, 6, 7],
+          "prompt": "Play Sa r g M P - the Todi sound with komal Ga added",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which raga uses komal Re with tivra Ma but omits Pa entirely?",
+          "options": [
+            { "text": "Yaman", "why": "Yaman uses all shuddha notes with tivra Ma. It includes Pa." },
+            { "text": "Marwa", "right": true, "yes": "Correct. Marwa pairs komal Re with tivra Ma and omits Pa, creating a uniquely suspended, restless atmosphere." },
+            { "text": "Bhupali", "why": "Bhupali is a shuddha pentatonic raga with no tivra or komal notes." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dual-ma-ragas",
+      "title": "Ragas with Both Ma Forms",
+      "content": [
+        "Some ragas use both shuddha Ma and tivra Ma within the same performance. These 'dual Ma' ragas are among the most musically interesting because they blend the character of two different thaats.",
+        "Raga Kedar is the most famous dual-Ma raga. Its ascent uses tivra Ma (Sa m M P D N Sa'), while its descent uses shuddha Ma (Sa' N D P m G R Sa). The movement 'm M P' (shuddha to tivra to Pa) is Kedar's signature ascending gesture.",
+        "Raga Yaman Kalyan is another dual-Ma raga. It is essentially Yaman with an occasional touch of shuddha Ma in descent. The shuddha Ma adds a subtle shadow to Yaman's pure brightness.",
+        "Raga Bihag uses both forms differently: tivra Ma appears in the ascending movements, while shuddha Ma appears as a grace note in certain descending phrases. Each dual-Ma raga has its own specific rules for when each form appears.",
+        "The ability to switch cleanly between shuddha Ma (half-hole) and tivra Ma (open) is essential for these ragas. Practice the transition until it becomes automatic."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [5, 6, 7, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play this Kedar phrase with both Ma forms: m M P D P m G R Sa",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [4, 5, 6, 7],
+          "rounds": 5,
+          "prompt": "Distinguish Ga, shuddha Ma, tivra Ma, and Pa by ear",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "In Raga Kedar, the phrase 'm M P' represents which direction of movement?",
+          "options": [
+            { "text": "Descending only", "why": "The descent uses shuddha Ma alone. The dual-Ma phrase is ascending." },
+            { "text": "Ascending only", "right": true, "yes": "Correct. The m M P phrase always propels upward - shuddha Ma stepping to tivra Ma, which resolves to Pa." },
+            { "text": "Both directions freely", "why": "The dual-Ma phrase is directional. Tivra Ma appears only in ascent, shuddha Ma in descent." }
+          ]
+        }
+      ]
+    }
+  ]
+}

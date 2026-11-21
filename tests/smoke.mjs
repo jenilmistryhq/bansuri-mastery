@@ -380,7 +380,7 @@ try {
     // A symptom opens its fix on its own screen (redesign W50).
     await clickText("#main .symcard", "Low notes");
     await page.waitForFunction(() => /Try this first/i.test(document.querySelector("#main").innerText) && /^#\/skills\/fix\/TS-03$/.test(location.hash), { timeout: 8000 });
-    check(true, "coach: a symptom opens its fix on its own screen (#/skills/fix/TS-03)");
+    check(true, "coach: a symptom opens its fix on its own screen (#/teacher/fix/TS-03)");
     check(await page.$$eval("#main .checkli input", x => x.length) > 0, "the quick checks are a checklist");
     await page.click("#main .fixtry");
     check(await page.$("#main .drillcard .lv-hold") !== null, "the coach opens a live drill (hold low Pa)");
@@ -635,7 +635,7 @@ try {
       // Tone check, a section of the Coach: a held Sa 35 cents flat is diagnosed as flat, and
       // Show the fix opens the matching fix on its own screen (W50); back on the Tone check, the last
       // result shows as three chips (W47).
-      await lp.goto(BASE + "#/skills/fix", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/teacher/fix", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#main #symptoms", { timeout: 8000 }).catch(() => {});
       check(await lp.evaluate(() => /What is going wrong/.test((document.querySelector("#main h1") || {}).textContent || "") && !!document.querySelector("#main #tone") && !!document.querySelector("#main #symptoms")), "#/tone opens the Coach, with the Tone check and the symptoms on one page");
       await lp.waitForFunction(() => [...document.querySelectorAll("#main button")].some(b => /Hold a note now/.test(b.textContent)), { timeout: 5000 });
@@ -1043,7 +1043,7 @@ try {
         check(await lp.evaluate(() => /[\u0900-\u097F]/.test(document.querySelector("#main h1").textContent) && [...document.querySelectorAll("#main button")].every(b => !/[A-Za-z]{3}/.test(b.textContent) || /[\u0900-\u097F]/.test(b.textContent))), "hindi: the " + what + " page's heading and buttons are in Hindi");
       }
       // A textarea's placeholder is translated; what the learner types is not.
-      await lp.goto(BASE + "#/me/teacher", { waitUntil: "networkidle0" });
+      await lp.goto(BASE + "#/teacher", { waitUntil: "networkidle0" });
       await lp.waitForSelector("#main textarea", { timeout: 8000 }).catch(() => {});
       await lp.type("#main textarea", "Your name").catch(() => {});
       await sleep(200);
@@ -1802,7 +1802,7 @@ try {
     check(/Passed 1 of 7/.test(await lp.$eval("#main .ms-result", e => e.textContent)) && !!(await lp.$("#main .ms-notyet")), "milestone: Not yet shows what passed, then what is for next time");
     // The course book (L8).
     await lgo("/course/book");
-    const book = await lp.evaluate(() => ({ parts: [...document.querySelectorAll("#main .bookpart")].map(e => e.textContent).join("|"), ragas: !!document.querySelector('#main a[href="#/music/ragas"]'), fix: !!document.querySelector('#main a[href="#/skills/fix"]'), copies: [...document.querySelectorAll("#main h3")].some(e => /^(Ragas|Troubleshooting)$/.test(e.textContent)) }));
+    const book = await lp.evaluate(() => ({ parts: [...document.querySelectorAll("#main .bookpart")].map(e => e.textContent).join("|"), ragas: !!document.querySelector('#main a[href="#/music/ragas"]'), fix: !!document.querySelector('#main a[href="#/teacher/fix"]'), copies: [...document.querySelectorAll("#main h3")].some(e => /^(Ragas|Troubleshooting)$/.test(e.textContent)) }));
     check(book.parts === "The course|Look it up|Elsewhere" && book.ragas && book.fix && !book.copies, "book: The course, Look it up, Elsewhere; ragas and fixes linked, not copied");
     await lgo("/read/lessons/L04-first-sound.md");
     check(await lp.$eval("#main .crumbs a", e => e.textContent + " " + e.getAttribute("href")) === "Course book #/course/book", "book: the reader's breadcrumb says Course book");
@@ -1905,7 +1905,7 @@ try {
       main: (document.querySelector("#main .hubmain") || {}).getAttribute?.("href"),
       best: [...document.querySelectorAll("#main a.hubrow")].find(a => a.getAttribute("href") === "#/skills/game/balloon")?.innerText || "",
       boat: [...document.querySelectorAll("#main a.hubrow")].find(a => a.getAttribute("href") === "#/skills/game/boat")?.innerText || "",
-      fix: !!document.querySelector("#main a.hubrow[href='#/skills/fix/TS-02/tone']"),
+      fix: !!document.querySelector("#main a.hubrow[href='#/teacher/fix/TS-02/tone']"),
     }));
     check(/6 s/.test(hub.hist) && /14 s \(best\)/.test(hub.hist) && hub.main === "#/skills/tone/longtones", "tone hub: your latest shows the last holds with the best marked, Long tones is the one main tool [" + hub.hist.replace(/\n/g, " ") + "]");
     check(/best 7/.test(hub.best) && /new/.test(hub.boat) && hub.fix, "tone hub: games show their best or new, fixes link back to the hub");
@@ -2174,16 +2174,16 @@ try {
     const steady = await mp.$$eval("#main .capsulepair .capsulesteady", x => x.map(e => e.innerText.trim()));
     check(steady.length === 2 && steady.every(s => /^\d+(\.\d)? s steady$/.test(s)) && parseFloat(steady[1]) > parseFloat(steady[0]), "capsule: an N s steady figure under Day 0 and Today " + JSON.stringify(steady));
     // W74 Teacher > Ask: What your teacher rates as a row; Make the review link, then Copy and Share.
-    await to("/me/teacher");
-    check(await mp.$("#main a.hubrow[href='#/me/teacher/rates']") !== null && !(await mp.$("#main .rvlinkout:not([hidden])")), "teacher ask: What your teacher rates is a row; the link comes after Make the review link");
+    await to("/teacher");
+    check(await mp.$("#main a.hubrow[href='#/teacher/rates']") !== null && !(await mp.$("#main .rvlinkout:not([hidden])")), "teacher ask: What your teacher rates is a row; the link comes after Make the review link");
     await mp.evaluate(() => { window.__sent = []; navigator.share = undefined; navigator.clipboard.writeText = t => { window.__sent.push(t); return Promise.resolve(); }; });
     await mp.evaluate(() => { const f = document.querySelector("#rv-file"), dt = new DataTransfer(); dt.items.add(new File([new Uint8Array(64)], "take.webm", { type: "audio/webm" })); f.files = dt.files; f.dispatchEvent(new Event("change")); });
     await clickTextOn(mp, "#main button", "Make the review link");
     await mp.waitForSelector("#main input[aria-label='Review link']", { timeout: 5000 }).catch(() => {});
     const ask = await mp.evaluate(() => ({ link: (document.querySelector("#main input[aria-label='Review link']") || {}).value || "", btns: [...document.querySelectorAll("#main .rvlinkout button")].map(b => b.textContent.trim()).join() }));
     check(/#\/review\/[zj][A-Za-z0-9_-]+$/.test(ask.link) && ask.btns === "Copy,Share", "teacher ask: the review link, then Copy and Share " + JSON.stringify(ask.btns));
-    await to("/me/teacher/rates");
-    check(await mp.$("#main .backhead a[href='#/me/teacher']") !== null && await mp.$$eval("#main .rvrates li", x => x.length) === 7, "teacher: What your teacher rates opens on its own, the seven points");
+    await to("/teacher/rates");
+    check(await mp.$("#main .backhead a[href='#/teacher']") !== null && await mp.$$eval("#main .rvrates li", x => x.length) === 7, "teacher: What your teacher rates opens on its own, the seven points");
     // W75 Feedback: Listen, for a review whose request kept its recording.
     const reqId = await mp.evaluate(() => (JSON.parse(localStorage.getItem("bansuri.review.requests") || "[]")[0] || {}).id || "");
     await mp.evaluate(id => localStorage.setItem("bansuri.feedback", JSON.stringify([{ id, date: "2026-11-01", teacher: "T", what: "A song", comment: "Ga is flat", task: "", due: null, scores: { tone: 3 }, notes: {} }])), reqId);
@@ -2231,13 +2231,13 @@ try {
     await page.evaluate(() => { localStorage.clear(); localStorage.setItem("bansuri.progress", JSON.stringify({ v: 1, current: 20, startedAt: "2026-10-01", prefs: { howChosen: true } })); });
     // W50: a fix on its own screen, opened from its hub; Back returns to the hub.
     await go("/skills/tone");
-    await page.evaluate(() => document.querySelector("#main a.hubrow[href='#/skills/fix/TS-02/tone']").click());
+    await page.evaluate(() => document.querySelector("#main a.hubrow[href='#/teacher/fix/TS-02/tone']").click());
     await page.waitForSelector("#main .fixpage[data-ts=TS-02] .fixstep", { timeout: 8000 }).catch(() => {});
     const fx = await page.evaluate(() => ({ back: document.querySelector("#main .backhead .backlink")?.getAttribute("href"), title: document.querySelector("#main .backhead h1")?.textContent,
       heads: [...document.querySelectorAll("#main .fixpart .grouphead")].map(x => x.textContent).join("|"), steps: document.querySelectorAll("#main .fixstep").length, tries: document.querySelectorAll("#main .fixtry").length,
-      hear: !!document.querySelector("#main .fixhear"), guide: !!document.querySelector("#main a[href='#/read/troubleshooting/TS-02-squeaks-and-wrong-octave.md']"), teacher: !!document.querySelector("#main a.fixteacher[href='#/me/teacher']"),
+      hear: !!document.querySelector("#main .fixhear"), guide: !!document.querySelector("#main a[href='#/read/troubleshooting/TS-02-squeaks-and-wrong-octave.md']"), teacher: !!document.querySelector("#main a.fixteacher[href='#/teacher']"),
       tabs: !!document.querySelector("#main .sectiontabs"), fixback: document.querySelector("#main .fixback")?.textContent }));
-    check(fx.back === "#/skills/fix" && /Squeaks/.test(fx.title) && fx.heads === "What it sounds like|Try this first" && fx.steps >= 3 && fx.tries === fx.steps && fx.hear && fx.guide && fx.teacher && !fx.tabs && fx.fixback === "Back to Tone and breath",
+    check(fx.back === "#/teacher/fix" && /Squeaks/.test(fx.title) && fx.heads === "What it sounds like|Try this first" && fx.steps >= 3 && fx.tries === fx.steps && fx.hear && fx.guide && fx.teacher && !fx.tabs && fx.fixback === "Back to Tone and breath",
       "fix (W50): its own screen: back to Fix a problem, what it sounds like, numbered fixes each with Try, a good example, the full guide, ask your teacher, back to the hub " + JSON.stringify(fx));
     await page.click("#main .fixtry");
     check(await page.$("#main .fixstep .drillcard:not([hidden]) .lv-hold") !== null, "fix: Try opens the topic's drill under the fix");
@@ -2245,7 +2245,7 @@ try {
     check(await page.evaluate(() => location.hash) === "#/skills/tone", "fix: Back to Tone and breath returns to the hub (history Back)");
     // Opened from a lesson: Back returns to the lesson; a fix with no drill and no example shows neither.
     await go("/session/2");
-    await page.evaluate(() => { location.hash = "#/skills/fix/TS-01"; });
+    await page.evaluate(() => { location.hash = "#/teacher/fix/TS-01"; });
     await page.waitForSelector("#main .fixpage[data-ts=TS-01] .fixback", { timeout: 8000 }).catch(() => {});
     const lessonBack = await page.$eval("#main .fixback", e => e.textContent).catch(() => "");
     await page.click("#main .fixback"); await page.waitForFunction(() => location.hash === "#/session/2", { timeout: 5000 }).catch(() => {});
@@ -2276,8 +2276,8 @@ try {
     const tc =await page.evaluate(() => ({ chips: [...document.querySelectorAll("#main .tonelast .tonechip")].map(c => c.dataset.k + ":" + (c.classList.contains("good") ? "ok" : "warn")).join(), fix: document.querySelector("#main .tonelast .tonefix")?.getAttribute("href"),
       btn: [...document.querySelectorAll("#main button")].some(b => /Hold a note now/.test(b.textContent)) }));
     await page.click("#main .tonechip[data-k=air]");
-    const detail = await page.$eval("#main .tonedetail", e => !e.hidden && /Clear tone/.test(e.innerText) && !!e.querySelector("a[href='#/skills/fix/TS-01']")).catch(() => false);
-    check(tc.chips === "steady:ok,tune:ok,air:warn" && tc.fix === "#/skills/fix/TS-01" && tc.btn && detail, "tone check (W47): last result as Steady, In tune and Air chips, the details behind a chip, Airy tone: what to try " + JSON.stringify(tc));
+    const detail = await page.$eval("#main .tonedetail", e => !e.hidden && /Clear tone/.test(e.innerText) && !!e.querySelector("a[href='#/teacher/fix/TS-01']")).catch(() => false);
+    check(tc.chips === "steady:ok,tune:ok,air:warn" && tc.fix === "#/teacher/fix/TS-01" && tc.btn && detail, "tone check (W47): last result as Steady, In tune and Air chips, the details behind a chip, Airy tone: what to try " + JSON.stringify(tc));
     // W52-W54: the game shell: How to play (the game's instructions and options, Play, Drone),
     // Playing, Result (score, best, Again, Another game, Challenge a friend).
     await go("/skills/games");
@@ -2305,7 +2305,7 @@ try {
     check(/Asha scored 34 in Bullseye/.test(chal) && /beat Asha/.test(back.vs) && back.send && /#\/challenge\//.test(back.link), "challenge (W55): who scored what, Take it on, and the result offers Send your score back " + JSON.stringify(back));
     // Hindi: the fix screen and the game shell.
     await page.evaluate(() => localStorage.setItem("bansuri.settings", JSON.stringify({ lang: "hi" })));
-    await page.goto(BASE + "#/skills/fix/TS-02/tone", { waitUntil: "networkidle0" }); await page.reload({ waitUntil: "networkidle0" });
+    await page.goto(BASE + "#/teacher/fix/TS-02/tone", { waitUntil: "networkidle0" }); await page.reload({ waitUntil: "networkidle0" });
     await page.waitForSelector("#main .fixstep", { timeout: 8000 }).catch(() => {}); await sleep(300);
     const hiFix = await page.evaluate(() => [...document.querySelectorAll("#main .fixpart .grouphead, #main button, #main .fixback, #main .fixteacher b")].filter(b => /[A-Za-z]{3}/.test(b.textContent) && !/[ऀ-ॿ]/.test(b.textContent)).map(b => b.textContent));
     await page.goto(BASE + "#/skills/game/bullseye", { waitUntil: "networkidle0" }); await page.waitForSelector("#main .gs-play", { timeout: 8000 }).catch(() => {}); await sleep(300);
@@ -2544,7 +2544,7 @@ try {
     await sp.focus("#main .sectiontabs a[aria-selected=true]"); await sp.keyboard.press("ArrowRight");
     check(await sp.evaluate(() => document.activeElement && document.activeElement.textContent === "Notes"), "section tabs: the right arrow moves to the next tab");
     // W1: screens inside a section swap the tabs for "< Back  Title" (the frame's, or the view's own backHead, as a fix has).
-    for (const [hash, back, label, title] of [["/milestone/M1", "#/course/milestones", "Course", "Milestone M1"], ["/skills/fix/TS-02", "#/skills/fix", "Fix a problem", "TS-02"], ["/read/lessons/L04-first-sound.md", "#/course/book", "Course book", "First Sound"]]) {
+    for (const [hash, back, label, title] of [["/milestone/M1", "#/course/milestones", "Course", "Milestone M1"], ["/skills/fix/TS-02", "#/teacher/fix", "Fix a problem", "TS-02"], ["/read/lessons/L04-first-sound.md", "#/course/book", "Course book", "First Sound"]]) {
       await at(hash, "#main .framehead, #main .backhead");
       const fh = await sp.evaluate(() => { const f = document.querySelector("#main .framehead, #main .backhead"); return f && { href: f.querySelector("a").getAttribute("href"), text: f.innerText.replace(/\s+/g, " "), tabs: !!document.querySelector("#main .sectiontabs") }; });
       check(!!fh && fh.href === back && fh.text.includes(label) && fh.text.toLowerCase().includes(title.toLowerCase()) && !fh.tabs, "W1: " + hash + " has \"< " + label + "  " + title + "\" instead of the section tabs " + JSON.stringify(fh));

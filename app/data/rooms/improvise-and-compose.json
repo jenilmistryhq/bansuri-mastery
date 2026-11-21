@@ -1,0 +1,299 @@
+{
+  "id": "improvise-and-compose",
+  "title": "Improvise and Compose",
+  "tasks": [
+    {
+      "id": "improvisation-in-raga",
+      "title": "Improvisation in a Raga",
+      "content": "Indian classical music is fundamentally improvisational. A performer does not play a fixed piece - they explore a raga in real time, creating phrases within its rules.\n\nImprovisation is not random. It follows a framework:\n- Use only the raga's allowed notes\n- Follow the aaroh (ascending) and avroh (descending) patterns\n- Emphasise the vadi (most important note) and samvadi (second most important)\n- Use the raga's characteristic phrases (pakad)\n- Match the raga's mood and time of day\n\nThis framework gives you freedom within structure - like a poet working within a verse form.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What constrains improvisation in Indian classical music?",
+          "options": [
+            {
+              "text": "Nothing - the performer plays whatever they want",
+              "why": "Improvisation happens within the raga's rules and grammar."
+            },
+            {
+              "text": "The raga's rules: its notes, phrases, emphasis, and mood",
+              "right": true,
+              "yes": "Exactly. The raga provides the framework; the musician provides the creativity."
+            },
+            {
+              "text": "A written score that must be followed exactly",
+              "why": "Indian classical music is improvisational, not score-based. The raga is a framework, not a script."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ragas-grammar",
+      "title": "The Raga's Grammar",
+      "content": ["Every raga has a grammar that guides your improvisation:", "**Vadi** - the king note, the most important swara. It appears often and gets emphasis. **Samvadi** - the queen note, the second most important. Usually a fourth or fifth from the vadi. **Pakad** - the catch phrase, a short signature melody that identifies the raga instantly. **Chalan** - the overall movement pattern, how phrases typically flow.", "For example, in Raga Yaman: the vadi is Ga, the samvadi is Ni, and a typical pakad is Ni Re Ga Re Sa. If you play these elements, the listener hears Yaman immediately.", "Beyond these basics, every raga has note combinations with natural affinity - called anyonya. In Yaman, the combination Ni-Re-Ga is a strong, characteristic grouping. In Bhupali, Ga-Pa-Dha flows naturally. Learning these affinities is what separates authentic improvisation from random note selection. You absorb them by listening to masters, not by memorising a list."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the vadi of a raga?",
+          "options": [
+            {
+              "text": "The first note of the scale",
+              "why": "The first note is Sa - the tonic. The vadi is the most important note, which could be any swara."
+            },
+            {
+              "text": "The most important note, emphasised most often",
+              "right": true,
+              "yes": "Right. The vadi is the king note - it defines the raga's character and receives the most emphasis."
+            },
+            {
+              "text": "The highest note in the raga",
+              "why": "The vadi can be any note in the raga, not necessarily the highest one."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What are 'anyonya' note combinations?",
+          "options": [
+            {
+              "text": "Notes that must never be played together",
+              "why": "Those would be vivadi notes. Anyonya means natural affinity."
+            },
+            {
+              "text": "Note groupings that have natural affinity within a raga, making phrases sound authentic",
+              "right": true,
+              "yes": "Correct. Anyonya combinations are the building blocks of authentic phrasing - Ni-Re-Ga in Yaman, Ga-Pa-Dha in Bhupali."
+            },
+            {
+              "text": "Western chord progressions adapted for Indian music",
+              "why": "Indian music does not use chords. Anyonya is about horizontal (melodic) affinity, not vertical (harmonic) stacking."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "start-three-notes",
+      "title": "Start with Three Notes",
+      "content": "Begin improvising with just Sa, Re, and Ga - only three notes.\n\nPlay them in different orders. Linger on one. Jump between two. Return to Sa. The goal is not speed or complexity - it is musicality.\n\nWith just three notes you can create surprisingly expressive phrases:\n- Sa Re Ga (ascending, opening up)\n- Ga Re Sa (descending, coming home)\n- Sa Ga Re Sa (skipping, then stepping back)\n- Re - Ga - Re (hovering between two notes)\n\nPlay Sa Re Ga now on your flute.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4],
+          "prompt": "Play Sa Re Ga on your flute",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Why start improvising with only three notes?",
+          "options": [
+            {
+              "text": "Because beginners cannot handle more notes",
+              "why": "It is not about ability. Even masters improvise with limited note sets. Fewer notes forces deeper exploration."
+            },
+            {
+              "text": "Fewer notes forces you to explore each one deeply rather than rushing through many",
+              "right": true,
+              "yes": "Exactly. Depth matters more than breadth. Three notes explored well is more musical than seven notes played carelessly."
+            },
+            {
+              "text": "Because ragas only use three notes",
+              "why": "Most ragas use five to seven notes. Starting with three is a practice strategy, not a raga rule."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "expand-five-notes",
+      "title": "Expanding to Five Notes",
+      "content": "Now add Ma and Pa to your vocabulary: Sa Re Ga Ma Pa.\n\nWith five notes you can create longer phrases with more contour. Try these patterns:\n- Sa Re Ga Ma Pa (a steady climb)\n- Pa Ma Ga Re Sa (a smooth descent)\n- Sa Ga Pa Ga Re Sa (arch shape - up and back)\n- Re Ma Pa Ma Ga (starting from Re, reaching Pa, settling on Ga)\n\nNotice how each phrase has a shape - it goes somewhere and comes back. That sense of journey is what makes improvisation musical.\n\nPlay Sa Re Ga Ma Pa now.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play Sa Re Ga Ma Pa - five notes ascending",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What gives an improvised phrase its musical quality?",
+          "options": [
+            {
+              "text": "Playing as many notes as possible",
+              "why": "Quantity of notes does not equal quality. A well-shaped phrase of four notes beats a shapeless run of twenty."
+            },
+            {
+              "text": "A sense of journey - going somewhere and coming back",
+              "right": true,
+              "yes": "Right. Every good phrase has direction and resolution. It moves, reaches, and returns."
+            },
+            {
+              "text": "Always playing in the same order",
+              "why": "Repeating the same pattern is not improvisation. Variety within the framework is the goal."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "art-of-silence",
+      "title": "The Art of Silence",
+      "content": "Silence is not the absence of music - it is part of the music.\n\nIn Indian classical improvisation, the pause between phrases is just as important as the phrases themselves. A well-placed silence:\n- Lets the listener absorb what was just played\n- Creates anticipation for what comes next\n- Gives the drone space to resonate\n- Shows confidence - only an assured musician can hold silence\n\nBeginners tend to fill every moment with notes. The master knows when to stop. Listen to any great bansuri recording and count the silences - they are frequent and deliberate.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is silence important in improvisation?",
+          "options": [
+            {
+              "text": "It gives you time to think of the next phrase",
+              "why": "While silence does give thinking time, its musical purpose is deeper - it shapes the music itself."
+            },
+            {
+              "text": "It lets the listener absorb the phrase and creates anticipation",
+              "right": true,
+              "yes": "Exactly. Silence is a musical tool, not a gap. It shapes the listener's experience as much as the notes do."
+            },
+            {
+              "text": "It is not important - good musicians play continuously",
+              "why": "Listen to any master - Hariprasad Chaurasia, Pannalal Ghosh. Their silences are as expressive as their notes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "structured-frameworks",
+      "title": "Structured Improvisation Frameworks",
+      "content": ["Random note-picking is not improvisation. Here are three frameworks that give your spontaneous playing a spine:", "**Framework 1: Theme and Variation.** Take a short phrase - the raga's pakad works perfectly. Play it once, plain. Then vary it: change the rhythm (triplets instead of pairs), add an ornament (a meend into the first note), extend it (carry the phrase one note higher), or invert the direction (descend where the original ascends). Each variation explores one dimension while keeping the core phrase recognisable. This is how masters can play for forty minutes without repeating themselves.", "**Framework 2: Register Climbing.** Begin improvising in the lower register (Sa to Ma). Once you have explored it, carry the same ideas into the middle register (Ma to Ni). Then push into the upper octave (Sa' and above). The same musical idea sounds open and grounded down low, balanced in the middle, and bright and intense up high. The listener hears a single idea blooming across the instrument's range.", "**Framework 3: Rhythmic Exploration.** Take one melodic phrase - say Sa Re Ga Ma Pa - and play it as pairs (Sa-Re, Ga-Ma, Pa), as triplets (Sa-Re-Ga, Ma-Pa-Sa), and in groups of four (Sa-Re-Ga-Ma, Pa-...). The pitch content is identical each time, but the rhythmic grouping transforms the feel. This builds layakari awareness without needing a tabla."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 2, 0, 2, 4, 5, 7],
+          "prompt": "Theme and variation: play Sa Re Ga Re Sa (the theme), then extend it to Sa Re Ga Ma Pa",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "In 'Theme and Variation', what do you vary while keeping the core phrase recognisable?",
+          "options": [
+            {
+              "text": "The raga itself - switch to a different raga each time",
+              "why": "Changing the raga breaks the whole framework. You vary treatment, not identity."
+            },
+            {
+              "text": "One dimension at a time: rhythm, ornaments, direction, or register",
+              "right": true,
+              "yes": "Correct. Change one thing per variation - rhythm, ornamentation, extension, inversion, or register - and the core phrase stays recognisable while the music evolves."
+            },
+            {
+              "text": "Nothing - play the same phrase identically each time",
+              "why": "That is repetition, not variation. Each pass should explore one new dimension."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "what-is-bandish",
+      "title": "What Is a Bandish?",
+      "content": "A bandish (composition) is different from improvisation:\n- It is **fixed** - the same notes every time you play it\n- It has a **structure** - usually sthayi (refrain) and antara (verse)\n- It is set to a **taal** - a specific rhythmic cycle\n- It lands on **sam** - important phrases resolve on beat 1\n\nThe sthayi is the heart of the composition. It states the raga's main theme in the lower and middle registers. The antara develops the theme, moving into the upper register, before returning to the sthayi.\n\nIn performance, the bandish is the foundation. You play it, then improvise around it, always returning to the sthayi.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the difference between improvisation and composition in Indian music?",
+          "options": [
+            {
+              "text": "There is no difference",
+              "why": "A composition is fixed and repeatable; improvisation is spontaneous within the raga's rules."
+            },
+            {
+              "text": "A composition is fixed and structured; improvisation is spontaneous within rules",
+              "right": true,
+              "yes": "Correct. Both follow the raga, but a composition is a specific, fixed melody set to rhythm."
+            },
+            {
+              "text": "Only compositions use ragas",
+              "why": "Both improvisation and composition work within a raga framework."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "composing-bandish",
+      "title": "Composing Your Own Bandish",
+      "content": ["Creating a bandish is simpler than it sounds. Here is a step-by-step process:", "**Step 1: Choose a raga and taal.** Start with a raga you know well (Yaman or Bhupali) and a taal you can count comfortably (Teentaal, 16 beats).", "**Step 2: Write the mukhda.** The mukhda is the pickup phrase that lands on sam. It is 4 to 8 beats long and is the first thing the listener remembers. Keep it simple and singable. Example in Bhupali: Ga Re Sa Re Ga - landing on Ga at sam.", "**Step 3: Build the sthayi.** Extend the mukhda into a full refrain that uses the raga's lower and middle register (Sa to Pa). The sthayi should feel like a complete statement that you would want to hear again.", "**Step 4: Write the antara.** The antara climbs into the upper register (Dha, Ni, upper Sa). It is a contrasting section that develops the theme before returning to the sthayi. Think of it as the second verse that brings a new perspective.", "**Step 5: Check sam alignment.** Every phrase boundary - especially the mukhda and the antara's return - must lead cleanly to sam. Count it out against the taal.", "Tips: a good composition is singable. If you cannot hum it, simplify it. The best bandishes feel obvious after you hear them, as if the raga wanted that melody all along."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What makes a good mukhda?",
+          "options": [
+            {
+              "text": "It should use as many notes as possible in the shortest time",
+              "why": "A mukhda should be simple and memorable, not dense."
+            },
+            {
+              "text": "It should be a simple, singable pickup phrase that lands cleanly on sam",
+              "right": true,
+              "yes": "Correct. The mukhda is the hook - short, memorable, and landing on beat 1."
+            },
+            {
+              "text": "It should be in the highest register to grab attention",
+              "why": "The mukhda belongs in the sthayi's register (lower to middle), not the upper octave."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the section of a bandish that climbs into the upper register called?",
+          "answer": "antara",
+          "accept": ["antara", "antra", "antaraa"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "question-answer",
+      "title": "Question and Answer",
+      "content": "Many melodies follow a question-and-answer structure:\n\n- **Question phrase** (beats 1-8): ends on an open note (Re, Ga, Pa, or Dha) - it feels incomplete, asking for resolution.\n- **Answer phrase** (beats 9-16): ends on Sa - it feels complete, like coming home.\n\nThis tension and resolution is fundamental to music everywhere. In Indian music, Sa is home. Any phrase that does not end on Sa sounds like a question. Any phrase that returns to Sa sounds like an answer.\n\nTry composing with this structure on the Compose page.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In a question-and-answer melody, where should the answer phrase end?",
+          "options": [
+            {
+              "text": "On any note that sounds interesting",
+              "why": "The answer needs to resolve. Ending on Sa provides that resolution."
+            },
+            {
+              "text": "On Sa - it creates a feeling of resolution",
+              "right": true,
+              "yes": "Right. Sa is home. The question leaves home; the answer returns."
+            },
+            {
+              "text": "On the highest note possible",
+              "why": "Height does not create resolution. Coming home to Sa does."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-raga-phrases",
+      "title": "Ear Training: Yaman Notes",
+      "content": "Raga Yaman uses these seven notes: Sa, Re, Ga, Ma(tivra), Pa, Dha, Ni.\n\nNotice the tivra Ma - this is the sharp version of the fourth note, one of Yaman's defining features. Train your ear to recognise each note by its sound and its relationship to Sa.\n\nYou will hear a note played. Identify which Yaman note it is from the choices offered.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 6, 7, 9, 11],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify the Yaman note you hear",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

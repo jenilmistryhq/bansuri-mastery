@@ -1,0 +1,233 @@
+{
+  "id": "jugalbandi",
+  "title": "Jugalbandi - Duet Playing",
+  "tasks": [
+    {
+      "id": "t1-entwined-twins",
+      "title": "Entwined Twins",
+      "content": [
+        "Jugalbandi means 'bound together as a pair.' In this format, two soloists engage in a musical conversation - one plays a phrase, the other responds. It is one of the most exciting forms of Indian classical music because it combines the depth of solo performance with the electricity of musical dialogue.",
+        "Great jugalbandis have an almost telepathic quality, where each musician seems to read the other's mind. The audience watches two distinct musical personalities merge into something neither could create alone. It is music at its most social - a reminder that at its core, music is communication."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does jugalbandi literally mean?",
+          "options": [
+            {"text": "Bound together as a pair", "right": true, "yes": "Correct. 'Jugal' means pair and 'bandi' means binding - two musicians tied together in musical conversation."},
+            {"text": "Musical competition", "why": "Jugalbandi is not a competition. It means 'bound together as a pair' - a collaborative musical dialogue."},
+            {"text": "Solo performance with accompaniment", "why": "Jugalbandi specifically means a duet between two soloists, not solo performance with accompaniment."},
+            {"text": "Playing in unison", "why": "While jugalbandi partners sometimes play together, the word means 'bound together as a pair' and emphasizes dialogue, not unison."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What makes jugalbandi different from solo performance?",
+          "options": [
+            {"text": "Two soloists engage in musical dialogue, responding to each other's phrases", "right": true, "yes": "Exactly. The back-and-forth conversation between two musical voices is what defines jugalbandi."},
+            {"text": "It uses a larger ensemble of musicians", "why": "Jugalbandi is specifically a duet between two soloists (with accompaniment). It is not about ensemble size."},
+            {"text": "The raga rules are relaxed in jugalbandi", "why": "Raga rules apply fully in jugalbandi. The difference is the conversational format between two soloists."},
+            {"text": "Jugalbandi is always faster than solo performance", "why": "Speed is not the distinction. The dialogue between two soloists is what defines jugalbandi."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t2-types",
+      "title": "Types of Duets",
+      "content": [
+        "Jugalbandis come in three varieties. Same instrument: two bansuri players, or two sitarists. The comparison is direct and the conversation intimate - both voices share the same tonal palette, so the differences are purely musical. Different instruments: bansuri with sitar, santoor, or violin. Each instrument brings its own voice and character, creating a richer textural dialogue.",
+        "Cross-tradition: Hindustani with Carnatic musicians, or Indian with Western musicians. These are the most adventurous and challenging, requiring both players to find common ground across different musical systems. The most famous jugalbandi pairing in history: Ravi Shankar on sitar and Ali Akbar Khan on sarod - their recordings from the 1950s and 60s remain landmarks of Indian classical music."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which type of jugalbandi is the most adventurous?",
+          "options": [
+            {"text": "Cross-tradition - bridging different musical systems", "right": true, "yes": "Correct. When musicians from different traditions (Hindustani-Carnatic, Indian-Western) collaborate, they must find common ground across different musical languages."},
+            {"text": "Same instrument - because direct comparison is most challenging", "why": "Same-instrument jugalbandis are intimate but not the most adventurous. Cross-tradition jugalbandis bridge entirely different musical systems."},
+            {"text": "Different instruments within the same tradition", "why": "While interesting, this stays within one musical system. Cross-tradition jugalbandis are more adventurous because they bridge different musical languages."},
+            {"text": "All types are equally adventurous", "why": "Cross-tradition jugalbandis are uniquely challenging because musicians must bridge fundamentally different musical systems."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "Name the instrument that Ravi Shankar played in his famous jugalbandis with Ali Akbar Khan.",
+          "answer": "sitar",
+          "accept": ["Sitar", "the sitar"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t3-structure",
+      "title": "The Structure",
+      "content": [
+        "A jugalbandi follows a structure that moves from individual expression to unified creation. First, both musicians agree on a raga. One plays the alap, exploring the raga's character. Then the other responds with their own alap, offering a different perspective on the same musical landscape.",
+        "When the composition begins with tabla, they take turns presenting phrases. The dialogue intensifies with sawal-jawab (question-answer) - increasingly complex phrases and responses that build energy. At the climax, both play simultaneously, weaving their melodies together in a thrilling moment of unified creation. They land on sam together for the final cadence - a moment that often draws the loudest applause."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is sawal-jawab?",
+          "options": [
+            {"text": "Question and answer - one musician plays a phrase, the other responds", "right": true, "yes": "Correct. Sawal means question, jawab means answer. This back-and-forth dialogue is the heart of jugalbandi."},
+            {"text": "Playing in unison at the same time", "why": "Playing together happens at the climax. Sawal-jawab is the question-and-answer dialogue that builds toward that climax."},
+            {"text": "A specific taal pattern used only in duets", "why": "Sawal-jawab is not a rhythmic pattern. It is the question-and-answer format where musicians take turns playing phrases."},
+            {"text": "The opening section where both musicians tune together", "why": "Sawal-jawab is the question-and-answer dialogue, typically in the middle-to-later portion of the performance."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What happens at the climax of a jugalbandi?",
+          "options": [
+            {"text": "Both musicians play simultaneously, weaving melodies together", "right": true, "yes": "Correct. After the dialogue of sawal-jawab, the climax brings both voices together in simultaneous, intertwined playing."},
+            {"text": "One musician plays while the other is silent", "why": "The climax is precisely when both voices come together simultaneously, creating a thrilling unified sound."},
+            {"text": "They switch to a different raga", "why": "The climax stays in the established raga. It is the moment when both musicians play together."},
+            {"text": "The tabla stops and both play unaccompanied", "why": "The tabla typically continues through the climax. The defining feature is both soloists playing together."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t4-deep-listening",
+      "title": "Deep Listening",
+      "content": [
+        "The most important jugalbandi skill is not playing - it is listening. You must hear every note your partner plays, understand their musical intention, and respond meaningfully. This requires a different kind of attention than solo playing, where you listen primarily to yourself and the drone.",
+        "In jugalbandi, you are constantly receiving and processing another musician's ideas while simultaneously preparing your own response. The better you listen, the more meaningful your response. Musicians who listen deeply create jugalbandis where each phrase connects naturally to the last, building a coherent musical narrative between two voices."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the most important jugalbandi skill?",
+          "options": [
+            {"text": "Deep listening - hearing and understanding your partner's phrases", "right": true, "yes": "Exactly. Without deep listening, your responses will be disconnected from your partner's ideas. Listening comes before playing."},
+            {"text": "Playing faster and more complex phrases than your partner", "why": "Jugalbandi is not a competition. Deep listening and meaningful response matter far more than speed or complexity."},
+            {"text": "Knowing more ragas than your partner", "why": "Knowledge helps, but deep listening - truly hearing and responding to your partner - is the foundation of good jugalbandi."},
+            {"text": "Playing louder to be heard over your partner", "why": "Volume is not the point. Deep listening and thoughtful musical response define great jugalbandi."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice deep listening in all my musical interactions - with recordings, with the drone, and with other musicians."
+        }
+      ]
+    },
+    {
+      "id": "t5-sawal-jawab",
+      "title": "Sawal-Jawab - Question and Answer",
+      "content": [
+        "Sawal-jawab is the heart of jugalbandi. One musician plays a phrase (sawal, the question), and the other must respond (jawab, the answer). The response can take many forms: mirror the phrase (play it back, showing you heard it), extend it (take the idea further), contrast it (offer something deliberately different), or transform it (play it faster, slower, inverted, or in a different octave).",
+        "The choice of response reveals your musicianship. A mirror shows respect and attention. An extension shows creativity. A contrast shows independence and confidence. A transformation shows mastery. The best jugalbandi players move fluidly between all four response types, keeping the conversation alive and unpredictable."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play this ascending phrase as a 'question' (sawal): Sa Re Ga Ma Pa.",
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [7, 5, 4, 2, 0],
+          "prompt": "Now play this descending phrase as an 'answer' (jawab) that mirrors the question: Pa Ma Ga Re Sa.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What are the main ways to respond in sawal-jawab?",
+          "options": [
+            {"text": "Mirror, extend, contrast, or transform the phrase", "right": true, "yes": "Correct. These four response types give you a full palette of conversational options in jugalbandi."},
+            {"text": "Always play the same phrase back exactly", "why": "Mirroring is one option, but extending, contrasting, and transforming the phrase are equally valid responses."},
+            {"text": "Always play something completely different", "why": "Contrast is one option, but mirroring, extending, and transforming show that you heard and engaged with the question."},
+            {"text": "Play the phrase faster each time until someone makes a mistake", "why": "Jugalbandi is not a speed contest. The four response types (mirror, extend, contrast, transform) create meaningful dialogue."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t6-generosity",
+      "title": "Generosity in Music",
+      "content": [
+        "A jugalbandi is not a competition. The greatest duets happen when both musicians are generous - each one making the other sound better. Sometimes you lead with a brilliant phrase. Sometimes you support with a simple, steady accompaniment. Sometimes you step back entirely and let your partner shine.",
+        "This generosity is a musical virtue that extends beyond the stage. In any musical interaction - with a teacher, a fellow student, an accompanist - the goal is shared beauty, not individual glory. The Indian tradition calls this 'satsang' in its broader sense: the company of truth, where egos dissolve and something higher emerges through collective effort."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What attitude produces the best jugalbandis?",
+          "options": [
+            {"text": "Generosity - making each other sound better", "right": true, "yes": "Exactly. When both musicians prioritize the shared musical experience over individual display, the jugalbandi transcends what either could achieve alone."},
+            {"text": "Competition - trying to outplay each other", "why": "Competition creates tension but not depth. Generosity produces the most musically satisfying jugalbandis."},
+            {"text": "Indifference - playing without regard for the other", "why": "Jugalbandi requires deep engagement with your partner. Indifference defeats its purpose entirely."},
+            {"text": "Dominance - one musician controlling the other", "why": "Jugalbandi is a conversation between equals. Dominance turns dialogue into monologue."}
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "When should you step back during a jugalbandi?",
+          "options": [
+            {"text": "When your partner has a musical idea worth developing fully", "right": true, "yes": "Correct. Recognizing when to give space is as important as knowing when to play. Let your partner's ideas breathe."},
+            {"text": "Never - you should always play to fill every silence", "why": "Silence and space are essential. Stepping back when your partner has something to say is part of generosity."},
+            {"text": "Only when you have made a mistake", "why": "Stepping back is not about hiding mistakes. It is about giving your partner space to develop their musical ideas."},
+            {"text": "Only at the very beginning of the performance", "why": "You should be ready to step back at any point when your partner's idea deserves full attention."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t7-practice-with-recordings",
+      "title": "Practicing with Recordings",
+      "content": [
+        "You can practice jugalbandi skills alone by using recordings. Find a recording of a bansuri or other instrument performing a raga you know. Listen to a phrase. Pause the recording. Play your response on your bansuri. Resume the recording and listen to the next phrase. Respond again.",
+        "This builds the listening-responding cycle that jugalbandi requires. At first, your responses may feel disconnected from what you heard. Over time, they will become more creative and musically connected. You will start to anticipate the recorded musician's ideas and find ways to complement them. This exercise also trains your musical memory - you must remember the phrase you just heard well enough to respond to it."
+      ],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I will practice responding to recordings as jugalbandi preparation - listening to a phrase, pausing, and playing my response."
+        },
+        {
+          "type": "choice",
+          "prompt": "What does the recording-response exercise primarily build?",
+          "options": [
+            {"text": "The listening-responding cycle and musical memory", "right": true, "yes": "Correct. This exercise trains both your ears (deep listening) and your musical memory (remembering phrases well enough to respond)."},
+            {"text": "Speed and technical ability", "why": "While technique helps, this exercise is primarily about building the listening-responding cycle, not speed."},
+            {"text": "Knowledge of new ragas", "why": "You should use ragas you already know. The goal is building the dialogue skill, not learning new material."},
+            {"text": "Breath control and stamina", "why": "The primary goal is developing the listening-responding habit, not physical endurance."}
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t8-first-duet",
+      "title": "Your First Duet",
+      "content": [
+        "When you are ready for a real jugalbandi, start simply. Choose a raga both players know well. Agree on a simple taal like Teentaal. Take turns playing short phrases - just 4 to 8 notes each. Focus on listening and responding, not on impressing. Gradually extend phrase lengths as comfort grows.",
+        "The first jugalbandi experience is often transformative. It reveals music as conversation, not monologue. You discover that the same raga sounds different when filtered through another musician's personality. You learn that your music gains meaning when it connects to someone else's ideas. And you understand why Indian classical music has always been a tradition passed from person to person, voice to voice, breath to breath."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 5, 4, 2, 0],
+          "prompt": "Play this phrase as your opening statement in a duet: Sa Re Ga Ma Pa Ma Ga Re Sa.",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I am ready to explore music as conversation - listening deeply, responding thoughtfully, and sharing the beauty of the raga with another musician."
+        }
+      ]
+    }
+  ]
+}

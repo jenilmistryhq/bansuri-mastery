@@ -1,0 +1,253 @@
+{
+  "id": "taan-patterns",
+  "title": "Taan Patterns and Types",
+  "tasks": [
+    {
+      "id": "t1-what-is-taan",
+      "title": "What Is a Taan?",
+      "content": [
+        "A taan is a fast melodic run - a burst of rapid notes within a raga. Taans add brilliance, energy, and virtuosity to a performance. They typically appear in the drut (fast) section of a raga presentation, after the alap and vilambit bandish have established the raga's mood.",
+        "A well-executed taan is thrilling - it shows mastery of the raga's notes at speed while maintaining musical beauty. A sloppy taan, however, is worse than none at all. Clarity and precision matter far more than raw speed. The audience should hear every note, not a blur of sound."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "When in a raga presentation do taans typically appear?",
+          "options": [
+            { "text": "In the drut (fast) section, after the alap and vilambit bandish", "right": true, "yes": "Correct - taans come after the raga's mood has been established in the slower sections." },
+            { "text": "At the very beginning, before the alap", "why": "The alap comes first. Taans appear much later, in the fast section." },
+            { "text": "Only during the alap", "why": "The alap is slow and unmetered - taans belong to the faster, rhythmic sections." },
+            { "text": "Taans can appear anywhere with no convention", "why": "While great musicians have freedom, taans conventionally appear in the drut section." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What is more important in a taan than speed?",
+          "options": [
+            { "text": "Clarity and precision - every note must be audible", "right": true, "yes": "Exactly. A clean taan at moderate speed is always better than a muddy one at high speed." },
+            { "text": "Volume - taans should be as loud as possible", "why": "Volume is not the goal. Clarity and clean note production matter most." },
+            { "text": "Length - longer taans are always better", "why": "A short, clean taan is far better than a long, sloppy one." },
+            { "text": "Complexity - always use the most difficult pattern", "why": "Simplicity executed with clarity is more musical than complexity executed poorly." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-sapat-taan",
+      "title": "Sapat Taan - The Straight Run",
+      "content": [
+        "The sapat (straight) taan is the foundation of all taan practice. Notes move in sequential order: Sa Re Ga Ma Pa Dha Ni Sa' (ascending) or Sa' Ni Dha Pa Ma Ga Re Sa (descending). Clean, clear, and direct.",
+        "Every note must be audible even at speed. The sapat taan is not flashy, but it demonstrates the most fundamental skill: clean note production at high velocity. If your sapat taan is not clean, no other taan type will be either. Master this first."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the ascending sapat taan: Sa Re Ga Ma Pa Dha Ni Sa'.",
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Now play the descending sapat taan: Sa' Ni Dha Pa Ma Ga Re Sa.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What defines a sapat taan?",
+          "options": [
+            { "text": "Notes move in sequential, straight order up or down the scale", "right": true, "yes": "Right - sapat means 'straight' or 'flat', referring to the sequential note movement." },
+            { "text": "Notes zigzag back and forth", "why": "That describes a vakra (crooked) taan, not a sapat (straight) taan." },
+            { "text": "Notes skip over scale degrees", "why": "That describes a sapaat-chhoot (leaping) taan. Sapat taans are sequential." },
+            { "text": "Each note is oscillated with gamak", "why": "That describes a gamak taan. Sapat taans use clean, unornamented notes." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-vakra-taan",
+      "title": "Vakra Taan - The Zigzag",
+      "content": [
+        "The vakra (crooked) taan uses non-sequential, zigzag patterns: Sa Ga Re Ma Ga Pa Ma Dha. Instead of going straight up, the melody weaves back and forth. This creates a richer, more melodically interesting texture than sapat.",
+        "Vakra taans are more common in actual performance because they sound more musical. The zigzag pattern can follow many designs - the raga's characteristic phrases often dictate the pattern. A vakra taan in Yaman will sound very different from one in Bhairavi because each raga has its own natural zigzag movements."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 2, 5, 4, 7, 5, 9],
+          "prompt": "Play this vakra taan pattern: Sa Ga Re Ma Ga Pa Ma Dha. Notice the zigzag movement.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What makes vakra taan different from sapat taan?",
+          "options": [
+            { "text": "Vakra uses non-sequential, zigzag note patterns", "right": true, "yes": "Correct - vakra means 'crooked' or 'curved', referring to the weaving pattern." },
+            { "text": "Vakra is always faster than sapat", "why": "Speed does not define the difference. Vakra refers to the note ORDER, not the tempo." },
+            { "text": "Vakra uses only descending notes", "why": "Vakra taans weave both up and down - that is what makes them zigzag." },
+            { "text": "Vakra uses fewer notes", "why": "Vakra taans can use just as many notes as sapat. The difference is in the ORDER of notes." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-leaping-taan",
+      "title": "Sapaat-Chhoot Taan - The Leap",
+      "content": [
+        "The sapaat-chhoot (leaping) taan skips scale degrees: Sa Ga Pa Ni or Re Ma Dha Sa'. By leaping over notes, this taan creates an open, airy quality. It is especially effective on the bansuri because the leaps show off the instrument's range.",
+        "The challenge with leaping taans is maintaining intonation on the landing notes when jumping over intervening notes. Each landing must be precise - there is no neighboring note to guide your finger into position. The wider the leap, the greater the risk of landing slightly out of tune."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 4, 7, 11, 2, 5, 9, 12],
+          "prompt": "Play this leaping taan: Sa Ga Pa Ni Re Ma Dha Sa'. Feel the openness of the skipped notes.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What quality does the leaping taan create?",
+          "options": [
+            { "text": "An open, airy feeling from the skipped notes", "right": true, "yes": "Yes - the gaps between notes create a sense of spaciousness and freedom." },
+            { "text": "A dense, heavy texture", "why": "Skipping notes creates the opposite - openness and lightness, not density." },
+            { "text": "A slow, meditative mood", "why": "Leaping taans are still fast runs - the leaps add openness, not slowness." },
+            { "text": "A monotonous, repetitive pattern", "why": "The varied intervals of leaping taans are anything but monotonous." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t5-gamak-taan",
+      "title": "Gamak Taan - The Power Run",
+      "content": [
+        "The gamak taan oscillates each note even at speed - every note gets a slight shake or vibration. This is the most difficult taan type, requiring simultaneous speed and ornamental control. Associated with the dhrupad tradition, gamak taans sound powerful and intense.",
+        "On the bansuri, gamak taans use rapid finger oscillation on each note while maintaining forward momentum through the phrase. The result sounds like a cascade of shimmering notes - each one alive with movement. Very few players can execute gamak taans cleanly at high speed."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What makes gamak taan the most difficult type?",
+          "options": [
+            { "text": "It requires both speed AND ornamental oscillation on each note simultaneously", "right": true, "yes": "Exactly - maintaining gamak while also moving quickly through notes demands extraordinary control." },
+            { "text": "It uses more notes than other taan types", "why": "The number of notes is similar. The difficulty comes from oscillating EACH note at speed." },
+            { "text": "It must be played at the highest possible volume", "why": "Volume is not the challenge. The difficulty is combining speed with note-level ornamentation." },
+            { "text": "It requires a special type of bansuri", "why": "Gamak taan can be played on any bansuri. The difficulty is in the player's technique." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which vocal tradition is gamak taan most closely associated with?",
+          "options": [
+            { "text": "Dhrupad", "right": true, "yes": "Correct - the powerful, oscillatory quality of gamak taans reflects the dhrupad tradition's emphasis on voice and tonal power." },
+            { "text": "Thumri", "why": "Thumri emphasizes emotional expression and lighter ornaments, not the power of gamak." },
+            { "text": "Bhajan", "why": "Bhajans are devotional songs. Gamak taans belong to the classical dhrupad tradition." },
+            { "text": "Ghazal", "why": "Ghazals are Urdu poetry set to music. Gamak taans are rooted in dhrupad." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-building-speed",
+      "title": "Building Speed Correctly",
+      "content": [
+        "The golden rule of taan practice: start slow. Play any taan pattern at a comfortable speed until every note is perfectly clean and in tune. Then increase speed by small increments (5-10 BPM on a metronome). If clarity suffers at any point, slow back down immediately.",
+        "Speed built on a foundation of cleanliness lasts. Speed forced before cleanliness is established creates habits that are extremely hard to fix later. Practice in small groups - 4 notes, then 8, then 16 - before attempting full-scale runs. Patience here saves months of frustration."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 5, 4, 2],
+          "prompt": "Play this short phrase slowly and cleanly. Focus on making every note perfectly clear.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the golden rule of building taan speed?",
+          "options": [
+            { "text": "Start slow and only increase speed when every note is clean", "right": true, "yes": "Yes - clean first, fast later. Never sacrifice clarity for speed." },
+            { "text": "Play as fast as possible from the start to build muscle memory", "why": "This creates sloppy habits. Speed must be built on a foundation of clean playing." },
+            { "text": "Skip slow practice and focus only on fast passages", "why": "Without slow, careful practice, fast playing will always be muddy and imprecise." },
+            { "text": "Increase speed by 50 BPM at a time for efficiency", "why": "Large jumps skip over the crucial intermediate speeds. Small increments (5-10 BPM) build reliable control." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-landing",
+      "title": "Landing the Taan",
+      "content": [
+        "Every taan must LAND somewhere meaningful. A taan that runs off the edge sounds unfinished and amateurish. The landing note should be the vadi, the samvadi, Sa, or Pa - a structurally important note in the raga.",
+        "In composition, taans are designed to land precisely on sam (beat 1 of the taal cycle). This means calculating the taan's length to arrive at sam at exactly the right moment. Great taan execution is as much about the landing as the run. The audience remembers the arrival, not the journey."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Where should a taan land?",
+          "options": [
+            { "text": "On a structurally important note like vadi, samvadi, Sa, or Pa", "right": true, "yes": "Correct - the landing note gives the taan its sense of purpose and completion." },
+            { "text": "On any random note - it does not matter", "why": "A taan without a meaningful landing sounds aimless. The landing note matters greatly." },
+            { "text": "Always on the highest note possible", "why": "Height is not the goal. The landing should be on a note that is structurally important in the raga." },
+            { "text": "On the same note where the taan started", "why": "While sometimes a taan returns to its starting note, the key is landing on a meaningful note, not necessarily the same one." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "In a composition, what beat should the taan ideally arrive on?",
+          "options": [
+            { "text": "Sam - beat 1 of the taal cycle", "right": true, "yes": "Yes - landing on sam creates the most satisfying resolution. The taan's length is calculated to hit sam precisely." },
+            { "text": "Any beat - timing does not matter in taans", "why": "Timing is crucial. Landing on sam shows mastery of both melody and rhythm." },
+            { "text": "The last beat of the cycle", "why": "While landing near the end is common in approach, the target is sam (beat 1), not the last beat." },
+            { "text": "The weakest beat to create surprise", "why": "While occasional off-beat landings can be effective, the standard goal is sam." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-tonguing",
+      "title": "Taan and Tonguing",
+      "content": [
+        "On the bansuri, clean taan execution requires tonguing - using the tongue to articulate each note separately. Without tonguing, fast notes blur together into an indistinct stream. The tongue acts as a gate, cleanly starting and separating each note.",
+        "Single tonguing (ta-ta-ta) works up to moderate speeds. For drut (fast) taans, double tonguing (ta-ka-ta-ka) is essential - it alternates between the tip of the tongue (ta) and the back of the tongue (ka), doubling the articulation speed. Practice tonguing as a separate skill before combining it with finger patterns."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is tonguing essential for bansuri taans?",
+          "options": [
+            { "text": "Without tonguing, fast notes blur together and lose clarity", "right": true, "yes": "Right - the tongue separates each note cleanly, acting as a gate for the airstream." },
+            { "text": "Tonguing makes the bansuri louder", "why": "Tonguing is about articulation and clarity, not volume." },
+            { "text": "The bansuri cannot produce fast notes without tonguing", "why": "The notes can be played without tonguing, but they blur together. Tonguing adds articulation." },
+            { "text": "Tonguing is only used for decoration", "why": "In taans, tonguing is a structural necessity for clarity, not merely decorative." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What syllables are used in double tonguing?",
+          "answer": "ta-ka",
+          "accept": ["taka", "ta ka", "ta-ka-ta-ka", "ta ka ta ka"],
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "t9-practice",
+      "title": "Practice: Building a Taan",
+      "content": [
+        "Build a taan step by step: (1) Choose a pattern - start with sapat ascending. (2) Play it at slow speed until perfect. (3) Add tonguing for articulation. (4) Gradually increase speed with a metronome. (5) Practice landing on a target note (Sa or Pa). (6) Try the same pattern as vakra. (7) Combine ascending and descending into one continuous taan.",
+        "This methodical approach builds reliable speed over weeks, not days. There are no shortcuts. The musicians who play the most dazzling taans are those who spent the most patient hours at slow tempos. Trust the process."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "prompt": "Play the full ascending-descending sapat taan: Sa Re Ga Ma Pa Dha Ni Sa' Ni Dha Pa Ma Ga Re Sa. Keep every note clean.",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will build taan speed gradually with a metronome, increasing only when every note is clean."
+        }
+      ]
+    }
+  ]
+}

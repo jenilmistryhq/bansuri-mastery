@@ -33,6 +33,8 @@ export const RULES = {
   quest: { xp: 20, cap: null, label: "A daily quest (+20 for all three)" },
   recording: { xp: 15, cap: 30, label: "A recording made" },
   minutes: { xp: 1, cap: 60, label: "Each minute of practice logged" },
+  room: { xp: 5, cap: 60, label: "A room question answered" },
+  room_complete: { xp: 50, once: true, label: "Finished a room" },
 };
 const STREAK_BONUS = 0.1; // +10% while the practice streak is 7 days or more
 

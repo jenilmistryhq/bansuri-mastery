@@ -126,7 +126,7 @@ function thenAndNow(cleanups) {
     const now = audio.find(r => r.date === today() && r !== capsule);
     if (!capsule || !now) return;
     const clip = (label, r) => { const u = URL.createObjectURL(r.blob); urls.push(u); return h("div", { class: "stack tight" }, h("b", null, label), h("audio", { controls: true, preload: "none", src: u, "aria-label": label })); };
-    box.append(h("h2", null, "Your sound then and now"), h("div", { class: "ms-pair" }, clip("Day 0", capsule), clip("Today", now)));
+    box.append(h("h2", null, "Your sound then and now"), h("div", { class: "ms-pair" }, clip("First recording", capsule), clip("Today", now)));
     box.hidden = false;
   }).catch(() => { /* recordings unavailable: nothing to compare */ });
   return box;
@@ -184,7 +184,7 @@ export function practiseLink(it, md, path, day) {
     const pick = links.find(l => /#\/read\/lessons\//.test(l.href)) || links[0];
     if (pick) {
       const ts = /#\/read\/troubleshooting\/(TS-\d\d)/.exec(pick.href);
-      return ts ? { href: "#/skills/fix/" + ts[1], label: pick.label } : pick;
+      return ts ? { href: "#/teacher/fix/" + ts[1], label: pick.label } : pick;
     }
   }
   return { href: "#/session/" + day, label: "Rehearse first" };
@@ -242,16 +242,19 @@ export async function render(main, { params }) {
   const md = await fetchDoc(info.path);
   const items = checklist(md);
   const state = milestoneState(id);
-  const unlocked = info.day <= current();
+  const setupReady = id !== "M0" || !!(lessonRecord("m0") || {}).done;
+  const unlocked = info.day <= current() && setupReady;
   const cleanups = [];
   let player = null;
 
   // The top (W35): back to the course, the milestone's number and title, where it stands.
   const chip = h("span", { class: "chip " + (state.status === "passed" ? "good" : state.status === "failed" ? "warn" : "mutedc") }, state.status === "passed" ? "Passed " + fmtDate(state.passedOn) : state.status === "failed" ? "Not passed yet" : "Not taken");
   page.append(backHead("#/course/milestones", "Course", info.title,
-    h("div", { class: "row ms-sub" }, h("span", { class: "eyebrow" }, "Milestone " + id + " - Day " + info.day), chip, h("a", { href: "#/read/" + info.path }, "Read the full test"))));
+    h("div", { class: "row ms-sub" }, h("span", { class: "eyebrow" }, "Checkpoint " + id), chip, h("a", { href: "#/read/" + info.path }, "Read the full test"))));
 
-  if (!unlocked) page.append(h("div", { class: "notice info" }, "This milestone is ahead of you (Day " + info.day + "). You can read it now; the test opens when you reach that day."));
+  if (!unlocked) page.append(h("div", { class: "notice info" }, id === "M0"
+    ? h("div", null, h("b", null, "Complete the first room."), h("p", null, "Sa - The Home Note teaches the skills this checkpoint checks. After you finish that room, this checkpoint is recorded with your progress."), h("a", { class: "btn", href: "#/rooms/sa-the-home-note" }, "Go to Sa - The Home Note"))
+    : "This checkpoint is part of a later section of your Path. Continue with the current learning activities first."));
   // Two tries without passing: a three-minute check finds which basic skill is holding things back.
   if (state.status !== "passed" && state.attempts.filter(x => !x.passed).length >= 2) page.append(stuckCheck(cleanups));
   // Passed: your sound then and now.
@@ -299,9 +302,9 @@ export async function render(main, { params }) {
   const restartBtn = midway ? h("button", { type: "button", class: "btn ghost" }, "Start over") : null;
   if (restartBtn) restartBtn.addEventListener("click", () => { clearRun(id); play(); });
   cover.append(h("div", { class: "row ms-ways" },
-    unlocked ? takeBtn : h("p", { class: "small muted" }, "Opens on Day " + info.day + "."),
+    unlocked ? takeBtn : h("p", { class: "small muted" }, id === "M0" ? "Finish the setup room to unlock this checkpoint." : "Continue through your Path to unlock this checkpoint."),
     restartBtn,
-    h("a", { class: "btn", href: "#/session/" + info.day }, "Rehearse first")));
+    h("a", { class: "btn", href: id === "M0" && !setupReady ? "#/rooms/sa-the-home-note" : "#/session/" + info.day }, id === "M0" && !setupReady ? "Go to first room" : "Rehearse first")));
 
   // Previous attempts: one row, opening the list (date, rubric, result).
   let history = null;

@@ -1,0 +1,219 @@
+{
+  "id": "nyas-and-vistar",
+  "title": "Nyas and Vistar - Resting and Developing",
+  "tasks": [
+    {
+      "id": "t1-resting-growing",
+      "title": "Resting and Growing",
+      "content": [
+        "Two concepts define how a raga unfolds: nyas (resting) and vistar (developing). Nyas is WHERE you pause - the notes where phrases come to rest and linger. Vistar is HOW you grow the raga - the gradual, note-by-note expansion of the melodic space.",
+        "Together, they create the breathing rhythm of a raga performance: move, rest, move further, rest again. Like walking through a beautiful landscape, pausing to appreciate each new vista before continuing. Without nyas, the music rushes past with no anchors. Without vistar, the raga appears all at once with no journey."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does nyas mean in raga performance?",
+          "options": [
+            { "text": "A resting point - a note where phrases come to rest", "right": true, "yes": "Correct. Nyas swaras are the notes where phrases naturally settle, creating moments of resolution and presence." },
+            { "text": "A fast melodic run", "why": "Fast runs are taans. Nyas means a resting point - where phrases pause and settle." },
+            { "text": "A rhythmic cycle", "why": "Rhythmic cycles are taals. Nyas refers to the notes where melodic phrases come to rest." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does vistar mean?",
+          "options": [
+            { "text": "Gradual expansion - revealing the raga note by note", "right": true, "yes": "Yes. Vistar is the art of unfolding a raga gradually, introducing one note at a time and exploring each before moving on." },
+            { "text": "Playing all notes at once", "why": "Playing everything at once is the opposite of vistar. Vistar means gradual, patient expansion." },
+            { "text": "Ending a composition", "why": "Endings relate to tihai or mohra. Vistar is the gradual expansion and development of a raga." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-nyas-swaras",
+      "title": "Nyas Swaras - Where to Rest",
+      "content": [
+        "Every raga has certain notes that serve as natural resting points (nyas swaras). The vadi is the primary nyas - the note with the most weight and duration. The samvadi is the secondary nyas. Sa and Pa are always available as resting points because of their structural stability.",
+        "When a phrase lands on a nyas swara, it sounds complete and resolved. When it lands on a non-nyas note, it sounds suspended and unfinished. This suspended quality is not a mistake - it can be used intentionally to create tension. But resolution always returns to a nyas swara."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which note is the primary nyas (resting point) in any raga?",
+          "options": [
+            { "text": "The vadi", "right": true, "yes": "Correct. The vadi is the most important note in a raga and serves as its primary resting point, receiving the most weight and duration." },
+            { "text": "Sa", "why": "Sa is always available as a resting point, but the primary nyas is the vadi - the raga's most important note." },
+            { "text": "Pa", "why": "Pa is always available as a resting point, but the primary nyas is the vadi - the raga's king note." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Besides the vadi and samvadi, what note is always available as a nyas swara? (Hint: the home note)",
+          "answer": "Sa",
+          "accept": ["sa", "SA"],
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "t3-weight",
+      "title": "The Weight of a Rest",
+      "content": [
+        "Nyas is not simply stopping on a note - it is giving a note WEIGHT. When you rest on the vadi, sustain it. Let it ring. Add a gentle vibrato. Let the drone interact with it. The audience should feel that this note matters.",
+        "Compare two approaches: playing through the vadi quickly (it passes without notice) versus landing on it and holding it with intention (it becomes a moment of meaning). The same note, treated differently, creates completely different musical experiences. The art of nyas is the art of making notes matter."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 8,
+          "cents": 15,
+          "prompt": "Rest on Pa with intention and weight. This is not just holding a note - it is making a musical statement. Let Pa ring against the drone.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What transforms a brief note into a nyas moment?",
+          "options": [
+            { "text": "Giving it duration, weight, and presence", "right": true, "yes": "Exactly. Nyas is about intention - sustaining the note, adding vibrato, letting it interact with the drone. It is making a note matter." },
+            { "text": "Playing it louder", "why": "Volume alone does not create nyas. It requires duration, intention, and presence - making the note a moment of meaning." },
+            { "text": "Playing it faster", "why": "Speed is the opposite of nyas. Nyas requires slowing down, sustaining, and giving the note weight and presence." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-swar-vistar",
+      "title": "Swar Vistar - Note by Note",
+      "content": [
+        "Vistar begins with Sa. Just Sa - established against the drone. Then introduce Re: play Sa-Re-Sa. Explore this two-note world. How does Re feel against Sa? What phrases can you create with just these two notes?",
+        "Then add Ga: play Sa-Re-Ga-Re-Sa. Each new note is a revelation, connecting to everything that came before. Continue adding one note at a time until the full raga is revealed. This is the technique of alap - the most meditative and profound section of a raga performance. The raga grows organically, like a plant unfolding from a seed."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 0],
+          "prompt": "Sa-Re-Sa: the simplest vistar. Introduce Re and return home. Feel the journey in just three notes.",
+          "points": 5
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 2, 0],
+          "prompt": "Sa-Re-Ga-Re-Sa: now the world has three notes. Ga adds warmth to what was just movement.",
+          "points": 8
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the principle of swar vistar?",
+          "options": [
+            { "text": "Introduce one note at a time, exploring each before adding the next", "right": true, "yes": "Yes. Vistar is patient and gradual. Each new note connects to everything before it, and the raga grows organically." },
+            { "text": "Play the full scale as quickly as possible", "why": "Speed is the opposite of vistar. The principle is gradual, one-note-at-a-time expansion." },
+            { "text": "Repeat the same phrase many times", "why": "Repetition is part of practice but not the principle of vistar. Vistar means introducing new notes one at a time." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t5-pace",
+      "title": "The Pace of Unfolding",
+      "content": [
+        "Vistar speed matters. Too fast: each new note feels rushed, the listener cannot absorb it, the raga sounds hurried and superficial. Too slow: the music loses momentum, the listener's attention drifts, and the performance feels stagnant.",
+        "The right pace: each new note arrives when the previous space has been fully explored. How do you know when a note has been \"fully explored\"? When you have played it in multiple phrasings, rested on it, and created at least one moment of beauty with it. Then - and only then - introduce the next note. This judgment is what makes alap an art, not a formula."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What happens if vistar is too fast?",
+          "options": [
+            { "text": "The listener cannot absorb each note and the raga sounds superficial", "right": true, "yes": "Correct. Rushing through vistar robs each note of its impact. The listener needs time to absorb and appreciate each new addition." },
+            { "text": "The raga sounds more exciting", "why": "Speed in vistar does not create excitement - it creates confusion. The raga sounds rushed and superficial." },
+            { "text": "The intonation improves", "why": "Vistar speed has nothing to do with intonation. Too-fast vistar makes the raga sound hurried and unfinished." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "How do you know when to introduce the next note in vistar?",
+          "options": [
+            { "text": "When the current note has been explored in multiple phrasings and created a moment of beauty", "right": true, "yes": "Yes. Each note deserves full exploration before the next arrives. When you have found beauty in it, you are ready to move on." },
+            { "text": "After exactly 30 seconds", "why": "There is no fixed time. The pace depends on how fully each note has been explored and expressed." },
+            { "text": "When the audience claps", "why": "Vistar pacing is an artistic judgment, not driven by audience response. Move on when the note has been fully explored." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-checkpoint",
+      "title": "Nyas as Checkpoint",
+      "content": [
+        "During vistar, nyas swaras serve as checkpoints. After introducing each new note, return to a nyas swara to rest. This creates a natural breathing rhythm: explore, then settle. Expand, then anchor.",
+        "Example in a shuddha scale: Introduce Re, rest on Sa (nyas). Introduce Ga, rest on Ga or Sa (nyas). Introduce Ma, rest on Ma (nyas). Introduce Pa, rest on Pa (nyas). These pauses give the listener time to absorb each expansion and prevent the music from feeling like a relentless forward march."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 0, 2, 4, 2, 4, 5, 4, 5, 7],
+          "prompt": "Vistar with nyas pauses: Sa-Re-Sa (rest), Re-Ga-Re (expand), Ga-Ma-Ga (expand), Ma-Pa (arrive). Feel the rhythm of exploration and rest.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What role do nyas swaras play during vistar?",
+          "options": [
+            { "text": "They serve as checkpoints - moments of rest between expansions", "right": true, "yes": "Correct. Nyas swaras anchor the vistar, giving both performer and listener moments to settle before the next expansion." },
+            { "text": "They indicate when to speed up", "why": "Nyas is about resting, not accelerating. They are checkpoints where the music pauses between expansions." },
+            { "text": "They must be avoided during vistar", "why": "Nyas swaras are essential during vistar. They provide the resting points that give the expansion its breathing rhythm." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-directions",
+      "title": "Ascending and Expanding",
+      "content": [
+        "Vistar usually unfolds from low to high - mandra (lower) to madhya (middle) to taar (upper). This ascending journey mirrors a natural narrative arc: beginning, development, climax.",
+        "But vistar can also expand outward from a central note. In some ragas, the vistar begins from the vadi and expands in both directions. For example, if the vadi is Ma: start with Ma, explore Ma-Ga below and Ma-Pa above, then expand further in both directions. This approach reveals the raga from its emotional center outward, like ripples spreading from a stone dropped in water."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the typical direction of vistar?",
+          "options": [
+            { "text": "From low to high - ascending through the registers", "right": true, "yes": "Correct. The standard vistar moves from mandra (lower) to madhya (middle) to taar (upper), creating a natural narrative arc." },
+            { "text": "From high to low", "why": "Descending vistar is less common. The typical direction is ascending, from low to high." },
+            { "text": "Random order", "why": "Vistar is never random. The standard direction is ascending, though expanding from a central note is also used." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the alternative approach to vistar direction?",
+          "options": [
+            { "text": "Expanding outward from the vadi in both directions", "right": true, "yes": "Yes. Starting from the vadi and exploring upward and downward simultaneously reveals the raga from its emotional center, like ripples spreading outward." },
+            { "text": "Playing only descending phrases", "why": "Descending-only is not vistar. The alternative approach is expanding outward from the vadi in both directions." },
+            { "text": "Skipping every other note", "why": "Skipping notes is not a vistar technique. The alternative is expanding outward from the vadi in both directions." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-practice",
+      "title": "Practice: Vistar in Bilawal",
+      "content": [
+        "Practice vistar in Raga Bilawal (the natural scale - all shuddha notes). Begin with Sa. Hold it. Introduce Re. Play Sa-Re-Sa several times. Rest on Sa. Introduce Ga. Play Re-Ga-Re-Sa. Rest on Sa or Ga.",
+        "Continue note by note through Ma, Pa, Dha, Ni to upper Sa. The entire vistar should take at least 5 minutes - there is no rush. This exercise teaches the patience and musicality that separates playing notes from playing music. When you reach the upper Sa, you should feel that you have journeyed through an entire world of sound."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "After completing the full vistar (take your time before playing this), play the ascending saptak as a celebration of the journey you have made.",
+          "points": 15
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will practice vistar with patience and intention - revealing the raga one note at a time, never rushing."
+        }
+      ]
+    }
+  ]
+}

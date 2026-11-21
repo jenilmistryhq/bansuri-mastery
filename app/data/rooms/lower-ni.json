@@ -1,0 +1,192 @@
+{
+  "id": "lower-ni",
+  "title": "Lower Ni - The Seventh Note Below",
+  "tasks": [
+    {
+      "id": "below-sa",
+      "title": "Below Sa",
+      "content": "So far, all your notes have been above Sa. But the bansuri can also play notes below Sa by opening the bottom holes while keeping the top holes closed differently.\n\nLower Ni (written as .Ni or Ni with a dot below) is the seventh note of the lower octave. On many flutes, you get it by opening hole 1 while keeping 2 and 3 closed.\n\nLower Ni is essential - it appears in the opening phrases of nearly every raga. Phrases like Ni Sa Re and Ni Re Sa give melodies a sense of arrival and departure from home.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Where does lower Ni sit relative to Sa?",
+          "options": [
+            {
+              "text": "One step above Sa",
+              "why": "That would be Re. Lower Ni is below Sa."
+            },
+            {
+              "text": "One step below Sa",
+              "right": true,
+              "yes": "Correct. Lower Ni is just below Sa - it leads naturally up to it."
+            },
+            {
+              "text": "One octave above Sa",
+              "why": "An octave above would be upper Sa. Lower Ni is below Sa."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "saptaks-and-octaves",
+      "title": "Understanding Saptaks",
+      "content": ["Indian music divides the pitch range into three registers called saptaks. The mandra saptak is the lower octave, where notes sound deep and resonant. The madhya saptak is the middle octave - the primary playing range of the bansuri. The taar saptak is the upper octave, produced by overblowing with more air speed.", "A fascinating property of octaves is frequency doubling. If your middle Sa vibrates at 300 Hz, the upper Sa vibrates at exactly 600 Hz, and the lower Sa at 150 Hz. This mathematical relationship is why the same note name in different octaves sounds 'the same but different' - your ear perceives them as the same pitch class. This concept is called octave equivalence.", "On the bansuri, you move between saptaks primarily by changing air speed and pressure. Lower notes need less air pressure and a gentler, wider air stream. Upper notes need faster, more focused air. The fingerings often remain the same - what changes is your breath."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "If middle Sa vibrates at 300 Hz, what frequency does upper Sa vibrate at?",
+          "options": [
+            {
+              "text": "150 Hz",
+              "why": "150 Hz would be lower Sa. Upper Sa is double the frequency of middle Sa."
+            },
+            {
+              "text": "450 Hz",
+              "why": "Octaves follow a doubling relationship, not addition of 150."
+            },
+            {
+              "text": "600 Hz",
+              "right": true,
+              "yes": "Exactly. Each octave doubles the frequency. 300 Hz becomes 600 Hz one octave up."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Name the three saptaks from lowest to highest, separated by commas.",
+          "answer": "mandra, madhya, taar",
+          "accept": ["mandra, madhya, taar", "mandra madhya taar", "mandra,madhya,taar"],
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "hold-lower-ni",
+      "title": "Hold Lower Ni",
+      "content": ["The fingering for lower Ni varies by flute. On most six-hole bansuris, it involves partially or fully opening hole 1 while holes 2-3 stay closed.", "Play lower Ni and hold it steadily. It should sound one semitone below your Sa. Use the drone to check - Ni should sit just under Sa, creating a gentle tension that wants to resolve upward.", "Lower notes require less air pressure than middle-octave notes. If Ni sounds airy or unstable, try reducing your air speed slightly while keeping the stream focused. The lower register rewards patience - think of it as whispering into the flute rather than speaking. The note will bloom when you find the right air balance.", "Listen to how lower Ni interacts with the drone. Against the Sa drone, Ni creates a distinctive shimmering tension. This dissonance is not harsh - it is a beautiful pull that gives Indian music its expressive depth. Many maestros linger on lower Ni precisely for this effect."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": -1,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold lower Ni steady for 5 seconds",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": -1,
+          "seconds": 4,
+          "cents": 25,
+          "prompt": "Now hold lower Ni with tighter pitch control",
+          "points": 25
+        }
+      ]
+    },
+    {
+      "id": "ni-sa-resolution",
+      "title": "Ni to Sa Resolution",
+      "content": "The movement from Ni up to Sa is one of the most important sounds in Indian music. It creates a feeling of coming home.\n\nPlay: .Ni - Sa (lower Ni, then Sa)\n\nListen to how Ni wants to resolve upward to Sa. This pull is called a leading tone in Western theory, and it is fundamental to melodic structure worldwide. Many ragas begin their ascending phrases from Ni below, using this powerful gravitational pull toward Sa.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 0],
+          "prompt": "Play lower Ni resolving up to Sa",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is the Ni-to-Sa movement important?",
+          "options": [
+            {
+              "text": "It is the loudest interval",
+              "why": "Volume has nothing to do with it. The importance is in the harmonic pull."
+            },
+            {
+              "text": "It creates a feeling of resolution - coming home to Sa",
+              "right": true,
+              "yes": "Exactly. This resolution is fundamental to melodic expression in Indian music."
+            },
+            {
+              "text": "It is the easiest fingering",
+              "why": "The fingering can actually be tricky. The importance is musical, not technical."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ni-sa-re-phrase",
+      "title": "The Ni-Sa-Re Phrase",
+      "content": "One of the most common phrases in Hindustani music is Ni Sa Re - rising from below Sa through Sa to Re. It is how many ragas begin their ascent.\n\nPlay: .Ni - Sa - Re\n\nFeel how each note pulls to the next. Ni reaches up to Sa, and Sa continues upward to Re. This three-note phrase is the foundation of countless melodies.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 0, 2],
+          "prompt": "Play Ni Sa Re - rising from below",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "lower-ni-in-music",
+      "title": "Lower Ni in Musical Context",
+      "content": ["Lower Ni appears constantly in real music. In alap (the slow, unmetered opening of a raga performance), descending below Sa to lower Ni creates a sense of depth and gravity that draws the listener inward. Many great bansuri performances begin with the flutist settling on Sa, then gently dipping down to lower Ni before rising - like a bird dipping before it soars.", "In Raga Yaman, one of the most beloved ragas, the phrase .Ni Re Ga is a signature opening. The melody starts below Sa, skips over it entirely, and lands on Re before moving to Ga. This creates a distinctive leaping quality that immediately signals Yaman to trained ears.", "Lower Dha and lower Pa are also available on some bansuris but are harder to produce. Lower Dha sits three semitones below Sa, and lower Pa sits five semitones below. These require even less air pressure and careful fingering. For now, mastering lower Ni gives you the most musically useful note below Sa.", "The lower register on bansuri has a warm, intimate, and breathy quality. Where upper notes project and shimmer, lower notes draw the listener closer. Many players describe the lower Ni as the most emotionally evocative note on the instrument."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 0, 2, 4, 2, 0, -1, 0],
+          "prompt": "Play this phrase: .Ni Sa Re Ga Re Sa .Ni Sa",
+          "points": 25
+        },
+        {
+          "type": "choice",
+          "prompt": "In Raga Yaman, what is the characteristic opening phrase using lower Ni?",
+          "options": [
+            {
+              "text": ".Ni Sa Re - stepping up through Sa",
+              "why": "While this is a common phrase, Yaman's signature is different - it skips Sa."
+            },
+            {
+              "text": ".Ni Re Ga - skipping over Sa entirely",
+              "right": true,
+              "yes": "Correct. Yaman's signature opening leaps from lower Ni to Re, bypassing Sa for a distinctive quality."
+            },
+            {
+              "text": ".Ni Ga Pa - jumping by large intervals",
+              "why": "This would be an unusual leap. Yaman's signature phrase moves stepwise after the initial skip."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-training-lower",
+      "title": "Ear Training: Lower Notes",
+      "content": "Can you tell lower Ni apart from Sa, Re, and Ga? Each note has its own colour:\n\n- Lower Ni: dark, slightly tense, wants to move up\n- Sa: home, grounded, stable\n- Re: bright, one step above home\n- Ga: warm, open, two steps above\n\nListen and identify each note as it plays.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [-1, 0, 2, 4],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note: Ni, Sa, Re, or Ga",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "lower-ni-complete",
+      "title": "Lower Ni Complete",
+      "content": "Lower Ni gives you a note below Sa, letting you create phrases that move up to your home note instead of always descending to it. This is essential for many ragas.\n\nAs you progress, you will also learn lower Dha (two steps below Sa), which is available on some flutes. Together, lower Ni and Dha give you the range to play the mukhda (opening phrase) of compositions that start before sam.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "Done!",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

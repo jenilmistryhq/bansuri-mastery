@@ -1,0 +1,402 @@
+{
+  "id": "dha-ni-full-saptak",
+  "title": "Dha and Ni - The Full Saptak",
+  "description": "Learn the last two swaras and play all seven notes of the saptak for the first time.",
+  "difficulty": "medium",
+  "skills": ["notes", "ear", "scales"],
+  "minutes": 40,
+  "order": 6,
+  "prerequisites": ["ma-pa-expanding-range"],
+  "tasks": [
+    {
+      "id": "t1-meet-dha",
+      "title": "Meet Dha - the sixth note",
+      "content": [
+        "Dha (Dhaivat) is the sixth note of the sargam. It sits a whole step above Pa, at semitone 9.",
+        "On the bansuri, you play Dha by lifting your right-hand ring finger (the bottom finger) while keeping the other five holes covered.",
+        { "type": "list", "items": [
+          "Sa (all closed) - semitone 0",
+          "Re (lift bottom finger) - semitone 2",
+          "Ga (lift bottom two) - semitone 4",
+          "Ma (lift bottom three) - semitone 5",
+          "Pa (lift bottom three, half-hole or cross-finger) - semitone 7",
+          "Dha (specific fingering for your flute) - semitone 9"
+        ] },
+        { "type": "note", "text": "Dha is one of the five 'chal' (movable) swaras - it can be sharpened or flattened in different ragas. For now, we use the shuddh (natural) Dha." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "What is the semitone value of Dha in the shuddh (natural) saptak?",
+          "options": [
+            { "text": "7", "right": false, "why": "7 is Pa, the fifth note." },
+            { "text": "8", "right": false, "why": "8 would be komal (flat) Dha, used in some ragas but not the natural scale." },
+            { "text": "9", "right": true, "yes": "Correct! Shuddh Dha sits at semitone 9." },
+            { "text": "10", "right": false, "why": "10 would be between Dha and Ni." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "confirm",
+          "prompt": "I understand that Dha is the sixth swara and sits at semitone 9",
+          "points": 0
+        }
+      ],
+      "hints": [
+        "Count up from Sa: Sa(0), Re(2), Ga(4), Ma(5), Pa(7), Dha(9).",
+        "Dha is a whole step (two semitones) above Pa."
+      ]
+    },
+    {
+      "id": "t2-play-dha",
+      "title": "Play and hold Dha",
+      "content": [
+        "Now try playing Dha on your bansuri. The fingering depends on your flute type, but the key is to get a clear tone at the right pitch.",
+        "Listen to how Dha sounds relative to Sa. It has a bright, warm quality - not as stable-sounding as Pa, but rich and resonant.",
+        { "type": "note", "text": "If you have a tanpura or drone playing Sa in the background, notice how Dha creates a gentle tension that wants to move - either up to Ni or back down to Pa." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Play Dha and hold it for 3 seconds.",
+          "target": 9,
+          "seconds": 3,
+          "cents": 40,
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "hold",
+          "prompt": "Now hold Dha for 5 seconds with tighter pitch control.",
+          "target": 9,
+          "seconds": 5,
+          "cents": 30,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Make sure only the correct holes are open - any leak will shift the pitch.",
+        "Blow with the same gentle, steady pressure you used for Sa.",
+        "If the pitch is flat, try directing your airstream slightly more across the hole."
+      ]
+    },
+    {
+      "id": "t3-meet-ni",
+      "title": "Meet Ni - the seventh note",
+      "content": [
+        "Ni (Nishad) is the seventh and final note before you return to Sa in the upper octave. It sits at semitone 11, just one whole step below the upper Sa.",
+        "Ni is sometimes called the 'leading tone' because it creates a strong pull toward Sa - when you hear Ni, your ear expects Sa to follow.",
+        { "type": "list", "items": [
+          "Ni is the seventh swara of the sargam",
+          "Semitone value: 11",
+          "It is a 'chal' (movable) swara - it can be komal (flat, semitone 10) in some ragas",
+          "Shuddh Ni is a half step below the upper Sa (semitone 12)"
+        ] },
+        { "type": "note", "text": "The pull from Ni to Sa is one of the strongest melodic forces in Indian music. Many ragas use this tension to create emotional impact." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Why is Ni called a 'leading tone'?",
+          "options": [
+            { "text": "It is the loudest note", "right": false, "why": "Volume has nothing to do with it." },
+            { "text": "It creates a strong pull toward Sa", "right": true, "yes": "Exactly! Ni sits just below Sa and your ear naturally expects Sa to follow." },
+            { "text": "It is always played first in a raga", "right": false, "why": "Ragas can start on many different notes." },
+            { "text": "It leads the rhythm section", "right": false, "why": "Ni is a melodic note, not a rhythmic concept." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "What is the semitone value of shuddh Ni?",
+          "answer": "11",
+          "accept": ["11", "eleven"],
+          "points": 10,
+          "yes": "Right - Ni is at semitone 11, one whole step below the upper Sa at 12.",
+          "no": "Shuddh Ni is at semitone 11."
+        }
+      ],
+      "hints": [
+        "Ni is a whole step below Sa' (upper Sa at semitone 12).",
+        "Think of it as the note that 'leads' your ear back home to Sa."
+      ]
+    },
+    {
+      "id": "t4-play-ni",
+      "title": "Play and hold Ni",
+      "content": [
+        "Ni requires careful fingering - it is high in the scale and small changes in finger position or breath can shift it sharply.",
+        "Play Ni and notice how it feels unstable compared to Sa or Pa. That instability is musical - it is what gives Ni its expressive power.",
+        { "type": "note", "text": "On many bansuris, Ni uses a half-hole or cross-fingering technique. Take your time getting the pitch right before worrying about duration." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Play Ni and hold it for 3 seconds.",
+          "target": 11,
+          "seconds": 3,
+          "cents": 40,
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "hold",
+          "prompt": "Hold Ni for 5 seconds with steady pitch.",
+          "target": 11,
+          "seconds": 5,
+          "cents": 30,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Ni is a high note - you may need slightly more air pressure than for lower notes.",
+        "Keep your fingers relaxed even though the fingering may feel awkward at first.",
+        "If Ni sounds too sharp, check that you are not over-blowing."
+      ]
+    },
+    {
+      "id": "t5-ear-dha-ni",
+      "title": "Ear training - Dha and Ni",
+      "content": [
+        "Now that you can play both notes, train your ear to tell them apart from the other swaras.",
+        "Listen carefully to each note played and identify whether it is Dha or Ni. The difference is a whole step (two semitones): Dha is warmer and more settled, Ni is brighter and pulls toward Sa."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "prompt": "Listen to this note. Is it Dha or Ni?",
+          "played": 9,
+          "options": [
+            { "label": "Pa", "value": 7 },
+            { "label": "Dha", "value": 9 },
+            { "label": "Ni", "value": 11 },
+            { "label": "Sa'", "value": 12 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "ear",
+          "prompt": "Which note is this?",
+          "played": 11,
+          "options": [
+            { "label": "Pa", "value": 7 },
+            { "label": "Dha", "value": 9 },
+            { "label": "Ni", "value": 11 },
+            { "label": "Sa'", "value": 12 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "ear",
+          "prompt": "And this note?",
+          "played": 9,
+          "options": [
+            { "label": "Ma", "value": 5 },
+            { "label": "Pa", "value": 7 },
+            { "label": "Dha", "value": 9 },
+            { "label": "Ni", "value": 11 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q4",
+          "type": "ear",
+          "prompt": "Last one - identify this swara.",
+          "played": 11,
+          "options": [
+            { "label": "Ga", "value": 4 },
+            { "label": "Dha", "value": 9 },
+            { "label": "Ni", "value": 11 },
+            { "label": "Sa'", "value": 12 }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "Dha has a warmer, more relaxed colour. Ni sounds brighter and tense.",
+        "If you are unsure, hum the note and then try singing up to Sa - if it feels like one step, it is Ni; two steps, it is Dha."
+      ]
+    },
+    {
+      "id": "t6-ascending-saptak",
+      "title": "The ascending saptak",
+      "content": [
+        "This is the moment you have been building toward: playing all seven notes of the sargam in ascending order.",
+        "The ascending saptak (aaroh) goes: Sa Re Ga Ma Pa Dha Ni Sa'",
+        "Take it slowly. Play each note clearly, hold it for a beat, then move to the next. No rushing.",
+        { "type": "note", "text": "Sa' (upper Sa) is played by overblowing - same fingering as lower Sa (all holes closed), but with more air pressure and a tighter lip opening. The pitch jumps up one octave." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play the ascending saptak: Sa Re Ga Ma Pa Dha Ni Sa'",
+          "notes": [0, 2, 4, 5, 7, 9, 11, 12],
+          "tempo": 50,
+          "points": 25
+        }
+      ],
+      "hints": [
+        "Go slowly - accuracy matters more than speed at this stage.",
+        "Breathe before you start. You need enough air for all eight notes.",
+        "If you lose the pitch on Dha or Ni, pause, reset, and try again from Pa."
+      ]
+    },
+    {
+      "id": "t7-descending-saptak",
+      "title": "The descending saptak",
+      "content": [
+        "Now play the saptak in reverse - the avaroh (descending scale): Sa' Ni Dha Pa Ma Ga Re Sa",
+        "Descending is often harder than ascending because you are adding fingers back down and the transitions feel different.",
+        "Pay special attention to the transition from Ni down to Dha - keep the pitch clean on each landing.",
+        { "type": "note", "text": "In many ragas, the descending movement (avaroh) is different from the ascending (aaroh). For now, we simply reverse the natural scale." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play the descending saptak: Sa' Ni Dha Pa Ma Ga Re Sa",
+          "notes": [12, 11, 9, 7, 5, 4, 2, 0],
+          "tempo": 50,
+          "points": 25
+        }
+      ],
+      "hints": [
+        "The transition from Sa' to Ni is tricky - ease off the air pressure gradually as you open finger holes.",
+        "Think of it as 'coming home' - each note brings you closer to Sa.",
+        "If a note squeaks, you probably moved your fingers too fast. Lift and place them deliberately."
+      ]
+    },
+    {
+      "id": "t8-alankar-patterns",
+      "title": "Alankar with all seven notes",
+      "content": [
+        "An alankar is a melodic pattern repeated at each step of the scale. Now that you know all seven notes, you can play patterns that span the full saptak.",
+        "Here are two patterns to try:",
+        { "type": "list", "items": [
+          "Pattern 1 (pairs): Sa-Re, Re-Ga, Ga-Ma, Ma-Pa, Pa-Dha, Dha-Ni, Ni-Sa'",
+          "Pattern 2 (triplets): Sa-Re-Ga, Re-Ga-Ma, Ga-Ma-Pa, Ma-Pa-Dha, Pa-Dha-Ni, Dha-Ni-Sa'"
+        ] },
+        "Start with Pattern 1 - it is gentler on your fingers.",
+        { "type": "note", "text": "Alankars are the scales and arpeggios of Indian music. Regular alankar practice builds finger speed, clean transitions, and deep familiarity with the notes." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play the pairs alankar: Sa-Re, Re-Ga, Ga-Ma, Ma-Pa, Pa-Dha, Dha-Ni, Ni-Sa'",
+          "notes": [0, 2, 2, 4, 4, 5, 5, 7, 7, 9, 9, 11, 11, 12],
+          "tempo": 55,
+          "points": 20
+        },
+        {
+          "id": "q2",
+          "type": "play",
+          "prompt": "Play the triplets alankar: Sa-Re-Ga, Re-Ga-Ma, Ga-Ma-Pa, Ma-Pa-Dha",
+          "notes": [0, 2, 4, 2, 4, 5, 4, 5, 7, 5, 7, 9],
+          "tempo": 55,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Keep each note the same length - evenness is the goal of alankar.",
+        "If a transition is sloppy, slow down just for that pair until it cleans up.",
+        "Breathe between patterns if you need to - there is no penalty for taking a breath."
+      ]
+    },
+    {
+      "id": "t9-saptak-melody",
+      "title": "A melody using the full saptak",
+      "content": [
+        "Here is a simple melody that uses all seven notes. It moves up through the scale, pauses at the top, and comes back down with a slight variation.",
+        "The phrase: Sa Re Ga Ma Pa - Dha Ni Sa' - Ni Dha Pa - Ma Ga Re Sa",
+        "Notice how the melody breathes: it climbs steadily, reaches Sa', then descends in groups. This is how real music uses the saptak - not just up and down, but with shape and phrasing.",
+        { "type": "note", "text": "The pauses (shown as dashes) are where you take a quick breath. Learning to breathe between phrases is essential for playing real music." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play the melody: Sa Re Ga Ma Pa Dha Ni Sa' Ni Dha Pa Ma Ga Re Sa",
+          "notes": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "tempo": 55,
+          "points": 25
+        }
+      ],
+      "hints": [
+        "Break it into three phrases: ascend to Pa, ascend to Sa', then descend home.",
+        "Breathe after the first Pa and again after Sa' at the top.",
+        "Do not rush the descent - give each note its full value."
+      ]
+    },
+    {
+      "id": "t10-final-challenge",
+      "title": "Full saptak challenge",
+      "content": [
+        "Final challenge: prove your command of all seven notes with a comprehensive test.",
+        "First, identify some notes by ear. Then play the full ascending and descending saptak in one continuous phrase.",
+        { "type": "note", "text": "This is a milestone moment - completing the full saptak means you have the foundation for every raga and every melody in Indian music. Everything from here builds on these seven notes." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "prompt": "Identify this note from the upper saptak.",
+          "played": 9,
+          "options": [
+            { "label": "Ma", "value": 5 },
+            { "label": "Pa", "value": 7 },
+            { "label": "Dha", "value": 9 },
+            { "label": "Ni", "value": 11 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "ear",
+          "prompt": "And this one?",
+          "played": 11,
+          "options": [
+            { "label": "Pa", "value": 7 },
+            { "label": "Dha", "value": 9 },
+            { "label": "Ni", "value": 11 },
+            { "label": "Sa'", "value": 12 }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q3",
+          "type": "type",
+          "prompt": "Name all seven swaras in ascending order, separated by spaces.",
+          "answer": "Sa Re Ga Ma Pa Dha Ni",
+          "accept": ["Sa Re Ga Ma Pa Dha Ni", "sa re ga ma pa dha ni"],
+          "points": 10,
+          "yes": "Perfect! You know your sargam.",
+          "no": "The seven swaras: Sa Re Ga Ma Pa Dha Ni."
+        },
+        {
+          "id": "q4",
+          "type": "play",
+          "prompt": "Play the full saptak up and back down: Sa Re Ga Ma Pa Dha Ni Sa' Ni Dha Pa Ma Ga Re Sa",
+          "notes": [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+          "tempo": 60,
+          "points": 30
+        }
+      ],
+      "hints": [
+        "Take a deep breath before the playing challenge - you need air for 15 notes.",
+        "Keep the tempo steady. It is better to play slowly and accurately.",
+        "If you stumble on the descent, remember: it is the ascent in reverse - Ni, Dha, Pa, Ma, Ga, Re, Sa."
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@
 |---|---|---|
 | 1 | Name every part of the flute while pointing at it (blowing hole, holes 1-6, cork end, open end, bindings) | Yes |
 | 2 | Inspection checklist from [L00](../lessons/L00-day-0-your-flute.md) completed and written in the log | Yes |
-| 3 | Drone set to C, tuner, metronome and recorder installed and tested | Yes |
+| 3 | Sa set or confirmed; drone, metronome and recording tools tried | Yes |
 | 4 | Holding side chosen and written down | Yes |
 | 5 | Practice time and place fixed; first log entry written | Yes |
 | 6 | You can state the dizziness protocol and the pain warning signs from memory | Yes |

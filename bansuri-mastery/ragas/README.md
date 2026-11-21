@@ -7,14 +7,14 @@ imitating**. Use each card to check what you hear and play. Do not try to learn 
 card alone.
 
 **Reminder on notation:** `m` = shuddha Ma (half-hole 1, `HOO OOO`), `M` = tivra Ma (all
-open), lowercase `r g d n` = komal (half-holes). On your C flute every lowercase note except
-`m`-vs-`M` needs a half-hole.
+open), lowercase `r g d n` = komal (half-holes). These relative fingerings work at any Sa;
+the C pitch names in the cards are reference examples. Individual half-hole sweet spots vary.
 
 ## Index
 
 Order = recommended learning order on a 6-hole C bansuri (Recommendation).
 
-| # | Raga | Thaat | Notes used | Half-holes needed on C flute | Bansuri difficulty | When | Card status |
+| # | Raga | Thaat | Notes used | Half-holes in standard fingering | Bansuri difficulty | When | Card status |
 |---|---|---|---|---|---|---|---|
 | 1 | [Bhupali](bhupali.md) | Kalyan | S R G P D | none | 1 (easiest) | Phase 3 start ([L20](../lessons/L20-raga-bhupali.md)) | Verified (Wikipedia) |
 | 2 | [Yaman](yaman.md) | Kalyan | S R G M P D N | none (`M` is all-open) | 2 | Phase 3 ([L21](../lessons/L21-raga-yaman.md)) | Verified (Wikipedia) |
@@ -31,11 +31,12 @@ Order = recommended learning order on a 6-hole C bansuri (Recommendation).
 | 13 | [Bhairav](bhairav.md) | Bhairav | S r G m P d N | `r`, `m`, `d` | 5 | Phase 5 | Verified (Wikipedia) |
 | 14 | [Bhairavi](bhairavi.md) | Bhairavi | S r g m P d n | `r`, `g`, `m`, `d`, `n` | 5 | Phase 5 | Verified (Wikipedia); vadi Disputed |
 
-## Which Sa makes a thaat half-hole-free on your C flute?
+## Which Sa makes a thaat half-hole-free?
 
-Your flute's seven plain (no half-hole) notes are G A B C D E F#. Each thaat below fits
-exactly onto those seven notes when you treat the named note as Sa. (This is arithmetic on
-semitone patterns, so it is Fact; whether it suits a given song's range is your judgement.)
+For the C5 reference profile, the seven plain (no half-hole) notes are G A B C D E F#. The
+table shows which of those can act as Sa for each thaat. Use the relative sargam pattern on any
+flute; the Western pitch names change with your selected Sa. (This is arithmetic on semitone
+patterns, so it is Fact; whether it suits a given song's range is your judgement.)
 
 | Thaat | Treat as Sa | Sa pitch | Drone | Example ragas |
 |---|---|---|---|---|
@@ -52,7 +53,7 @@ any Sa. They always need at least one half-hole. Details: [L26](../lessons/L26-k
 ## How to study a raga (every card)
 
 1. **Listen first** for at least 3 days (10 min/day) before playing. Hum along with Sa.
-2. Sing then play the **aroh and avroh** slowly against a C drone ([R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)).
+2. Sing then play the **aroh and avroh** slowly against a tanpura set to your flute's Sa ([R-A01](../02-RESOURCE-LIBRARY.md#71-drone-tanpura--shruti-box)).
 3. Learn the **pakad / characteristic phrases** until you can play them from memory.
 4. Do **swar vistar**: slow improvisation using only the card's rules ([L31](../lessons/L31-alap-and-swar-vistar.md)).
 5. Learn one **composition** (from your teacher, R-T01 SwarGanga or R-T04 Tanarang). Six cards (Khamaj, Bhairav, Kafi, Bhairavi, Hamsadhwani, Pahadi) give a **traditional composition** transcribed from Bhatkhande's *Kramik Pustak Malika*, with the page to check it against. Six others still have a short original practice composition, marked Uncertain until a teacher reviews it (the Bhatkhande volumes that contain those ragas could not be found online). Bhupali and Yaman link to the composition in their lesson. A grammar check (`scripts/raga_lint.py`) confirms that no composition uses a note its raga leaves out.

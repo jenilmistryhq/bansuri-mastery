@@ -24,7 +24,7 @@ long meends.
 - `m g m g S`: Ma and komal Ga circling, then resting on Sa, is the signature.
 - Every note except Sa is a half-hole or vikrit note on your flute. **Intonation is everything.**
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Register |
 |---|---|---|
@@ -33,7 +33,7 @@ long meends.
 | `m` | `HOO OOO` | 1 |
 | `d` / `n` | `XXX XXH` / `XXX XHO` | 2 |
 
-This is one of the hardest ragas to play in tune on a C flute with Sa = C. **Bansuri players
+This is one of the harder ragas to play in tune on a 6-hole bansuri; half-hole response varies between flutes. **Bansuri players
 often play Malkauns with a different note as Sa** so that fewer half-holes are needed. On your
 flute, treat **Ni (B) as Sa**: Malkauns' notes (Sa, +3, +5, +8, +10 semitones) then become
 B, D, E, G, A, which are all plain full-hole fingerings (`XXX XOO`, `XXO OOO`, `XOO OOO`,
@@ -104,7 +104,7 @@ S - .n S | g m d m | g m g - | S - - - |
 g m d n | S' - n d | m g m g | S - - - ||
 ```
 
-It circles `g m` around the pakad `g m d m g m g S` and has no Re or Pa anywhere. Play it slowly (50-60 BPM) and hold each `g` and `d` long enough to check it against the drone. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+It circles `g m` around the pakad `g m d m g m g S` and has no Re or Pa anywhere. Play it slowly (50-60 BPM) and hold each `g` and `d` long enough to check it against the drone. Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 **Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
 

@@ -42,7 +42,8 @@ export async function ragaList() {
 export const ragaStatus = r => (r.open ? "open" : "after L" + pad2(r.lesson));
 
 async function list(main) {
-  const page = h("div", { class: "page" }, h("h1", { class: "sr-only" }, "Ragas"));
+  const page = h("div", { class: "page" });
+  page.append(backHead("#/music", "Music", "Ragas"));
   const box = h("div", { class: "hublist" }, h("p", { class: "small muted" }, "Loading..."));
   page.append(h("section", { class: "card hubgroup" }, box));
   main.append(page);

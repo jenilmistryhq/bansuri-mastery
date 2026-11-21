@@ -27,7 +27,7 @@ E = G, F = m, F# = M, G = P, A = D, B = N, Db = r, Eb = g, Ab = d, Bb = n.
 
 1. Open the bank for your level. **Do not read the answer column.** Cover it, or ask someone
    to choose 10 item numbers for you.
-2. Turn on the C drone. Record: say the item number aloud, play the item, pause 5 seconds.
+2. Turn on the tanpura set to your flute's Sa. Record: say the item number aloud, play the item, pause 5 seconds.
 3. Label the recording with the date and **do not listen to it for at least 2 days**. (Record a
    new set every day, so after the first 2 days you always have an old one ready.)
 4. Later, play the recording, pause after each item, sing it back, then write your answer.

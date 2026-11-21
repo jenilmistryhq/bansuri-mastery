@@ -94,7 +94,7 @@ alternatives in brackets.
 | Term | Meaning | Taught in |
 |---|---|---|
 | **Half-hole** | Covering only part of a finger hole to play a note between two normal fingerings (for example shuddha Ma, komal notes). Written `H`. | [L16](lessons/L16-shuddha-ma-and-half-holing.md) |
-| **Hz (hertz)** | Vibrations per second; the physical measure of pitch. Your Sa (C5) is about 523 Hz. | [L05](lessons/L05-what-is-music-pitch-sa-sargam.md) |
+| **Hz (hertz)** | Vibrations per second; the physical measure of pitch. The C5 reference Sa is about 523 Hz; your flute's Sa may differ. | [L05](lessons/L05-what-is-music-pitch-sa-sargam.md) |
 
 ## I
 

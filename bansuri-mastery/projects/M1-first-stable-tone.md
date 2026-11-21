@@ -2,7 +2,7 @@
 
 [Projects](README.md) | Phase: [1](../phases/phase-1-foundations.md) | Objectives: TON-01..04, BOD-01, BOD-03, BOD-05, PIT-02, FNG-02
 
-## Test (record everything; drone on C for items 2-4)
+## Test (record everything; drone on your flute's Sa for items 2-4)
 
 | # | Item | Pass criterion | Required |
 |---|---|---|---|

@@ -120,7 +120,7 @@ Problem: Ga cracks 1 in 3 from Sa, slurred, 60 BPM | Isolated: one transition on
 | 3 | [M7](../projects/M7-recital-one.md) | Ornaments, taar saptak, performance |
 | Then | Every 2-3 months | Next goals |
 
-**How to find one:** see [Courses and teachers](../02-RESOURCE-LIBRARY.md#4-courses-and-teachers-paid-or-structured) (R-C01, R-C03 offer online classes). Ask which flute key they teach on. Many teachers use bass flutes, and you need someone comfortable teaching on a C medium (or willing to).
+**How to find one:** see [Courses and teachers](../02-RESOURCE-LIBRARY.md#4-courses-and-teachers-paid-or-structured) (R-C01, R-C03 offer online classes). Ask which flute keys they teach on. Many teachers use bass flutes; find someone comfortable teaching relative sargam across keys or on your flute's pitch.
 
 **Prepare:** send or bring 2-3 short recordings scored with the rubric, plus 3 specific questions. Example: "My Ga is airy; is my embouchure too open?"
 

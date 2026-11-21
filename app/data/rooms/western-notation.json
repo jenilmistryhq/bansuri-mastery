@@ -1,0 +1,336 @@
+{
+  "id": "western-notation",
+  "title": "Western Staff Notation",
+  "tasks": [
+    {
+      "id": "the-staff",
+      "title": "The Staff",
+      "content": ["Western notation uses a staff of 5 horizontal lines. Notes sit on lines or in the spaces between them.", "The treble clef (G clef) at the left end tells you which pitch sits on which line. Higher on the staff means a higher pitch. Lower means a lower pitch.", "The five lines, bottom to top: E, G, B, D, F. A common mnemonic is 'Every Good Bird Does Fly.' The four spaces, bottom to top: F, A, C, E - which spells FACE."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In treble clef, what note sits on the bottom line?",
+          "options": [
+            {
+              "text": "C",
+              "why": "C sits below the staff on a ledger line. The bottom staff line is E."
+            },
+            {
+              "text": "E",
+              "right": true,
+              "yes": "Correct. Bottom line = E in treble clef."
+            },
+            {
+              "text": "G",
+              "why": "G is on the second line. The bottom line is E."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does vertical position on the staff represent?",
+          "options": [
+            {
+              "text": "Volume (loud or soft)",
+              "why": "Volume uses separate markings like f and p. Vertical position represents pitch."
+            },
+            {
+              "text": "Pitch (higher or lower)",
+              "right": true,
+              "yes": "Right. Higher on the staff = higher pitch."
+            },
+            {
+              "text": "Duration (long or short)",
+              "why": "Duration is shown by note shapes (filled vs hollow, stems and flags), not position."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lines-and-spaces",
+      "title": "Reading Lines and Spaces",
+      "content": ["Every note lives either on a line or in a space. Line notes sit directly on a staff line - the line runs through the middle of the note head. Space notes sit between two lines - the note head fills the gap.", "Notes above or below the five lines use short ledger lines. Middle C, for example, sits on its own ledger line just below the treble staff.", "The notes move in alphabetical order: A B C D E F G, then repeat. After G comes A again, one octave higher. This cycling pattern means you only need to learn seven letter names to read any pitch."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What are the four space notes in treble clef, bottom to top?",
+          "options": [
+            {
+              "text": "E, G, B, D",
+              "why": "Those are the line notes. The spaces spell F, A, C, E."
+            },
+            {
+              "text": "F, A, C, E",
+              "right": true,
+              "yes": "Correct. The spaces spell FACE from bottom to top."
+            },
+            {
+              "text": "C, D, E, F",
+              "why": "Those are consecutive notes but not what the spaces hold. The spaces spell FACE."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Where does middle C sit relative to the treble staff?",
+          "options": [
+            {
+              "text": "On the top line",
+              "why": "The top line is F. Middle C is below the staff."
+            },
+            {
+              "text": "On a ledger line just below the staff",
+              "right": true,
+              "yes": "Right. Middle C needs its own ledger line below the bottom E line."
+            },
+            {
+              "text": "In the second space",
+              "why": "The second space is A. Middle C is below the staff on a ledger line."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sargam-to-western",
+      "title": "Sargam to Western Notes",
+      "content": ["If your bansuri's Sa = C (a C-scale flute), the swaras map directly to Western note names: Sa = C, Re = D, Ga = E, Ma = F, Pa = G, Dha = A, Ni = B.", "For other flute keys, shift accordingly. D-scale flute: Sa = D, Re = E, Ga = F#, Ma = G, Pa = A. E-scale flute: Sa = E, Re = F#, Ga = G#, Ma = A, Pa = B.", "The sargam names stay the same regardless of key. Only the Western letter names change. This is one of the great strengths of the sargam system - it is relative (always centered on Sa), while Western notation is absolute (fixed letter names for fixed frequencies)."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "On a C-scale flute, what Western note is Pa?",
+          "answer": "G",
+          "accept": ["G", "g"],
+          "points": 10
+        },
+        {
+          "type": "type",
+          "prompt": "On a C-scale flute, what Western note is Re?",
+          "answer": "D",
+          "accept": ["D", "d"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "sharps-and-flats",
+      "title": "Sharps and Flats",
+      "content": ["Western notation uses sharps (#) and flats (b) to raise or lower a note by one semitone. In Indian music, these map to komal and tivra variants.", "On a C-scale flute: komal Re (lowered Re) = Db, komal Ga (lowered Ga) = Eb, tivra Ma (raised Ma) = F#, komal Dha (lowered Dha) = Ab, komal Ni (lowered Ni) = Bb.", "Sa and Pa have no komal or tivra form - they are fixed. In Western terms, the tonic and the fifth are always natural. A key signature at the start of a piece tells you which notes are always sharp or flat throughout, saving you from writing the symbol on every note."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the Western equivalent of Tivra Ma on a C-scale flute?",
+          "options": [
+            {
+              "text": "F (natural)",
+              "why": "Natural F is shuddha Ma. Tivra Ma is raised by a semitone."
+            },
+            {
+              "text": "F# (F sharp)",
+              "right": true,
+              "yes": "Correct. Tivra Ma raises Ma by one semitone, which is F sharp on a C flute."
+            },
+            {
+              "text": "G",
+              "why": "G is Pa. Tivra Ma sits between Ma and Pa, which is F#."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which swaras have no komal or tivra form?",
+          "options": [
+            {
+              "text": "Re and Dha",
+              "why": "Both Re and Dha have komal forms."
+            },
+            {
+              "text": "Sa and Pa",
+              "right": true,
+              "yes": "Right. Sa and Pa are always fixed - the tonic and the perfect fifth."
+            },
+            {
+              "text": "Ga and Ni",
+              "why": "Both Ga and Ni have komal forms."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "note-durations",
+      "title": "Note Duration Symbols",
+      "content": ["Western notation shows how long each note lasts by its shape. Whole note (semibreve): open oval, no stem - 4 beats. Half note (minim): open oval with a stem - 2 beats. Quarter note (crotchet): filled oval with a stem - 1 beat. Eighth note (quaver): filled with a stem and one flag - half a beat. Sixteenth note (semiquaver): filled with a stem and two flags - quarter of a beat.", "A dot after any note adds half its value. So a dotted half note = 3 beats, and a dotted quarter note = 1.5 beats.", "In Indian notation, duration is shown differently: a dash (-) means hold, and subdivisions are shown by grouping notes together. Western notation is more visually precise about rhythm, which is why it is used internationally."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many beats does a half note last?",
+          "options": [
+            {
+              "text": "1 beat",
+              "why": "One beat is a quarter note. A half note is twice that."
+            },
+            {
+              "text": "2 beats",
+              "right": true,
+              "yes": "Correct. Half note = 2 beats, which is half a whole note."
+            },
+            {
+              "text": "4 beats",
+              "why": "Four beats is a whole note. A half note is 2 beats."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does a dot after a note do?",
+          "options": [
+            {
+              "text": "Makes the note staccato (short and detached)",
+              "why": "Staccato uses a dot above or below the note. A dot after the note extends its duration."
+            },
+            {
+              "text": "Adds half the note's value to its duration",
+              "right": true,
+              "yes": "Right. A dotted quarter note = 1 + 0.5 = 1.5 beats."
+            },
+            {
+              "text": "Makes the note silent",
+              "why": "Silence is shown by a rest symbol, not a dot."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rhythmic-notation",
+      "title": "Rhythmic Notation and Time Signatures",
+      "content": ["Beyond note shapes, Western notation uses additional symbols for rhythm. Rests indicate measured silence: a whole rest (4 beats of silence), half rest (2 beats), quarter rest (1 beat), and so on. Each note duration has a matching rest symbol.", "Tied notes connect two notes of the same pitch with a curved line, meaning you hold for the combined duration without re-attacking the note. A tie from a half note to a quarter note = 3 beats of continuous sound. This is different from a slur (curved line between different pitches), which means play smoothly without tonguing.", "Time signatures appear at the beginning of a piece. The top number tells you how many beats per measure; the bottom number tells you which note value gets one beat. 4/4 (common time) means 4 quarter-note beats per measure, similar to Teentaal's 16-beat cycle divided into 4 groups of 4. 3/4 means 3 beats per measure, like a waltz or similar to Rupak taal's feel. 6/8 means 6 eighth-note beats, often grouped in two sets of three."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does a rest symbol indicate in Western notation?",
+          "options": [
+            {
+              "text": "Play the note very softly",
+              "why": "Soft playing uses dynamic markings like 'pp'. A rest means measured silence."
+            },
+            {
+              "text": "Measured silence for a specific duration",
+              "right": true,
+              "yes": "Correct. Each rest has a specific beat value, just like each note does."
+            },
+            {
+              "text": "Repeat the previous note",
+              "why": "Repeats use different symbols. A rest means silence."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "In a 4/4 time signature, how many quarter-note beats are in each measure?",
+          "answer": "4",
+          "accept": ["4", "four", "Four"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "reading-a-line",
+      "title": "Reading a Simple Line",
+      "content": ["Here is a simple melody written for a C-scale flute: C D E F | G - G - | A G F E | D - C -. In sargam, this reads: Sa Re Ga Ma | Pa - Pa - | Dha Pa Ma Ga | Re - Sa -.", "Notice how the bar lines (|) divide the music into measures of 4 beats each. The dashes show held notes, just like in Bhatkhande notation. Each measure must add up to exactly 4 beats in 4/4 time.", "When you see sheet music, you are reading the same melodies you already know - just written in a different alphabet. Try reading the notes on the staff by naming them (line or space), then converting to sargam if that helps you find them on your flute."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In the melody 'C D E F | G - G -', how many beats does the first G last?",
+          "options": [
+            {
+              "text": "1 beat",
+              "why": "The G is followed by a dash, so it is held for 2 beats total."
+            },
+            {
+              "text": "2 beats (G plus the hold)",
+              "right": true,
+              "yes": "Correct. The dash extends the G by one more beat, making it 2 beats total."
+            },
+            {
+              "text": "4 beats",
+              "why": "Only 2 beats: G on beat 1 and the hold on beat 2 of that group."
+            }
+          ]
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play this ascending line on your flute: Sa Re Ga Ma Pa",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "western-for-indian-music",
+      "title": "Western Notation for Indian Music",
+      "content": ["When Indian classical music is written in Western notation, there are compromises. Komal notes are written with flats: komal Re becomes Db (on a C flute), komal Ga becomes Eb. Tivra Ma is written as F#. Meend (slides) can be shown with glissando marks, and ornaments with grace note symbols.", "However, Western notation cannot capture several essential elements of Indian music. The raga's microtonal subtleties (shrutis) disappear - there is no symbol for 'slightly sharper than Ga but not quite tivra Ma.' Gamak and andolan are difficult to notate precisely. The unmetered rhythm of alap has no natural home in a system built around time signatures and bar lines.", "Western notation is useful for communicating with Western musicians, creating quick reference sheets, and comparative analysis between ragas. It is NOT useful for learning a raga's true character, capturing ornamentation, or expressing the living, breathing quality of Indian music. Think of it as a map - helpful for navigation, but not the territory itself."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the biggest limitation of Western notation for Indian music?",
+          "options": [
+            {
+              "text": "It cannot represent any Indian notes at all",
+              "why": "It can represent the basic notes. The limitation is in microtonal subtleties and ornamentation."
+            },
+            {
+              "text": "It cannot capture microtonal shrutis, ornamental nuance, or unmetered rhythm",
+              "right": true,
+              "yes": "Correct. Western notation captures the skeleton of Indian music but not its living detail."
+            },
+            {
+              "text": "It uses different clefs that do not apply to bansuri",
+              "why": "The treble clef works fine for bansuri's range. The limitation is expressive, not practical."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "When is Western notation most useful for an Indian musician?",
+          "options": [
+            {
+              "text": "For learning a raga's true character and ornamentation",
+              "why": "A raga's character comes from oral tradition and practice, not Western notation."
+            },
+            {
+              "text": "For communicating with Western musicians and quick reference",
+              "right": true,
+              "yes": "Right. It is a useful bridge between traditions and a handy reference tool."
+            },
+            {
+              "text": "For replacing the guru-shishya tradition entirely",
+              "why": "No notation system can replace live teaching and listening."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-training-saptak",
+      "title": "Ear Training - Name the Note",
+      "content": ["Being able to hear a note and name it is essential for reading notation fluently. When you see a note on the staff, you should hear it in your mind before you play it. This inner hearing (audiation) bridges the gap between the written symbol and the sound.", "This exercise plays notes from across the saptak. Listen carefully and identify which note you hear. As you get better at this, you will find that reading Western notation becomes faster because you can 'hear' what you see on the page."],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 5, 7, 9, 11],
+          "count": 5,
+          "pass": 3,
+          "prompt": "Listen to each note and identify it. Get 3 out of 5 correct to pass.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I can connect Western note names to the sargam names I already know."
+        }
+      ]
+    }
+  ]
+}

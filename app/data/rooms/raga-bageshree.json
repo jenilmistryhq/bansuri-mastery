@@ -1,0 +1,352 @@
+{
+  "id": "raga-bageshree",
+  "title": "Raga Bageshree - The Sweet Night Raga",
+  "tasks": [
+    {
+      "id": "the-sweetest-raga",
+      "title": "The Sweetest Raga",
+      "content": [
+        "Bageshree is one of the most beloved ragas in Hindustani music. Where Malkauns is dramatic and Yaman is majestic, Bageshree is gentle and intimate - a raga of quiet rooms and late nights. Its mood is sringar (romantic love) and karuna (tenderness), making it one of the most emotionally accessible ragas in the repertoire.",
+        "Bageshree belongs to the Kafi thaat, which means it uses komal (flat) Ga and komal Ni. These two komal notes give the raga its characteristic warmth and softness. It is a night raga, traditionally performed during the second prahar of the night (9 PM to midnight), when the world quiets down and the music can speak intimately.",
+        "On the bansuri, Bageshree is especially beautiful. The instrument's breathy, human quality matches the raga's tender personality perfectly. Hariprasad Chaurasia's recordings of Bageshree are considered some of the finest bansuri performances ever made."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What mood does Raga Bageshree primarily express?",
+          "options": [
+            {
+              "text": "Heroic valor and bravery",
+              "why": "That would be veer rasa. Bageshree expresses romantic tenderness and longing."
+            },
+            {
+              "text": "Romantic love and gentle tenderness",
+              "right": true,
+              "yes": "Correct. Bageshree is known for its sweetness, intimacy, and romantic longing."
+            },
+            {
+              "text": "Fierce devotion and intensity",
+              "why": "While devotional ragas exist, Bageshree is about romantic tenderness, not fierce intensity."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which thaat does Bageshree belong to?",
+          "options": [
+            {
+              "text": "Bilawal (all shuddha notes)",
+              "why": "Bilawal uses all natural notes. Bageshree uses komal Ga and komal Ni."
+            },
+            {
+              "text": "Kafi (komal Ga and komal Ni)",
+              "right": true,
+              "yes": "Right. The Kafi thaat gives Bageshree its warm, soft character through komal Ga and komal Ni."
+            },
+            {
+              "text": "Kalyan (tivra Ma)",
+              "why": "Kalyan uses tivra Ma. Bageshree uses shuddha Ma with komal Ga and komal Ni."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-vakra-secret",
+      "title": "The Vakra Secret",
+      "content": [
+        "Bageshree's defining feature is its vakra (crooked) ascent. Most ragas go straight up: Sa Re Ga Ma Pa Dha Ni Sa'. Bageshree does not. Its ascending movement skips two notes entirely: Sa g m D n Sa'. Re and Pa are absent from the ascent.",
+        "This creates a leaping quality. From Ma(5) you jump directly to Dha(9), covering four semitones in one step and passing right over where Pa should be. The gap where Pa would normally sit creates a sense of yearning - like reaching across empty space to grasp something.",
+        "In descent, however, all seven notes appear: Sa' n D P m g R Sa. Re and Pa reveal themselves only on the way down. This asymmetry - the leaping ascent and the flowing descent - is what gives Bageshree its distinctive personality. The ascent reaches; the descent resolves."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which notes are skipped in Bageshree's ascending movement?",
+          "options": [
+            {
+              "text": "Ga and Ni",
+              "why": "Ga and Ni are both present in the ascent (as komal Ga and komal Ni). Re and Pa are the missing ones."
+            },
+            {
+              "text": "Re and Pa",
+              "right": true,
+              "yes": "Correct. The ascent Sa g m D n Sa' skips Re and Pa entirely. They appear only in descent."
+            },
+            {
+              "text": "Ma and Dha",
+              "why": "Ma and Dha are both prominent in the ascent. It is Re and Pa that are skipped."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What does 'vakra' mean in the context of a raga's movement?",
+          "answer": "crooked",
+          "accept": ["crooked", "zigzag", "curved", "oblique", "non-linear", "indirect"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "notes-of-bageshree",
+      "title": "The Notes of Bageshree",
+      "content": [
+        "Bageshree uses all seven notes, making it a sampurna (complete) raga: Sa(0), Re(2), komal Ga(3), Ma(5), Pa(7), Dha(9), komal Ni(10).",
+        "Two notes are komal (flat): Ga and Ni. These sit one semitone lower than their shuddha (natural) positions. komal Ga is at semitone 3 (shuddha Ga would be 4), and komal Ni is at semitone 10 (shuddha Ni would be 11). These komal notes give Bageshree its softness and warmth.",
+        "Although Re(2) and Pa(7) are part of the raga, they are restricted. They appear mainly in descending phrases and specific melodic turns - never in a straight ascending line. Understanding which notes are restricted and when they appear is key to playing Bageshree authentically.",
+        "Hold komal Ga and komal Ni against the drone. Listen to their gentle, slightly flattened quality. These are the notes that colour Bageshree's emotional world."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 3,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Ga within 20 cents for 5 seconds",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 10,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Ni within 20 cents for 5 seconds",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "ascending-bageshree",
+      "title": "Ascending Bageshree",
+      "content": [
+        "Play the vakra aroha: Sa g m D n Sa'. Six notes ascending, with two deliberate gaps where Re and Pa would normally sit.",
+        "Feel the leap from Ma(5) to Dha(9). That four-semitone jump is the widest interval in the ascent, and it is where Bageshree's yearning lives. You are reaching across a gap, and the absence of Pa makes that reach feel emotional rather than mechanical.",
+        "Compare this with a straight Kafi ascent (Sa Re Ga Ma Pa Dha Ni Sa') where every note is present. The straight version sounds complete and settled. Bageshree's vakra version sounds like it is searching for something - and that searching quality is the raga's emotional core."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 3, 5, 9, 10, 12],
+          "prompt": "Play the vakra ascent: Sa g m D n Sa'",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What emotional effect does skipping Pa in the ascent create?",
+          "options": [
+            {
+              "text": "It makes the raga sound incomplete and broken",
+              "why": "It is deliberate, not broken. The gap creates yearning and longing, which is the raga's intended mood."
+            },
+            {
+              "text": "A sense of yearning and reaching across emotional space",
+              "right": true,
+              "yes": "Exactly. The absent Pa creates a gap that the melody reaches across, producing Bageshree's characteristic longing."
+            },
+            {
+              "text": "It makes the raga faster and more energetic",
+              "why": "Skipping notes does not add energy. The effect is emotional, not rhythmic."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "descending-bageshree",
+      "title": "Descending Bageshree",
+      "content": [
+        "The avaroha reveals everything the ascent hid: Sa' n D P m g R Sa. All seven notes are present, flowing downward in a smooth, unbroken line.",
+        "Pa(7) appears here for the first time, sitting naturally between Dha and Ma. Re(2) appears near the bottom, connecting komal Ga to Sa. The descent sounds more complete, more tender, more resolved than the ascent.",
+        "This contrast is Bageshree's magic. The ascent leaps and yearns; the descent flows and resolves. Together they create a cycle of longing and fulfillment that mirrors the raga's romantic character."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 10, 9, 7, 5, 3, 2, 0],
+          "prompt": "Play the full descent: Sa' n D P m g R Sa",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 3, 5, 7, 9, 10],
+          "rounds": 6,
+          "prompt": "Identify each note from Bageshree's scale",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "core-phrases",
+      "title": "The Core Phrases",
+      "content": [
+        "Every raga has signature phrases that define its identity. Bageshree's most important phrases are:",
+        "First: m g m D n D. This is the heart of the raga. Starting from Ma, dropping briefly to komal Ga, then leaping up to Dha and touching komal Ni before settling back on Dha. The Ma-to-Dha jump (skipping Pa) is the defining gesture.",
+        "Second: g m g R Sa. A gentle descent that settles on Sa through komal Ga, Ma, then back through komal Ga and Re. This phrase is how Bageshree comes home - softly, without drama.",
+        "Third: D n Sa' n D P. Touching the upper Sa and descending, with Pa finally appearing in the upper register. These phrases together are what make a melody sound like Bageshree rather than generic Kafi thaat."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [5, 3, 5, 9, 10, 9],
+          "prompt": "Play the core phrase: m g m D n D",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [3, 5, 3, 2, 0],
+          "prompt": "Play the settling phrase: g m g R Sa",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "ma-the-king",
+      "title": "Ma - The King of Bageshree",
+      "content": [
+        "Ma(5) is the vadi - the king note of Bageshree. It receives the most attention, the longest durations, and the most frequent returns. Phrases begin from Ma, linger on Ma, and return to Ma. It is the note where Bageshree feels most at home.",
+        "Sa(0) is the samvadi - the minister note. While Ma is where the raga lives, Sa is where it rests. The vadi-samvadi pair of Ma and Sa creates a perfect fourth interval, which gives the raga a stable but intimate foundation.",
+        "The most characteristic movement in Bageshree is the leap from Ma(5) to Dha(9) - a jump of four semitones that skips Pa entirely. When you hear this leap, you know you are hearing Bageshree. Practice holding Ma with awareness: it is not just a note, it is the raga's center of gravity."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Ma (the vadi) within 20 cents for 6 seconds",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the most characteristic interval in Bageshree?",
+          "options": [
+            {
+              "text": "Sa to Re (a whole tone step)",
+              "why": "Sa to Re is a common interval in many ragas. The Ma-to-Dha leap is what defines Bageshree."
+            },
+            {
+              "text": "The leap from Ma to Dha, skipping Pa",
+              "right": true,
+              "yes": "Correct. The Ma(5) to Dha(9) jump, bypassing Pa, is Bageshree's signature movement."
+            },
+            {
+              "text": "Pa to Ni (a minor third)",
+              "why": "Pa is barely used in Bageshree. The Ma-Dha leap is the defining interval."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bageshree-vs-kafi",
+      "title": "Bageshree vs Kafi",
+      "content": [
+        "Bageshree and Raga Kafi share the same thaat and use the same notes: Sa, Re, komal Ga, Ma, Pa, Dha, komal Ni. So how do you tell them apart?",
+        "The answer lies in movement. Kafi uses all seven notes freely in both ascent and descent - straight up, straight down. Its mood is open, playful, and extroverted. Kafi is a raga of spring, rain, and celebration.",
+        "Bageshree restricts Re and Pa to the descent. Its ascent leaps: Sa g m D n Sa'. This vakra movement makes Bageshree feel inward and yearning where Kafi feels outward and joyful. Same palette, completely different painting.",
+        "This is a perfect example of why a raga is more than its scale. Two ragas can share every note and yet create entirely different emotional worlds through movement, emphasis, and phrase structure."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How does Bageshree differ from Raga Kafi?",
+          "options": [
+            {
+              "text": "Bageshree uses different notes than Kafi",
+              "why": "They use the same notes. The difference is in how those notes move - Bageshree has a vakra ascent."
+            },
+            {
+              "text": "Bageshree skips Re and Pa in ascent; Kafi uses all notes in both directions",
+              "right": true,
+              "yes": "Exactly. Same notes, different movement rules. The vakra ascent is what separates Bageshree from Kafi."
+            },
+            {
+              "text": "Bageshree is faster than Kafi",
+              "why": "Speed is not what distinguishes ragas. The difference is in melodic movement and phrasing."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which raga has a vakra (crooked) ascent?",
+          "options": [
+            {
+              "text": "Kafi - it zigzags through all notes",
+              "why": "Kafi has a straight ascent using all notes. Bageshree is the one with the vakra ascent."
+            },
+            {
+              "text": "Bageshree - it skips Re and Pa going up",
+              "right": true,
+              "yes": "Right. Bageshree's vakra ascent (Sa g m D n Sa') is its defining structural feature."
+            },
+            {
+              "text": "Neither - both ascend straight",
+              "why": "Bageshree definitely has a vakra ascent. It skips two notes going up."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-training-bageshree",
+      "title": "Ear Training: Bageshree",
+      "content": [
+        "How do you recognize Bageshree when you hear it? Three clues to listen for:",
+        "First, the komal Ga and komal Ni give the raga a warm, soft quality - darker than Yaman or Bhupali but gentler than Bhairavi or Malkauns.",
+        "Second, listen for the Ma-to-Dha leap. When a melody jumps from the fourth note directly to the sixth, skipping the fifth, that is almost certainly Bageshree. This leap is the raga's fingerprint.",
+        "Third, notice whether Pa appears in ascending phrases. If the melody consistently avoids Pa when going up but uses it freely when coming down, you are hearing Bageshree's vakra structure in action.",
+        "With practice, you will begin to feel Bageshree's personality even before you consciously identify these markers. The raga has a distinctive sweetness that is hard to mistake once you know it."
+      ],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 3, 5, 7, 9, 10],
+          "rounds": 8,
+          "prompt": "Identify each note from Bageshree's full scale",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the strongest identifying feature of Bageshree when heard?",
+          "options": [
+            {
+              "text": "The use of tivra Ma",
+              "why": "Bageshree uses shuddha Ma, not tivra Ma. The Ma-Dha leap is its signature."
+            },
+            {
+              "text": "The leap from Ma to Dha, skipping Pa in ascending phrases",
+              "right": true,
+              "yes": "Correct. The Ma-Dha leap with the absent Pa is Bageshree's most recognizable feature."
+            },
+            {
+              "text": "The absence of Sa in certain phrases",
+              "why": "Sa is always present in Bageshree. The absent notes in ascent are Re and Pa."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "playing-bageshree",
+      "title": "Playing Bageshree",
+      "content": [
+        "Bring everything together. Play a complete Bageshree phrase: ascend through the vakra aroha (Sa g m D n Sa'), then descend through the full avaroha (Sa' n D P m g R Sa). Feel the contrast between the leaping ascent and the smooth descent.",
+        "As you play, notice how different the two directions feel. Going up, you are reaching and yearning. Coming down, you are settling and completing. This emotional arc - longing followed by tenderness - is the essence of Bageshree.",
+        "Bageshree is a raga that rewards patience and subtlety. Play it slowly. Let each note breathe. The beauty is not in speed or complexity but in the spaces between the notes and the gentleness of the transitions. This is a raga for quiet moments and open hearts."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 3, 5, 9, 10, 12, 10, 9, 7, 5, 3, 2, 0],
+          "prompt": "Play the full Bageshree arc: vakra ascent then smooth descent",
+          "points": 25
+        },
+        {
+          "type": "confirm",
+          "prompt": "I appreciate Bageshree's beauty and will explore it further through listening and practice."
+        }
+      ]
+    }
+  ]
+}

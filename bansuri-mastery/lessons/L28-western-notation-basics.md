@@ -24,7 +24,7 @@
 ## 2. Prerequisites
 
 You know the 12 notes in sargam ([L25](L25-komal-swaras-and-12-notes.md)) and that on your
-flute Sa = C ([conventions](../05-CONVENTIONS-AND-NOTATION-KEY.md)).
+the C5 reference pitch ([conventions](../05-CONVENTIONS-AND-NOTATION-KEY.md)); your flute can use another Sa.
 
 ## 3. Simple explanation
 
@@ -36,8 +36,8 @@ essentials only.
 Two ideas link the systems:
 
 - **Western note names are fixed pitches.** C is always C.
-- **Sargam is relative.** Sa is whatever the home note is. On your flute, Sa = C, so with no
-  key change: `S R G m P D N` = C D E F G A B.
+- **Sargam is relative.** Sa is whatever the home note is. In the C5 reference example, with no
+  key change: `S R G m P D N` = C D E F G A B. Your flute plays the same sargam at its own pitches.
 
 ## 4. Step-by-step instructions
 
@@ -88,7 +88,7 @@ which is G4.
  ----------------------------------------------------------  F5 (5th line)
                                                               E5 (4th space)
  ----------------------------------------------------------  D5 (4th line)
-                                                              C5 (3rd space)  <- your Sa
+                                                              C5 (3rd space)  <- reference Sa when set to C
  ----------------------------------------------------------  B4 (3rd line)
                                                               A4 (2nd space)
  ----------------------------------------------------------  G4 (2nd line)    <- your lowest note .P
@@ -142,7 +142,7 @@ X        .   X    .   X    .
 
 The sharps or flats at the start of each line apply to the whole piece:
 
-| Key | Signature | Sa | Sargam on your C flute |
+| Key | Signature | Sa | Sargam on the C5 reference profile |
 |---|---|---|---|
 | C major | none | C | normal, Sa = C |
 | G major | 1 sharp (F#) | G | Pa as Sa, no half-holes |
@@ -217,7 +217,7 @@ Convert these to sargam (Sa = C unless stated). Durations: q = quarter, h = half
 
 1. `S R G S | G m P -` (note `m` = F, half-hole on your flute)
 2. Starting G4 = `.P`: `.P .P .D .P | S .N -` (C5 is Sa, B4 is `.N`)
-3. With Sa = G: `S R G S | P - P -` (on your C flute: G4 `XXX XXX`, A `XXX XXO`, B `XXX XOO`, D5 `XXO OOO`)
+3. With Sa = G: `S R G S | P - P -` (worked C5 reference example: G4 `XXX XXX`, A `XXX XXO`, B `XXX XOO`, D5 `XXO OOO`)
 4. G A B C(6) | B A G - (C6 is taar Sa)
 5. R(2) to P(7) = 5 semitones (perfect 4th); g(3) to n(10) = 7 semitones (perfect 5th); `.N` (-1) to G (4) = 5 semitones.
 

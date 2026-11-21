@@ -184,14 +184,14 @@ the best supplement.
 ## 10. Quiz
 
 1. What are the three rules of an accompanist?
-2. A singer says "kali 3". What is their Sa, and how would you play it on your C flute?
+2. A singer's Sa differs from your flute's natural Sa. What should you confirm with them before choosing how to match it?
 3. When does a fill start and stop?
 4. What three things should you agree with a tabla player before playing?
 
 <details markdown="1"><summary>Answer key</summary>
 
 1. Same Sa and pulse; the soloist leads; leave space.
-2. F# (by the common mapping; confirm with the singer). Options: pitch-shift is not possible live, so move Sa (tivra Ma as Sa needs many half-holes; often better to use another flute) or ask the singer if another key is possible.
+2. Confirm the singer's actual pitch and octave. Then choose whether to move Sa, use another flute, or ask about another key; the best choice depends on the melody's range and your instrument.
 3. After the singer finishes a line; before the singer starts the next.
 4. Tala and tempo, start beat of the composition, how to end (tihai and final note).
 

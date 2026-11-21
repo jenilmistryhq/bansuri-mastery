@@ -28,7 +28,7 @@ Bright, joyful, folk-like. Built on the same shape as Bhupali, but with Ma inste
 - Wikipedia notes that **Pa should not be a resting note in descent**.
 - `D` to `m` and `m` to `R` are typical leaps and steps. `.D S` is a common cadence.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Comment |
 |---|---|---|
@@ -102,7 +102,7 @@ R m P D | m - R - | m P D S' | D - m R |
 S R m P | D S' D P | m R S R | .D - S - ||
 ```
 
-It is built from the pakad `R m P D, m R` and the cadence `S R .D S`, and Pa is only passed through in descent, never rested on. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+It is built from the pakad `R m P D, m R` and the cadence `S R .D S`, and Pa is only passed through in descent, never rested on. Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 **Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
 

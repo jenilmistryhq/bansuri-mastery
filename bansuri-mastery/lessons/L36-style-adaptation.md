@@ -55,7 +55,7 @@ before adding your own ideas.
 
 ### Step 1. One melody, several styles (SNG-07, ORN-09)
 
-Use this plain **original practice melody** (keherwa, Sa = C):
+Use this plain **original practice melody** (keherwa; the note labels are a C-reference example, while the sargam pattern works with your own Sa):
 
 ```
 S R G - | P - G R || G P D P | G R S - ||

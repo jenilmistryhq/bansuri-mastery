@@ -1,4 +1,4 @@
-# Song Suggestions for a C Bansuri
+# Song Suggestions for Bansuri
 
 Songs to learn **by ear** with the [song-learning system](lessons/L18-song-learning-system.md),
 sorted by when your skills allow them. Researched 2026-10-29.
@@ -9,14 +9,15 @@ whether it fits your flute, and the earliest lesson after which it is realistic.
 
 ## How the "fit" was worked out
 
-On a C flute you play every song **with Sa = C**, whatever key the original recording is in. To
-play along with the recording, pitch-shift it to C ([L26](lessons/L26-keys-transposition-and-limits.md)).
-So what matters is the song's **range relative to its own Sa**:
+The ranges below are **relative to each song's Sa**. Compare them with the comfortable range of
+your own flute, then find a usable Sa position or pitch-shift the recording to match
+([L26](lessons/L26-keys-transposition-and-limits.md)). The Western pitches in the tables use the
+C5 medium flute as a reference profile; they are examples, not a requirement:
 
 | Position | Fits if the song's notes stay within | Notes |
 |---|---|---|
-| **Normal (Sa = C)** | `.P` to `G'` (comfortable); `M'` is the ceiling | The default for everything below |
-| **Pa-as-Sa** (mandra Pa, G4, as Sa; [L26](lessons/L26-keys-transposition-and-limits.md), Phase 4) | `S` to about `D'`, never below Sa | The song's shuddha `m` becomes an open note (no half-hole). Its komal `n` becomes a half-hole `m` |
+| **Natural Sa** | Use your flute's natural Sa; compare the sargam range with your own comfortable low and high notes | Learner's default |
+| **Pa-as-Sa** (mandra Pa as Sa; [L26](lessons/L26-keys-transposition-and-limits.md), Phase 4) | Check the resulting range against your flute before choosing this position | On the C5 reference profile, shuddha `m` becomes open and komal `n` becomes a half-hole `m` |
 
 **Earliest lesson** = the lesson that unlocks the hardest note the song needs: `.P .D .N` [L11](lessons/L11-lower-notes-ni-dha-pa.md),
 `M` and anything up to `S'` [L14](lessons/L14-tivra-ma-and-madhya-pa-dha-ni.md), shuddha `m` [L16](lessons/L16-shuddha-ma-and-half-holing.md),

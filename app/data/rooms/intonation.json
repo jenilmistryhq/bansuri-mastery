@@ -1,0 +1,227 @@
+{
+  "id": "intonation",
+  "title": "Intonation - Playing in Tune",
+  "tasks": [
+    {
+      "id": "what-is-intonation",
+      "title": "What Is Intonation?",
+      "content": "Intonation means playing each note at its correct pitch. On the bansuri, every note can be slightly sharp or flat depending on:\n- Air pressure and speed\n- Flute angle (rolling toward or away from you)\n- How completely you cover the holes\n- Temperature (cold makes the flute go flat)\n\nGood intonation is not about hitting a number on a tuner - it is about sounding right with the drone and with other musicians. The ear is the judge, not the meter.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which of these does NOT affect intonation on the bansuri?",
+          "options": [
+            {
+              "text": "Air pressure",
+              "why": "Air pressure does affect intonation."
+            },
+            {
+              "text": "The colour of the bamboo",
+              "right": true,
+              "yes": "Correct. Colour is cosmetic and has no effect on pitch."
+            },
+            {
+              "text": "How completely you cover the holes",
+              "why": "Hole coverage directly affects pitch."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pitch-factors",
+      "title": "What Moves the Pitch",
+      "content": "Understanding what changes the pitch helps you fix problems quickly:\n\nPitch goes SHARP (too high) when:\n- You blow too hard\n- The flute is angled too far from your lip\n- A hole is not fully sealed (air leaks raise pitch)\n- The room is very warm\n\nPitch goes FLAT (too low) when:\n- You do not blow with enough support\n- The flute is angled too close to your lip\n- You over-cover a hole that should be open\n- The room is very cold\n\nThe best habit: always play with the drone running. Your ear will naturally start correcting before your brain even notices the problem.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Cold temperature makes the bansuri's pitch go:",
+          "options": [
+            {
+              "text": "Sharp (higher)",
+              "why": "Cold air slows down, lowering the pitch."
+            },
+            {
+              "text": "Flat (lower)",
+              "right": true,
+              "yes": "Correct. Cold air vibrates more slowly, so the pitch drops. Warm up your flute by blowing gently into it before playing."
+            },
+            {
+              "text": "It has no effect",
+              "why": "Temperature has a real effect on wind instruments. Cold = lower pitch."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hearing-beats",
+      "title": "Hearing Beats",
+      "content": "When two notes are almost the same pitch but not quite, you hear 'beats' - a wavering, pulsing sound. The closer the two pitches, the slower the beats. When the pitches match exactly, the beats disappear and the two sounds merge into one smooth tone.\n\nThis is how you tune with the drone:\n1. Play Sa with the drone running\n2. Listen for beats (a wah-wah-wah pulsing)\n3. Adjust your pitch until the beats slow down and vanish\n4. When the beats disappear, you are in tune\n\nThis takes practice, but once you hear it, you cannot unhear it. It becomes your built-in tuner.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does it mean when the 'beats' between your note and the drone disappear?",
+          "options": [
+            {
+              "text": "Your note is an octave above the drone",
+              "why": "An octave above would blend but still be a different pitch."
+            },
+            {
+              "text": "Your note matches the drone's pitch exactly",
+              "right": true,
+              "yes": "Exactly. No beats means perfect unison. This is the gold standard for intonation."
+            },
+            {
+              "text": "The microphone stopped working",
+              "why": "Beats are an acoustic phenomenon you hear with your ears, not through a microphone."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tight-sa",
+      "title": "Precision Hold: Sa",
+      "content": "Now test your intonation. Hold Sa within 20 cents of the drone for 6 seconds. That is a tighter window than the earlier long-tone exercise.\n\n20 cents is roughly one-fifth of a semitone - a small but audible deviation. At this precision, you should hear the beats nearly vanish.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Sa within 20 cents of the drone for 6 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "tight-pa",
+      "title": "Precision Hold: Pa",
+      "content": "Pa (the fifth) should ring perfectly against the drone's Sa. The Sa-Pa interval is one of the most consonant in music - when Pa is in tune, it blends so well with Sa that they almost become one sound.\n\nHold Pa within 20 cents for 5 seconds. Listen for that blending quality.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold Pa within 20 cents for 5 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "tight-re-ga",
+      "title": "Precision Hold: Re and Ga",
+      "content": "Re and Ga are more challenging for intonation because they sit further from Sa on the overtone series. Small deviations are more noticeable.\n\nRe should sound bright but not piercing. If it sounds harsh, you are likely sharp.\nGa should sound warm and open. If it sounds dull, you may be flat.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold Re within 25 cents for 5 seconds",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 4,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold Ga within 25 cents for 5 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "shruti-awareness",
+      "title": "Shruti Awareness",
+      "content": "Western music divides the octave into 12 equal semitones. Indian music traditionally recognises 22 shrutis - micro-intervals within those 12 notes.\n\nWhat this means in practice: a komal Ga in Raga Bhairavi sits at a slightly different pitch than a komal Ga in Raga Kafi. The note name is the same, but the exact tuning shifts to fit the raga's character.\n\nYou will not hear this difference immediately. But as your ear develops, you will begin to notice that some notes 'glow' against the drone while others sound flat or lifeless. That glow is shruti - the note sitting at exactly the right micro-position for its raga.\n\nOur pitch detection uses 12-note equal temperament as an approximation. Real mastery means training your ear to hear beyond these 12 divisions.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many shrutis does the Indian system traditionally recognise?",
+          "options": [
+            {
+              "text": "12 - same as Western semitones",
+              "why": "Western music uses 12. Indian music goes finer with 22 shrutis."
+            },
+            {
+              "text": "22 micro-intervals within the octave",
+              "right": true,
+              "yes": "Correct. 22 shrutis give Indian music its distinctive microtonal richness."
+            },
+            {
+              "text": "7 - one for each swara",
+              "why": "7 is the number of swara names. Each swara can occupy multiple shruti positions."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why can the same note name (like komal Ga) sound different in different ragas?",
+          "options": [
+            {
+              "text": "Because musicians play out of tune",
+              "why": "It is intentional, not an error. The note shifts to fit the raga."
+            },
+            {
+              "text": "Because the exact shruti position shifts to match the raga's character",
+              "right": true,
+              "yes": "Right. The same note name can sit at different micro-positions depending on the raga."
+            },
+            {
+              "text": "Because different flutes have different tunings",
+              "why": "While flutes vary, the shruti difference is about raga grammar, not instrument construction."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "achal-swaras",
+      "title": "Achal Swaras - The Fixed Points",
+      "content": "Of the seven swara names, two are achal (immovable): Sa and Pa. They never change their pitch regardless of the raga.\n\nSa is your reference - the drone's foundation. Pa is a pure fifth above Sa (ratio 3:2, approximately 702 cents). These two form the skeleton of every raga.\n\nAll other notes - Re, Ga, Ma, Dha, Ni - are chalat (movable). They can shift their exact position depending on the raga. This is why the tanpura drones Sa and Pa: they are the fixed anchors that everything else relates to.\n\nPrecision on Sa and Pa is non-negotiable. If these are even slightly off, everything built on top of them wobbles.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Sa within 15 cents for 6 seconds - precision anchoring",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 7,
+          "seconds": 6,
+          "cents": 15,
+          "prompt": "Hold Pa within 15 cents for 6 seconds - lock in the fifth",
+          "points": 20
+        },
+        {
+          "type": "type",
+          "prompt": "What is the term for the two immovable notes (Sa and Pa)?",
+          "answer": "achal",
+          "accept": ["achal", "achal swaras", "achal swara"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "ear-training-intonation",
+      "title": "Ear Training: Note Recognition",
+      "content": "Good intonation starts with good note recognition. If you can instantly identify a note by ear, you will also hear when your own playing drifts off pitch.\n\nIdentify each note as it plays. The better you know what each note should sound like, the faster you will catch intonation errors in your own playing.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 7],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note: Sa, Re, Ga, or Pa",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

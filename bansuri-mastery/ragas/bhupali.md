@@ -24,7 +24,7 @@ to Pa is smooth, often with a gentle meend once you learn it ([L23](../lessons/L
 - **Dha** answers Ga. In descent `D P G` and `S' D P` are typical.
 - Do not let Ma or Ni slip in, even as a passing note. That would change the raga.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 No half-holes. Every note is a basic fingering:
 

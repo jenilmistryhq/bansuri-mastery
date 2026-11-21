@@ -1,0 +1,216 @@
+{
+  "id": "recording-your-bansuri",
+  "title": "Recording Your Bansuri",
+  "tasks": [
+    {
+      "id": "t1-why-record",
+      "title": "Why Record Yourself?",
+      "content": [
+        "Recording is one of the most powerful practice tools available to any musician. When you play, your brain is busy managing fingers, breath, embouchure, and musicality all at once. You cannot objectively hear yourself. A recording captures exactly what a listener hears, stripping away the internal experience and revealing the external reality.",
+        "Recordings expose issues you miss in the moment: unsteady pitch, uneven volume, timing inconsistencies, excessive breath noise, or ornaments that are not as clean as they feel. Beyond self-assessment, recordings let you track your progress over months and years, share your playing with your guru or fellow students for feedback, and build a personal archive of your musical journey. Every serious musician records themselves regularly."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is recording yourself a valuable practice tool?",
+          "options": [
+            { "text": "It reveals how you actually sound to a listener, not how you think you sound", "right": true, "yes": "Exactly. The gap between how you feel while playing and how you actually sound is often surprising. Recording bridges that gap." },
+            { "text": "It makes your flute sound better", "why": "Recording does not change your sound. It reveals your actual sound so you can identify and fix problems." },
+            { "text": "It is required for learning ragas", "why": "Recording is not required, but it is an extremely effective tool for improvement because it gives you objective feedback." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What does a recording reveal that you might miss while playing?",
+          "options": [
+            { "text": "Pitch unsteadiness, timing issues, and breath noise", "right": true, "yes": "Right. These subtle issues are hard to notice when your attention is split between multiple tasks while playing." },
+            { "text": "Which raga you are playing", "why": "You already know which raga you are playing. Recording reveals subtle quality issues in HOW you play it." },
+            { "text": "Whether your flute is good quality", "why": "Flute quality is better assessed by a teacher or maker. Recording reveals issues in your playing technique." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-microphone-basics",
+      "title": "Microphone Basics",
+      "content": [
+        "The bansuri produces sound from two places: the blowing hole (the primary sound source) and the open finger holes (which contribute harmonics and some air noise). A single microphone captures both when positioned correctly.",
+        "Condenser microphones capture the bansuri's breathy, airy character best because they are more sensitive to subtle details than dynamic microphones. USB condenser microphones are affordable and plug directly into a computer or phone. However, even a smartphone works well for practice recordings. Position the microphone 30-60 cm (about 1-2 feet) from the flute, aimed at the blowing hole area but slightly off-axis - that is, not pointing directly at the hole. Pointing straight at the blowing hole captures too much breath noise and wind pops."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What type of microphone best captures the bansuri's breathy character?",
+          "options": [
+            { "text": "Condenser microphone", "right": true, "yes": "Correct. Condenser microphones are more sensitive and capture the subtle, airy qualities that make the bansuri sound special." },
+            { "text": "Dynamic microphone", "why": "Dynamic microphones are more rugged but less sensitive. They miss some of the bansuri's delicate breathiness." },
+            { "text": "Ribbon microphone", "why": "Ribbon microphones can sound good but are fragile and expensive. A condenser microphone is the practical best choice for bansuri." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why should the microphone be aimed slightly off-axis rather than directly at the blowing hole?",
+          "options": [
+            { "text": "Pointing directly at the blowing hole captures too much breath noise", "right": true, "yes": "Right. The direct blast of air creates wind noise and pops. A slight angle captures the tone while minimizing breath noise." },
+            { "text": "The sound comes only from the finger holes", "why": "The blowing hole is actually the primary sound source. The issue is that aiming directly at it picks up too much wind noise along with the tone." },
+            { "text": "It makes the flute sound louder", "why": "Off-axis positioning does not increase volume. It reduces breath noise while still capturing a full, balanced tone." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-room-acoustics",
+      "title": "Your Room Matters",
+      "content": [
+        "The room you record in affects the sound as much as the microphone. Hard surfaces - tile floors, bare walls, glass windows - bounce sound waves around, creating echo and a 'roomy' quality that can mask the clarity of your playing. Soft surfaces - carpet, curtains, blankets, pillows, upholstered furniture - absorb reflections, creating a cleaner, drier sound that lets every detail of your playing come through.",
+        "A bedroom with curtains and carpet often produces better recordings than a large empty hall. This is counterintuitive but true: a smaller, treated space gives you more control over what the microphone captures. Before recording, turn off fans, air conditioning, and close windows. The bansuri is a relatively quiet instrument and background noise is easily picked up. Even the hum of a refrigerator in the next room can be audible in a bansuri recording."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What kind of room acoustics is best for recording bansuri at home?",
+          "options": [
+            { "text": "A room with soft surfaces that absorb reflections", "right": true, "yes": "Correct. Soft surfaces like carpet, curtains, and blankets create a clean, dry sound that captures your playing clearly." },
+            { "text": "A large empty room with hard floors", "why": "Large empty rooms create echoes and reflections that mask your playing's details. Soft, treated spaces sound much better." },
+            { "text": "A bathroom for natural reverb", "why": "Bathroom reverb sounds impressive in person but makes recordings muddy and unclear. A dry room gives you better results." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why should fans and AC be turned off when recording bansuri?",
+          "options": [
+            { "text": "The bansuri is quiet and background noise is easily picked up", "right": true, "yes": "Right. The bansuri's soft, breathy tone means that background hums and buzzes compete with your playing on the recording." },
+            { "text": "Air movement changes the pitch of the flute", "why": "While extreme drafts can slightly affect sound, the main issue is that microphones pick up fan and AC hum alongside the quiet bansuri." },
+            { "text": "Electronics interfere with the microphone", "why": "While electromagnetic interference exists, the main problem is simply that fans and AC create audible noise that the sensitive microphone captures." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-free-software",
+      "title": "Free Recording Software",
+      "content": [
+        "You do not need expensive equipment or software to make useful recordings. Audacity is a free, powerful audio editor that runs on Windows, Mac, and Linux. It handles recording, editing, effects, and export. GarageBand is free on Mac and iOS devices and includes recording plus built-in effects and virtual instruments. Your smartphone's built-in voice memo app works perfectly for quick practice captures.",
+        "For video recording, any smartphone camera gives usable results. If you want better audio on video, connect an external microphone - even a pair of earbuds with a built-in mic produces clearer audio than the phone's internal microphone. The most important thing is to START recording, even imperfectly. A rough recording that you actually make teaches you more than a perfect recording setup that you never use."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Name a free audio recording and editing software that runs on any computer.",
+          "answer": "Audacity",
+          "accept": ["audacity", "garageband", "GarageBand"],
+          "points": 10
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will start recording my practice sessions this week, even if the setup is imperfect."
+        }
+      ]
+    },
+    {
+      "id": "t5-mic-placement",
+      "title": "Microphone Placement",
+      "content": [
+        "The position of your microphone dramatically changes the recorded sound. Experiment with these three positions to find what works best for your flute and room:",
+        "(1) Front position: place the microphone about 45 cm in front of you, aimed at the blowing hole from slightly below. This captures a full, balanced tone with both the blowing hole sound and finger hole resonance. (2) Side position: place the microphone 45 cm to the side, aimed at the finger holes. This captures more of the resonance and body of the flute with significantly less breath noise. (3) Above position: place the microphone 45 cm above you, aimed downward. This is ideal when recording video and audio simultaneously, as the camera and microphone can share a similar angle. Try all three and listen back. The differences will surprise you."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which microphone position captures the least breath noise?",
+          "options": [
+            { "text": "Side position, aimed at the finger holes", "right": true, "yes": "Correct. Pointing toward the finger holes instead of the blowing hole picks up the flute's resonance while avoiding the direct blast of breath." },
+            { "text": "Front position, aimed at the blowing hole", "why": "The front position captures a balanced tone but also picks up more breath noise because it faces the blowing hole." },
+            { "text": "Above position, aimed downward", "why": "The above position is a good compromise for video but still picks up some breath noise. The side position minimizes it most effectively." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why is it important to try multiple microphone positions?",
+          "options": [
+            { "text": "Each position captures a noticeably different sound from the same performance", "right": true, "yes": "Right. The difference between front, side, and above positions is striking. Only by trying them can you find the sound you prefer." },
+            { "text": "To find the loudest position", "why": "Volume is easily adjusted in editing. The important difference is in the character and quality of the recorded sound." },
+            { "text": "To test whether the microphone works", "why": "Any position will confirm the microphone works. The point of trying multiple positions is to discover which one captures the tone you like best." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-adding-tanpura",
+      "title": "Adding Tanpura",
+      "content": [
+        "Most bansuri recordings benefit from a tanpura (drone) backdrop. The tanpura provides the harmonic context that makes the bansuri's notes come alive - without it, recordings can sound thin and ungrounded. There are several ways to include tanpura:",
+        "(1) Play along with a tanpura app on a separate device and record both together on your recording device. This is the simplest approach. (2) Record the tanpura track first as a separate audio file, then play back the tanpura through headphones while recording yourself. This gives you a clean bansuri track with no tanpura bleed. (3) Record yourself playing solo and add a tanpura track in editing software afterward, mixing the two tracks together. The simplest approach for beginners: play a tanpura app on your phone or a speaker placed near you while recording with a separate device. Both sounds are captured naturally together."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the simplest way to include a tanpura in your bansuri recordings?",
+          "options": [
+            { "text": "Play a tanpura app on a nearby device while recording both together", "right": true, "yes": "Right. This requires no editing skills - just play the tanpura app and position it near your flute while recording." },
+            { "text": "Record the bansuri and tanpura on separate tracks and mix them", "why": "This gives cleaner results but requires editing software and multi-track skills. It is not the simplest approach." },
+            { "text": "Buy a real tanpura", "why": "A real tanpura is beautiful but expensive and requires maintenance and tuning skills. An app is far simpler for recording purposes." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does a tanpura backdrop improve bansuri recordings?",
+          "options": [
+            { "text": "It provides harmonic context that makes the notes come alive", "right": true, "yes": "Exactly. The tanpura drone gives the listener a reference pitch and fills in the harmonic space, making your melody sound richer and more grounded." },
+            { "text": "It makes the recording louder", "why": "Volume is not the point. The tanpura adds harmonic richness and a pitch reference that gives the melody musical context." },
+            { "text": "It hides mistakes in your playing", "why": "A tanpura does not hide mistakes - in fact, it can make pitch problems more obvious by providing a clear reference pitch." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-basic-editing",
+      "title": "Basic Editing",
+      "content": [
+        "After recording, a few simple edits improve the result significantly: (1) Trim silence from the beginning and end - remove the dead air before you start playing and after you finish. (2) Normalize the volume - if the recording is too quiet, normalizing brings it up to a standard level without distortion. (3) If the recording sounds too dry or clinical, add a small amount of reverb for warmth - most editing software has a reverb effect built in.",
+        "Important: always save your original recording before editing so you can go back to the unmodified version. For sharing, export as MP3 format - the file size is much smaller and plays on any device. For archiving your best recordings, keep the WAV format - it preserves the full audio quality without compression. Think of WAV as the master and MP3 as the copy you send out."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What should you always do before editing a recording?",
+          "options": [
+            { "text": "Save the original unedited recording", "right": true, "yes": "Right. Keeping the original means you can always go back if your edits do not turn out well or if you want to try a different approach." },
+            { "text": "Add reverb first", "why": "Reverb is an optional final step, not the first thing to do. Saving the original is the most important pre-editing step." },
+            { "text": "Convert it to MP3", "why": "Converting to MP3 before editing loses quality. Work with the original format, save it, then export to MP3 only for sharing." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which audio format is better for archiving your recordings at full quality?",
+          "answer": "WAV",
+          "accept": ["wav", "wave", "WAVE"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t8-practice-archive",
+      "title": "Building a Practice Archive",
+      "content": [
+        "Create a simple system: record yourself playing one piece, exercise, or raga exploration once per week. Name the file with the date and what you played - for example, '2024-03-15 raga yaman alap' or '2024-04-01 saptak practice'. Organize files in monthly folders. This tiny habit, done consistently, builds an invaluable record of your musical growth.",
+        "After a few months, go back and listen to your earliest recordings. The progress you hear will motivate you more than any external feedback or praise. You will hear improvements you did not notice day to day: steadier pitch, cleaner ornaments, more confident phrasing, better breath control. This archive becomes a personal musical diary documenting not just your skill level but your evolving musical personality - the choices you make, the ragas you gravitate toward, the style that becomes uniquely yours."
+      ],
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I will record myself at least once per week and build a practice archive."
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the most motivating aspect of maintaining a recording archive?",
+          "options": [
+            { "text": "Hearing your own progress over weeks and months", "right": true, "yes": "Exactly. Progress is often invisible day to day but becomes obvious when you compare recordings from months apart." },
+            { "text": "Having recordings to post online", "why": "Sharing is a benefit, but the most motivating aspect is hearing your own improvement - proof that your practice is working." },
+            { "text": "Collecting a large number of files", "why": "The number of files does not matter. The motivation comes from hearing the difference between your old and current playing." }
+          ]
+        }
+      ]
+    }
+  ]
+}

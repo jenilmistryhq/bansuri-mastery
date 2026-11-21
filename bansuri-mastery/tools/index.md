@@ -17,7 +17,7 @@ An interactive 6-hole bansuri that runs in your browser. Use it from Day 0.
 
 ## Good to know
 
-- **Settings:** set your flute's Sa (default C5, a C natural medium flute) and A4 tuning (default 440 Hz) at the top right. Everything follows them.
+- **Settings:** set your flute's Sa and octave (default C5, the C natural medium reference) and A4 tuning (default 440 Hz) at the top right. App notes and drones follow them; check your own flute's comfortable range.
 - **Microphone:** Long tones (the live tuner) asks for microphone permission. All analysis runs in your browser; no audio is uploaded.
 - **What it cannot check:** your tone, embouchure, posture, raga intonation and ornament style. The flute sound is synthesised. See its "What this confirms" tab and the [quality report](../07-QUALITY-REPORT.md).
 - **Offline use:** the page is a single file. Download `practice-bench.html` and open it in Chrome or Edge.

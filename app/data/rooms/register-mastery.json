@@ -1,0 +1,353 @@
+{
+  "id": "register-mastery",
+  "title": "Register Mastery",
+  "tasks": [
+    {
+      "id": "three-octaves",
+      "title": "Three Octaves, Three Worlds",
+      "content": [
+        "The bansuri has three registers, each called a saptak. Each saptak has its own character, its own technique, and its own emotional world.",
+        "The mandra saptak (lower octave) lives below your standard Sa. It is deep, warm, and intimate - the voice of meditation and introspection. The madhya saptak (middle octave) runs from Sa to Ni. This is the bansuri's natural home - clear, balanced, and comfortable. The taar saptak (upper octave) soars above upper Sa. It is bright, penetrating, and intense - the voice of climax and passion.",
+        "A complete raga presentation moves through all three registers. The alap often begins in the mandra, establishes the raga in the madhya, and reaches its peak in the taar before descending back to rest. Learning to play fluently across all three transforms you from someone who plays notes into someone who tells stories with sound."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What are the three registers (saptaks) of the bansuri called?",
+          "options": [
+            {
+              "text": "Mandra (lower), Madhya (middle), Taar (upper)",
+              "right": true,
+              "yes": "Correct. These three saptaks cover the full range of the bansuri."
+            },
+            {
+              "text": "Vilambit (slow), Madhya (medium), Drut (fast)",
+              "why": "Those are tempo terms (laya), not register names."
+            },
+            {
+              "text": "Aroha (ascending), Avaroha (descending), Pakad (phrase)",
+              "why": "Those are melodic terms, not register names. The three registers are mandra, madhya, and taar."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which saptak is the standard home of most bansuri playing?",
+          "answer": "madhya",
+          "accept": ["madhya", "madhya saptak", "middle", "middle octave"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "mandra-saptak",
+      "title": "The Mandra Saptak",
+      "content": [
+        "The lower register lives below your standard Sa. On the bansuri, lower notes are produced by reducing air pressure while keeping similar fingerings. You are not blowing harder to go lower - you are blowing softer, slower, and with a wider, more relaxed embouchure.",
+        "Lower Ni is the easiest note in the mandra saptak. Use the same fingering as Sa but with gentler, slower air. The sound should be warm and slightly breathy - not forced or strained. If the note cracks or jumps up to the madhya saptak, you are using too much air pressure.",
+        "The mandra saptak is where alap traditionally begins. The musician starts in the depths, playing just Sa and lower Ni, establishing the raga's mood before slowly climbing upward. This deep, meditative foundation sets the tone for everything that follows."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": -1,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold lower Ni for 5 seconds - use gentle, slow air with Sa fingering",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "How do you produce lower (mandra) notes on the bansuri?",
+          "options": [
+            {
+              "text": "By blowing harder with more force",
+              "why": "More force raises the pitch. Lower notes need less pressure, not more."
+            },
+            {
+              "text": "By reducing air pressure and using slower, gentler air",
+              "right": true,
+              "yes": "Exactly. Less air pressure lowers the pitch. The embouchure relaxes and widens slightly."
+            },
+            {
+              "text": "By covering additional holes beyond the standard fingering",
+              "why": "The bansuri has a fixed number of holes. Register is controlled primarily by air pressure, not by extra holes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exploring-below-sa",
+      "title": "Exploring Below Sa",
+      "content": [
+        "Practice the notes below Sa: lower Pa, lower Dha, lower Ni, then up to Sa. Not every bansuri can produce all lower notes cleanly - it depends on the flute's bore, length, and hole placement, as well as your breath control and embouchure.",
+        "Lower Pa is typically the deepest note a standard 6-hole bansuri can produce. It requires very gentle air and a wide, relaxed lip opening. Lower Dha sits between lower Pa and lower Ni. Each step down requires progressively softer air.",
+        "The lower you go, the more patience you need. These notes speak slowly - they take a moment to settle into pitch. Do not rush them. Let each note bloom on its own time. If a note will not speak cleanly on your flute, do not force it. Some bansuris simply cannot reach certain lower notes, and that is a limitation of the instrument, not of your technique."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-5, -3, -1, 0],
+          "prompt": "Play lower Pa, lower Dha, lower Ni, then Sa - ascending from the depths",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Why do lower notes require gentler air?",
+          "options": [
+            {
+              "text": "Because the bamboo is thinner at the bottom of the flute",
+              "why": "The bamboo's thickness does not change the air requirement. It is the physics of vibration that matters."
+            },
+            {
+              "text": "Because lower frequencies need slower air vibration, and too much pressure pushes the note up",
+              "right": true,
+              "yes": "Right. Lower pitches vibrate more slowly. Excess air pressure speeds up the vibration and raises the pitch into the madhya saptak."
+            },
+            {
+              "text": "Because the flute might crack under high pressure",
+              "why": "Bamboo is sturdy. The issue is acoustic, not structural - too much air raises the pitch."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "madhya-saptak",
+      "title": "The Madhya Saptak",
+      "content": [
+        "The middle octave - Sa to Ni - is where you spend most of your time. This is the bansuri's natural voice: all notes are clear, balanced, and comfortable. Standard air pressure, standard fingerings. Every swara from Sa through Ni is available, including all komal variants and tivra Ma.",
+        "But do not take the madhya saptak for granted. Even here, there is important work: evenness of tone across all seven notes, smooth transitions without gaps or bumps, consistent volume, and steady pitch. Many players rush through the madhya saptak to reach the more dramatic upper and lower registers, but the madhya is where the raga lives most of the time.",
+        "Think of the madhya saptak as the narrator's voice in a story. It carries the main thread. The mandra and taar saptaks are the whispers and the shouts - powerful but only meaningful in contrast to the steady middle voice."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 11, 12],
+          "prompt": "Play the full madhya saptak ascending: Sa Re Ga Ma Pa Dha Ni Sa'",
+          "points": 15
+        },
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Ma within 15 cents for 5 seconds - precision in the middle register",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What quality defines the madhya saptak's sound on the bansuri?",
+          "options": [
+            {
+              "text": "Breathy and intimate",
+              "why": "That describes the mandra saptak. The madhya saptak is clearer and more balanced."
+            },
+            {
+              "text": "Clear, balanced, and comfortable - the bansuri's natural voice",
+              "right": true,
+              "yes": "Correct. The madhya saptak is where the bansuri sounds most natural and even."
+            },
+            {
+              "text": "Bright, piercing, and intense",
+              "why": "That describes the taar saptak. The madhya saptak is more neutral and balanced."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "taar-saptak",
+      "title": "The Taar Saptak",
+      "content": [
+        "The upper register is reached by overblowing - increasing air speed and pressure while using the same fingerings as the madhya saptak. Upper Sa uses the same fingering as middle Sa but with significantly more air. Upper Re uses the Re fingering with overblowing, and so on.",
+        "Taar Sa and taar Re are relatively accessible. Taar Ga becomes harder, and taar Ma and above are challenging even for experienced players. Each step higher demands more breath support, tighter embouchure, and more precise air direction.",
+        "The main intonation challenge: overblown notes tend to go sharp because of the increased air pressure. You must compensate by slightly adjusting your embouchure - angling the air stream or relaxing the lip opening fractionally. This compensation becomes instinctive with practice, but at first you will need to listen carefully and adjust consciously."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 12,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold upper Sa (taar Sa) for 5 seconds - overblow with steady support",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 14,
+          "seconds": 5,
+          "cents": 25,
+          "prompt": "Hold upper Re (taar Re) for 5 seconds - maintain pitch while overblowing",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the main intonation challenge in the taar saptak?",
+          "options": [
+            {
+              "text": "Notes tend to go flat because of air loss",
+              "why": "The opposite is true. Increased air pressure pushes notes sharp, not flat."
+            },
+            {
+              "text": "Notes tend to go sharp because of the increased air pressure needed for overblowing",
+              "right": true,
+              "yes": "Correct. Overblowing raises the pitch beyond the target. You compensate with subtle embouchure adjustments."
+            },
+            {
+              "text": "The tone becomes too quiet to hear",
+              "why": "Upper notes are actually louder and more penetrating. The challenge is pitch control, not volume."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "register-break",
+      "title": "The Register Break",
+      "content": [
+        "Where one register ends and another begins, there is a 'break' - a point where the timbre shifts noticeably. You can hear it as a change in tone quality, a slight crack, or a sudden shift in character.",
+        "The mandra-to-madhya break happens around lower Ni to Sa. As you increase air pressure from the mandra range to the madhya range, the tone brightens and gains body. The madhya-to-taar break happens around Ni to upper Sa. Here the tone shifts from warm and full to bright and penetrating as you begin overblowing.",
+        "Smooth players learn to disguise these breaks so the listener hears a continuous voice rather than a sudden gear change. The technique: make the air pressure transition gradual rather than abrupt. As you approach the break from either side, begin adjusting your air incrementally. Think of it as a dimmer switch, not an on/off toggle. With practice, the break becomes a gentle bend in the road rather than a cliff."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 0, 2, 4],
+          "prompt": "Cross the lower break smoothly: lower Ni, Sa, Re, Ga - keep the tone even",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [9, 11, 12, 14],
+          "prompt": "Cross the upper break smoothly: Dha, Ni, upper Sa, upper Re - no crack or jump",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What causes the audible shift at a register break?",
+          "options": [
+            {
+              "text": "A sudden change in air pressure as you switch from one register's technique to another",
+              "right": true,
+              "yes": "Exactly. The break is caused by an abrupt change in air management. Making it gradual smooths the transition."
+            },
+            {
+              "text": "The bamboo vibrates differently at certain pitches",
+              "why": "While bamboo acoustics play a role, the audible break is primarily caused by the player's air pressure transition, not the material."
+            },
+            {
+              "text": "You must change finger positions at the break point",
+              "why": "Fingerings often stay the same across registers. The break is about air management, not finger changes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cross-register-phrases",
+      "title": "Cross-Register Phrases",
+      "content": [
+        "In real music, phrases rarely stay within a single register. An alap phrase might descend from madhya Ga down through Re and Sa into mandra Ni, linger there, then climb back through Sa to madhya Pa. A taan might launch from madhya Ma and climb all the way to taar Re before descending.",
+        "The key to cross-register phrases is managing the air pressure change within the phrase itself. You cannot pause to 'reset' your embouchure between registers - the phrase must flow as one continuous musical thought. This means your air management must be fluid and responsive, adjusting on the fly without interrupting the musical line.",
+        "Practice these phrases slowly at first. Feel the air pressure shift as you move between registers. Over time, the adjustment becomes automatic - your body learns to manage the transition without your conscious attention, just as a singer's voice shifts smoothly between chest and head voice."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 2, 0, -1, 0, 2, 4, 5, 7],
+          "prompt": "Descend into mandra and climb back: Ga Re Sa .Ni Sa Re Ga Ma Pa",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [5, 7, 9, 11, 12, 14],
+          "prompt": "Climb from madhya into taar: Ma Pa Dha Ni Sa' Re' - smooth ascent",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "emotional-mapping",
+      "title": "Emotional Mapping",
+      "content": [
+        "Each register carries emotional weight, and great musicians use register as an expressive tool rather than just a technical exercise.",
+        "The mandra saptak suggests introspection, depth, and intimacy. Use it in quiet, meditative moments - the beginning of an alap, a reflective pause, a moment of tenderness. When you descend to the lower register, you are drawing the listener inward.",
+        "The madhya saptak is the neutral ground - the narrative voice. It carries the main melodic content without the emotional extremes of the other registers. Most of the raga's character is established here.",
+        "The taar saptak suggests intensity, passion, and climax. Use it for emotional peaks - the high point of an alap vistar, the climax of a taan, a moment of ecstasy or anguish. When you ascend to the upper register, you are reaching for something beyond the ordinary.",
+        "The movement between registers is itself expressive. A sudden leap from mandra to taar creates shock and drama. A gradual climb creates anticipation. A slow descent creates resolution and peace. Register is not just where you play - it is what you are saying."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which register is best for creating emotional intensity and climax?",
+          "options": [
+            {
+              "text": "Mandra saptak (lower)",
+              "why": "The mandra saptak suggests depth and introspection. For intensity and climax, the taar saptak is the right choice."
+            },
+            {
+              "text": "Taar saptak (upper)",
+              "right": true,
+              "yes": "Correct. The bright, penetrating quality of the upper register naturally conveys intensity and emotional peaks."
+            },
+            {
+              "text": "Madhya saptak (middle)",
+              "why": "The madhya saptak is the neutral narrative voice. While important, it does not carry the intensity of the taar."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which register is associated with introspection and meditation?",
+          "options": [
+            {
+              "text": "Taar saptak (upper)",
+              "why": "The taar saptak is bright and intense. For meditative depth, the mandra saptak is used."
+            },
+            {
+              "text": "Mandra saptak (lower)",
+              "right": true,
+              "yes": "Right. The deep, warm quality of the lower register naturally evokes contemplation and inner stillness."
+            },
+            {
+              "text": "Madhya saptak (middle)",
+              "why": "The madhya is balanced and neutral. The mandra's depth is what creates the meditative quality."
+            }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 5, 7, 12],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note across registers: Sa, Ma, Pa, or upper Sa",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "full-range-practice",
+      "title": "Full Range Practice",
+      "content": [
+        "Play a phrase that travels through all three registers. Start in the mandra saptak with lower Ni, climb through the entire madhya saptak, touch the taar saptak at upper Re, and then descend all the way back down to lower Ni.",
+        "This is the arc of a full alap - from the depths to the heights and back. The ability to do this smoothly and musically, without cracks at the register breaks, without rushing the transitions, and with consistent tone quality throughout, is a mark of maturity on the bansuri.",
+        "Listen to recordings of Hariprasad Chaurasia playing alap. Notice how he moves through the registers as if the bansuri had no boundaries - one continuous, singing voice from the lowest note to the highest. That seamlessness is what you are working toward. It takes years, but every practice session that includes cross-register work brings you closer."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [-1, 0, 2, 4, 5, 7, 9, 11, 12, 14, 12, 11, 9, 7, 5, 4, 2, 0, -1],
+          "prompt": "Full range arc: .Ni Sa Re Ga Ma Pa Dha Ni Sa' Re' Sa' Ni Dha Pa Ma Ga Re Sa .Ni",
+          "points": 30
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will include cross-register exercises in my daily practice to build seamless transitions.",
+          "points": 0
+        }
+      ]
+    }
+  ]
+}

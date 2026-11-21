@@ -1,0 +1,260 @@
+{
+  "id": "performing",
+  "title": "Performing - Sharing Your Music",
+  "tasks": [
+    {
+      "id": "performance-mindset",
+      "title": "The Performance Mindset",
+      "content": "Performing is not about being perfect. It is about communicating music to listeners.\n\nCommon fears and their reality:\n- 'I will make mistakes' - Every performer makes mistakes. Listeners rarely notice because they are hearing the music, not grading you.\n- 'I am not good enough' - If you can play a raga with feeling, you are ready. Sincerity counts more than technique.\n- 'I will forget what to play' - If you know the raga, your fingers know the way. The raga's grammar guides you.\n\nThe key shift: stop performing FOR the audience and start sharing music WITH them. You are not being tested - you are offering something beautiful.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the most important quality in a performance?",
+          "options": [
+            {
+              "text": "Technical perfection with no mistakes",
+              "why": "Perfection without feeling is lifeless. Musical expression matters more."
+            },
+            {
+              "text": "Musical expression and genuine feeling",
+              "right": true,
+              "yes": "Exactly. A simple melody played with feeling moves people more than a perfect but cold display."
+            },
+            {
+              "text": "Playing as fast as possible to impress",
+              "why": "Speed without musicality is empty. Expression is what connects with listeners."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "preparation",
+      "title": "Preparing for Performance",
+      "content": ["Before performing:\n\n1. **Choose material you know well** - Performance is not the time to try new material. Play what your fingers know by heart.\n2. **Plan your outline** - Which raga, which composition, rough structure. Know your beginning and your ending.\n3. **Practice the beginning and ending** - These are what people remember most. A strong opening Sa and a clean closing tihai frame the whole performance.\n4. **Warm up** - Do your usual routine: long tones, a few alankars, some easy phrases in your raga.\n5. **Check your equipment** - Tuning, drone, any amplification. Arrive early enough to settle.\n6. **Breathe** - Five deep breaths before you begin. Let your shoulders drop.", "If the venue has amplification, do a sound check before the audience arrives. Test the microphone placement - too close picks up breath noise, too far loses volume. Check the monitor levels so you can hear yourself alongside the tanpura. Verify that the electronic drone is tuned to your flute's Sa. These details seem small, but a performer who has sorted them out in advance plays with confidence instead of anxiety."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What should you choose to perform?",
+          "options": [
+            {
+              "text": "Something new you have been working on this week",
+              "why": "New material is risky under pressure. Play what you know deeply."
+            },
+            {
+              "text": "Material you know so well your fingers play it without thinking",
+              "right": true,
+              "yes": "Right. Performance is not the time to test yourself. Play what you know, and play it with feeling."
+            },
+            {
+              "text": "The most difficult piece possible to show your skill",
+              "why": "Difficulty does not equal musicality. A simple piece played beautifully is better than a hard piece played nervously."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "managing-nerves",
+      "title": "Managing Performance Anxiety",
+      "content": ["Performance anxiety is universal. Even the greatest masters feel it - Hariprasad Chaurasia has spoken about nerves before concerts after decades of performing. The goal is not to eliminate nervousness but to channel that energy into the music.", "Practical techniques for managing stage nerves:\n\n1. **Arrive early** - Sit with the tanpura before anyone else arrives. Let the drone become your companion. By the time the audience enters, you are already in the raga's world.\n2. **Begin with alap** - A slow, unmetered alap calms both you and the audience. It gives you time to settle into the music without rhythmic pressure.\n3. **Focus on the raga, not the audience** - The raga is your conversation partner. You are speaking to Sa, to the notes, to the phrases you love. The audience is listening in on a private conversation.\n4. **Deep breathing before you start** - Three slow diaphragmatic breaths backstage. Drop your shoulders. Unclench your jaw. Relax your fingers.\n5. **Trust your riyaz** - The phrase 'riyaz se raag tak' (from practice to performance) means that your practice has already prepared you. Your fingers know the way. Trust them.", "If you make a mistake, do not react. No wince, no pause, no apologetic glance. The audience almost never hears what you heard. Your reaction is what draws their attention to it. Slide to the nearest correct note with a meend, return to the sthayi, and move on. The music is bigger than any single note."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "If you play a wrong note during performance, what should your face and body show?",
+          "options": [
+            {
+              "text": "A quick wince so the audience knows you noticed",
+              "why": "A visible reaction draws the audience's attention to the mistake. Stay composed."
+            },
+            {
+              "text": "Nothing - keep your expression unchanged and continue",
+              "right": true,
+              "yes": "Correct. The audience follows your expression. If you stay calm, they hear music, not mistakes."
+            },
+            {
+              "text": "Stop and restart the phrase",
+              "why": "Stopping is the most visible form of reaction. It breaks the musical flow for everyone."
+            }
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will develop a pre-performance calming routine: arrive early, sit with the drone, breathe deeply, and trust my practice",
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "stage-presence",
+      "title": "Stage Presence",
+      "content": ["Stage presence is not about showmanship - it is about being fully present in the music.\n\n**Posture:** Sit comfortably with a straight back. Your body language tells the audience whether you are confident or anxious. Relaxed posture projects calm.\n\n**Breathing:** Deep, slow breaths before and between phrases. Your breathing is audible on the bansuri - make it part of the music, not a source of tension.\n\n**Eyes:** Some players close their eyes to focus inward. Others make gentle eye contact. Both are fine. What matters is that you are with the music, not worrying about the audience.\n\n**Connection:** The audience feels what you feel. If you are genuinely absorbed in the raga, they will be too.", "There is a concept in Indian aesthetics called 'rasa' - the emotional flavour or essence that art creates in the listener. The nine rasas include shringara (love), karuna (compassion), veera (heroism), and shanta (peace). When you perform a raga, you are creating a rasa. The audience may not understand the technical grammar of the raga, but they feel the rasa. A contemplative alap in Malkauns creates shanta. A vigorous drut in Bhairavi creates veera. Your job is not to explain the raga - it is to make the audience feel its rasa. That feeling is your real stage presence."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What creates good stage presence?",
+          "options": [
+            {
+              "text": "Dramatic movements and gestures",
+              "why": "Indian classical music values inner absorption, not external drama."
+            },
+            {
+              "text": "Being genuinely absorbed in the music with relaxed posture",
+              "right": true,
+              "yes": "Exactly. When you are truly in the raga, the audience enters it with you. That is presence."
+            },
+            {
+              "text": "Looking at the audience constantly",
+              "why": "Some eye contact is fine, but the focus should be inward, on the music."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What is 'rasa' in the context of performance?",
+          "options": [
+            {
+              "text": "The speed at which you play",
+              "why": "Rasa is about emotion, not tempo."
+            },
+            {
+              "text": "The emotional flavour or essence that the music creates in the listener",
+              "right": true,
+              "yes": "Correct. Creating rasa - making the audience feel something real - is the ultimate purpose of performance."
+            },
+            {
+              "text": "A type of rhythmic pattern",
+              "why": "Rasa is an aesthetic concept about emotion, not a technical term for rhythm."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "handling-mistakes",
+      "title": "Handling Mistakes",
+      "content": "Every performer makes mistakes. What separates professionals from amateurs is not fewer mistakes - it is better recovery.\n\n**Rule 1: Never stop.** If you play a wrong note, keep going. Stopping calls attention to the mistake. The audience almost never notices a wrong note in passing.\n\n**Rule 2: Resolve it.** If you land on a wrong note, slide to a correct one nearby. A meend from a wrong note to the right one sounds intentional.\n\n**Rule 3: Repeat it.** Some musicians say: if you play a wrong note, play it again on purpose. It becomes a deliberate choice, not an error.\n\n**Rule 4: Return to the sthayi.** When in doubt, go back to your composition. The familiar melody resets everything.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What should you do when you play a wrong note in performance?",
+          "options": [
+            {
+              "text": "Stop and start over from the beginning",
+              "why": "Never stop. Stopping calls more attention to the mistake than the mistake itself."
+            },
+            {
+              "text": "Keep going - slide to a correct note or return to the sthayi",
+              "right": true,
+              "yes": "Right. The audience rarely notices a passing wrong note. Stopping is what breaks the spell."
+            },
+            {
+              "text": "Apologise to the audience",
+              "why": "No apology needed. Most listeners did not notice. Keep the music flowing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pacing-energy",
+      "title": "Pacing and Energy",
+      "content": "A good performance is a journey with a shape:\n\n**Beginning** - Calm, measured, unhurried. The alap sets the raga's mood. Start quieter and slower than you think you should.\n\n**Middle** - Gradually build energy. The bandish introduces rhythm. Improvisation becomes more adventurous. Taans get longer.\n\n**Climax** - The peak of intensity. Fast taans, wide range, full volume. This should feel earned, not sudden.\n\n**Resolution** - Return to the sthayi. A clean tihai on sam. Perhaps a final, quiet Sa.\n\nThe mistake beginners make: starting too fast and too loud, leaving nowhere to go. Always save your energy for the end.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the most common pacing mistake for beginning performers?",
+          "options": [
+            {
+              "text": "Starting too slow",
+              "why": "Starting slow is correct. The mistake is starting too fast."
+            },
+            {
+              "text": "Starting too fast and loud, leaving nowhere to build",
+              "right": true,
+              "yes": "Exactly. If you peak at the beginning, the rest of the performance has nowhere to go. Always build gradually."
+            },
+            {
+              "text": "Playing too many different ragas",
+              "why": "While mixing ragas is an issue, the pacing mistake is more fundamental: starting too high and having no room to grow."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practice-opening-sa",
+      "title": "Practice: Your Opening Sa",
+      "content": "Every performance begins with Sa. This first note tells the audience everything about your confidence and preparation.\n\nA great opening Sa is:\n- **Clean** - no breathy start, no squeak\n- **Steady** - no wobble, no wavering\n- **Full** - supported by deep breath, filling the space\n- **Long** - at least 8 seconds of unwavering tone\n\nThis is the most important note you will play. It says: I am here, I know my instrument, and I know my raga. Everything that follows grows from this Sa.\n\nPlay the cleanest, longest Sa you can.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 8,
+          "cents": 15,
+          "prompt": "Hold Sa for 8 seconds within 15 cents - a performance-quality opening note",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "building-repertoire",
+      "title": "Building Your Repertoire",
+      "content": ["A performer needs material ready to play. Build your repertoire gradually:\n\n**Start with one raga.** Know it deeply - its alap phrases, one bandish, a few taans, and a tihai. One raga performed well is better than five performed poorly.\n\n**Add ragas of different moods.** Once your first raga is solid, add one with a contrasting character. If you started with Yaman (serene evening), try Bhupali (light and sweet) or Kafi (tender and romantic).\n\n**Learn at least one bandish per raga.** The composition is your safety net - when improvisation runs dry, the bandish is there.\n\n**Keep a performance notebook.** Write down your best phrases, your favourite taans, your tihai calculations. This is your personal musical vocabulary.", "A performing musician should work toward a core repertoire of 5 to 10 ragas they can present confidently at any time. This repertoire should cover variety:\n- **Different times of day** - a morning raga (Bhairavi, Todi), an evening raga (Yaman, Desh), a night raga (Malkauns, Bageshree)\n- **Different moods** - serious (Marwa), romantic (Kafi), peaceful (Bhupali), powerful (Bhairavi)\n- **Different tempos** - ragas you can present in vilambit (slow), madhya laya (medium), and drut (fast)\n\nStart with 3 ragas you know deeply, then add one new raga every few months. Quality of knowledge matters more than quantity."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many ragas should a performing musician aim to have in their core repertoire?",
+          "options": [
+            {
+              "text": "As many as possible - 50 or more",
+              "why": "Quantity without depth is useless in performance. A few ragas known deeply is far better."
+            },
+            {
+              "text": "5 to 10 ragas known deeply, covering different times and moods",
+              "right": true,
+              "yes": "Correct. A manageable repertoire of deeply known ragas gives you variety without sacrificing depth."
+            },
+            {
+              "text": "Only 1 raga for your entire career",
+              "why": "One raga is a good starting point, but a performer needs variety to suit different occasions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "repertoire-depth",
+      "title": "What You Need for Each Raga",
+      "content": ["For every raga in your repertoire, you need four things:\n\n1. **Alap vocabulary** - A set of phrases you can use to introduce the raga note by note. These are not memorised sequences but phrases you have explored so often that they come naturally. You should be able to sustain an alap for at least 3 to 5 minutes.\n\n2. **At least one bandish** - A composed piece in a specific taal. This is your anchor during the performance. Know the sthayi and antara by heart. Know the mukhda so well that you can return to it from any point in the raga.\n\n3. **Taan patterns** - Ascending, descending, and patterned taans that fit the raga's grammar. You do not need to memorise every taan - but you need to have practised enough that your fingers can produce taans spontaneously within the raga's rules.\n\n4. **A closing tihai** - At least one calculated tihai that lands cleanly on sam. This gives you a confident way to end any section or the full performance.", "Keep a practice journal for each raga. Write down: the phrases you discovered during practice, the taans that worked well, the tihai you calculated, the recordings of masters that inspired you. Over months, this journal becomes a personal map of each raga - richer than any textbook because it records your own musical discoveries."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Name one of the four things you need for each raga in your repertoire (alap vocabulary, a bandish, taan patterns, or a closing tihai).",
+          "answer": "bandish",
+          "accept": ["bandish", "alap", "alap vocabulary", "taan", "taan patterns", "taans", "tihai", "closing tihai", "a bandish", "a tihai"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Why should you keep a practice journal for each raga?",
+          "options": [
+            {
+              "text": "To show your guru how much you practised",
+              "why": "A journal is for your own musical development, not for proving effort."
+            },
+            {
+              "text": "To record your musical discoveries - phrases, taans, tihais, and inspirations",
+              "right": true,
+              "yes": "Correct. Over time, your journal becomes a personal map of the raga - richer than any textbook because it records your own explorations."
+            },
+            {
+              "text": "To count how many hours you have practised",
+              "why": "Hours matter less than what you discovered in those hours. The journal captures musical insights."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

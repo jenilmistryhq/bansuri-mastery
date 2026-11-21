@@ -1,0 +1,279 @@
+{
+  "id": "full-raga-presentation",
+  "title": "A Full Raga Presentation",
+  "tasks": [
+    {
+      "id": "the-structure",
+      "title": "Full Raga Structure",
+      "content": "A complete raga presentation follows this structure:\n\n1. **Alap** - Slow, unmetered exploration. No tabla. Introduce the raga note by note.\n2. **Jod** - Medium tempo with a pulse but still no tabla. Build energy with longer phrases.\n3. **Jhala** - Fast, rhythmic strumming. Maximum energy before the composition begins.\n4. **Vilambit bandish** - Slow composition with tabla in a slow taal like Ektaal (12 beats) or Vilambit Teentaal.\n5. **Madhya laya** - Medium tempo compositions and improvisation. The music breathes and builds.\n6. **Drut bandish** - Fast composition. Taans, tihais, and climactic improvisation.\n\nNot every performance includes all sections. A short recital might be just alap and one bandish. A concert-length performance unfolds all six over 45 minutes to an hour.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What comes first in a full raga presentation?",
+          "options": [
+            {
+              "text": "The fast composition (drut bandish)",
+              "why": "The fast section comes last. The presentation starts slow with alap."
+            },
+            {
+              "text": "Alap - slow, unmetered exploration",
+              "right": true,
+              "yes": "Correct. Always start slow and build toward the climax."
+            },
+            {
+              "text": "Tabla solo",
+              "why": "The tabla enters after the alap and jod sections."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "complete-arc",
+      "title": "The Complete Arc of a Raga Presentation",
+      "content": [
+        "Think of a full raga presentation as a story with eight chapters, each flowing into the next:",
+        "1. Tuning - Check your Sa against the tanpura. Settle in. This is not performance - it is preparation. The audience hears you tune and knows the journey is about to begin.\n2. Alap - Slow, unmetered. Introduce the raga note by note. Build from the lower register upward. This can last 5 to 20 minutes depending on the occasion.\n3. Jod - A pulse emerges from the alap. Rhythmic patterns develop without the tabla. The energy increases.\n4. Jhala - Fast rhythmic playing. The climax of the unaccompanied section. Quick repeated notes build intensity.\n5. Vilambit bandish - The tabla enters. Slow composition. Improvise between sthayi statements. This is where the raga truly opens up.\n6. Madhya laya - Medium tempo section. Taans begin. The conversation between bansuri and tabla deepens.\n7. Drut bandish - Fast composition. Elaborate taans. Tihais. The grand climax.\n8. Resolution - Final tihai lands on sam. The last statement of the sthayi. Silence.",
+        "The whole arc follows the shape of a story: introduction (alap), development (jod, jhala), rising action (bandish, madhya laya), climax (drut), and resolution (the final landing on sam). Every great performance follows this arc, whether it lasts 15 minutes or 90."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "What is the name of the first section where the tabla joins the performance?",
+          "answer": "Vilambit bandish",
+          "accept": ["Vilambit bandish", "vilambit bandish", "vilambit", "Vilambit", "vilambit gat", "Vilambit gat"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What overall shape does a raga presentation follow?",
+          "options": [
+            {
+              "text": "A circle - it ends the same way it begins",
+              "why": "While the music returns to Sa at the end, the journey between start and finish follows a rising arc, not a flat circle."
+            },
+            {
+              "text": "A narrative arc - introduction, development, climax, and resolution",
+              "right": true,
+              "yes": "Exactly. Like a great story, a raga presentation introduces its world, develops it, builds to a peak, and resolves."
+            },
+            {
+              "text": "A random sequence - the musician decides the order in the moment",
+              "why": "While improvisation is central, the structural sequence (alap, jod, bandish, drut) is a well-established tradition."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "building-to-climax",
+      "title": "Building to the Climax",
+      "content": "The arc of a raga presentation is like a story:\n\n- **Beginning** (alap/jod) - Set the mood, introduce the characters (notes). Slow, intimate, contemplative.\n- **Middle** (bandish/improvisation) - Develop the story, explore possibilities. The tabla enters, rhythm gives structure.\n- **Climax** (drut/taans/tihai) - Maximum intensity, everything comes together. Fast taans spanning the full range, complex tihais landing on sam.\n- **Resolution** - Return to the sthayi, land on sam, the raga feels complete. Often a final quiet Sa.\n\nThe energy should always be building. Each section should have more momentum than the last. A sudden drop in energy after the alap, or peaking too early, breaks the arc.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How should energy flow through a raga presentation?",
+          "options": [
+            {
+              "text": "Start fast and slow down",
+              "why": "The opposite - start slow and build."
+            },
+            {
+              "text": "Stay at the same energy throughout",
+              "why": "A flat energy line makes a dull performance. Build gradually."
+            },
+            {
+              "text": "Start slow and gradually build to a climax",
+              "right": true,
+              "yes": "Exactly. The gradual build creates the most powerful musical experience."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alap-phase",
+      "title": "The Alap Phase",
+      "content": [
+        "The alap is where the raga's identity is established. Without a good alap, the audience enters the bandish cold - they do not feel the raga.",
+        "The first note matters enormously. How you begin the alap sets the tone for everything that follows. Begin with Sa - hold it, establish it firmly against the drone. Let the tanpura settle around your note. Then introduce the first characteristic note of the raga with care and intention. If you are playing Yaman, that first touch of tivra Ma tells the audience everything. If you are playing Bhairavi, the gentle komal Re opens the door to its world.",
+        "In the alap:\n- Begin with Sa. Hold it. Let the drone settle around it.\n- Introduce each note of the raga one by one (swar vistar)\n- Decorate each note with meend, kan, and gamak as appropriate\n- Pause between phrases - silence is part of the music\n- Gradually expand from the lower register into the middle, then upper",
+        "The alap can last from two minutes (a brief introduction) to twenty minutes or more (a deep exploration). Match the length to the occasion and your command of the raga."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is the alap important for the rest of the performance?",
+          "options": [
+            {
+              "text": "It warms up your fingers for the fast sections",
+              "why": "While it does warm you up, the alap's purpose is musical - it establishes the raga's identity."
+            },
+            {
+              "text": "It establishes the raga's identity so the audience enters the bandish with understanding",
+              "right": true,
+              "yes": "Right. Without a good alap, the bandish and improvisation lack context. The audience needs to feel the raga first."
+            },
+            {
+              "text": "It fills time before the tabla player is ready",
+              "why": "The alap is a musical choice, not a practical delay. It is often the deepest part of the performance."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bandish-phase",
+      "title": "The Bandish Phase",
+      "content": "When the tabla enters, the music transforms. The alap's free exploration gives way to the structured world of taal (rhythmic cycle).\n\nIn the bandish phase:\n- **The composition is stated** - sthayi first, then antara\n- **Sam becomes the anchor** - every phrase orbits around beat 1\n- **Improvisation begins** - between statements of the sthayi, you explore\n- **The tabla responds** - the tabla player complements your phrases, echoes your rhythms, challenges your timing\n\nThis is where the conversation between soloist and tabla player comes alive. You push forward; the tabla pulls back. You take rhythmic risks; the tabla catches you on sam.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What changes when the tabla enters the performance?",
+          "options": [
+            {
+              "text": "The raga changes to a different one",
+              "why": "The raga stays the same. What changes is the addition of rhythmic structure."
+            },
+            {
+              "text": "Free exploration gives way to structured rhythm with sam as the anchor",
+              "right": true,
+              "yes": "Correct. The tabla brings taal - the rhythmic cycle that structures everything that follows."
+            },
+            {
+              "text": "The bansuri stops playing",
+              "why": "The bansuri continues as the soloist. The tabla adds rhythmic accompaniment."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "taans-climax",
+      "title": "Taans and the Climax",
+      "content": [
+        "The drut (fast) section is where everything builds to a peak:",
+        "**Taans get longer and faster.** What started as simple sapat taans in madhya laya becomes complex, multi-octave runs in drut. Each taan should land cleanly on the mukhda or sam.",
+        "**The range expands.** Early improvisation stays in the middle register. The climax reaches into taar saptak (upper octave) and sometimes mandra saptak (lower octave) in the same phrase.",
+        "**Tihais become more elaborate.** A simple three-beat tihai becomes a compound tihai with internal tihais. The math gets more complex, and the landing on sam is more dramatic.",
+        "**Building to sam.** Every improvisation in the drut section should lead toward a satisfying sam landing. Think of each taan as an arrow aimed at beat 1. The audience is waiting for that moment of arrival - the longer the taan, the more thrilling the landing. Never let a taan wander without direction. Build, aim, and land.",
+        "**The ending.** The final tihai lands on sam with authority. Often the last note is held - a long, resonant Sa that brings everything to rest."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What makes the drut section the climax of a performance?",
+          "options": [
+            {
+              "text": "It is the quietest and most subtle section",
+              "why": "The drut is the fastest and most intense section. Subtlety belongs to the alap."
+            },
+            {
+              "text": "Fast taans, full range, complex tihais, and maximum intensity",
+              "right": true,
+              "yes": "Right. Everything the musician has built toward converges in the drut section - speed, range, rhythmic complexity, and emotional intensity."
+            },
+            {
+              "text": "The tabla plays a solo",
+              "why": "While tabla solos can happen, the climax is about the soloist's most intense improvisation."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "time-management",
+      "title": "Time Management in Performance",
+      "content": [
+        "One of the hardest skills for a developing musician is knowing how to distribute time across a raga presentation. Here are guidelines for different durations:",
+        "For a 30-minute presentation: Alap/Jod/Jhala (10 min), Vilambit bandish (12 min), Drut bandish (8 min). This is a typical recital slot - enough to establish the raga and build to a climax, but every section must be focused.",
+        "For a 60-minute presentation: Alap/Jod/Jhala (20 min), Vilambit bandish (25 min), Drut bandish (15 min). This is a full concert item. The alap can be deep and unhurried. The vilambit section allows for extended improvisation.",
+        "For a 90-minute concert: Alap/Jod/Jhala (30 min), Vilambit bandish (35 min), Drut bandish (25 min). This is a full-length classical concert. Only attempt this with a raga you know deeply.",
+        "The key: build intensity gradually. Never peak too early. If your most exciting taan happens in the vilambit section, you have nowhere to go in the drut.",
+        "Read the audience. If they are engaged and responsive during the alap, extend it - they are with you. If they seem restless, move to the bandish sooner. Leave the audience wanting more, not exhausted.",
+        "End decisively. A strong tihai landing on sam, then stop. Do not add 'one more phrase' after the climax. The temptation to keep going after a great tihai is the enemy of a great ending."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "In a 60-minute raga presentation, roughly how much time should the alap/jod/jhala section receive?",
+          "options": [
+            {
+              "text": "5 minutes - get to the bandish quickly",
+              "why": "Five minutes barely scratches the surface of a raga. In a 60-minute concert, the alap deserves deep exploration."
+            },
+            {
+              "text": "About 20 minutes - a full third of the performance",
+              "right": true,
+              "yes": "Correct. In a full concert, the alap is a substantial exploration that takes about a third of the total time."
+            },
+            {
+              "text": "45 minutes - the alap is the most important part",
+              "why": "While the alap is crucial, spending 45 of 60 minutes on it leaves almost no time for the bandish and climax."
+            }
+          ],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "If the audience seems restless during your alap, what should you do?",
+          "options": [
+            {
+              "text": "Play louder to get their attention",
+              "why": "Volume is not the issue. Restlessness means the audience wants forward momentum."
+            },
+            {
+              "text": "Move to the bandish sooner - the audience wants rhythmic structure",
+              "right": true,
+              "yes": "Right. Reading the audience is part of the art. If they are restless in the alap, they are ready for the energy of the bandish."
+            },
+            {
+              "text": "Stop the performance and start over",
+              "why": "A skilled performer adjusts in real time, not by restarting. Move forward with the arc."
+            }
+          ],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "practice-clean-opening",
+      "title": "Practice: A Clean Opening",
+      "content": "The opening Sa of a raga presentation sets the tone for everything that follows. It is the longest, cleanest, most deliberate note in the entire performance.\n\nA great opening Sa communicates:\n- I know my instrument\n- I know this raga\n- I am ready to take you on a journey\n\nHold Sa for 10 seconds - this is a performance-length opening. Keep it within 15 cents of centre. No wobble, no breathiness, no fading. This is your announcement to the audience that the raga is about to begin.",
+      "questions": [
+        {
+          "type": "hold",
+          "target": 0,
+          "seconds": 10,
+          "cents": 15,
+          "prompt": "Hold Sa for 10 seconds - a concert-quality opening note",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "plan-presentation",
+      "title": "Plan Your Presentation",
+      "content": "Choose a raga you know well and plan a short presentation (8-10 minutes):\n\n1. **Alap** (2-3 minutes) - Explore the raga's main notes and characteristic phrases. Start from Sa, expand to Pa, touch upper Sa.\n2. **A simple bandish** (2-3 minutes) - A composition you have practised. State the sthayi twice, then the antara, then return to sthayi.\n3. **Brief improvisation** (2-3 minutes) - A few taans and explorations between sthayi returns.\n4. **End with a tihai** (the last few beats) - Calculate it. Practise it. Land on sam.\n\nThis is your capstone exercise. It brings together everything you have learned - alap, bandish, improvisation, and tihai.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "I have chosen a raga and planned my presentation"
+        }
+      ]
+    },
+    {
+      "id": "lifetime-journey",
+      "title": "The Lifetime Journey",
+      "content": "You have completed the full course from your first note to a complete raga presentation.\n\nBut this is not the end - it is the beginning of a lifetime of musical exploration.\n\n- Every raga has infinite depth. You could spend years on Yaman alone and still discover new phrases.\n- Every performance is unique. The same raga played on two different evenings will be two different journeys.\n- Every practice session reveals something new. A note you thought you knew will surprise you with a shade of meaning you had not heard before.\n\nThe bamboo flute is one of the oldest instruments in the world. When you play it, you join a tradition that stretches back thousands of years. Play with respect for that tradition, with joy in the music, and with your own voice.\n\nKeep playing. Keep listening. Keep exploring.",
+      "questions": [
+        {
+          "type": "confirm",
+          "prompt": "The journey continues!",
+          "points": 50
+        }
+      ]
+    }
+  ]
+}

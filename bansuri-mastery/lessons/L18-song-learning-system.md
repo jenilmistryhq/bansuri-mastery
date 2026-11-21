@@ -48,16 +48,16 @@ golden rule:
 ### Step 2. Find the tonal centre (Sa) and context (EAR-10)
 
 1. Hum the **last note** of the mukhda or the song: it usually feels like "home".
-2. Change the drone pitch (C, C#, D...) until your hummed "home" note **locks** with the drone
+2. Change the drone pitch until your hummed "home" note **locks** with the drone
    Sa. Or hold a tuner app to the recording on a long "home" note and read the note name.
 3. Test: with the drone on, does the melody feel stable? If many phrases sound sour, try a
    different Sa.
 4. Clap along to find the **taal/meter**: Keherwa (8), Dadra (6) or Teentaal (16)? See
    [EX-RHY](../exercises/EX-RHY-rhythm-drills.md).
 
-**If Sa is not C:** you have two choices, explained fully in [L26](L26-keys-transposition-and-limits.md):
-(a) play in **your** Sa (C) and accept that you cannot play along with the original; or
-(b) pitch-shift the recording to C with a tool ([R-A14](../02-RESOURCE-LIBRARY.md#72-tuner-metronome-recording-slow-down), [R-A15](../02-RESOURCE-LIBRARY.md#72-tuner-metronome-recording-slow-down)).
+Once you know the song's Sa, compare it with your flute's natural Sa. You can play using your own
+Sa and accept that the pitches differ from the recording, move Sa to another usable position, or
+pitch-shift the recording to match your flute with a tool ([R-A14](../02-RESOURCE-LIBRARY.md#72-tuner-metronome-recording-slow-down), [R-A15](../02-RESOURCE-LIBRARY.md#72-tuner-metronome-recording-slow-down)).
 **Recommendation for now:** shift the recording to C so you can compare directly.
 
 ### Step 3. Break the melody into short phrases
@@ -150,13 +150,14 @@ your log. That is honest; a wrong confident note is worse.
 
 ## 6. Checking the range: will the song fit your flute?
 
-Your flute's comfortable range is about **`.P` (G4) to `G'` (E6)**. `M'` (F#6) is the practical
-ceiling: reachable, but often weak.
+The C5 medium **reference profile** is comfortable from **`.P` (G4) to `G'` (E6)**. `M'`
+(F#6) is its practical ceiling: reachable, but often weak. Check the actual comfortable range
+of your flute; its Western pitches and Hz values may differ.
 
 1. Find the **lowest** and **highest** notes of the song (in sargam, relative to the song's Sa).
-2. If the song's Sa = C (or you shift it to C): lowest note must be `.P` or higher; highest
-   should ideally be `G'` or lower.
-3. If the song goes **below `.P`** (for example to `.m`), it does not fit with Sa = C. Options:
+2. For the standard 6-hole range, the lowest note must be `.P` or higher; highest should ideally
+   be `G'` or lower.
+3. If the song goes **below `.P`** (for example to `.m`), it does not fit that fingering range. Options:
    choose a different Sa position on the same flute ([L26](L26-keys-transposition-and-limits.md)),
    play that phrase an octave higher, or use a different flute later.
 4. Many film songs need notes above `G'` in the antara. Learn the mukhda first.
@@ -186,7 +187,7 @@ first); in classical compositions, **raga grammar and starting on the right beat
 Pretend you do not know it and you have a recording.
 
 1. **Listen:** short, two phrases, simple. 4-beat feel. Use Keherwa.
-2. **Sa:** the last note feels like home. Tuner on the recording says C. Good: Sa = C.
+2. **Sa:** the last note feels like home. In this worked example the tuner on the recording says C, so Sa = C.
 3. **Phrases:** P1 "Mary had a little lamb", P2 "little lamb, little lamb", P3 repeat of P1, P4 ending.
 4. **Sing** each.
 5. **Identify:** first note is above Sa. Singing up `S R G`: it matches G. Then it goes down

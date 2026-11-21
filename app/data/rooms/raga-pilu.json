@@ -1,0 +1,263 @@
+{
+  "id": "raga-pilu",
+  "title": "Raga Pilu - The Mishra Raga",
+  "tasks": [
+    {
+      "id": "t1-raga-of-freedom",
+      "title": "The Raga of Freedom",
+      "content": [
+        "Pilu is unique among ragas: it is a 'mishra' (mixed) raga that allows both shuddha AND komal versions of Ga, Dha, and Ni. Where most ragas have strict rules about which notes to use, Pilu says 'use whichever version fits your expression.'",
+        "This makes Pilu the most versatile raga in Hindustani music - it can sound bright, dark, playful, sad, romantic, or joyful depending on which notes the musician chooses in each moment. It is hugely popular in light classical music (thumri, dadra) and in film songs."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does 'mishra' mean in the context of Raga Pilu?",
+          "options": [
+            {"text": "Mixed - allowing both shuddha and komal versions of certain notes", "right": true, "yes": "Correct. 'Mishra' means mixed. Pilu allows the musician to freely use both shuddha and komal versions of Ga, Dha, and Ni, giving enormous expressive flexibility."},
+            {"text": "Ancient - referring to its historical origins", "why": "'Mishra' means mixed, referring to Pilu's use of both shuddha and komal versions of several notes."},
+            {"text": "Simple - meaning it uses fewer notes", "why": "Pilu actually uses MORE notes than most ragas. 'Mishra' means mixed, referring to its dual note options."},
+            {"text": "Sacred - reserved for religious occasions", "why": "'Mishra' means mixed. Pilu is popular in light classical and film music, not restricted to religious use."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which notes can be used in both shuddha and komal forms in Pilu?",
+          "options": [
+            {"text": "Ga, Dha, and Ni", "right": true, "yes": "Correct. Pilu allows both versions of Ga (3 and 4), Dha (8 and 9), and Ni (10 and 11), giving the musician six extra pitch options."},
+            {"text": "Re, Ma, and Pa", "why": "Re is always shuddha, Ma is always shuddha, and Pa is always natural in Pilu. The dual-version notes are Ga, Dha, and Ni."},
+            {"text": "All seven notes", "why": "Only three notes have dual versions: Ga, Dha, and Ni. Sa, Re, Ma, and Pa are fixed."},
+            {"text": "Re and Ma only", "why": "Re and Ma are fixed in Pilu. The dual-version notes are Ga, Dha, and Ni."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-nearly-all-12",
+      "title": "Nearly All 12 Notes",
+      "content": [
+        "Because Pilu allows both versions of Ga, Dha, and Ni, the total number of available pitches is remarkable: Sa(0), Re(2), ga(3), Ga(4), Ma(5), Pa(7), dha(8), Dha(9), ni(10), Ni(11) - ten of the twelve possible semitones.",
+        "Only komal Re(1) and tivra Ma(6) are excluded. This enormous palette is what gives Pilu its expressive range. No other commonly performed raga offers this many notes to work with."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many different pitches (semitones) are available in Raga Pilu?",
+          "answer": "10",
+          "accept": ["ten", "Ten"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two semitones are NOT used in Pilu?",
+          "options": [
+            {"text": "komal Re (1) and tivra Ma (6)", "right": true, "yes": "Correct. komal Re and tivra Ma are the only two semitones excluded from Pilu's palette. Every other pitch is available."},
+            {"text": "komal Ga (3) and komal Ni (10)", "why": "Both komal Ga and komal Ni are used in Pilu alongside their shuddha versions. The excluded semitones are komal Re (1) and tivra Ma (6)."},
+            {"text": "Pa (7) and Sa (0)", "why": "Pa and Sa are core notes in every raga. The excluded semitones are komal Re (1) and tivra Ma (6)."},
+            {"text": "shuddha Dha (9) and shuddha Ni (11)", "why": "Both shuddha Dha and shuddha Ni are used in Pilu. The excluded semitones are komal Re (1) and tivra Ma (6)."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-bright-dark",
+      "title": "Bright and Dark",
+      "content": [
+        "The shuddha notes (Ga, Dha, Ni) sound bright and open. The komal notes (ga, dha, ni) sound tender and introspective. In Pilu, you can shift between these moods within a single phrase.",
+        "Start bright with Ga-Ma-Pa-Dha and end dark with dha-Pa-ga-Re-Sa, or weave them together freely. This ability to modulate mood in real time is Pilu's greatest gift - no other raga offers this kind of emotional palette within a single melodic line."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 5, 7, 9],
+          "prompt": "Play a bright ascending phrase using shuddha notes: Ga Ma Pa Dha. Feel the openness and brightness.",
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [8, 7, 3, 2, 0],
+          "prompt": "Now play a dark descending phrase using komal notes: dha Pa ga Re Sa. Feel how the mood shifts to tenderness and introspection.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What creates the mood shift within Pilu?",
+          "options": [
+            {"text": "Switching between shuddha (bright) and komal (tender) versions of the same notes", "right": true, "yes": "Exactly. The shuddha versions sound open and bright while the komal versions sound tender and introspective. Switching between them creates real-time mood modulation."},
+            {"text": "Changing the tempo", "why": "While tempo affects mood, Pilu's unique mood-shifting ability comes from switching between shuddha and komal versions of Ga, Dha, and Ni."},
+            {"text": "Adding ornaments", "why": "Ornaments add expression but Pilu's distinctive mood shifts come from its dual-version notes."},
+            {"text": "Playing in different octaves", "why": "Register affects brightness but Pilu's signature mood shifts come from choosing between shuddha and komal versions of notes."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-kafi-foundation",
+      "title": "The Kafi Foundation",
+      "content": [
+        "Although Pilu is classified under Kafi thaat, its ascending movement often uses shuddha notes while the descent uses komal notes. A typical pattern: ascending Sa Re ga Ma Pa Dha Ni Sa' mixes Kafi (komal Ga) with brighter notes above.",
+        "Descending Sa' ni dha Pa Ma ga Re Sa uses komal notes throughout. This ascending-bright, descending-dark pattern is a common framework for Pilu improvisation, though the beauty of Pilu is that you are free to break this pattern whenever expression demands it."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 5, 7, 9, 11, 12],
+          "prompt": "Play a typical Pilu ascent: Sa Re ga Ma Pa Dha Ni Sa'. Notice the mix of komal Ga below with shuddha notes above.",
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [12, 10, 8, 7, 5, 3, 2, 0],
+          "prompt": "Play a typical Pilu descent: Sa' ni dha Pa Ma ga Re Sa. All komal notes in the descent create a tender, introspective feeling.",
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "What is the typical pattern in Pilu between ascent and descent?",
+          "options": [
+            {"text": "Ascending tends toward shuddha (bright), descending toward komal (dark)", "right": true, "yes": "Correct. This bright-up, dark-down pattern is a common framework. The ascent gains brightness as it rises, while the descent adds emotional depth through komal notes."},
+            {"text": "Both ascent and descent use only shuddha notes", "why": "Pilu's character comes from mixing both. The descent typically favors komal notes for emotional depth."},
+            {"text": "Both ascent and descent use only komal notes", "why": "The ascent typically uses more shuddha notes for brightness. Only the descent typically favors komal notes."},
+            {"text": "The pattern is always random", "why": "While Pilu offers freedom, there is a common framework: shuddha ascending, komal descending. Musicians choose to follow or break this pattern deliberately."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t5-thumri",
+      "title": "Pilu in Thumri",
+      "content": [
+        "Pilu is one of the most popular ragas for thumri - the semi-classical form where emotion and expression take priority over strict raga rules. In thumri, the singer or instrumentalist uses Pilu's flexibility to express shades of love, longing, and playfulness.",
+        "The freedom to touch komal Ga for a moment of tenderness, then shift to shuddha Ga for brightness, all within one phrase - this is what makes Pilu perfect for emotional expression. Thumri in Pilu is considered one of the supreme expressions of Indian musical emotion."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is Pilu especially popular in thumri?",
+          "options": [
+            {"text": "Its flexibility allows the musician to express every shade of emotion", "right": true, "yes": "Correct. Thumri demands emotional range, and Pilu's dual-version notes provide exactly that - the musician can shift between tenderness and brightness at will."},
+            {"text": "Thumri requires exactly five notes", "why": "Thumri is not defined by note count. Pilu is popular in thumri because its flexibility matches thumri's emphasis on emotional expression."},
+            {"text": "Pilu is the only raga allowed in thumri", "why": "Many ragas are used in thumri (Khamaj, Kafi, Bhairavi, etc.). Pilu is popular because its mishra nature gives maximum expressive freedom."},
+            {"text": "Thumri must always be performed at night", "why": "Thumri can be performed at various times. Pilu is popular in thumri because of its expressive flexibility, not timing."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What takes priority in thumri over strict raga rules?",
+          "options": [
+            {"text": "Emotion and expression", "right": true, "yes": "Correct. Thumri is called 'bhava pradhan' - emotion-dominant. The musician's expressive intent takes priority over strict adherence to raga grammar, which is why flexible ragas like Pilu are ideal."},
+            {"text": "Speed and virtuosity", "why": "Speed is valued in taan-based forms. Thumri prioritizes emotion and expression above technical display."},
+            {"text": "Rhythmic complexity", "why": "Rhythmic complexity is more central to other forms. Thumri puts emotion and expression first."},
+            {"text": "Strict adherence to the aroha and avaroha", "why": "Thumri actually relaxes raga rules. Emotion and expression take priority over strict scale adherence."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-film-music",
+      "title": "Pilu in Film Music",
+      "content": [
+        "Countless film songs are based on Pilu. Its versatility means it can serve any emotion a scene requires. Romantic scenes use the komal notes for tenderness. Joyful scenes use the shuddha notes for brightness.",
+        "Because almost any melodic idea 'fits' within Pilu's generous framework, film composers find it endlessly useful. If you learn Pilu well, you can play along with hundreds of Hindi film songs - many melodies you have heard your whole life are built on Pilu's notes."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why do film composers frequently use Pilu?",
+          "options": [
+            {"text": "Its versatility allows it to serve any emotional need a scene requires", "right": true, "yes": "Correct. Pilu can sound romantic, joyful, sad, or playful depending on which notes are chosen, making it a film composer's dream."},
+            {"text": "It is the easiest raga to sing", "why": "Pilu's many note options actually make it complex. Composers use it for its versatility, not simplicity."},
+            {"text": "Film rules require all songs to be in Pilu", "why": "There is no such rule. Pilu is popular because its flexibility fits any emotional scenario."},
+            {"text": "It is the only raga audiences recognize", "why": "Audiences rarely know ragas by name. Composers use Pilu because its flexibility serves any mood a scene needs."}
+          ]
+        },
+        {
+          "type": "confirm",
+          "prompt": "I will try playing along with familiar film songs using Pilu's note set - choosing komal notes for tender moments and shuddha notes for bright ones."
+        }
+      ]
+    },
+    {
+      "id": "t7-freedom-paradox",
+      "title": "The Freedom Paradox",
+      "content": [
+        "Pilu's freedom is both its gift and its challenge. With so many notes available, a beginner might play randomly and produce musical chaos. The key: even in Pilu, every phrase should have INTENTION.",
+        "Choose your notes deliberately. Build phrases with clear shape - a beginning, a peak, and a resolution. Use the komal-shuddha contrast purposefully, not randomly. Freedom without intention is noise; freedom with intention is art. The best Pilu playing sounds spontaneous but is guided by deep musical awareness."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the main challenge of playing a mishra raga like Pilu?",
+          "options": [
+            {"text": "Having too many note options can lead to random, directionless playing", "right": true, "yes": "Exactly. With ten available pitches, the musician must choose deliberately. Without intention, the freedom becomes chaos."},
+            {"text": "There are too few notes to create interesting melodies", "why": "Pilu has MORE notes than most ragas. The challenge is having too many options, not too few."},
+            {"text": "The raga can only be played at one specific tempo", "why": "Pilu has no tempo restriction. The challenge is managing its abundant note options with intention."},
+            {"text": "komal and shuddha notes cannot be played in the same phrase", "why": "Mixing komal and shuddha notes within a phrase is exactly what makes Pilu special. The challenge is doing so with intention."}
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "What transforms random note selection into music in Pilu?",
+          "options": [
+            {"text": "Intention - choosing each note deliberately for expressive purpose", "right": true, "yes": "Correct. Freedom with intention is art. Every note choice in Pilu should serve the phrase's emotional direction, not be random."},
+            {"text": "Playing as fast as possible", "why": "Speed without intention is still random. Deliberate note choice is what creates music from Pilu's freedom."},
+            {"text": "Always using the same pattern", "why": "Fixed patterns defeat Pilu's purpose. The key is intentional, expressive note choice."},
+            {"text": "Avoiding all komal notes", "why": "Using only shuddha notes wastes Pilu's unique dual-note gift. The key is deliberate choice between komal and shuddha."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t8-improvising",
+      "title": "Improvising in Pilu",
+      "content": [
+        "Pilu is an excellent raga for learning improvisation because its flexibility forgives 'wrong' notes. Try this: play any phrase using Sa, Re, Ma, Pa as the skeleton. Then add either komal or shuddha Ga to change the color.",
+        "Try the same phrase with both versions and hear the difference. Add either Dha or dha above Pa. Each choice shifts the mood. This is improvisation at its most fundamental - making expressive choices in real time. Start with simple phrases and gradually increase complexity."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 5, 7, 8, 7, 5, 3, 2, 0],
+          "prompt": "Play a komal version of a Pilu phrase: Sa Re ga Ma Pa dha Pa Ma ga Re Sa. Feel the tender, introspective quality of the komal notes.",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7, 9, 7, 5, 4, 2, 0],
+          "prompt": "Now play the same shape using shuddha notes: Sa Re Ga Ma Pa Dha Pa Ma Ga Re Sa. Hear how the mood shifts to brightness and openness.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What makes Pilu a good raga for learning improvisation?",
+          "options": [
+            {"text": "Its flexibility forgives 'wrong' notes since almost any pitch is acceptable", "right": true, "yes": "Correct. With ten available pitches, nearly any note you play will fit within Pilu's framework. This makes it a safe space for experimenting with improvisation."},
+            {"text": "It has only three notes to remember", "why": "Pilu has ten available pitches - more than most ragas. It is good for improvisation because of its flexibility, not simplicity."},
+            {"text": "There are fixed rules that prevent mistakes", "why": "The opposite - Pilu has very few fixed rules, which is why it forgives experimentation."},
+            {"text": "It can only be played at slow tempo", "why": "Pilu can be played at any tempo. Its value for learning improvisation comes from its forgiving note palette."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t9-playing",
+      "title": "Playing Pilu",
+      "content": [
+        "Play a phrase that uses Pilu's full range: start with the komal foundation, shift to shuddha notes in the upper register, and descend with komal notes for emotional depth. Let the phrase be your own creation within Pilu's generous framework.",
+        "This raga teaches the most important musical lesson: rules are tools for expression, not cages. When you understand a raga's grammar well enough, you earn the freedom to bend it. Pilu simply offers that freedom from the beginning, trusting the musician to use it wisely."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 3, 5, 7, 9, 11, 12, 10, 8, 7, 5, 3, 2, 0],
+          "prompt": "Play a full Pilu phrase: ascend with mixed notes (Sa Re ga Ma Pa Dha Ni Sa'), then descend with komal notes (ni dha Pa Ma ga Re Sa). Feel the bright-to-dark arc.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I appreciate Pilu's lesson: rules are tools for expression, not cages. Freedom with intention is art."
+        }
+      ]
+    }
+  ]
+}

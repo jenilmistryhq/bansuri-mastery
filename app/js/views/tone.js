@@ -62,7 +62,7 @@ export function toneChips(p) {
 }
 
 // The Tone check's cards for a host page (the Fix tab, the Tone check tool). onFix(ts): open the
-// fix for a finding (without it, a finding links to its fix, #/skills/fix/TS-nn). Returns
+// fix for a finding (without it, a finding links to its fix, #/teacher/fix/TS-nn). Returns
 // { top, more, cleanup }: the hold card (with the last result) and result card, then the checklist,
 // history and explanation cards.
 export function toneCheck({ onFix } = {}) {
@@ -118,7 +118,7 @@ export function toneCheck({ onFix } = {}) {
     return [h("div", { class: "stack tone-found" }, h("h3", null, "What the app heard, most important first"),
       findings.map(f => {
         const first = !seen.has(f.ts); seen.add(f.ts);
-        return h("div", { class: "notice info row between" }, h("span", null, f.text), !first ? null : onFix ? h("button", { type: "button", class: "btn small", onclick: () => onFix(f.ts) }, "Show the fix") : h("a", { class: "btn small", href: "#/skills/fix/" + f.ts }, "Show the fix"));
+        return h("div", { class: "notice info row between" }, h("span", null, f.text), !first ? null : onFix ? h("button", { type: "button", class: "btn small", onclick: () => onFix(f.ts) }, "Show the fix") : h("a", { class: "btn small", href: "#/teacher/fix/" + f.ts }, "Show the fix"));
       }))];
   }
 
@@ -173,12 +173,12 @@ export function toneCheck({ onFix } = {}) {
           return h("div", { class: "stack" }, h("p", { class: "row between" }, h("b", null, m.name), h("span", null, h("span", { class: "mono" }, last.p[k] + " " + m.unit), " ", h("span", { class: "chip " + BAND_CLS[band] }, BAND[band]))),
             h("p", { class: "small muted" }, m.what), band >= 2 ? h("p", { class: "small" }, m.tip) : null);
         }), c.key === "tune" ? h("p", { class: "small muted" }, (last.p.cents > 0 ? "+" : "") + last.p.cents + " cents from the note.") : null,
-        h("a", { class: "hubrow", href: "#/skills/fix/" + c.ts }, h("b", null, c.fix), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">"))].filter(Boolean));
+        h("a", { class: "hubrow", href: "#/teacher/fix/" + c.ts }, h("b", null, c.fix), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">"))].filter(Boolean));
       });
       return b;
     });
     const firstBad = chips.find(c => !c.ok);
-    const fixLink = firstBad ? h("a", { class: "hubrow tonefix", href: "#/skills/fix/" + firstBad.ts }, h("b", null, firstBad.fix), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">")) : null;
+    const fixLink = firstBad ? h("a", { class: "hubrow tonefix", href: "#/teacher/fix/" + firstBad.ts }, h("b", null, firstBad.fix), h("span"), h("span", { class: "chev", "aria-hidden": "true" }, ">")) : null;
     lastBox.replaceChildren(...[h("h3", { class: "grouphead" }, "Last result"),
       h("p", { class: "small muted" }, codeOf(last.note) + " - " + last.date + " - " + last.score + "/10"),
       h("div", { class: "chips tonechips3", role: "group", "aria-label": "Last result" }, buttons), detail, fixLink].filter(Boolean));

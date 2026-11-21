@@ -1,0 +1,282 @@
+{
+  "id": "raga-malkauns",
+  "title": "Raga Malkauns - The Midnight Pentatonic",
+  "tasks": [
+    {
+      "id": "the-midnight-raga",
+      "title": "The Midnight Raga",
+      "content": ["Raga Malkauns is one of the most ancient and powerful ragas in Hindustani classical music. It belongs to the Bhairavi thaat and uses only five notes - making it pentatonic (audav) - yet it carries more emotional weight than many seven-note ragas.", "The five notes are: Sa, komal Ga, shuddha Ma, komal Dha, and komal Ni. Notice what is missing: Re and Pa. These two notes - especially Pa, the perfect fifth - are the structural pillars of most ragas. Removing them removes the ground beneath your feet. Malkauns floats in a suspended, weightless space that is both haunting and deeply contemplative.", "Malkauns is assigned to the third prahar of the night - roughly midnight to 3 AM. It is the raga of deep stillness, of detachment (vairagya), of looking inward when the world has gone quiet. Its gravity comes not from loudness or speed but from the sheer depth of its komal notes and the vast silences between its phrases.", "The raga has been immortalised in the film Baiju Bawra through the composition 'Man Tarpat Hari Darshan Ko Aaj' - a piece that demonstrates Malkauns' ability to convey intense longing through just five notes."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many notes does Raga Malkauns use?",
+          "options": [
+            {
+              "text": "7 - all seven swaras",
+              "why": "That would be a sampurna (complete) raga. Malkauns is pentatonic - only 5 notes."
+            },
+            {
+              "text": "5 - it is a pentatonic raga",
+              "right": true,
+              "yes": "Correct. Malkauns uses only Sa, komal Ga, Ma, komal Dha, and komal Ni."
+            },
+            {
+              "text": "6 - it skips one note",
+              "why": "Malkauns skips two notes (Re and Pa), leaving only five."
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two common notes are ABSENT from Malkauns?",
+          "options": [
+            {
+              "text": "Ga and Ni",
+              "why": "Malkauns uses komal Ga and komal Ni. The absent notes are Re and Pa."
+            },
+            {
+              "text": "Re and Pa",
+              "right": true,
+              "yes": "Right. The absence of Re and especially Pa (the perfect fifth) is what gives Malkauns its suspended, groundless quality."
+            },
+            {
+              "text": "Ma and Dha",
+              "why": "Ma is actually the vadi (most important note) of Malkauns, and komal Dha is one of its five notes."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "five-notes",
+      "title": "The Five Notes of Malkauns",
+      "content": ["The notes of Malkauns in semitone values are: Sa (0), komal Ga (3), shuddha Ma (5), komal Dha (8), komal Ni (10).", "Look at this list carefully. Every movable note - Ga, Dha, and Ni - is in its komal (flat) position. Only Sa (which is always fixed) and Ma (which is shuddha, not tivra) are not flattened. This extreme use of komal notes creates Malkauns' characteristic darkness and depth.", "The intervals between consecutive notes are: Sa to komal Ga = 3 semitones (a minor third), komal Ga to Ma = 2 semitones, Ma to komal Dha = 3 semitones (another minor third), komal Dha to komal Ni = 2 semitones. The pattern of wide-narrow-wide-narrow gives the raga a distinctive, almost symmetrical architecture.", "Now hold each note against the drone. Feel how differently each komal note resonates compared to its shuddha counterpart. Komal Ga has a darker, more inward quality than shuddha Ga. Komal Dha feels heavier and more grounded than shuddha Dha."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 3,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Ga (semitone 3) for 5 seconds - feel its dark, inward quality",
+          "points": 20
+        },
+        {
+          "type": "hold",
+          "target": 8,
+          "seconds": 5,
+          "cents": 20,
+          "prompt": "Hold komal Dha (semitone 8) for 5 seconds - feel its weight against the drone",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ascending-malkauns",
+      "title": "Ascending Malkauns",
+      "content": ["The aroha (ascending pattern) of Malkauns is: Sa g m d n Sa'.", "Play this slowly and notice the wide gaps. From Sa to komal Ga is 3 semitones - a minor third. You skip over both Re positions entirely. Then from komal Ga to Ma is a tight 2 semitones. From Ma to komal Dha is another wide 3 semitones - skipping over Pa entirely. And from komal Dha to komal Ni is again a tight 2 semitones.", "This alternation of wide and narrow intervals - 3, 2, 3, 2 - gives Malkauns an almost geometric quality. The wide gaps create a feeling of vast space between the notes, as if each note is a stepping stone across a dark lake. The narrow gaps create moments of closeness and tension.", "Compare this to Bhupali's ascent (Sa R G P D) where the intervals are 2, 2, 3, 2. Bhupali feels bright and even. Malkauns feels cavernous and deep. Same number of notes, completely different architecture."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 3, 5, 8, 10, 12],
+          "prompt": "Play the ascending Malkauns scale: Sa g m d n Sa'",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "How many semitones separate Sa from komal Ga in Malkauns?",
+          "options": [
+            {
+              "text": "1 semitone",
+              "why": "1 semitone would be komal Re. Komal Ga is 3 semitones above Sa."
+            },
+            {
+              "text": "2 semitones",
+              "why": "2 semitones would be shuddha Re. Komal Ga sits at 3 semitones."
+            },
+            {
+              "text": "3 semitones - a minor third",
+              "right": true,
+              "yes": "Correct. The 3-semitone gap from Sa to komal Ga is one of the wide intervals that gives Malkauns its spacious, brooding character."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "descending-malkauns",
+      "title": "Descending Malkauns",
+      "content": ["The avaroha (descending pattern) is: Sa' n d m g Sa.", "The descent is where Malkauns truly reveals its character. Each note sinks deeper than the last, pulling you down into the raga's gravity. The movement from komal Ni down through komal Dha, Ma, and komal Ga to Sa feels like a slow, inevitable descent into contemplation.", "Pay special attention to the final movement: komal Ga resolving to Sa. This resolution - from the minor third above down to the tonic - is one of the most emotionally powerful moments in Malkauns. It carries a feeling of acceptance, of settling, of coming to rest after a journey through darkness.", "In practice, Malkauns phrases almost always resolve downward. The raga's natural tendency is to descend and settle rather than to leap upward. When it does ascend, it does so gradually and with purpose, always keeping the downward pull in mind."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 10, 8, 5, 3, 0],
+          "prompt": "Play the descending Malkauns scale: Sa' n d m g Sa",
+          "points": 20
+        },
+        {
+          "type": "ear",
+          "notes": [0, 3, 5, 8, 10],
+          "rounds": 6,
+          "prompt": "Identify notes from the Malkauns scale. Listen for the komal notes.",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "absent-fifth",
+      "title": "The Absent Fifth",
+      "content": ["Why is the absence of Pa so significant? In most ragas, Pa (the perfect fifth, semitone 7) is the second-most consonant interval after the octave. It is the structural pillar that holds the entire scale together. When you hear Pa against the drone, it locks in with a satisfying stability.", "Remove Pa, and that stability vanishes. The raga loses its anchor point in the middle of the octave. What remains is a set of notes that orbit around Sa without ever landing on that solid fifth. This is what gives Malkauns its floating, unresolved quality - a sense that the music is searching for something it can never quite find.", "Compare two pentatonic ragas: Bhupali uses Sa R G P D - it has Pa, and it sounds bright, stable, and grounded. Malkauns uses Sa g m d n - no Pa, all komal notes, and it sounds dark, suspended, and introspective. Five notes each, but they inhabit completely different emotional worlds.", "The absence of Pa is not a limitation - it is a deliberate expressive choice. Malkauns proves that what you leave out can be as powerful as what you include."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why does Malkauns feel different from pentatonic ragas like Bhupali?",
+          "options": [
+            {
+              "text": "Because Malkauns uses more notes",
+              "why": "Both are pentatonic with exactly five notes. The difference is WHICH five notes."
+            },
+            {
+              "text": "Because Malkauns lacks Pa (the perfect fifth) and uses all komal notes, creating a suspended, dark quality",
+              "right": true,
+              "yes": "Exactly. The absent fifth and the komal notes create Malkauns' distinctive gravity and darkness."
+            },
+            {
+              "text": "Because Malkauns is played faster",
+              "why": "Speed is not what defines the difference. Malkauns is often played slowly and meditatively."
+            }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the vadi (king note) of Raga Malkauns?",
+          "answer": "Ma",
+          "accept": ["Ma", "ma", "m", "shuddha Ma"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "characteristic-phrases",
+      "title": "Characteristic Phrases",
+      "content": ["Every raga has a pakad - a set of characteristic phrases that immediately identify it. Malkauns' pakad centres on the interplay between komal Ga, Ma, and komal Dha.", "The core phrase of Malkauns is: g m d, m g Sa. This is the raga's fingerprint. The ascent from komal Ga through Ma to komal Dha, followed by the descent through Ma and komal Ga back to Sa, traces the raga's entire emotional arc in just a few notes. The upward reach (g m d) creates tension; the downward resolution (m g Sa) releases it.", "Another essential phrase: n Sa g, m g Sa. Here, the lower komal Ni reaches up to Sa and then to komal Ga before descending back to Sa. This phrase demonstrates how Malkauns often approaches Sa from below - through the lower Ni - rather than simply landing on it from above.", "The raga loves to circle. Rather than moving in straight lines, Malkauns phrases tend to orbit around Ma and komal Ga, touching them from both sides before settling. This circling motion is what gives performances of Malkauns their hypnotic, meditative quality."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [3, 5, 8, 5, 3, 0],
+          "prompt": "Play the core Malkauns phrase: g m d, m g Sa",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [10, 0, 3, 5, 3, 0],
+          "prompt": "Play the ascending entry phrase: n Sa g, m g Sa (lower Ni up to Sa)",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ma-king-note",
+      "title": "Ma - The King Note",
+      "content": ["Ma (shuddha Ma, semitone 5) is the vadi of Malkauns - the most important note in the raga. It receives the most time, the most emphasis, and the most elaborate ornamentation.", "What makes Ma's treatment in Malkauns distinctive is the use of heavy gamak - a vigorous oscillation that makes the note vibrate with intensity. When you hold Ma in Malkauns, it should not sit still. It should pulse and shimmer, as if the note itself is alive with energy.", "The gamak on Ma serves a musical purpose: in a raga of such darkness and stillness, Ma's oscillation provides the primary source of movement and tension. It is the beating heart of the raga - the one element that keeps the music from becoming static.", "The samvadi (minister note) is Sa itself - unusual, since the samvadi is typically not the tonic. But in Malkauns, Sa functions as the ultimate point of resolution. Every phrase, no matter how far it ventures, eventually descends to Sa and finds rest there. The vadi-samvadi pair of Ma and Sa (a perfect fourth apart) creates Malkauns' central axis."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold Ma (semitone 5) for 6 seconds - the king note of Malkauns. Imagine the gamak vibrating through it.",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "What ornament does Ma receive in Malkauns that defines the raga's character?",
+          "options": [
+            {
+              "text": "Meend - a smooth slide",
+              "why": "While meend is used in Malkauns, the defining ornament on Ma is gamak - vigorous oscillation."
+            },
+            {
+              "text": "Gamak - heavy oscillation that makes the note vibrate with intensity",
+              "right": true,
+              "yes": "Correct. The gamak on Ma is Malkauns' heartbeat - the source of movement and tension in an otherwise deeply still raga."
+            },
+            {
+              "text": "Kan - a quick grace note",
+              "why": "Kan is used in many ragas but is not the defining treatment of Ma in Malkauns."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phrases-in-context",
+      "title": "Phrases in Context",
+      "content": ["Now practice longer phrases that capture the full arc of Malkauns' movement.", "The first phrase traces a complete journey: Sa g m d n d m g Sa. It departs from Sa, climbs through all five notes to komal Ni, then descends through every note back to Sa. This is the raga in miniature - a full statement that explores the entire range and resolves.", "The second phrase demonstrates Malkauns' circling motion: m g m d, n d m g Sa. Starting from Ma, it drops to komal Ga, climbs back through Ma to komal Dha and komal Ni, then descends all the way to Sa. Notice the m-g-m turn at the beginning - this circling back through Ma before ascending is characteristic of how Malkauns moves.", "In both phrases, observe the raga's gravitational pull downward. Even when ascending, Malkauns phrases feel as if they are being pulled back to Sa. The resolution on Sa always feels inevitable, like water finding its level."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 3, 5, 8, 10, 8, 5, 3, 0],
+          "prompt": "Play the full arc: Sa g m d n d m g Sa - depart and return",
+          "points": 20
+        },
+        {
+          "type": "play",
+          "phrase": [5, 3, 5, 8, 10, 8, 5, 3, 0],
+          "prompt": "Play the circling phrase: m g m d n d m g Sa - orbit and resolve",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ear-training-malkauns",
+      "title": "Ear Training: Malkauns",
+      "content": ["With only five notes, you might expect identification to be easy. But Malkauns presents a unique challenge: its komal notes cluster in unfamiliar territory that most beginners have not trained on.", "The tricky pairs are: komal Ga (3) versus Ma (5) - only 2 semitones apart. These two notes are the raga's centre of gravity, and confusing them undermines everything. And komal Dha (8) versus komal Ni (10) - also 2 semitones apart. In the upper part of the scale, these two can blur together.", "The good news: Sa (0) stands alone at the bottom, clearly separated from komal Ga by 3 semitones. And Ma (5) sits right in the middle, equidistant from komal Ga below and komal Dha above. If you can lock in Sa and Ma, the other three notes fall into place.", "Listen for the quality of each note against the drone. Sa is stable. Komal Ga is dark and inward. Ma is tense and active. Komal Dha is heavy and grounded. Komal Ni is yearning and reaching upward."],
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [0, 3, 5, 8, 10],
+          "rounds": 8,
+          "prompt": "Identify all five Malkauns notes. 8 rounds - get at least 6 correct to pass.",
+          "points": 20
+        },
+        {
+          "type": "choice",
+          "prompt": "Which pair of adjacent Malkauns notes is closest together and therefore hardest to distinguish?",
+          "options": [
+            {
+              "text": "Sa (0) and komal Ga (3) - 3 semitones apart",
+              "why": "3 semitones is actually the widest gap between adjacent notes in Malkauns."
+            },
+            {
+              "text": "Komal Ga (3) and Ma (5), or komal Dha (8) and komal Ni (10) - both are 2 semitones apart",
+              "right": true,
+              "yes": "Correct. Both pairs are 2 semitones apart. Training your ear to distinguish within these tight pairs is key to hearing Malkauns clearly."
+            },
+            {
+              "text": "Ma (5) and komal Dha (8) - 3 semitones apart",
+              "why": "3 semitones is a wider gap. The tighter pairs (2 semitones each) are harder."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "malkauns-meditation",
+      "title": "Malkauns Meditation",
+      "content": ["Malkauns is traditionally played in deep night as a form of musical meditation. Its power comes not from speed or complexity but from depth and stillness. The great masters of Malkauns - Pandit Jasraj, Kishori Amonkar, Hariprasad Chaurasia - are revered not for how fast they played the raga but for how deeply they explored each note.", "Play the full ascending and descending scale one final time. But this time, play it as slowly as your breath allows. Dwell on each note. Feel its relationship to the drone. Let the silence between notes be part of the music. In Malkauns, silence is not emptiness - it is space for the raga to resonate.", "This is the essence of Indian classical music at its deepest: not a display of technical skill, but an exploration of sound and silence, of tension and resolution, of the human experience distilled into five notes and the spaces between them.", "You have now experienced one of the most profound ragas in the Hindustani tradition. Return to Malkauns whenever you need stillness. It will always be waiting for you in the midnight hour."],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 3, 5, 8, 10, 12, 10, 8, 5, 3, 0],
+          "prompt": "Play the complete Malkauns scale: Sa g m d n Sa' n d m g Sa - slowly and meditatively",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I have experienced the meditative depth of Raga Malkauns",
+          "points": 10
+        }
+      ]
+    }
+  ]
+}

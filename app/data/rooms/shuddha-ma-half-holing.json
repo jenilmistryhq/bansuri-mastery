@@ -1,0 +1,194 @@
+{
+  "id": "shuddha-ma-half-holing",
+  "title": "Shuddha Ma and Half-Holing",
+  "tasks": [
+    {
+      "id": "what-is-ma",
+      "title": "What Is Ma?",
+      "content": "Ma (Madhyam) is the fourth note of the saptak. It sits between Ga and Pa.\n\nIn Indian music, Ma is unique: it is the only note that can be shuddha (natural) or tivra (sharp). Every other note is either shuddha or komal (flat). This special status gives Ma enormous power in defining a raga's character.\n\nShuddha Ma is used in ragas like Kafi, Bhairavi, Khamaj, and Asavari. Tivra Ma appears in Yaman, Marwa, and Poorvi. Some ragas like Lalit use both.",
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What makes Ma unique among the seven swaras?",
+          "options": [
+            {
+              "text": "It is always the same pitch",
+              "why": "Ma can be shuddha or tivra - two different pitches."
+            },
+            {
+              "text": "It is the only note with a sharp (tivra) variant instead of a flat (komal) variant",
+              "right": true,
+              "yes": "Correct. All other variable notes (Re, Ga, Dha, Ni) have shuddha and komal forms. Ma has shuddha and tivra."
+            },
+            {
+              "text": "It cannot be played on the bansuri",
+              "why": "Ma is played using half-holing technique on the bansuri."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "half-holing-technique",
+      "title": "Half-Holing Technique",
+      "content": ["Half-holing means covering a hole only partially - typically the bottom half. This raises the pitch of a note by a semitone.", "On the bansuri, half-holing is how you play notes that fall between the natural fingerings. It is the most important technique because it unlocks komal swaras and tivra Ma.", "Think of half-holing like tuning a radio dial. You are searching for a specific frequency, not just placing your finger 'roughly halfway.' Each note has a precise sweet spot where it rings true. Too much coverage and the note stays flat. Too little and it goes sharp or squeaks. The finger slides rather than lifts - keep contact with the bamboo.", "Start from Ga (holes 1-2 open). Now half-close hole 1: slide your finger to cover just the bottom half. The pitch should rise by one semitone from Ga to Ma. Keep your hand relaxed - tension is the enemy of accurate half-holing. A tense finger cannot make the micro-adjustments needed to find the sweet spot."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does half-holing do to a note's pitch?",
+          "options": [
+            {
+              "text": "Lowers it by a semitone",
+              "why": "Opening more of the hole raises the pitch, not lowers it."
+            },
+            {
+              "text": "Raises it by a semitone",
+              "right": true,
+              "yes": "Correct. Partial opening of a hole shortens the vibrating air column slightly, raising the pitch."
+            },
+            {
+              "text": "Does not change the pitch",
+              "why": "The partial opening changes the effective length of the air column, changing the pitch."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hold-ma",
+      "title": "Hold Shuddha Ma",
+      "content": ["Now try it. Hold shuddha Ma steady using the half-hole.", "Use the drone to check your pitch. Ma should sit exactly one semitone above Ga. If the tuner shows you are too flat, slide your finger a little more open. If sharp, cover slightly more of the hole.", "This is a patience exercise. It may take several attempts before the half-hole position feels consistent. Keep your fingers relaxed and your hand soft. Many beginners grip the flute tightly when attempting half-holes, which makes the finger rigid and harder to position precisely. Let gravity and gentle pressure do the work."],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 5,
+          "cents": 30,
+          "prompt": "Hold shuddha Ma steady for 5 seconds",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ga-to-ma",
+      "title": "Ga to Ma Movement",
+      "content": "The transition from Ga to Ma is the critical half-holing moment. You must slide the finger from fully open (Ga) to half-closed (Ma) without a gap in the sound.\n\nPlay: Ga - Ma\n\nThe sound should flow smoothly. No click, no silent gap, no pitch wobble. This smooth transition is what makes the bansuri's Ma sound vocal and expressive rather than mechanical.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [4, 5],
+          "prompt": "Play Ga to Ma smoothly",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "troubleshooting-half-holes",
+      "title": "Troubleshooting Half-Hole Problems",
+      "content": ["Half-holing is the technique most beginners struggle with. Here are the common problems and their solutions.", "If the sound is airy or breathy, your finger coverage is not precise enough. The gap is either too wide or in the wrong position. Experiment with the exact placement - try shifting the finger slightly forward or back along the hole until the note speaks clearly.", "If the note is too sharp, the hole is too open. Cover slightly more of it. If the note is too flat, it is too closed - open slightly more. These adjustments are tiny, often less than a millimetre.", "If the sound cuts out entirely, your air pressure may be inconsistent. Half-hole notes need steady, well-supported breath. Maintain firm diaphragmatic support even as you adjust your finger.", "If your finger keeps sliding off position, use the fingertip pad (the fleshy part) rather than the very tip of the finger. Keep fingers relaxed and slightly curved. A flat, rigid finger has less control than a curved, relaxed one.", "The key insight is that half-holing is about finding a SPECIFIC position, not 'roughly half.' Each note on each flute has its own sweet spot. Once you find it, your muscle memory will learn to return to it automatically."],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the most important thing to understand about half-hole finger position?",
+          "options": [
+            {
+              "text": "Cover exactly 50% of the hole every time",
+              "why": "It is not about a fixed percentage. Each note has its own specific sweet spot."
+            },
+            {
+              "text": "Each note has a specific sweet spot that you must find by ear",
+              "right": true,
+              "yes": "Exactly. 'Half-holing' is a rough name for a precise technique. The actual coverage varies per note and per flute."
+            },
+            {
+              "text": "Press as hard as possible to prevent air leaks",
+              "why": "Pressing hard creates tension that reduces control. Gentle, relaxed pressure is better."
+            }
+          ]
+        },
+        {
+          "type": "hold",
+          "target": 5,
+          "seconds": 6,
+          "cents": 20,
+          "prompt": "Hold shuddha Ma with tight pitch control (20 cents tolerance)",
+          "points": 25
+        }
+      ]
+    },
+    {
+      "id": "ma-in-melodies",
+      "title": "Ma in Melodies",
+      "content": "Now use Ma in a full ascending phrase. Play:\n\nSa Re Ga Ma Pa\n\nThis is the first five notes of the shuddha scale (Bilawal thaat). Focus on making the half-hole transition to Ma seamless - it should sound like any other note change, not a special event.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 5, 7],
+          "prompt": "Play Sa Re Ga Ma Pa ascending",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "ma-pa-dha",
+      "title": "Ma Pa Dha Sequence",
+      "content": "Now try Ma in context with the notes around it:\n\nMa Pa Dha\n\nThis is the middle of the ascending scale. Listen to how Ma leads naturally into Pa, and Pa into Dha. Each transition should be clean.\n\nNotice how Pa feels like a resting point after Ma - this is because Pa is the second-most consonant note with Sa.",
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [5, 7, 9],
+          "prompt": "Play Ma Pa Dha",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "notes-requiring-half-holing",
+      "title": "Which Notes Need Half-Holing?",
+      "content": ["Shuddha Ma is just your first encounter with half-holing. On a standard six-hole bansuri, several notes require this technique.", "Komal Re (semitone 1) uses a slight opening of the bottom hole. It is a subtle half-hole - almost fully closed but with a tiny gap. Komal Ga (semitone 3) requires a partial opening, wider than komal Re. Shuddha Ma (semitone 5), which you are learning now, uses the classic 'halfway' position. Tivra Ma (semitone 6) needs a wider opening than shuddha Ma - closer to three-quarters open.", "In the upper part of the scale, komal Dha (semitone 8) and komal Ni (semitone 10) also use partial openings of their respective holes. Each half-hole note has a different degree of opening, which is why the technique is really about ear-guided finger placement rather than a single mechanical position.", "Some advanced players use cross-fingering as an alternative to half-holing for certain notes. Cross-fingering means opening a hole further up while keeping a lower hole closed, creating a different air column configuration. Both approaches produce the same pitch, but with slightly different tonal colours. Most players learn half-holing first, then explore cross-fingering later."],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "Approximately how many notes on a standard 6-hole bansuri typically require half-holing?",
+          "answer": "6",
+          "accept": ["6", "six", "5", "five", "5-6"],
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What is cross-fingering?",
+          "options": [
+            {
+              "text": "Using both hands simultaneously on the same hole",
+              "why": "Cross-fingering involves opening and closing different holes, not using two hands on one."
+            },
+            {
+              "text": "Opening a hole further up while keeping a lower hole closed",
+              "right": true,
+              "yes": "Correct. Cross-fingering creates the same pitch as half-holing but through a different air column configuration."
+            },
+            {
+              "text": "Crossing your fingers over each other",
+              "why": "Despite the name, it refers to the pattern of open and closed holes, not finger positions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ear-ma-or-not",
+      "title": "Ear Training: Ga, Ma, or Pa?",
+      "content": "Can you hear the difference between Ga, Ma, and Pa? These three notes sit close together:\n\n- Ga is warm and open\n- Ma is slightly brighter, one semitone above Ga\n- Pa is strong and stable, two semitones above Ma\n\nListen and identify which note is playing.",
+      "questions": [
+        {
+          "type": "ear",
+          "notes": [4, 5, 7],
+          "count": 6,
+          "pass": 4,
+          "prompt": "Identify each note: Ga, Ma, or Pa",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

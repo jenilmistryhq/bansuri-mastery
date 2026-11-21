@@ -1,6 +1,7 @@
 // Listen (#/listen): learning by ear, no reading needed. Real bansuri recordings, songs played on an
 // animated flute (watch the fingers), the four tone levels, and the course's listening library.
 import { h, icon } from "../util.js";
+import { backHead } from "../backhead.js";
 import { fetchDoc } from "../content.js";
 import { parseSongs } from "./songs.js";
 import { flutePlayer } from "../demo.js";
@@ -27,6 +28,7 @@ function lessonReached() {
 export async function render(main) {
   const page = h("div", { class: "page" });
   main.append(page);
+  page.append(backHead("#/music", "Music", "Listen and watch"));
   let player = null, audio = null;
   const stage = h("section", { class: "card", hidden: true });
   const stopAllHere = () => { if (player) { player.destroy(); player = null; } if (audio) { audio.pause(); audio = null; } document.querySelectorAll("#main .listentile.on").forEach(t => t.classList.remove("on")); };

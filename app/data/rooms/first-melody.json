@@ -1,0 +1,346 @@
+{
+  "id": "first-melody",
+  "title": "Your First Melody",
+  "description": "Combine everything you have learned into your first real melody. Learn about phrasing, breath control, and musical expression.",
+  "difficulty": "medium",
+  "skills": ["melody", "breath", "expression"],
+  "minutes": 45,
+  "order": 5,
+  "prerequisites": ["ma-pa-expanding-range"],
+  "tasks": [
+    {
+      "id": "t1-what-is-melody",
+      "title": "What makes a melody?",
+      "content": [
+        "A melody is not just a list of notes played one after another. A real melody has shape, direction, and feeling.",
+        { "type": "list", "items": [
+          "Shape - a melody rises, falls, and returns, like a sentence with a beginning, middle, and end",
+          "Phrasing - notes are grouped into short musical sentences, separated by tiny breaths",
+          "Emphasis - some notes are held longer or played louder to give the melody life",
+          "Resolution - a melody feels incomplete until it comes home to Sa"
+        ] },
+        { "type": "note", "text": "In Indian music, melody is everything. There is no harmony or chords - the entire emotional world lives in how you shape a single line of notes." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "Why does a melody feel 'finished' when it returns to Sa?",
+          "options": [
+            { "text": "Because Sa is the loudest note", "right": false, "why": "Volume does not create resolution." },
+            { "text": "Because Sa is the tonic - the home note that gives a sense of rest", "right": true, "yes": "Exactly! Sa is home. Landing on it feels resolved and complete." },
+            { "text": "Because Sa is the last note in the scale", "right": false, "why": "Sa is the first note, not the last." },
+            { "text": "Because you always have to end on Sa", "right": false, "why": "You do not have to, but ending on Sa gives the strongest sense of closure." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "confirm",
+          "prompt": "I understand that a melody needs shape, phrasing, and resolution",
+          "points": 0
+        }
+      ],
+      "hints": [
+        "Think of a melody like a spoken sentence - it rises with a question and falls with an answer."
+      ]
+    },
+    {
+      "id": "t2-breath-phrasing",
+      "title": "Breath between phrases",
+      "content": [
+        "On the bansuri, your breath IS the music. Every phrase ends when you take a breath, and that breath is part of the melody.",
+        "Good phrasing means:",
+        { "type": "list", "items": [
+          "Breathe at natural resting points, not in the middle of a musical thought",
+          "Take quick, silent breaths through your nose when possible",
+          "Let the last note of a phrase fade naturally before breathing",
+          "Start the next phrase gently, not with a blast of air"
+        ] },
+        { "type": "note", "text": "A common beginner mistake is running out of breath and gasping mid-phrase. Keep phrases short at first - 3 to 5 notes per breath." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "choice",
+          "prompt": "When should you breathe during a melody?",
+          "options": [
+            { "text": "Only at the very end", "right": false, "why": "That would require impossibly long breath. Breathe at natural phrase boundaries." },
+            { "text": "At natural resting points between musical phrases", "right": true, "yes": "Right! Breathe where the music naturally pauses." },
+            { "text": "Every two notes", "right": false, "why": "That would chop the melody into fragments. Group notes into phrases." },
+            { "text": "Whenever you feel like it", "right": false, "why": "Random breaths break the musical sentence. Place them deliberately." }
+          ],
+          "points": 10
+        },
+        {
+          "id": "q2",
+          "type": "type",
+          "prompt": "How many notes per breath is a good starting point for a beginner?",
+          "answer": "3",
+          "accept": ["3", "3-5", "3 to 5", "three", "four", "4", "five", "5"],
+          "points": 10,
+          "yes": "Good! Start with short phrases and build up as your breath control improves."
+        }
+      ],
+      "hints": [
+        "Professional flautists can sustain 10-15 notes per breath, but they started with 3-5.",
+        "Quick nose breaths are quieter and faster than mouth breaths."
+      ]
+    },
+    {
+      "id": "t3-short-phrase",
+      "title": "Play a short phrase",
+      "content": [
+        "Start with the simplest melodic phrase: Sa Re Ga Re Sa.",
+        "This phrase goes up to Ga and comes back. It is a complete musical sentence - up, turn, home."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Sa Re Ga Re Sa.",
+          "phrase": [0, 2, 4, 2, 0],
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Let Re be a stepping stone - do not linger on it. Ga is the peak, then come home.",
+        "Play it slowly enough that each note sounds clear.",
+        "Think of the shape: a gentle hill that rises to Ga and returns to Sa."
+      ]
+    },
+    {
+      "id": "t4-longer-phrase",
+      "title": "A longer musical sentence",
+      "content": [
+        "Now extend the phrase: Sa Re Ga Ma Ga Re Sa.",
+        "This one climbs higher to Ma before turning back. Notice how reaching Ma adds more tension before the resolution."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Play Sa Re Ga Ma Ga Re Sa.",
+          "phrase": [0, 2, 4, 5, 4, 2, 0],
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Ma is the highest point of this phrase - give it slightly more weight.",
+        "The descent from Ma back to Sa should feel like settling, like coming home.",
+        "If you run out of breath, take a quick breath after Ma before descending."
+      ]
+    },
+    {
+      "id": "t5-hold-and-feel",
+      "title": "Adding weight to notes",
+      "content": [
+        "Not every note in a melody gets equal time. Some notes are held longer to give the melody shape and feeling.",
+        "In this exercise, hold Sa for a full 5 seconds at the end of a phrase. Feel the resolution - this is what 'coming home' sounds like."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "hold",
+          "prompt": "Hold Sa for 5 seconds - feel the resolution.",
+          "target": 0,
+          "seconds": 5,
+          "cents": 30,
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Let the note start gently and sustain evenly.",
+        "Close your eyes and listen to Sa against the drone. Hear them merge.",
+        "This sustained Sa is the resting point. Everything in a melody points toward it."
+      ]
+    },
+    {
+      "id": "t6-call-response",
+      "title": "Call and response",
+      "content": [
+        "In Indian music, a teacher plays a phrase and the student echoes it back. This is the oldest way to learn melody.",
+        "Listen to the phrase, then play it back. You will hear Sa Ga Ma Ga - then it is your turn."
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "ear",
+          "prompt": "Listen and identify: which notes make up this phrase?",
+          "notes": [0, 4, 5, 4],
+          "count": 4,
+          "pass": 3,
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "play",
+          "prompt": "Now play the phrase: Sa Ga Ma Ga.",
+          "phrase": [0, 4, 5, 4],
+          "points": 20
+        }
+      ],
+      "hints": [
+        "Listen first, then play. Do not try to play along - wait for the full phrase.",
+        "The skip from Sa to Ga is the distinctive sound. Practise that leap on its own if needed."
+      ]
+    },
+    {
+      "id": "t7-folk-melody",
+      "title": "A folk-style melody",
+      "content": [
+        "Here is your first real melody, inspired by simple folk tunes played on the bansuri across India. It uses all the phrasing ideas from this room.",
+        "The melody has two phrases:",
+        { "type": "list", "items": [
+          "Phrase 1: Sa Re Ga Re Sa (the gentle opening)",
+          "Phrase 2: Ga Ma Pa Ma Ga (climbing higher, then returning)"
+        ] },
+        { "type": "note", "text": "Take a breath between the two phrases. Let phrase 1 end naturally, breathe, then begin phrase 2." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Phrase 1: Play Sa Re Ga Re Sa.",
+          "phrase": [0, 2, 4, 2, 0],
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "play",
+          "prompt": "Phrase 2: Play Ga Ma Pa Ma Ga.",
+          "phrase": [4, 5, 7, 5, 4],
+          "points": 15
+        }
+      ],
+      "hints": [
+        "Master each phrase separately before connecting them.",
+        "Phrase 1 stays in the lower notes, phrase 2 rises. The contrast gives the melody direction.",
+        "Breathe between the two phrases - this pause is part of the music."
+      ]
+    },
+    {
+      "id": "t8-rhythm-timing",
+      "title": "Rhythm and timing",
+      "content": [
+        "Even without a tabla, your melody has rhythm. Each note takes a certain amount of time.",
+        { "type": "list", "items": [
+          "Long notes create a sense of rest or emphasis",
+          "Short notes create movement and energy",
+          "Even spacing gives a calm, meditative feel",
+          "Varied spacing gives a conversational, lively feel"
+        ] },
+        "In Indian classical music, rhythm is called 'laya'. There are three speeds:",
+        { "type": "list", "items": [
+          "Vilambit (slow) - for exploring and savouring each note",
+          "Madhya (medium) - the natural walking pace of a melody",
+          "Drut (fast) - for energy and excitement"
+        ] }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "What is the Hindi/Sanskrit word for rhythm in Indian music?",
+          "answer": "laya",
+          "accept": ["laya", "lay", "laay"],
+          "points": 10,
+          "no": "The word is 'laya'. Taal refers to the rhythmic cycle, laya is the tempo/speed."
+        },
+        {
+          "id": "q2",
+          "type": "choice",
+          "prompt": "Which laya (speed) is best for a beginner practising a new melody?",
+          "options": [
+            { "text": "Drut (fast)", "right": false, "why": "Fast tempo hides mistakes. Slow practice builds clean habits." },
+            { "text": "Vilambit (slow)", "right": true, "yes": "Correct! Slow practice lets you hear each note clearly and build muscle memory." },
+            { "text": "Madhya (medium)", "right": false, "why": "Medium is good once you are comfortable, but start slow." }
+          ],
+          "points": 10
+        }
+      ],
+      "hints": [
+        "The saying goes: 'If you can play it slow, you can play it fast. If you can only play it fast, you cannot play it.'",
+        "Laya is the speed of the notes. Taal is the repeating rhythmic cycle."
+      ]
+    },
+    {
+      "id": "t9-full-melody",
+      "title": "The full melody challenge",
+      "content": [
+        "Put it all together. Play this complete melody in three phrases, breathing between each one:",
+        { "type": "list", "items": [
+          "Phrase 1: Sa Re Ga Re Sa (open gently)",
+          "Phrase 2: Re Ga Ma Pa (climb up)",
+          "Phrase 3: Pa Ma Ga Re Sa (come home)"
+        ] },
+        { "type": "note", "text": "This three-phrase structure - opening, rising, returning - is the foundation of almost every melody in Indian music." }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "play",
+          "prompt": "Phrase 1: Sa Re Ga Re Sa.",
+          "phrase": [0, 2, 4, 2, 0],
+          "points": 15
+        },
+        {
+          "id": "q2",
+          "type": "play",
+          "prompt": "Phrase 2: Re Ga Ma Pa.",
+          "phrase": [2, 4, 5, 7],
+          "points": 15
+        },
+        {
+          "id": "q3",
+          "type": "play",
+          "prompt": "Phrase 3: Pa Ma Ga Re Sa.",
+          "phrase": [7, 5, 4, 2, 0],
+          "points": 15
+        }
+      ],
+      "hints": [
+        "Breathe between each phrase. The pauses are part of the music.",
+        "If a phrase is shaky, go back to that phrase's earlier task and practise it again.",
+        "Listen to the drone as you play. Each note should feel connected to Sa underneath."
+      ]
+    },
+    {
+      "id": "t10-reflection",
+      "title": "What you have learned",
+      "content": [
+        "You have just played your first real melody on the bansuri. Take a moment to appreciate what you can now do:",
+        { "type": "list", "items": [
+          "You know five notes and their fingerings: Sa, Re, Ga, Ma, Pa",
+          "You can shape notes into phrases with breath and phrasing",
+          "You understand resolution - the pull of every note back toward Sa",
+          "You played a complete three-phrase melody from memory"
+        ] },
+        "From here, you will add more notes (Dha and Ni to complete the scale), learn ornaments that make the bansuri sing, and begin exploring ragas - the melodic frameworks that give Indian music its infinite variety.",
+        { "type": "note", "text": "This melody you just played follows the basic structure of Raga Bhupali, one of the most beloved ragas in Indian music. You are already playing a raga without knowing it!" }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "type": "type",
+          "prompt": "Which raga uses the five notes Sa Re Ga Pa Dha (skipping Ma and Ni)?",
+          "answer": "Bhupali",
+          "accept": ["bhupali", "bhoopali", "bhoop", "bhup", "bhoopali", "bhopali"],
+          "points": 15,
+          "yes": "Correct! Raga Bhupali (also called Bhoopali) is a pentatonic raga of pure joy.",
+          "no": "It is Raga Bhupali (Bhoopali) - a pentatonic evening raga full of serenity and happiness."
+        },
+        {
+          "id": "q2",
+          "type": "confirm",
+          "prompt": "I have played my first melody and I am ready for more",
+          "points": 0
+        }
+      ],
+      "hints": [
+        "Bhupali uses Sa Re Ga Pa Dha - no Ma, no Ni. It is a pentatonic raga.",
+        "It is often one of the first ragas taught to students."
+      ]
+    }
+  ]
+}

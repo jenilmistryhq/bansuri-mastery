@@ -1,0 +1,236 @@
+{
+  "id": "raga-time-theory",
+  "title": "Raga Time Theory",
+  "tasks": [
+    {
+      "id": "eight-prahars",
+      "title": "The Eight Prahars",
+      "content": [
+        "Indian classical music is deeply connected to the cycle of day and night. The day is divided into eight prahars, each roughly three hours long, and every raga is assigned to a specific prahar.",
+        "This is not arbitrary. The assignment is rooted in the relationship between a raga's swaras and the natural energy of each time period. Morning ragas feel contemplative and awakening. Evening ragas feel expansive and romantic. Night ragas feel deep and introspective.",
+        "The eight prahars begin at 6 AM: (1) 6-9 AM, (2) 9 AM-12 PM, (3) 12-3 PM, (4) 3-6 PM, (5) 6-9 PM, (6) 9 PM-12 AM, (7) 12-3 AM, (8) 3-6 AM. A musician who understands raga time theory chooses ragas that match the natural energy of the moment.",
+        "In a traditional concert setting, performing a raga at the wrong time is considered a serious lapse. While modern concert schedules make strict adherence difficult, understanding the system deepens your connection to the music."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "How many prahars divide the day in Indian classical music?",
+          "options": [
+            { "text": "Four", "why": "Four would be only the broad divisions. The prahar system uses eight watches." },
+            { "text": "Eight", "right": true, "yes": "Correct. Eight prahars of roughly three hours each, starting at 6 AM." },
+            { "text": "Twelve", "why": "Twelve hours is the Western convention. The Indian system uses eight prahars." },
+            { "text": "Six", "why": "Six would leave gaps. The full cycle needs eight prahars to cover 24 hours." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "morning-ragas",
+      "title": "Morning Ragas",
+      "content": [
+        "The first two prahars (6 AM to noon) belong to morning ragas. These ragas create a contemplative, awakening mood - the feeling of the world stirring to life.",
+        "Famous morning ragas include Bhairav, Todi, Asavari, and Ramkali. Listen to any of these and you will hear a quality of gentle tension, like the first light pushing through darkness.",
+        "Morning ragas share a common trait: they often use komal Re (semitone 1) and/or komal Dha (semitone 8). These two komal swaras create a characteristic morning flavour - a slight pull, a tension that resolves into beauty.",
+        "Raga Bhairav is the quintessential morning raga. Its scale is Sa r G m P d N (semitones: 0, 1, 4, 5, 7, 8, 11). Notice both komal Re and komal Dha. The combination of these flattened notes against shuddha Ga and shuddha Ni creates Bhairav's unmistakable dawn character."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which swaras are commonly found in morning ragas?",
+          "options": [
+            { "text": "Tivra Ma and shuddha Ni", "why": "Tivra Ma is more associated with evening sandhi prakash ragas like Marwa and Poorvi." },
+            { "text": "Komal Re and komal Dha", "right": true, "yes": "Right. Komal Re and komal Dha are the signature of morning ragas - they create that characteristic dawn tension." },
+            { "text": "Shuddha Re and shuddha Dha", "why": "Shuddha Re and shuddha Dha are more typical of evening and night ragas." },
+            { "text": "Only shuddha swaras", "why": "Morning ragas typically use at least one or two komal swaras to create their contemplative character." }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 1, 4, 5, 7, 8, 11],
+          "rounds": 5,
+          "prompt": "Identify the notes of the Bhairav scale - the quintessential morning raga",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "afternoon-evening",
+      "title": "Afternoon and Evening Ragas",
+      "content": [
+        "Prahars 3-5 (noon to 9 PM) cover the afternoon and evening. As the day warms and then cools into evening, the ragas shift in character.",
+        "Afternoon ragas (prahars 3-4) include Bhimpalasi, Sarang, and Multani. These ragas carry the energy of the warm afternoon - sometimes languid, sometimes yearning.",
+        "Evening ragas (prahar 5, 6-9 PM) are among the most beloved in Hindustani music. Yaman, Bhupali, Kedar, and Hindol all belong to this time. Evening ragas tend to feel expansive, romantic, and majestic.",
+        "A key observation: evening ragas tend toward shuddha (natural) Re and shuddha Dha. Compare this to morning ragas with their komal versions. The brightness of shuddha Re and Dha matches the warmth of evening."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Yaman belongs to which prahar?",
+          "options": [
+            { "text": "Prahar 1 (6-9 AM)", "why": "Yaman is an evening raga. Its bright, expansive quality matches the evening energy." },
+            { "text": "Prahar 3 (noon-3 PM)", "why": "Yaman is later than afternoon. It belongs to the first prahar of night." },
+            { "text": "Prahar 5 (6-9 PM)", "right": true, "yes": "Correct. Yaman is the classic evening raga - prahar 5, the first watch of the night." },
+            { "text": "Prahar 7 (midnight-3 AM)", "why": "Yaman is evening, not deep night. Deep night ragas like Darbari have a very different character." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which prahar number marks the beginning of the evening (6-9 PM)?",
+          "answer": "5",
+          "accept": ["5", "five", "prahar 5"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "night-ragas",
+      "title": "Night Ragas",
+      "content": [
+        "Prahars 6-8 (9 PM to 6 AM) are the domain of night and pre-dawn ragas. These are some of the deepest, most introspective ragas in the repertoire.",
+        "Late night ragas (prahars 6-7) include Malkauns, Darbari Kanada, Rageshree, Bageshree, and Des. These ragas are meditative and profound. Malkauns, with its pentatonic scale of Sa g m d n, is considered one of the most powerful ragas in existence.",
+        "Pre-dawn ragas (prahar 8, 3-6 AM) include Lalit and Sohoni. These ragas carry the anticipation of dawn - a sense of waiting, of the night about to transform. Lalit is particularly dramatic, using both shuddha and tivra Ma.",
+        "Night ragas often explore the lower and middle registers more than the upper octave. The mood is inward, intimate. A well-performed night raga in a dimly lit room can feel like meditation."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Which raga is associated with the deep night (prahars 6-7)?",
+          "options": [
+            { "text": "Bhairav", "why": "Bhairav is a morning raga (prahar 1). Its komal Re and Dha suit the dawn." },
+            { "text": "Yaman", "why": "Yaman is an evening raga (prahar 5). The deep night calls for more introspective ragas." },
+            { "text": "Malkauns", "right": true, "yes": "Correct. Malkauns is a profound late-night raga. Its pentatonic scale (Sa g m d n) creates a deep, meditative atmosphere." },
+            { "text": "Bhimpalasi", "why": "Bhimpalasi is an afternoon raga. Its yearning quality fits the warm hours of prahar 3-4." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sandhi-prakash",
+      "title": "Sandhi Prakash - Twilight Ragas",
+      "content": [
+        "The most fascinating time slots in raga theory are the sandhi prakash periods - the twilight transitions between day and night. 'Sandhi' means junction; 'prakash' means light. These are the moments when light and darkness meet.",
+        "There are two sandhi prakash periods. The morning sandhi prakash (roughly 4-7 AM) bridges the last prahar of night and the first of day. The evening sandhi prakash (roughly 4-7 PM) bridges the last prahar of day and the first of night.",
+        "Morning sandhi prakash ragas include Bhairav, Lalit, and Ramkali. These ragas tend to use shuddha Ma (natural fourth). They carry the quality of dawn - emerging light, gentle awakening.",
+        "Evening sandhi prakash ragas include Marwa, Poorvi, and Shree. These ragas tend to use tivra Ma (raised fourth). They carry the quality of sunset - dramatic, bittersweet, the day surrendering to night. Marwa in particular has an unsettled, searching quality that perfectly captures the twilight mood."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What characterizes evening sandhi prakash ragas?",
+          "options": [
+            { "text": "They use only shuddha swaras", "why": "Evening sandhi prakash ragas are distinctive because of their altered swaras, particularly tivra Ma." },
+            { "text": "They tend to use tivra Ma", "right": true, "yes": "Correct. Evening twilight ragas like Marwa and Poorvi characteristically use tivra Ma, giving them a dramatic, searching quality." },
+            { "text": "They avoid Pa entirely", "why": "While Marwa does avoid Pa, this is specific to that raga, not a general rule for all evening sandhi prakash ragas." },
+            { "text": "They are always pentatonic", "why": "Evening sandhi prakash ragas like Marwa and Poorvi use the full seven swaras (or close to it)." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the Sanskrit term for 'twilight ragas' - the junction of light periods?",
+          "answer": "sandhi prakash",
+          "accept": ["sandhi prakash", "sandhiprakash", "sandhi-prakash", "sandhi"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "re-dha-rule",
+      "title": "The Re-Dha Rule",
+      "content": [
+        "Here is a practical tool for predicting a raga's time: look at Re and Dha.",
+        "Ragas with komal Re (r, semitone 1) and/or komal Dha (d, semitone 8) tend to be morning or early-day ragas. The slight tension of these flattened notes matches the contemplative energy of dawn and morning.",
+        "Ragas with shuddha Re (R, semitone 2) and shuddha Dha (D, semitone 9) tend to be evening or night ragas. The brightness of the natural notes matches the warmth and expansiveness of evening.",
+        "This is not an absolute law - there are exceptions. But as a first guess when encountering an unfamiliar raga, checking Re and Dha will often point you in the right direction. It is one of the most useful shortcuts in raga theory."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "A raga uses komal Re and komal Dha. When is it most likely performed?",
+          "options": [
+            { "text": "Late evening (prahar 5-6)", "why": "Evening ragas tend toward shuddha Re and shuddha Dha. Komal versions suggest morning." },
+            { "text": "Morning (prahar 1-2)", "right": true, "yes": "Correct. Komal Re and komal Dha are the signature of morning ragas like Bhairav." },
+            { "text": "Any time of day", "why": "While exceptions exist, the Re-Dha rule is a reliable predictor. Komal Re + komal Dha strongly suggests morning." },
+            { "text": "Deep night (prahar 7-8)", "why": "Deep night ragas like Malkauns and Darbari have different characteristics. Komal Re + Dha points to morning." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "A raga uses shuddha Re and shuddha Dha with tivra Ma. When is it most likely performed?",
+          "options": [
+            { "text": "Morning", "why": "Shuddha Re and Dha suggest evening/night. Tivra Ma with these shuddha notes is a strong Kalyan (evening) indicator." },
+            { "text": "Afternoon", "why": "While possible, shuddha Re + Dha + tivra Ma is the classic Kalyan thaat fingerprint, pointing to evening." },
+            { "text": "Evening", "right": true, "yes": "Right. Shuddha Re + shuddha Dha suggests evening/night, and tivra Ma is the hallmark of Kalyan thaat ragas like Yaman - classic evening ragas." },
+            { "text": "Pre-dawn", "why": "Pre-dawn ragas have a different character. These swaras point squarely to the evening." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vadi-and-time",
+      "title": "Vadi and Time",
+      "content": [
+        "There is another connection between a raga's notes and its time: the vadi (king note) tends to predict which half of the day the raga belongs to.",
+        "If the vadi falls in the poorvang - the lower half of the saptak (Sa, Re, Ga, Ma) - the raga tends toward the first half of the day (roughly 6 AM to 6 PM).",
+        "If the vadi falls in the uttarang - the upper half of the saptak (Pa, Dha, Ni) - the raga tends toward the second half (roughly 6 PM to 6 AM).",
+        "For example, Yaman's vadi is Ga (poorvang). Despite being an evening raga, it sits at the boundary. Bhairav's vadi is Dha (uttarang by some reckonings). The relationship is a tendency, not a strict law, and different authorities place the boundary differently. But it is one more piece of the puzzle that connects swaras to time."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "A raga's vadi is Pa. Based on the vadi-time relationship, when is it more likely performed?",
+          "options": [
+            { "text": "First half of the day (morning/afternoon)", "why": "Pa is in the uttarang (upper half). This suggests the second half of the day." },
+            { "text": "Second half of the day (evening/night)", "right": true, "yes": "Correct. A vadi in the uttarang (Pa, Dha, Ni) suggests the raga belongs to the evening or night." },
+            { "text": "Only at dawn", "why": "The vadi-time rule predicts the broad half of the day, not a specific time." },
+            { "text": "Any time", "why": "While exceptions exist, the vadi's position in the saptak does correlate with the raga's time assignment." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "What is the 'king note' of a raga called - the most important and frequently used swara?",
+          "answer": "vadi",
+          "accept": ["vadi", "vaadi", "vadi swara"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "raga-clock-challenge",
+      "title": "Raga Clock Challenge",
+      "content": [
+        "Time to put your knowledge together. You have learned three tools for predicting a raga's time: the Re-Dha rule, the vadi position, and the sandhi prakash markers.",
+        "In practice, experienced musicians do not consciously apply these rules. They simply feel that a raga belongs to a certain time. The rules describe patterns that emerge naturally from deep listening.",
+        "But for a student, these tools are invaluable. They turn the seemingly arbitrary assignment of ragas to times into something logical and learnable. As you encounter new ragas, try predicting their time before looking it up."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Raga Bhupali uses Sa R G P D (all shuddha, no Re/Dha issue, vadi Ga). When is it performed?",
+          "options": [
+            { "text": "Morning", "why": "Bhupali has shuddha Re and Dha, which points away from morning. Its pure, bright character fits the evening." },
+            { "text": "Evening (first prahar of night)", "right": true, "yes": "Correct. Bhupali is an evening raga. Its all-shuddha notes and warm Ga emphasis create a classic first-night-prahar mood." },
+            { "text": "Afternoon", "why": "While Bhupali's brightness could suggest afternoon, it is traditionally assigned to the early evening." },
+            { "text": "Deep night", "why": "Bhupali is too bright and open for the deep night. Deep-night ragas like Malkauns are more introspective." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Raga Todi uses Sa r g M P d N (komal Re, komal Ga, tivra Ma, komal Dha). When is it performed?",
+          "options": [
+            { "text": "Evening", "why": "Todi has komal Re AND komal Dha - both strong morning indicators despite having tivra Ma." },
+            { "text": "Late night", "why": "Todi's komal Re and Dha point to morning. Its intensity suits the late morning hours." },
+            { "text": "Late morning (prahar 2)", "right": true, "yes": "Correct. Todi is a late morning raga. Despite its tivra Ma, the komal Re and komal Dha firmly place it in the morning prahars." },
+            { "text": "Afternoon", "why": "Todi is earlier than afternoon. Its komal Re and Dha are morning markers." }
+          ]
+        },
+        {
+          "type": "ear",
+          "notes": [0, 1, 4, 5, 7, 8, 11],
+          "rounds": 5,
+          "prompt": "These are the notes of a morning raga (Bhairav). Notice komal Re and komal Dha - the morning markers.",
+          "points": 20
+        }
+      ]
+    }
+  ]
+}

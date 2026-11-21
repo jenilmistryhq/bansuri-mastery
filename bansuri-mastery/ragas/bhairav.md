@@ -26,7 +26,7 @@ Solemn, devotional, majestic. Associated with dawn and with Shiva.
   other ragas (see PIT-06, Disputed in exact value). A tuner gets you close; your ear has to
   finish the job.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Register |
 |---|---|---|
@@ -109,7 +109,7 @@ G r | G m P | m G | r r S |
 G r | G m P | m G | r r S ||
 ```
 
-Practise it with a C drone at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone (watch the half-holed `r` and `d`), then add a jhaptaal loop and raise the tempo slowly.
+Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing the note names first, then play it until every phrase is in tune with the drone (watch the half-holed `r` and `d`), then add a jhaptaal loop and raise the tempo slowly.
 
 ## Practice steps
 

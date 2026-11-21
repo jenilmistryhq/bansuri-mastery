@@ -25,7 +25,7 @@ komal Ga instead of shuddha Ga, and the mood changes completely.
   ([L23](../lessons/L23-meend.md)).
 - `.D S` and `.D .P`-type mandra phrases are common in the lower register.
 
-## On your C flute
+## Pitch reference: C5 medium
 
 | Note | Fingering | Comment |
 |---|---|---|
@@ -86,7 +86,7 @@ S R g - | R g P - | D P g R | g - R S |
 R g P D | S' - D P | g R g S | R .D S - ||
 ```
 
-It uses the characteristic phrases `R g P` and `D P g R` and ends with the mandra cadence `R .D S`. Once you know meend ([L23](../lessons/L23-meend.md)), glide gently from `P` down to `g`. Practise it with a C drone at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
+It uses the characteristic phrases `R g P` and `D P g R` and ends with the mandra cadence `R .D S`. Once you know meend ([L23](../lessons/L23-meend.md)), glide gently from `P` down to `g`. Practise it with a tanpura set to your flute's Sa at 50-60 BPM, one note per beat: sing it first, then play it until every phrase is in tune with the drone, then add a teentaal loop and raise the tempo slowly.
 
 **Uncertain:** this composition was written to follow the rules on this card, but its raga grammar has not been checked by a teacher. Have a teacher check it before you perform it, and prefer a traditional composition from a teacher or from [R-T01 / R-T04](../02-RESOURCE-LIBRARY.md#5-theory-and-raga-references) when you have one.
 

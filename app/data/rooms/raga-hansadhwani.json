@@ -1,0 +1,245 @@
+{
+  "id": "raga-hansadhwani",
+  "title": "Raga Hansadhwani - The Swan's Call",
+  "tasks": [
+    {
+      "id": "t1-swans-call",
+      "title": "The Swan's Call",
+      "content": [
+        "Hansadhwani means 'the sound of the swan' - evoking grace, beauty, and auspicious beginnings. The name comes from 'hansa' (swan) and 'dhwani' (sound or call). In Indian art, the swan symbolizes discernment and purity - it is said to be able to separate milk from water, taking only the essence.",
+        "Originally from the Carnatic (South Indian) tradition, Hansadhwani has been fully embraced by Hindustani musicians. It is one of the rare ragas that crosses the North-South divide effortlessly. Its bright, joyful character makes it a popular opening piece at concerts and auspicious occasions. When you hear Hansadhwani, something inside you lifts - it is a raga of pure optimism."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What does Hansadhwani literally mean?",
+          "options": [
+            { "text": "The sound of the swan", "right": true, "yes": "Correct - 'hansa' means swan and 'dhwani' means sound or call." },
+            { "text": "The morning melody", "why": "Hansadhwani is not time-specific. 'Hansa' means swan, 'dhwani' means sound." },
+            { "text": "The dance of joy", "why": "The name refers to a swan's call, not dance. 'Hansa' = swan, 'dhwani' = sound." },
+            { "text": "The evening prayer", "why": "Hansadhwani can be played at any time. Its name means 'sound of the swan.'" }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "From which tradition does Hansadhwani originate?",
+          "options": [
+            { "text": "Carnatic (South Indian)", "right": true, "yes": "Correct - Hansadhwani originated in the Carnatic tradition and was later adopted by Hindustani musicians." },
+            { "text": "Hindustani (North Indian)", "why": "Hansadhwani actually originated in the Carnatic tradition and was later adopted into Hindustani music." },
+            { "text": "Persian", "why": "Hansadhwani is of South Indian (Carnatic) origin, not Persian." },
+            { "text": "Folk tradition", "why": "Hansadhwani is a classical raga that originated in the Carnatic (South Indian) tradition." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t2-five-bright-notes",
+      "title": "Five Bright Notes",
+      "content": [
+        "Hansadhwani uses only five notes: Sa(0), Re(2), Ga(4), Pa(7), Ni(11). Both Ma and Dha are absent. All five notes are shuddha (natural) - no komal or tivra tension anywhere. This creates a scale of pure, bright tones that feels inherently positive.",
+        "The absence of Ma and Dha creates wide leaps in the scale. Ga to Pa spans 3 semitones, and Pa to Ni spans 4 semitones. These leaps give Hansadhwani its soaring, expansive quality - the melody does not walk step by step but takes flight with each phrase. It is a pentatonic raga (audav-audav), meaning five notes in both ascent and descent."
+      ],
+      "questions": [
+        {
+          "type": "type",
+          "prompt": "How many notes does Hansadhwani use?",
+          "answer": "5",
+          "accept": ["five", "Five", "5 notes", "five notes"],
+          "points": 10
+        },
+        {
+          "type": "choice",
+          "prompt": "Which two notes are absent from Hansadhwani?",
+          "options": [
+            { "text": "Ma and Dha", "right": true, "yes": "Correct - the absence of Ma and Dha creates the wide leaps that give Hansadhwani its soaring quality." },
+            { "text": "Re and Ni", "why": "Re and Ni are both present in Hansadhwani. The absent notes are Ma and Dha." },
+            { "text": "Ga and Ni", "why": "Both Ga and Ni are present. Hansadhwani omits Ma and Dha." },
+            { "text": "Ma and Ni", "why": "Ni is present in Hansadhwani. The two absent notes are Ma and Dha." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t3-soaring-ascent",
+      "title": "The Soaring Ascent",
+      "content": [
+        "The aroha (ascending scale): Sa Re Ga Pa Ni Sa'. Straight and simple - no vakra (crooked) movement. But hear the leaps: after Ga(4), you jump to Pa(7), skipping Ma entirely. Then another leap from Pa(7) to Ni(11), skipping Dha. These wide intervals create a feeling of flight, of ascending rapidly through open sky.",
+        "The phrase Ga-Pa-Ni-Sa' (semitones 4-7-11-12) is the most characteristic phrase of Hansadhwani. When you hear these four notes in quick succession, you know the raga instantly. It sounds like a bird launching from a branch and soaring upward in one smooth motion."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 11, 12],
+          "prompt": "Play the full ascending scale of Hansadhwani: Sa Re Ga Pa Ni Sa'.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "Which ascending phrase most defines Hansadhwani?",
+          "options": [
+            { "text": "Ga Pa Ni Sa'", "right": true, "yes": "Correct - this soaring four-note phrase with its wide leaps is Hansadhwani's signature." },
+            { "text": "Sa Re Ga Ma", "why": "Ma is not in Hansadhwani. The defining phrase is Ga Pa Ni Sa' with its characteristic leaps." },
+            { "text": "Pa Dha Ni Sa'", "why": "Dha is not in Hansadhwani. The defining phrase is Ga Pa Ni Sa'." },
+            { "text": "Sa Re Ga Pa", "why": "While these notes are in Hansadhwani, the defining phrase is Ga Pa Ni Sa' - the soaring leap through the upper register." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t4-graceful-descent",
+      "title": "The Graceful Descent",
+      "content": [
+        "The avaroha (descending scale): Sa' Ni Pa Ga Re Sa. Again, straight and clean - the descent mirrors the ascent perfectly. Notice how the wide leaps that felt like soaring in the ascent now feel like graceful gliding in the descent.",
+        "The phrase Sa'-Ni-Pa-Ga (12-11-7-4) drops like a swan settling onto water - swift but controlled, covering a large distance with effortless grace. The final Ga-Re-Sa (4-2-0) is a gentle landing, bringing the phrase home with warmth."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [12, 11, 7, 4, 2, 0],
+          "prompt": "Play the full descending scale of Hansadhwani: Sa' Ni Pa Ga Re Sa.",
+          "points": 15
+        },
+        {
+          "type": "ear",
+          "notes": [0, 2, 4, 7, 11],
+          "rounds": 5,
+          "prompt": "Identify the notes of Hansadhwani by ear. Listen carefully for the wide leaps between Ga-Pa and Pa-Ni.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t5-re-heart",
+      "title": "Re - The Heart of Hansadhwani",
+      "content": [
+        "Re(2) is the vadi (king note) of Hansadhwani. Despite the raga's soaring quality, Re provides a stable anchor. Phrases often begin from Re or return to it. The Re-Ga movement (2 to 4) is gentle and warm, while the Sa-Re approach (0 to 2) is the raga's opening gesture - a soft step that launches everything.",
+        "Pa(7) is the samvadi (queen note). The Re-Pa axis spans 5 semitones (a perfect fourth), giving the raga structural stability even as the melodies leap and soar. When you hold Re, you feel the raga settle - it is the calm center around which the swan circles."
+      ],
+      "questions": [
+        {
+          "type": "hold",
+          "target": 2,
+          "seconds": 5,
+          "cents": 15,
+          "prompt": "Hold Re (the vadi of Hansadhwani) with a steady, clear tone. Feel it as the anchor of the raga.",
+          "points": 15
+        },
+        {
+          "type": "choice",
+          "prompt": "What is Hansadhwani's vadi (king note)?",
+          "options": [
+            { "text": "Re", "right": true, "yes": "Correct - Re is the vadi, providing a stable anchor for the raga's soaring phrases." },
+            { "text": "Ga", "why": "Ga is important but not the vadi. Re is the king note of Hansadhwani." },
+            { "text": "Pa", "why": "Pa is the samvadi (queen note). The vadi is Re." },
+            { "text": "Ni", "why": "Ni contributes to the soaring quality but is not the vadi. Re holds that role." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t6-vs-bhupali",
+      "title": "Hansadhwani vs Bhupali",
+      "content": [
+        "Both Hansadhwani and Bhupali are pentatonic ragas using only shuddha (natural) notes. Bhupali: Sa Re Ga Pa Dha. Hansadhwani: Sa Re Ga Pa Ni. They share four notes (Sa, Re, Ga, Pa) and differ in only one: Bhupali has Dha(9), Hansadhwani has Ni(11).",
+        "But listen to the difference - Bhupali sounds sweet and grounded because Dha is closer to Pa (only 2 semitones apart). Hansadhwani sounds bright and soaring because Ni is farther from Pa (4 semitones apart), creating a wider leap. This single-note difference transforms the entire character: Bhupali walks gently, Hansadhwani takes flight. One note changes everything."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "What is the only note difference between Bhupali and Hansadhwani?",
+          "options": [
+            { "text": "Bhupali has Dha, Hansadhwani has Ni", "right": true, "yes": "Correct - this single note swap transforms the raga's entire character." },
+            { "text": "Bhupali has Ma, Hansadhwani has Ni", "why": "Neither raga uses Ma. The difference is Dha (Bhupali) vs Ni (Hansadhwani)." },
+            { "text": "Bhupali has Ni, Hansadhwani has Dha", "why": "It is the reverse - Bhupali uses Dha while Hansadhwani uses Ni." },
+            { "text": "They use completely different notes", "why": "They share four of five notes (Sa, Re, Ga, Pa). Only the fifth differs: Dha vs Ni." }
+          ]
+        },
+        {
+          "type": "choice",
+          "prompt": "Why does Hansadhwani sound more soaring than Bhupali?",
+          "options": [
+            { "text": "Ni creates a wider leap from Pa (4 semitones) than Dha does (2 semitones)", "right": true, "yes": "Correct - the wider Pa-Ni interval gives Hansadhwani its soaring, expansive quality." },
+            { "text": "Hansadhwani uses more notes", "why": "Both ragas use exactly five notes. The difference is the interval size, not the note count." },
+            { "text": "Hansadhwani is played faster", "why": "Speed is not the reason. The wider Pa-Ni leap (4 semitones vs Pa-Dha's 2 semitones) creates the soaring quality." },
+            { "text": "Hansadhwani uses komal notes", "why": "Hansadhwani uses only shuddha notes, just like Bhupali. The soaring quality comes from the wider Pa-Ni interval." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t7-core-phrases",
+      "title": "Core Phrases",
+      "content": [
+        "Practice Hansadhwani's essential phrases. Each one captures a different aspect of the raga's character:",
+        "Sa Re Ga Re Sa - the opening statement, gentle and inviting. Ga Pa Ni Sa' - the soaring ascent, the raga's signature leap upward. Sa' Ni Pa Ga - the graceful descent from the heights. Re Ga Pa Ni Pa Ga Re Sa - the full melodic arc, a complete journey up and back. Each phrase should feel effortless, like a swan riding the wind."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 2, 0],
+          "prompt": "Play the opening statement: Sa Re Ga Re Sa. Keep it gentle and inviting.",
+          "points": 10
+        },
+        {
+          "type": "play",
+          "phrase": [4, 7, 11, 12],
+          "prompt": "Play the soaring ascent: Ga Pa Ni Sa'. Let each leap feel like taking flight.",
+          "points": 15
+        },
+        {
+          "type": "play",
+          "phrase": [2, 4, 7, 11, 7, 4, 2, 0],
+          "prompt": "Play the full melodic arc: Re Ga Pa Ni Pa Ga Re Sa. A complete journey up and back.",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "id": "t8-auspicious",
+      "title": "Auspicious Beginnings",
+      "content": [
+        "Hansadhwani is often played as the opening piece at concerts - a practice called mangalacharan (auspicious beginning). Its bright, positive character sets a welcoming tone for the evening. Musicians believe that starting with Hansadhwani invites good fortune for the performance ahead.",
+        "In South India, Hansadhwani is closely associated with Lord Ganesha - the remover of obstacles, the deity invoked at every new beginning. Many Carnatic compositions in Hansadhwani are devotional pieces dedicated to Ganesha. Playing Hansadhwani before a performance is like offering a musical prayer: may all obstacles be removed, may the music flow freely."
+      ],
+      "questions": [
+        {
+          "type": "choice",
+          "prompt": "Why is Hansadhwani often played first at concerts?",
+          "options": [
+            { "text": "Its bright character sets an auspicious tone (mangalacharan)", "right": true, "yes": "Correct - Hansadhwani's joyful brightness makes it ideal for the auspicious opening of a concert." },
+            { "text": "It is the easiest raga to play", "why": "While it is accessible, the reason is its auspicious character, not its difficulty level." },
+            { "text": "Tradition requires it by law", "why": "It is a musical tradition, not a legal requirement. Musicians choose it for its auspicious quality." },
+            { "text": "It warms up the voice", "why": "While any raga can serve as a warm-up, Hansadhwani is chosen specifically for its auspicious, positive character." }
+          ]
+        },
+        {
+          "type": "type",
+          "prompt": "Which deity is Hansadhwani associated with in South Indian tradition?",
+          "answer": "Ganesha",
+          "accept": ["ganesha", "Ganesh", "ganesh", "Lord Ganesha", "lord ganesha", "Ganapati", "ganapati"],
+          "points": 10
+        }
+      ]
+    },
+    {
+      "id": "t9-playing",
+      "title": "Playing Hansadhwani",
+      "content": [
+        "Put it all together: ascend with the soaring leaps, let the phrases breathe, and descend with grace. The beauty of Hansadhwani is in its simplicity - five pure notes creating something greater than the sum of their parts. No tension, no darkness, just pure musical light.",
+        "As you play, imagine the swan - gliding across a still lake, then rising into the sky with powerful wingbeats, then settling back onto the water without a splash. That is the spirit of Hansadhwani: grace in motion, joy in every note."
+      ],
+      "questions": [
+        {
+          "type": "play",
+          "phrase": [0, 2, 4, 7, 11, 12, 11, 7, 4, 2, 0],
+          "prompt": "Play the complete Hansadhwani journey: ascend with soaring leaps and descend with grace. Sa Re Ga Pa Ni Sa' Ni Pa Ga Re Sa.",
+          "points": 20
+        },
+        {
+          "type": "confirm",
+          "prompt": "I appreciate Hansadhwani's joyful simplicity and will explore its soaring phrases in my practice."
+        }
+      ]
+    }
+  ]
+}

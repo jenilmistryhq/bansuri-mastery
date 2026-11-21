@@ -8,6 +8,7 @@ import { micIntro, countdown } from "../core/live.js";
 import { ac, playCurve, playNote, tablaBol } from "../core/audio.js";
 import { TAALS } from "./kinds3.js";
 import { codeOf, nameOf } from "../core/theory.js";
+import { saMidi } from "../core/settings.js";
 import { targetCurve, analyse } from "../ornaments.js";
 import { alapCheck } from "../ragagrammar.js";
 import { ding } from "./sound.js";
@@ -394,7 +395,9 @@ export const RAGA_KINDS = {
       svg.replaceChildren();
       for (let k = 0; k < 5; k++) svg.append(el("line", { x1: 20, x2: 220, y1: yOf(k * 2), y2: yOf(k * 2), class: "staff-line" }));
       const clef = el("text", { x: 26, y: yOf(2) + 16, class: "staff-clef" }); clef.textContent = "\u{1D11E}"; svg.append(clef);
-      const { step, sharp } = staffStep(semi), x = 140;
+      // The exercise semitones are relative to the learner's Sa. Put that sounding pitch on the
+      // correct absolute staff position for the configured flute key and octave.
+      const { step, sharp } = staffStep(semi + saMidi() - 72), x = 140;
       // Ledger lines below (C4 and lower) or above (A5 and higher).
       for (let k = -2; k >= step; k -= 2) svg.append(el("line", { x1: x - 16, x2: x + 16, y1: yOf(k), y2: yOf(k), class: "staff-line" }));
       for (let k = 10; k <= step; k += 2) svg.append(el("line", { x1: x - 16, x2: x + 16, y1: yOf(k), y2: yOf(k), class: "staff-line" }));
