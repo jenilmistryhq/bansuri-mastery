@@ -243,7 +243,7 @@ with a short "start here" recording for each raga.
 
 | Gap | How the curriculum fills it |
 |---|---|
-| No authoritative full fingering chart from a recognised maestro or institution | [Master chart](05-CONVENTIONS-AND-NOTATION-KEY.md#31-master-fingering-chart-for-a-6-hole-bansuri-sa--c), checked against R-W01..R-W03, plus tuner verification of your own flute |
+| No authoritative full fingering chart from a recognised maestro or institution | [Master chart](05-CONVENTIONS-AND-NOTATION-KEY.md#31-master-fingering-chart-for-a-6-hole-bansuri-western-column-uses-sa--c), checked against R-W01..R-W03, plus tuner verification of your own flute |
 | No complete written chart for the upper octave or for komal notes | [L22](lessons/L22-taar-saptak.md), [L25](lessons/L25-komal-swaras-and-12-notes.md): build your own verified chart |
 | No verified breathing lesson from an established bansuri teacher | [L03](lessons/L03-breathing-basics.md) (original) |
 | No posture demonstration specific to a C medium flute | [L02](lessons/L02-posture-and-holding.md) (original); R-W06 and R-V10 show the principles on other sizes |

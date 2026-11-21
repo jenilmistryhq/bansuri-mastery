@@ -15,14 +15,14 @@ The course marks **73** claims as **Uncertain** (not verified well enough) or **
 
 | Line | Claim | Your review |
 |---|---|---|
-| 83 | **Uncertain:** **Caution (Uncertain):** both ranges below are unusually wide for a sung melody (about two | |
+| 84 | **Uncertain:** **Caution (Uncertain):** both ranges below are unusually wide for a sung melody (about two | |
 
 ## [README.md](bansuri-mastery/README.md)
 
 | Line | Claim | Your review |
 |---|---|---|
-| 53 | **Disputed:** curriculum's teaching choice; **Disputed** means sources disagree, with the reasons; | |
-| 54 | **Uncertain:** **Uncertain** means unverified or flute-dependent. | |
+| 55 | **Disputed:** curriculum's teaching choice; **Disputed** means sources disagree, with the reasons; | |
+| 56 | **Uncertain:** **Uncertain** means unverified or flute-dependent. | |
 
 ## [lessons/L00-day-0-your-flute.md](bansuri-mastery/lessons/L00-day-0-your-flute.md)
 
@@ -122,7 +122,7 @@ The course marks **73** claims as **Uncertain** (not verified well enough) or **
 
 | Line | Claim | Your review |
 |---|---|---|
-| 183 | **Uncertain:** > **Uncertain:** which second flute is "best" depends on your hands, your teacher and your | |
+| 187 | **Uncertain:** > **Uncertain:** which second flute is "best" depends on your hands, your teacher and your | |
 
 ## [lessons/L27-bhatkhande-notation.md](bansuri-mastery/lessons/L27-bhatkhande-notation.md)
 
@@ -161,7 +161,7 @@ The course marks **73** claims as **Uncertain** (not verified well enough) or **
 
 | Line | Claim | Your review |
 |---|---|---|
-| 65 | **Disputed:** pakad. When a card says **Disputed**, both views are given. If your teacher teaches it | |
+| 66 | **Disputed:** pakad. When a card says **Disputed**, both views are given. If your teacher teaches it | |
 
 ## [ragas/bageshri.md](bansuri-mastery/ragas/bageshri.md)
 

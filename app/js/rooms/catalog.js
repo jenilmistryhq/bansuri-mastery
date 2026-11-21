@@ -1,6 +1,5 @@
 import { h, icon, today } from "../util.js";
 import { loadRoomIndex } from "./loader.js";
-import { allRoomRecords } from "./state.js";
 
 const DIFF_LABEL = { beginner: "Beginner", easy: "Easy", medium: "Medium", hard: "Hard" };
 const DIFF_CLASS = { beginner: "good", easy: "info", medium: "warn", hard: "bad" };

@@ -1,6 +1,6 @@
-import { h, icon } from "../util.js";
-import { ac, makeVoice, playNote } from "../core/audio.js";
-import { hzOf, codeOf, nameOf } from "../core/theory.js";
+import { h } from "../util.js";
+import { playNote } from "../core/audio.js";
+import { codeOf, nameOf } from "../core/theory.js";
 import { listenMic } from "../core/listen.js";
 import { holdTracker, noteSequencer } from "../core/listen.js";
 
