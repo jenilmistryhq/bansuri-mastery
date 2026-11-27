@@ -160,7 +160,7 @@ const SETTINGS_GROUPS = [
       const s = getSettings(), size = Math.round(s.textSize * 100);
       return [size === 100 ? "Text size normal" : "Text size {n}%".replace("{n}", size), s.simple ? "Simple mode" : null, s.focus ? "Focus mode" : null, s.contrast ? "High contrast" : null, s.bigTargets ? "Bigger buttons" : null];
     } },
-  { slug: "practice", id: "g-practice", label: "Practice and reminders", titles: ["Daily practice time", "Countdown", "Daily practice reminder", "Already play?"],
+  { slug: "practice", id: "g-practice", label: "Practice and reminders", titles: ["Daily practice time", "Countdown", "Daily practice reminder", "Placement and skill checks"],
     summary: () => { const p = getState().prefs; return [PACE_SHORT[p.pace] || PACE_SHORT.standard, p.reminderTime ? "Reminder at {x}".replace("{x}", p.reminderTime) : "No reminder"]; } },
   { slug: "data", id: "g-data", label: "Your data", titles: ["Your data", "Start over"],
     summary: () => { const b = getState().lastBackup; return [b ? "Last backup {x}".replace("{x}", fmtDate(b)) : "No backup yet"]; } },
@@ -181,7 +181,8 @@ export async function render(main, ctx = {}) {
   const set = getSettings();
   const page = h("div", { class: "page" });
   page.append(backHead("#/me", "Me", fluteView ? "Your flute" : "Settings"));
-  if (!fluteView) page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Settings"), h("h1", null, "Settings")));
+  if (fluteView) page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Me"), h("h1", null, "Your flute")));
+  else page.append(h("section", { class: "hero" }, h("span", { class: "eyebrow" }, "Settings"), h("h1", null, "Settings")));
   const access = accessSection();
 
   // Flute: set by hand, or found by listening to the learner's Sa.

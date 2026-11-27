@@ -313,7 +313,7 @@ const FB_SEEN = "bansuri.feedback.seen";
 function unseenFeedback() {
   let seen = []; try { seen = JSON.parse(localStorage.getItem(FB_SEEN) || "[]"); } catch (e) { /* none seen */ }
   const all = feedback().map(f => f.id || f.date);
-  if (here[0] === "me" && here[1] === "teacher") { try { localStorage.setItem(FB_SEEN, JSON.stringify(all)); } catch (e) { /* this visit only */ } return false; }
+  if (here[0] === "teacher") { try { localStorage.setItem(FB_SEEN, JSON.stringify(all)); } catch (e) { /* this visit only */ } return false; }
   return all.some(id => !seen.includes(id));
 }
 
